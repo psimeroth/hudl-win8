@@ -1,0 +1,8 @@
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\bin\Debug\RemoteLibrary.dll
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\bin\Debug\RemoteLibrary.pdb
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Users\Elliott\Workspace\RemoteLibrary\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb

@@ -1,0 +1,4 @@
+C:\Users\Elliott\Workspace\RemoteLibrary\RemoteLibrary\bin\Debug\RemoteLibrary.dll
+C:\Users\Elliott\Workspace\RemoteLibrary\RemoteLibrary\bin\Debug\RemoteLibrary.pdb
+C:\Users\Elliott\Workspace\RemoteLibrary\RemoteLibrary\obj\Debug\RemoteLibrary.dll
+C:\Users\Elliott\Workspace\RemoteLibrary\RemoteLibrary\obj\Debug\RemoteLibrary.pdb
