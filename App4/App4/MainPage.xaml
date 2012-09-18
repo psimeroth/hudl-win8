@@ -24,7 +24,7 @@
                     Grid.Row="1" >
             
             <!-- Stops media playback.-->
-            <Button Click="StopMedia" Grid.Column="0" Grid.Row="1" Content="Stop" />
+            <Button Click="StopMedia" Grid.Column="0" Grid.Row="1" Content="Restart" />
 
             <!-- Pauses media playback. -->
             <Button Click="PauseMedia" Grid.Column="1" Grid.Row="1" Content="Pause" />
