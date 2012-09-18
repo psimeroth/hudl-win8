@@ -1,0 +1,1 @@
+C:\Git\hudl-win8\SampleApiInteraction\App5\App5.csproj;neutral

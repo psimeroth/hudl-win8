@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>KEN-DS</Machine>
+    <WindowsUser>Ken</WindowsUser>
+    <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
+    <PackageArchitecture>neutral</PackageArchitecture>
+    <RegisteredManifestChecksum>B7C19D6E8659E25D96A4CC28B8874AE1B97D55950925765682CEB231DABB9944</RegisteredManifestChecksum>
+    <RegisteredPackageMoniker>4ee194a8-eb29-4989-9797-d04164a12520_1.0.0.0_neutral__mmmx6zngkpdcc</RegisteredPackageMoniker>
+    <RegisteredUserModeAppID>4ee194a8-eb29-4989-9797-d04164a12520_mmmx6zngkpdcc!App</RegisteredUserModeAppID>
+    <RegisteredPackageID>4ee194a8-eb29-4989-9797-d04164a12520</RegisteredPackageID>
+    <RegisteredPackagePublisher>CN=Ken</RegisteredPackagePublisher>
+    <RegisteredVersion>1.0.0.0</RegisteredVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2012-09-18T17:42:20.178</Modified>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\App5.exe">
+      <PackagePath>App5.exe</PackagePath>
+      <Modified>2012-09-14T19:55:25.265</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\App5.pdb">
+      <PackagePath>App5.pdb</PackagePath>
+      <Modified>2012-09-14T19:55:25.249</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\packages\Newtonsoft.Json.4.5.9\lib\winrt45\Newtonsoft.Json.dll">
+      <PackagePath>Newtonsoft.Json.dll</PackagePath>
+      <Modified>2012-09-11T16:44:50.497</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\packages\Newtonsoft.Json.4.5.9\lib\winrt45\Newtonsoft.Json.xml">
+      <PackagePath>Newtonsoft.Json.xml</PackagePath>
+      <Modified>2012-09-11T16:44:50.505</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\Assets\Logo.png">
+      <PackagePath>Assets\Logo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2012-03-16T03:42:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\Assets\SmallLogo.png">
+      <PackagePath>Assets\SmallLogo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2012-03-16T03:42:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\Assets\SplashScreen.png">
+      <PackagePath>Assets\SplashScreen.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2012-03-16T03:42:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\Assets\StoreLogo.png">
+      <PackagePath>Assets\StoreLogo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2012-03-16T03:42:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\Assets\LightGray.png">
+      <PackagePath>Assets\LightGray.png</PackagePath>
+      <Modified>2011-12-13T05:08:56.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\Assets\MediumGray.png">
+      <PackagePath>Assets\MediumGray.png</PackagePath>
+      <Modified>2011-12-13T05:08:56.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\Assets\DarkGray.png">
+      <PackagePath>Assets\DarkGray.png</PackagePath>
+      <Modified>2011-12-13T05:08:56.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\App.xaml">
+      <PackagePath>App.xaml</PackagePath>
+      <Modified>2012-09-14T19:55:23.082</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\Common\StandardStyles.xaml">
+      <PackagePath>Common\StandardStyles.xaml</PackagePath>
+      <Modified>2012-06-26T23:19:20.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\ItemsPage.xaml">
+      <PackagePath>ItemsPage.xaml</PackagePath>
+      <Modified>2012-09-11T16:42:13.786</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\SplitPage.xaml">
+      <PackagePath>SplitPage.xaml</PackagePath>
+      <Modified>2012-09-11T16:42:13.795</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+      <Modified>2012-09-18T17:42:20.081</Modified>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>
