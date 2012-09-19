@@ -78,7 +78,7 @@ namespace App5
             value.teamID = gameId;
             value.Token = gValue.Token;
             value.Title = ((Cutup)e.ClickedItem).Title;
-            this.Frame.Navigate(typeof(VideoPage), value);
+            this.Frame.Navigate(typeof(ClipsPage), value);
         }
     }
 }
