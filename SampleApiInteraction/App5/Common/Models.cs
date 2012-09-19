@@ -56,7 +56,7 @@ namespace App5.Common
 
     public class Game
     {
-        public int id { get; set; }
+        public int gameId { get; set; }
         public DateTime date { get; set; }
         public string opponent { get; set; }
         public bool ishome { get; set; }
@@ -72,6 +72,34 @@ namespace App5.Common
         public string name { get; set; }
         //public List<SubCategory> subcategoryList { get; set; }
     }
+
+    public class Cutup
+    {
+        public int cutupID { get; set; }
+        public int categoryID { get; set; }
+        public string name{ get; set; }
+        public string creatorName { get; set; }
+        public int clipCount { get; set; }
+        public string thumbnailpath { get; set; }
+        public Category associatedCategory { get; set; }
+
+        public string Title { get; set; }
+        public string Image { get; set; }
+    }
+
+    public class Clip
+    {
+        public int ClipID { get; set; }
+        //public BreakDownData [] breakDownData { get; set; }
+        public string Title { get; set; }
+    }
+
+    /*public class BreakDownData
+    {
+        public float dist { get; set; }
+        public int playNum { get; set; }
+        public int quarter { get; set; }
+    }*/
 
     public class Group
     {

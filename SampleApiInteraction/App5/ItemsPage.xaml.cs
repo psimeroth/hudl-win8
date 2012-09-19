@@ -123,7 +123,7 @@ namespace App5
             value.teamID = groupId;
             value.Token = JsonConvert.DeserializeObject<LoginProfileDTO>(loginRetVal).Token;
             value.Title = ((TeamResponse)e.ClickedItem).Title;
-            this.Frame.Navigate(typeof(SplitPage), value);
+            this.Frame.Navigate(typeof(GamesPage), value);
         }
     }
 }
