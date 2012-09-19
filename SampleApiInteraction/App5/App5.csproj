@@ -103,11 +103,20 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ClipsPage.xaml.cs">
+      <DependentUpon>ClipsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Common\AppData.cs" />
     <Compile Include="Common\Models.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
+    <Compile Include="CutupsPage.xaml.cs">
+      <DependentUpon>CutupsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ItemsPage.xaml.cs">
       <DependentUpon>ItemsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GamesPage.xaml.cs">
+      <DependentUpon>GamesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SplitPage.xaml.cs">
       <DependentUpon>SplitPage.xaml</DependentUpon>
@@ -143,13 +152,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ClipsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Common\StandardStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="CutupsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ItemsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GamesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SplitPage.xaml">
       <Generator>MSBuild:Compile</Generator>
