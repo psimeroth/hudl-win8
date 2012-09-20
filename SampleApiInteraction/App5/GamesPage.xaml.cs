@@ -47,7 +47,7 @@ namespace App5
 
             Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_SCHEDULE.Replace("#", gValue.teamID.ToString()), "GET", "", gValue.Token);
             var asyncAction2 = test2.AsAsyncOperation<string>().Completed += AsyncActionHandler2;
-            Group gp = new Group { Title = gValue.Title };
+            Group gp = new Group { Title = gValue.Title + " Games" };
             this.DefaultViewModel["Group"] = gp;
         }
 

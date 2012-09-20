@@ -35,6 +35,7 @@ namespace App5
         bool teamCallDone = false;
         string teamCallRetVal = null;
         //List<TeamResponse> Items;
+        PassToSplit gValue;
         
 
         public ItemsPage()
@@ -53,39 +54,9 @@ namespace App5
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var sampleDataGroups = SampleDataSource.GetGroups((String)navigationParameter);
+            gValue = (PassToSplit)navigationParameter;
 
-            const string username = AppData.LOGIN_USERNAME;
-            const string password = AppData.LOGIN_PASSWORD;
-
-            var loginArgs = JsonConvert.SerializeObject(new LoginSender {Username = username, Password = password});
-
-            
-            Task<string> test = ServiceAccessor.MakeApiCall(AppData.URL_BASE_SECURE + AppData.URL_SERVICE_LOGIN, "POST", loginArgs, "");
-            var asyncAction = test.AsAsyncOperation<string>().Completed += AsyncActionHandler;
-
-            //while (!loginDone) { }
-
-            //var obj = JsonConvert.DeserializeObject<LoginProfileDTO>(loginRetVal);
-
-            //Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_TEAMS, "GET", "", obj.Token);
-            //var asyncAction2 = test.AsAsyncOperation<string>().Completed += AsyncActionHandler2;
-
-            //while (!teamCallDone) { }
-
-
-
-            //this.DefaultViewModel["Items"] = sampleDataGroups;
-        }
-
-        private void AsyncActionHandler(IAsyncOperation<string> asyncInfo, AsyncStatus asyncStatus)
-        {
-            loginRetVal = asyncInfo.GetResults();
-            loginDone = true;
-            var obj = JsonConvert.DeserializeObject<LoginProfileDTO>(loginRetVal);
-
-            Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_TEAMS, "GET", "", obj.Token);
+            Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_TEAMS, "GET", "", gValue.Token);
             var asyncAction2 = test2.AsAsyncOperation<string>().Completed += AsyncActionHandler2;
         }
 
@@ -121,7 +92,7 @@ namespace App5
             var groupId = ((TeamResponse)e.ClickedItem).teamId;
             PassToSplit value = new PassToSplit();
             value.teamID = groupId;
-            value.Token = JsonConvert.DeserializeObject<LoginProfileDTO>(loginRetVal).Token;
+            value.Token = gValue.Token;
             value.Title = ((TeamResponse)e.ClickedItem).Title;
             this.Frame.Navigate(typeof(GamesPage), value);
         }

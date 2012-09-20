@@ -78,7 +78,7 @@ namespace App5
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                if (!rootFrame.Navigate(typeof(ItemsPage), "AllGroups"))
+                if (!rootFrame.Navigate(typeof(LoginPage), "AllGroups"))
                 {
                     throw new Exception("Failed to create initial page");
                 }

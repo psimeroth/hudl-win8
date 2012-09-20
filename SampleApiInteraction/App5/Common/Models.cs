@@ -50,6 +50,7 @@ namespace App5.Common
     public class PassToSplit
     {
         public int teamID { get; set; }
+        public string fileLocation { get; set; }
         public string Token { get; set; }
         public string Title { get; set; }
     }
@@ -87,19 +88,58 @@ namespace App5.Common
         public string Image { get; set; }
     }
 
-    public class Clip
+    public class ClipResponse
     {
-        public int ClipID { get; set; }
-        //public BreakDownData [] breakDownData { get; set; }
-        public string Title { get; set; }
+        public ClipsList clipsList { get; set; }
+        //public List<DisplayColumns> displayColumns { get; set; }
     }
 
-    /*public class BreakDownData
+    public class DisplayColumns
     {
-        public float dist { get; set; }
-        public int playNum { get; set; }
-        public int quarter { get; set; }
-    }*/
+
+    }
+
+    public class ClipsList
+    {
+        public List<Clip> clips { get; set; }
+        public long total { get; set; }
+    }
+
+    public class Clip
+    {
+        public long clipID { get; set; }
+        public BreakDownData breakdownData { get; set; }
+        
+        public List<Angle> angles { get; set; }
+        public long originalOrder { get; set; }
+
+        public string Title { get; set; }
+        public string Image { get; set; }
+    }
+
+    public class BreakDownData
+    {
+        public float dIST { get; set; }
+        public long pLAY { get; set; }//needs to be changed
+        public long qTR { get; set; }
+    }
+
+    public class Angle
+    {
+        public long clipAngleID { get; set; }
+        public string angleName { get; set; }
+        public long duration { get; set; }
+        public string thumbnailFileName { get; set; }
+        public string largeThumbnailFileName { get; set; }
+        public List<File> files { get; set; }
+    }
+
+    public class File
+    {
+        public long quality { get; set; }
+        public string fileName { get; set; }
+        public long fileSize { get; set; }
+    }
 
     public class Group
     {

@@ -47,7 +47,7 @@ namespace App5
 
             Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_CLIPS.Replace("#", gValue.teamID.ToString()), "GET", "", gValue.Token);
             var asyncAction2 = test2.AsAsyncOperation<string>().Completed += AsyncActionHandler2;
-            Group gp = new Group { Title = gValue.Title };
+            Group gp = new Group { Title = gValue.Title + " Clips" };
             this.DefaultViewModel["Group"] = gp;
         }
 
@@ -55,30 +55,28 @@ namespace App5
         {
             string teamCallRetVal = asyncInfo.GetResults();
             //teamCallRetVal = teamCallRetVal.Replace('\\', ' ');
-            List<Clip> response = JsonConvert.DeserializeObject<List<Clip>>(teamCallRetVal);
+            ClipResponse response = JsonConvert.DeserializeObject<ClipResponse>(teamCallRetVal);
 
 
             //Items = response;
-            this.DefaultViewModel["Items"] = response;
-            foreach (Clip r in response)
+            this.DefaultViewModel["Items"] = response.clipsList.clips;
+            foreach (Clip r in response.clipsList.clips)
             {
-                r.Title = r.ClipID.ToString();
+                r.Title = gValue.Title + ": "+r.clipID.ToString();
+                r.Image = r.angles.FirstOrDefault().largeThumbnailFileName;
             }
-
-
-            this.DefaultViewModel["Items"] = response;
         }
 
         void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var gameId = ((Cutup)e.ClickedItem).cutupID;
+            var gameId = ((Clip)e.ClickedItem).angles.FirstOrDefault().files.FirstOrDefault().fileName;
             PassToSplit value = new PassToSplit();
-            value.teamID = gameId;
+            value.fileLocation = gameId;
             value.Token = gValue.Token;
-            value.Title = ((Cutup)e.ClickedItem).Title;
-            this.Frame.Navigate(typeof(ClipsPage), value);
+            value.Title = ((Clip)e.ClickedItem).Title;
+            this.Frame.Navigate(typeof(MoviesPage), value);
         }
     }
 }
