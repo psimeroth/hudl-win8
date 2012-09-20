@@ -68,10 +68,10 @@ namespace App5.Common
 
     public class Category
     {
-        public int id { get; set; }
+        public int categoryId { get; set; }
         public int classification { get; set; }
         public string name { get; set; }
-        //public List<SubCategory> subcategoryList { get; set; }
+        public string Title { get; set; }
     }
 
     public class Cutup

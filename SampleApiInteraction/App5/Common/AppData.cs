@@ -16,9 +16,10 @@ namespace App5.Common
 
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
-        public const string URL_SERVICE_GET_SCHEDULE = "teams/#/schedule";
-        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";
-        public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips";
+        public const string URL_SERVICE_GET_SCHEDULE = "teams/#/schedule";//returns games
+        public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/#/categories";//returns categories
+        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
+        public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips";//returns clips
 
     }
 }
