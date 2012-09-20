@@ -23,10 +23,10 @@ namespace App5
     /// A page that displays a collection of item previews.  In the Split Application this page
     /// is used to display and select one of the available groups.
     /// </summary>
-    public sealed partial class GamesPage : App5.Common.LayoutAwarePage
+    public sealed partial class CategoryPage : App5.Common.LayoutAwarePage
     {
         PassToSplit gValue;
-        public GamesPage()
+        public CategoryPage()
         {
             this.InitializeComponent();
         }
@@ -45,9 +45,9 @@ namespace App5
             // TODO: Assign a bindable collection of items to this.DefaultViewModel["Items"]
             gValue = (PassToSplit)navigationParameter;
 
-            Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_SCHEDULE.Replace("#", gValue.teamID.ToString()), "GET", "", gValue.Token);
+            Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gValue.teamID.ToString()), "GET", "", gValue.Token);
             var asyncAction2 = test2.AsAsyncOperation<string>().Completed += AsyncActionHandler2;
-            Group gp = new Group { Title = gValue.Title + " Games" };
+            Group gp = new Group { Title = gValue.Title + " Categories" };
             this.DefaultViewModel["Group"] = gp;
         }
 
@@ -55,14 +55,14 @@ namespace App5
         {
             string teamCallRetVal = asyncInfo.GetResults();
             //teamCallRetVal = teamCallRetVal.Replace('\\', ' ');
-            List<Game> response = JsonConvert.DeserializeObject<List<Game>>(teamCallRetVal);
+            List<Category> response = JsonConvert.DeserializeObject<List<Category>>(teamCallRetVal);
 
 
             //Items = response;
             this.DefaultViewModel["Items"] = response;
-            foreach (Game r in response)
+            foreach (Category r in response)
             {
-                r.Title = r.opponent;
+                r.Title = r.name;
             }
 
 
@@ -73,12 +73,12 @@ namespace App5
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var gameId = ((Game)e.ClickedItem).gameId;
+            var gameId = ((Category)e.ClickedItem).categoryId;
             PassToSplit value = new PassToSplit();
             value.teamID = gameId;
             value.Token = gValue.Token;
-            value.Title = ((Game)e.ClickedItem).Title;
-            this.Frame.Navigate(typeof(CategoryPage), value);
+            value.Title = ((Category)e.ClickedItem).Title;
+            this.Frame.Navigate(typeof(CutupsPage), value);
         }
     }
 }
