@@ -53,12 +53,20 @@ namespace App5
         private void AsyncActionHandler(IAsyncOperation<string> asyncInfo, AsyncStatus asyncStatus)
         {
             var loginRetVal = asyncInfo.GetResults();
-            var obj = JsonConvert.DeserializeObject<LoginProfileDTO>(loginRetVal);
+
+            try
+            {
+                var obj = JsonConvert.DeserializeObject<LoginProfileDTO>(loginRetVal);
 
 
-            PassToSplit value = new PassToSplit();
-            value.Token = obj.Token;
-            this.Frame.Navigate(typeof(ItemsPage), value);
+                PassToSplit value = new PassToSplit();
+                value.Token = obj.Token;
+                this.Frame.Navigate(typeof(ItemsPage), value);
+            }
+            catch (Exception ex)
+            {
+                LoginErrorMessage.Text = "Login Failed. Check your username and password.";
+            }
         }
 
         private void KeyUpMedia(object sender, KeyRoutedEventArgs e)
