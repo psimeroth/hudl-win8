@@ -13,9 +13,12 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <TextBlock Text="Hudl" Grid.Row="0" HorizontalAlignment="Center" Style="{StaticResource PageHeaderTextStyle}"/>
+
+        <TextBlock Text="" HorizontalAlignment="Center" Grid.Row="2" Name="LoginErrorMessage" />
         
         <StackPanel Name="SP1" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3" Margin="611,84,642,-78" >
             <TextBlock Text="Username" />
