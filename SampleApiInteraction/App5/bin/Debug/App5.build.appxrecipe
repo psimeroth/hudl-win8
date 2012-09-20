@@ -53,14 +53,26 @@
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\App.xaml">
       <PackagePath>App.xaml</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\ClipsPage.xaml">
+      <PackagePath>ClipsPage.xaml</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\Common\StandardStyles.xaml">
       <PackagePath>Common\StandardStyles.xaml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\CutupsPage.xaml">
+      <PackagePath>CutupsPage.xaml</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\ItemsPage.xaml">
       <PackagePath>ItemsPage.xaml</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\SplitPage.xaml">
-      <PackagePath>SplitPage.xaml</PackagePath>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\GamesPage.xaml">
+      <PackagePath>GamesPage.xaml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\LoginPage.xaml">
+      <PackagePath>LoginPage.xaml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\MoviesPage.xaml">
+      <PackagePath>MoviesPage.xaml</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>

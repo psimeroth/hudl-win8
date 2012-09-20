@@ -114,9 +114,17 @@ namespace App5.App5_XamlTypeInfo
 
         private object Activate_0_LayoutAwarePage() { return new global::App5.Common.LayoutAwarePage(); }
 
-        private object Activate_1_ItemsPage() { return new global::App5.ItemsPage(); }
+        private object Activate_1_ClipsPage() { return new global::App5.ClipsPage(); }
 
-        private object Activate_2_SplitPage() { return new global::App5.SplitPage(); }
+        private object Activate_2_CutupsPage() { return new global::App5.CutupsPage(); }
+
+        private object Activate_3_ItemsPage() { return new global::App5.ItemsPage(); }
+
+        private object Activate_4_GamesPage() { return new global::App5.GamesPage(); }
+
+        private object Activate_5_LoginPage() { return new global::App5.LoginPage(); }
+
+        private object Activate_6_MoviesPage() { return new global::App5.MoviesPage(); }
 
 
         private global::Windows.UI.Xaml.Markup.IXamlType CreateXamlType(string typeName)
@@ -140,15 +148,39 @@ namespace App5.App5_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case "App5.ItemsPage":
-                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.ItemsPage), GetXamlTypeByName("App5.Common.LayoutAwarePage"));
-                userType.Activator = Activate_1_ItemsPage;
+            case "App5.ClipsPage":
+                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.ClipsPage), GetXamlTypeByName("App5.Common.LayoutAwarePage"));
+                userType.Activator = Activate_1_ClipsPage;
                 xamlType = userType;
                 break;
 
-            case "App5.SplitPage":
-                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.SplitPage), GetXamlTypeByName("App5.Common.LayoutAwarePage"));
-                userType.Activator = Activate_2_SplitPage;
+            case "App5.CutupsPage":
+                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.CutupsPage), GetXamlTypeByName("App5.Common.LayoutAwarePage"));
+                userType.Activator = Activate_2_CutupsPage;
+                xamlType = userType;
+                break;
+
+            case "App5.ItemsPage":
+                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.ItemsPage), GetXamlTypeByName("App5.Common.LayoutAwarePage"));
+                userType.Activator = Activate_3_ItemsPage;
+                xamlType = userType;
+                break;
+
+            case "App5.GamesPage":
+                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.GamesPage), GetXamlTypeByName("App5.Common.LayoutAwarePage"));
+                userType.Activator = Activate_4_GamesPage;
+                xamlType = userType;
+                break;
+
+            case "App5.LoginPage":
+                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.LoginPage), GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
+                userType.Activator = Activate_5_LoginPage;
+                xamlType = userType;
+                break;
+
+            case "App5.MoviesPage":
+                userType = new global::App5.App5_XamlTypeInfo.XamlUserType(this, typeName, typeof(global::App5.MoviesPage), GetXamlTypeByName("App5.Common.LayoutAwarePage"));
+                userType.Activator = Activate_6_MoviesPage;
                 xamlType = userType;
                 break;
 

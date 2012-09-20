@@ -6,6 +6,10 @@ Assets\SmallLogo.png
 Assets\SplashScreen.png
 Assets\StoreLogo.png
 App.xaml
+ClipsPage.xaml
 Common\StandardStyles.xaml
+CutupsPage.xaml
+GamesPage.xaml
 ItemsPage.xaml
-SplitPage.xaml
+LoginPage.xaml
+MoviesPage.xaml

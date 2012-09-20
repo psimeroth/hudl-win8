@@ -1,1 +1,1 @@
-C:\Users\Ken\Documents\Visual Studio 2012\Projects\App4\App4\App4.csproj;neutral
+C:\Git\hudl-win8\App4\App4\TestApp.csproj;neutral

@@ -62,6 +62,8 @@ namespace App5
                 PassToSplit value = new PassToSplit();
                 value.Token = obj.Token;
                 this.Frame.Navigate(typeof(ItemsPage), value);
+                
+                LoginErrorMessage.Text = "";
             }
             catch (Exception ex)
             {

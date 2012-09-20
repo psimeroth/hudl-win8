@@ -5,7 +5,7 @@
     <WindowsUser>Ken</WindowsUser>
     <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
     <PackageArchitecture>neutral</PackageArchitecture>
-    <RegisteredManifestChecksum>B7C19D6E8659E25D96A4CC28B8874AE1B97D55950925765682CEB231DABB9944</RegisteredManifestChecksum>
+    <RegisteredManifestChecksum>C00123BCA0209C63C148B075E79197F80EDCF0B59446244901BF139548A64EA6</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>4ee194a8-eb29-4989-9797-d04164a12520_1.0.0.0_neutral__mmmx6zngkpdcc</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>4ee194a8-eb29-4989-9797-d04164a12520_mmmx6zngkpdcc!App</RegisteredUserModeAppID>
     <RegisteredPackageID>4ee194a8-eb29-4989-9797-d04164a12520</RegisteredPackageID>
@@ -16,17 +16,17 @@
     <AppXManifest Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2012-09-18T17:42:20.178</Modified>
+      <Modified>2012-09-20T17:49:26.844</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\App5.exe">
       <PackagePath>App5.exe</PackagePath>
-      <Modified>2012-09-14T19:55:25.265</Modified>
+      <Modified>2012-09-20T18:37:06.121</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\App5.pdb">
       <PackagePath>App5.pdb</PackagePath>
-      <Modified>2012-09-14T19:55:25.249</Modified>
+      <Modified>2012-09-20T18:37:06.104</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\packages\Newtonsoft.Json.4.5.9\lib\winrt45\Newtonsoft.Json.dll">
       <PackagePath>Newtonsoft.Json.dll</PackagePath>
@@ -72,21 +72,37 @@
       <PackagePath>App.xaml</PackagePath>
       <Modified>2012-09-14T19:55:23.082</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\ClipsPage.xaml">
+      <PackagePath>ClipsPage.xaml</PackagePath>
+      <Modified>2012-09-20T17:49:13.595</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\Common\StandardStyles.xaml">
       <PackagePath>Common\StandardStyles.xaml</PackagePath>
       <Modified>2012-06-26T23:19:20.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\CutupsPage.xaml">
+      <PackagePath>CutupsPage.xaml</PackagePath>
+      <Modified>2012-09-20T17:49:13.601</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\ItemsPage.xaml">
       <PackagePath>ItemsPage.xaml</PackagePath>
-      <Modified>2012-09-11T16:42:13.786</Modified>
+      <Modified>2012-09-20T17:49:13.610</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\SplitPage.xaml">
-      <PackagePath>SplitPage.xaml</PackagePath>
-      <Modified>2012-09-11T16:42:13.795</Modified>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\GamesPage.xaml">
+      <PackagePath>GamesPage.xaml</PackagePath>
+      <Modified>2012-09-20T17:49:13.606</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\LoginPage.xaml">
+      <PackagePath>LoginPage.xaml</PackagePath>
+      <Modified>2012-09-20T18:15:44.135</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\MoviesPage.xaml">
+      <PackagePath>MoviesPage.xaml</PackagePath>
+      <Modified>2012-09-20T17:49:13.617</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\hudl-win8\SampleApiInteraction\App5\bin\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2012-09-18T17:42:20.081</Modified>
+      <Modified>2012-09-20T17:49:26.710</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
