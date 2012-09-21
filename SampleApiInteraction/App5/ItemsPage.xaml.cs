@@ -56,7 +56,7 @@ namespace App5
         {
             gValue = (PassToSplit)navigationParameter;
 
-            Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_TEAMS, "GET", "", gValue.Token);
+            Task<string> test2 = ServiceAccessor.MakeApiCallGet(AppData.URL_BASE + AppData.URL_SERVICE_GET_TEAMS, "", gValue.Token);
             var asyncAction2 = test2.AsAsyncOperation<string>().Completed += AsyncActionHandler2;
         }
 

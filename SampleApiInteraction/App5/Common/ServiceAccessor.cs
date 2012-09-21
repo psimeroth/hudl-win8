@@ -10,23 +10,68 @@ using System.Net.Http;
 
 namespace App5.Common
 {
+    /// <summary>
+    /// Class used make API calls.
+    /// </summary>
     class ServiceAccessor
     {
+        public const string URL_BASE = "http://thor3/api/";
+        public const string URL_BASE_SECURE = "https://thor3/api/";
 
-        public static async Task<string> MakeApiCall(string url, string method, string jsonString, string header)
+        public const string URL_SERVICE_LOGIN = "login";
+        public const string URL_SERVICE_GET_TEAMS = "teams";
+        public const string URL_SERVICE_GET_SCHEDULE = "teams/#/schedule";//returns games
+        public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/#/categories";//returns categories
+        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
+        public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips";//returns clips
+
+        /// <summary>
+        /// Makes an API call to the base URL defined in AppData.cs using the GET method.
+        /// </summary>
+        /// <param name="url">The API function to hit.</param>
+        /// <param name="jsonString">Any necesary data required to make the call.</param>
+        /// <param name="header">The header for the JSON request. (optional)</param>
+        /// <returns>The string response returned from the API call.</returns>
+        public static async Task<string> MakeApiCallGet(string url, string jsonString, string header)
         {
             var req = (HttpWebRequest) WebRequest.Create(url);
             req.ContentType = "application/json";
-            req.Method = method;
+            req.Method = "GET";
 
-            if (req.Method == "POST")
+            if (header != string.Empty)
             {
-                using (var requestStream = await req.GetRequestStreamAsync())
+                req.Headers["hudl-authtoken"] = header;
+            }
+
+            using (var response = await req.GetResponseAsync())
+            {
+                using (var responseStream = response.GetResponseStream())
                 {
-                    var writer = new StreamWriter(requestStream);
-                    writer.Write(jsonString);
-                    writer.Flush();
+                    var reader = new StreamReader(responseStream);
+                    var answer = reader.ReadToEnd();
+                    return answer;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Makes an API call to the base URL defined in AppData.cs using the POST method.
+        /// </summary>
+        /// <param name="url">The API function to hit.</param>
+        /// <param name="jsonString">Any necesary data required to make the call.</param>
+        /// <param name="header">The header for the JSON call. (optional)</param>
+        /// <returns>The string response returned from the API call.</returns>
+        public static async Task<string> MakeApiCallPost(string url, string jsonString, string header)
+        {
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            req.ContentType = "application/json";
+            req.Method = "POST";
+
+            using (var requestStream = await req.GetRequestStreamAsync())
+            {
+                var writer = new StreamWriter(requestStream);
+                writer.Write(jsonString);
+                writer.Flush();
             }
 
             if (header != string.Empty)

@@ -45,7 +45,7 @@ namespace App5
             // TODO: Assign a bindable collection of items to this.DefaultViewModel["Items"]
             gValue = (PassToSplit)navigationParameter;
 
-            Task<string> test2 = ServiceAccessor.MakeApiCall(AppData.URL_BASE + AppData.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", gValue.teamID.ToString()), "GET", "", gValue.Token);
+            Task<string> test2 = ServiceAccessor.MakeApiCallGet(AppData.URL_BASE + AppData.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", gValue.teamID.ToString()), "", gValue.Token);
             var asyncAction2 = test2.AsAsyncOperation<string>().Completed += AsyncActionHandler2;
             Group gp = new Group { Title = gValue.Title + " Cutups" };
             this.DefaultViewModel["Group"] = gp;

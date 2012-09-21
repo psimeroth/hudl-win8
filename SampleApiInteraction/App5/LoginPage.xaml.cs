@@ -39,14 +39,20 @@ namespace App5
         {
         }
 
-        private void loginSubmit_Click(object sender, RoutedEventArgs e)
+        private async void loginSubmit_Click(object sender, RoutedEventArgs e)
         {
             var loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = username.Text, Password = password.Password });
 
 
-            Task<string> test = ServiceAccessor.MakeApiCall(AppData.URL_BASE_SECURE + AppData.URL_SERVICE_LOGIN, "POST", loginArgs, "");
-            var asyncAction = test.AsAsyncOperation<string>().Completed += AsyncActionHandler;
+            var test = await ServiceAccessor.MakeApiCallPost(AppData.URL_BASE_SECURE + AppData.URL_SERVICE_LOGIN, loginArgs, "");
+            //var asyncAction = test.AsAsyncOperation<string>().Completed += AsyncActionHandler;
+            var obj = JsonConvert.DeserializeObject<LoginProfileDTO>(test);
 
+            PassToSplit value = new PassToSplit();
+            value.Token = obj.Token;
+            this.Frame.Navigate(typeof(ItemsPage), value);
+
+            LoginErrorMessage.Text = "";
 
         }
 
