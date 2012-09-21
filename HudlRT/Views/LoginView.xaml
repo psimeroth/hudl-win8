@@ -9,23 +9,12 @@
     mc:Ignorable="d">
 
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="140" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}"/>
-            <TextBlock Text="HudlRT" Style="{StaticResource PageHeaderTextStyle}" Grid.Column="1" />
-        </Grid>
-        <Button x:Name="Login" Content="Login" HorizontalAlignment="Left" Margin="130,72,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-
-
+        <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="500">
+            <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo.jpg" VerticalAlignment="Center" HorizontalAlignment="Center" Width="500" Height="149" Margin="0" />
+            <TextBox x:Name="usernameTextBox" TextWrapping="Wrap" Text="username"/>
+            <TextBox x:Name="passwordTextBox" TextWrapping="Wrap" Text="password"/>
+            <Button x:Name="Login" Content="login" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="300,0,0,0"/>
+        </StackPanel>
 
     </Grid>
 </Page>

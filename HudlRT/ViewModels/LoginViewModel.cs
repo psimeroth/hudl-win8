@@ -20,7 +20,7 @@ namespace HudlRT.ViewModels
 
         public void Login()
         {
-            navigationService.NavigateToViewModel(typeof(MainViewModel));
+            navigationService.NavigateToViewModel(typeof(HubViewModel));
         }
     }
 }
