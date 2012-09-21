@@ -1,0 +1,28 @@
+﻿using Caliburn.Micro;
+using System;
+
+namespace HudlRT.ViewModels
+{
+    public class ViewModelBase : Screen
+    {
+        private readonly INavigationService navigationService;
+
+        public ViewModelBase(INavigationService navigationService)
+        {
+            this.navigationService = navigationService;
+        }
+
+        public void GoBack()
+        {
+            navigationService.GoBack();
+        }
+
+        public bool CanGoBack
+        {
+            get
+            {
+                return navigationService.CanGoBack;
+            }
+        }
+    }
+}
