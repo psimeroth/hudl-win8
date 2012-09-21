@@ -41,7 +41,15 @@ namespace App5
 
         private async void loginSubmit_Click(object sender, RoutedEventArgs e)
         {
-            var loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = username.Text, Password = password.Password });
+            string loginArgs;
+            if (username.Text.Length != 0)
+            {
+                loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = username.Text, Password = password.Password });
+            }
+            else
+            {
+                loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = AppData.LOGIN_USERNAME, Password = AppData.LOGIN_PASSWORD });
+            }
 
 
             var test = await ServiceAccessor.MakeApiCallPost(AppData.URL_BASE_SECURE + AppData.URL_SERVICE_LOGIN, loginArgs, "");
