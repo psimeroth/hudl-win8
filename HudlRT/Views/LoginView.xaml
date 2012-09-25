@@ -11,8 +11,8 @@
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="500">
             <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo.jpg" VerticalAlignment="Center" HorizontalAlignment="Center" Width="500" Height="149" Margin="0" />
-            <TextBox x:Name="usernameTextBox" TextWrapping="Wrap" Text="username"/>
-            <TextBox x:Name="passwordTextBox" TextWrapping="Wrap" Text="password"/>
+            <TextBox x:Name="usernameTextBox"/>
+            <PasswordBox x:Name="passwordPasswordBox"/>
             <Button x:Name="Login" Content="login" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="300,0,0,0"/>
         </StackPanel>
 
