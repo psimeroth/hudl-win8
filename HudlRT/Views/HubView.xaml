@@ -23,7 +23,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="Back" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsTabStop="False"/>
+            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsTabStop="False"/>
             <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo.jpg" NineGrid="0,10,0,0"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -34,7 +34,13 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" Grid.Column="0"/>
+            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock x:Name="Name" Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             <ListView x:Name="weekListView" Grid.Column="1"/>
             <ListView x:Name="playlistListView" Grid.Column="2"/>
         </Grid>
