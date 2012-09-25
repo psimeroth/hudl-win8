@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using Windows.Storage;
 
-namespace App5.Common
+namespace HudlRT.Common
 {
     struct LoginSender
     {
