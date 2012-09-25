@@ -105,8 +105,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\ServiceAccessor.cs" />
+<<<<<<< HEAD
     <Compile Include="Models\Models.cs" />
+    <Compile Include="Models\Team.cs" />
+=======
+    <Compile Include="Common\ServiceAccessor.cs" />
+>>>>>>> 146a69f9ccd919655c7c6ab13f6dfb037850557b
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\HubViewModel.cs" />
@@ -171,7 +175,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Utilities\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
