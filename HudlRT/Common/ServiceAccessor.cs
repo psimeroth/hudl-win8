@@ -32,7 +32,7 @@ namespace App5.Common
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
         /// <returns>The string response returned from the API call.</returns>
-        public static async Task<string> MakeApiCallGet(string url, string jsonString)
+        public static async Task<string> MakeApiCallGet(string url)
         {
             var req = (HttpWebRequest) WebRequest.Create(URL_BASE + url);
             req.ContentType = "application/json";
