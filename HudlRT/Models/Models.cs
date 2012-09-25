@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HudlRT.Model
+namespace HudlRT.Models
 {
     class Models
     {
@@ -15,58 +17,65 @@ namespace HudlRT.Model
         public string Token { get; set; }
     }
 
-    struct LoginSender
+    public class Team : INotifyPropertyChanged
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
+        public int TeamId { get; set; }
+        public string Name { get; set; }
+        public bool IsExchangeOnly { get; set; }
+        public School School { get; set; }
+        public List<Season> Seasons { get; set; }
+        public string Role { get; set; }
 
-    public class TeamResponse
-    {
-        public int teamId { get; set; }
-        public string name { get; set; }
-        public bool isExchangeOnly { get; set; }
-        public School school { get; set; }
-        public List<Season> seasons { get; set; }
-        public string role { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property. 
+        // The CallerMemberName attribute that is applied to the optional propertyName 
+        // parameter causes the property name of the caller to be substituted as an argument. 
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 
     public class School
     {
-        public int schoolId { get; set; }
-        public string name { get; set; }
-        public string abbreviatedName { get; set; }
+        public int SchoolId { get; set; }
+        public string Name { get; set; }
+        public string AbbreviatedName { get; set; }
     }
 
     public class Season
     {
-        public int seasonId { get; set; }
-        public string name { get; set; }
-        public bool isCurrentSeason { get; set; }
-        public int year { get; set; }
+        public int SeasonId { get; set; }
+        public string Name { get; set; }
+        public bool IsCurrentSeason { get; set; }
+        public int Year { get; set; }
     }
 
     public class PassToSplit
     {
-        public int teamID { get; set; }
-        public string fileLocation { get; set; }
+        public int TeamID { get; set; }
+        public string FileLocation { get; set; }
         public string Token { get; set; }
     }
 
     public class Game
     {
-        public int gameId { get; set; }
-        public DateTime date { get; set; }
-        public string opponent { get; set; }
-        public bool ishome { get; set; }
-        public List<Category> categories { get; set; }
+        public int GameId { get; set; }
+        public DateTime Date { get; set; }
+        public string Opponent { get; set; }
+        public bool Ishome { get; set; }
+        public List<Category> Categories { get; set; }
     }
 
     public class Category
     {
-        public int categoryId { get; set; }
-        public int classification { get; set; }
-        public string name { get; set; }
+        public int CategoryId { get; set; }
+        public int Classification { get; set; }
+        public string Name { get; set; }
     }
 
     public class Cutup

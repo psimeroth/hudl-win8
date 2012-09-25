@@ -11,6 +11,12 @@ using Windows.Storage;
 
 namespace App5.Common
 {
+    struct LoginSender
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
     /// <summary>
     /// Class used make API calls.
     /// </summary>
