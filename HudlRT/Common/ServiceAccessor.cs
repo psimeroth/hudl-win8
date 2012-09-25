@@ -16,8 +16,8 @@ namespace App5.Common
     /// </summary>
     class ServiceAccessor
     {
-        public const string URL_BASE = "http://thor3/api/";
-        public const string URL_BASE_SECURE = "https://thor3/api/";
+        private const string URL_BASE = "http://thor3/api/";
+        private const string URL_BASE_SECURE = "https://thor3/api/";
 
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
@@ -31,16 +31,19 @@ namespace App5.Common
         /// </summary>
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
-        /// <param name="header">The header for the JSON request. (optional)</param>
         /// <returns>The string response returned from the API call.</returns>
-        public static async Task<string> MakeApiCallGet(string url, string jsonString, string header)
+        public static async Task<string> MakeApiCallGet(string url, string jsonString)
         {
-            var req = (HttpWebRequest) WebRequest.Create(url);
+            var req = (HttpWebRequest) WebRequest.Create(URL_BASE + url);
             req.ContentType = "application/json";
             req.Method = "GET";
 
-            var authtoken = (string) ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"];
-            req.Headers["hudl-authtoken"] = authtoken;
+            // Get the auth token from the App Data and make sure it's not null
+            var authtoken = ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"];
+            if (authtoken != null)
+            {
+                req.Headers["hudl-authtoken"] = (string) authtoken;
+            }
 
             using (var response = await req.GetResponseAsync())
             {
@@ -58,11 +61,10 @@ namespace App5.Common
         /// </summary>
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
-        /// <param name="header">The header for the JSON call. (optional)</param>
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallPost(string url, string jsonString)
         {
-            var req = (HttpWebRequest)WebRequest.Create(url);
+            var req = (HttpWebRequest)WebRequest.Create(URL_BASE_SECURE + url);
             req.ContentType = "application/json";
             req.Method = "POST";
 
