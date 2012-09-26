@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="5f9beefe-74d1-447c-8b87-3d0cdeed61e6" Publisher="CN=Nigel" Version="1.0.0.0" />
+  <Identity Name="Hudl.Hudl" Publisher="CN=43D3FB9D-D60C-4D35-8801-085774C462FD" Version="0.1.0.0" />
   <Properties>
-    <DisplayName>HudlRT</DisplayName>
+    <DisplayName>Hudl</DisplayName>
     <PublisherDisplayName>Hudl</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="HudlRT.App">
-      <VisualElements DisplayName="HudlRT" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="HudlRt" ForegroundText="light" BackgroundColor="#464646">
+      <VisualElements DisplayName="Hudl" Logo="Assets\Hudl_Partial150.png" SmallLogo="Assets\Hudl_Partial30.png" Description="HudlRt" ForegroundText="light" BackgroundColor="#464646">
         <DefaultTile ShowName="allLogos" />
         <SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#000000" />
         <InitialRotationPreference>
