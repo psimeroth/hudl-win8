@@ -37,7 +37,7 @@
             <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock x:Name="Name" Text="{Binding Name}"/>
+                        <TextBlock x:Name="Name" Text="{Binding name}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

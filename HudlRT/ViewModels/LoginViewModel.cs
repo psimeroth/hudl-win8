@@ -4,6 +4,7 @@ using Windows.UI.Xaml.Controls;
 using HudlRT.Common;
 using Newtonsoft.Json;
 using Windows.Storage;
+using HudlRT.Models;
 
 namespace HudlRT.ViewModels
 {
@@ -43,7 +44,8 @@ namespace HudlRT.ViewModels
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!login.Equals(""))
             {
-                ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"] = login;
+                var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(login);
+                ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"] = obj.Token;
                 LoginFeedback = "";
                 navigationService.NavigateToViewModel(typeof(HubViewModel));
             }

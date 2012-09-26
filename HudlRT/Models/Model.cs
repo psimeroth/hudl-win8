@@ -9,14 +9,13 @@ namespace HudlRT.Models
 {
     public class Model
     {
-        public string token { get; set; }
-        public List<Team> teams { get; set; }
+        public BindableCollection<Team> teams { get; set; }
 
-        public void setTeams(List<TeamDTO> teamDTOs)// does not currently nullcheck
+        public void setTeams(BindableCollection<TeamDTO> teamDTOs)// does not currently nullcheck
         {
             //call serviceAccessor and make a get method?
-            
-            List<Team> teams = new List<Team>();
+
+            BindableCollection<Team> teams = new BindableCollection<Team>();
             foreach(TeamDTO tDTO in teamDTOs)
             {
                 Team team = new Team();
@@ -76,7 +75,7 @@ namespace HudlRT.Models
         public bool isHome { get; set; }
         public List<Category> categories { get; set; }
 
-        public void setCategories(List<CategoryDTO> categoryDTOs)//assuming these are only games for this season
+        public void setCategories(List<CategoryDTO> categoryDTOs)
         {
             List<Category> categories = new List<Category>();
             foreach (CategoryDTO cDTO in categoryDTOs)
@@ -94,7 +93,7 @@ namespace HudlRT.Models
         public string name { get; set; }
         public List<Cutup> cutups { get; set; }
 
-        public void setCutups(List<CutupDTO> cutupDTOs)//assuming these are only games for this season
+        public void setCutups(List<CutupDTO> cutupDTOs)
         {
             List<Cutup> cutups = new List<Cutup>();
             foreach (CutupDTO cDTO in cutupDTOs)
@@ -114,7 +113,7 @@ namespace HudlRT.Models
         public int clipCount { get; set; }
         public List<Clip> clips { get; set; }
 
-        public void setClips(List<ClipDTO> clipDTOs)//assuming these are only games for this season
+        public void setClips(List<ClipDTO> clipDTOs)
         {
             List<Clip> clips = new List<Clip>();
             foreach (ClipDTO cDTO in clipDTOs)
@@ -126,7 +125,7 @@ namespace HudlRT.Models
                     clip.angleName = aDTO.AngleName;
                     clip.clipAngleId = aDTO.ClipAngleID;
                     clip.duration = aDTO.Duration;
-                    clip.fileLocation = aDTO.Files.FirstOrDefault().FileName;
+                    clip.fileLocation = aDTO.Files.FirstOrDefault().FileName;//multiple files for a single clip?
                     //clip.name do clips have names?
                     clip.thumbnailLocation = aDTO.LargeThumbnailFileName;
                     clips.Add(clip);
