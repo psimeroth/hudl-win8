@@ -91,13 +91,9 @@ namespace App5.Common
     public class ClipResponse
     {
         public ClipsList clipsList { get; set; }
-        //public List<DisplayColumns> displayColumns { get; set; }
+        public string[] displayColumns { get; set; }
     }
 
-    public class DisplayColumns
-    {
-
-    }
 
     public class ClipsList
     {
