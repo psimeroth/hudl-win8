@@ -37,6 +37,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Season> seasons;
+        public BindableCollection<Season> Seasons
+        {
+            get { return seasons; }
+            set
+            {
+                seasons = value;
+                NotifyOfPropertyChange(() => Seasons);
+            }
+        }
+
         public async void GetTeams()
         {
             // Get the username and password from the view
@@ -71,7 +82,7 @@ namespace HudlRT.ViewModels
         public void TeamSelected(ItemClickEventArgs eventArgs)
         {
             var team = (Team)eventArgs.ClickedItem;
-
+            Seasons = team.seasons;
         }
     }
 }
