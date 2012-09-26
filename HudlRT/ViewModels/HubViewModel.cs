@@ -8,8 +8,9 @@ namespace HudlRT.ViewModels
     public class HubViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        private BindableCollection<Team> teams;
-        public BindableCollection<Team> Teams
+
+        private BindableCollection<TeamDTO> teams;
+        public BindableCollection<TeamDTO> Teams
         {
             get { return teams; }
             set
@@ -18,15 +19,17 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Teams);
             }
         } 
+
         public HubViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
-            Teams = new BindableCollection<Team>();
-            Teams.Add(new Team()
+            
+            Teams = new BindableCollection<TeamDTO>();
+            Teams.Add(new TeamDTO()
             {
                 Name="Team One"
             });
-            Teams.Add(new Team()
+            Teams.Add(new TeamDTO()
             {
                 Name = "Team Two"
             });
@@ -39,7 +42,7 @@ namespace HudlRT.ViewModels
 
         public void TeamSelected(ItemClickEventArgs eventArgs)
         {
-            var team = (Team)eventArgs.ClickedItem;
+            var team = (TeamDTO)eventArgs.ClickedItem;
 
             //if (sample.ViewModelType == null)
                 //return;
