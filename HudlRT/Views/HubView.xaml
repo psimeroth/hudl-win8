@@ -34,15 +34,28 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]">
+            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="Name" Text="{Binding Name}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListViewItem x:Name="Varsity_ListViewItem" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                </ListViewItem>
+                <ListViewItem x:Name="JV_ListViewItem" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                </ListViewItem>
             </ListView>
-            <ListView x:Name="weekListView" Grid.Column="1"/>
-            <ListView x:Name="playlistListView" Grid.Column="2"/>
+            <ListView x:Name="weekListView" Grid.Column="1" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True">
+                <ListViewItem x:Name="Game3"/>
+                <ListViewItem x:Name="Game2"/>
+                <ListViewItem x:Name="Game1"/>
+                <ListViewItem x:Name="Camp"/>
+            </ListView>
+            <ListView x:Name="playlistListView" Grid.Column="2" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" Grid.Row="1">
+                <ListViewItem x:Name="Game"/>
+                <ListViewItem x:Name="Practice"/>
+                <ListViewItem x:Name="OpponentScout"/>
+            </ListView>
         </Grid>
 
     </Grid>
