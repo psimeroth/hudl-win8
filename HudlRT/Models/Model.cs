@@ -11,32 +11,10 @@ namespace HudlRT.Models
     {
         public BindableCollection<Team> teams { get; set; }
 
-        public void setTeams(BindableCollection<TeamDTO> teamDTOs)// does not currently nullcheck
+        public Model()
         {
-            //call serviceAccessor and make a get method?
-
-            BindableCollection<Team> teams = new BindableCollection<Team>();
-            foreach(TeamDTO tDTO in teamDTOs)
-            {
-                Team team = new Team();
-                team.name = tDTO.Name;
-                team.school = tDTO.School.Name;
-                team.teamID = tDTO.TeamId;
-                team.seasons = new BindableCollection<Season>();
-                foreach(SeasonDTO sDTO in tDTO.Seasons)
-                {
-                    Season s = new Season();
-                    s.owningTeam = team;
-                    s.name = sDTO.Name;
-                    s.seasonID = sDTO.SeasonId;
-                    s.year = sDTO.Year;
-                    team.seasons.Add(s);
-                }
-                teams.Add(team);
-            }
-            this.teams = teams;
+            teams = new BindableCollection<Team>();
         }
-
     }
 
     public class Team
@@ -45,6 +23,24 @@ namespace HudlRT.Models
         public string name { get; set; }
         public long teamID { get; set; }
         public BindableCollection<Season> seasons { get; set; }
+
+        public Team ()
+        {
+            seasons = new BindableCollection<Season>();
+        }
+
+        public static Team FromDTO(TeamDTO teamDTO)
+        {
+            Team team = new Team();
+            team.name = teamDTO.Name;
+            team.school = teamDTO.School.Name;
+            team.teamID = teamDTO.TeamId;
+            foreach (SeasonDTO sDTO in teamDTO.Seasons)
+            {
+                team.seasons.Add(Season.FromDTO(sDTO, team));
+            }
+            return team;
+        }
     }
 
     public class Season
@@ -54,18 +50,20 @@ namespace HudlRT.Models
         public int year { get; set; }
         public BindableCollection<Game> games { get; set; }
         public Team owningTeam { get; set; }
-        public void setGames(BindableCollection<GameDTO> gameDTOs)//assuming these are only games for this season
+
+        public Season()
         {
-            BindableCollection<Game> games = new BindableCollection<Game>();
-            foreach (GameDTO gDTO in gameDTOs)
-            {
-                Game game = new Game();
-                game.isHome = gDTO.Ishome;
-                game.opponent = gDTO.Opponent;
-                game.date = gDTO.Date;
-                games.Add(game);
-            }
-            this.games = games;
+            games = new BindableCollection<Game>();
+        }
+
+        public static Season FromDTO(SeasonDTO seasonDTO, Team team)
+        {
+            Season s = new Season();
+            s.owningTeam = team;
+            s.name = seasonDTO.Name;
+            s.seasonID = seasonDTO.SeasonId;
+            s.year = seasonDTO.Year;
+            return s;
         }
     }
 
@@ -76,16 +74,18 @@ namespace HudlRT.Models
         public bool isHome { get; set; }
         public List<Category> categories { get; set; }
 
-        public void setCategories(List<CategoryDTO> categoryDTOs)
+        public Game()
         {
-            List<Category> categories = new List<Category>();
-            foreach (CategoryDTO cDTO in categoryDTOs)
-            {
-                Category category = new Category();
-                category.name = cDTO.Name;
-                categories.Add(category);
-            }
-            this.categories = categories;
+            categories = new List<Category>();
+        }
+
+        public static Game FromDTO(GameDTO gameDTO)
+        {
+            Game game = new Game();
+            game.isHome = gameDTO.Ishome;
+            game.opponent = gameDTO.Opponent;
+            game.date = gameDTO.Date;
+            return game;
         }
     }
 
@@ -94,17 +94,16 @@ namespace HudlRT.Models
         public string name { get; set; }
         public List<Cutup> cutups { get; set; }
 
-        public void setCutups(List<CutupDTO> cutupDTOs)
+        public Category()
         {
-            List<Cutup> cutups = new List<Cutup>();
-            foreach (CutupDTO cDTO in cutupDTOs)
-            {
-                Cutup cutup = new Cutup();
-                cutup.clipCount = cDTO.ClipCount;
-                cutup.name = cDTO.Name;
-                cutups.Add(cutup);
-            }
-            this.cutups = cutups;
+            cutups = new List<Cutup>();
+        }
+
+        public static Category FromDTO(CategoryDTO categoryDTO)
+        {
+            Category category = new Category();
+            category.name = categoryDTO.Name;
+            return category;
         }
     }
 
@@ -114,40 +113,67 @@ namespace HudlRT.Models
         public int clipCount { get; set; }
         public List<Clip> clips { get; set; }
 
-        public void setClips(List<ClipDTO> clipDTOs)
+        public Cutup()
         {
-            List<Clip> clips = new List<Clip>();
-            foreach (ClipDTO cDTO in clipDTOs)
-            {
-                
-                foreach (AngleDTO aDTO in cDTO.Angles)
-                {
-                    Clip clip = new Clip();
-                    clip.angleName = aDTO.AngleName;
-                    clip.clipAngleId = aDTO.ClipAngleID;
-                    clip.duration = aDTO.Duration;
-                    clip.fileLocation = aDTO.Files.FirstOrDefault().FileName;//multiple files for a single clip?
-                    //clip.name do clips have names?
-                    clip.thumbnailLocation = aDTO.LargeThumbnailFileName;
-                    clips.Add(clip);
-                }
+            clips = new List<Clip>();
+        }
 
-                
-            }
-            this.clips = clips;
+        public static Cutup FromDTO(CutupDTO cutupDTO)
+        {
+            Cutup cutup = new Cutup();
+            cutup.clipCount = cutupDTO.ClipCount;
+            cutup.name = cutupDTO.Name;
+            return cutup;
         }
     }
 
     public class Clip
     {
         public string name { get; set; }
+        public List<Angle> angles { get; set; }
+        public List<BreakdownData> breakdownData { get; set; }
+
+        public Clip()
+        {
+            breakdownData = new List<BreakdownData>();
+        }
+
+        public static Clip FromDTO(ClipDTO clipDTO)
+        {
+            Clip clip = new Clip();
+            foreach (AngleDTO angleDTO in clipDTO.Angles)
+            {
+                clip.angles.Add(Angle.FromDTO(angleDTO));
+            }
+            return clip;
+        }
+    }
+
+    public class Angle
+    {
         public long clipAngleId { get; set; }
         public string angleName { get; set; }
         public string fileLocation { get; set; }
         public string thumbnailLocation { get; set; }
         public long duration { get; set; }
-        public List<BreakdownData> breakdownData { get; set; }
+
+        public Angle()
+        {
+
+        }
+
+        public static Angle FromDTO(AngleDTO angleDTO)
+        {
+            Angle angle = new Angle();
+            angle.angleName = angleDTO.AngleName;
+            angle.clipAngleId = angleDTO.ClipAngleID;
+            angle.duration = angleDTO.Duration;
+            angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;
+            angle.thumbnailLocation = angleDTO.LargeThumbnailFileName;
+            return angle;
+        }
     }
+
     public class BreakdownData
     {
         public float dist { get; set; }

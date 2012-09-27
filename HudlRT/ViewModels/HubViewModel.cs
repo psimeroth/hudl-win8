@@ -6,13 +6,14 @@ using Windows.UI.Xaml.Controls;
 using HudlRT.Common;
 using Newtonsoft.Json;
 using Windows.Storage;
-using HudlRT.Models;
 
 namespace HudlRT.ViewModels
 {
     public class HubViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        private Model model;
+
         private string feedback;
         public string Feedback
         {
@@ -23,8 +24,6 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Feedback);
             }
         }
-
-        private Model model;
 
         private BindableCollection<Team> teams;
         public BindableCollection<Team> Teams
@@ -59,6 +58,18 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public HubViewModel(INavigationService navigationService) : base(navigationService)
+        {
+            this.navigationService = navigationService;
+            model = new Model();
+            GetTeams();
+        }
+
+        protected override void OnActivate()
+        {
+            base.OnActivate();
+        }
+
         public async void GetTeams()
         {
             // Get the username and password from the view
@@ -68,7 +79,11 @@ namespace HudlRT.ViewModels
             if (!teams.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<BindableCollection<TeamDTO>>(teams);
-                model.setTeams(obj);
+                //model.setTeams(obj);
+                foreach (TeamDTO t in obj)
+                {
+                    model.teams.Add(Team.FromDTO(t));
+                }
                 Teams = model.teams;
             }
             else
@@ -85,26 +100,15 @@ namespace HudlRT.ViewModels
             if (!games.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<BindableCollection<GameDTO>>(games);
-                s.setGames(obj);
+                foreach(GameDTO gameDTO in obj){
+                    s.games.Add(Game.FromDTO(gameDTO));
+                }
                 Games = s.games;
             }
             else
             {
                 Feedback = "Error processing request.";
             }
-        }
-
-
-        public HubViewModel(INavigationService navigationService) : base(navigationService)
-        {
-            this.navigationService = navigationService;
-            model = new Model();
-            GetTeams();
-        }
-
-        protected override void OnActivate()
-        {
-            base.OnActivate();
         }
 
         public void TeamSelected(ItemClickEventArgs eventArgs)
