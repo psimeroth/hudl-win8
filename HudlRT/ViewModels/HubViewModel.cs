@@ -59,6 +59,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Category> categories;
+        public BindableCollection<Category> Categories
+        {
+            get { return categories; }
+            set
+            {
+                categories = value;
+                NotifyOfPropertyChange(() => Categories);
+            }
+        }
+
         public async void GetTeams()
         {
             // Get the username and password from the view
@@ -94,6 +105,23 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public async void GetGameCategories(Game game)
+        {
+            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
+
+            // Once the async call completes check the response, if good show the hub view, if not show an error message.
+            if (!categories.Equals(""))
+            {
+                var obj = JsonConvert.DeserializeObject<BindableCollection<CategoryDTO>>(categories);
+                game.setCategories(obj);
+                Categories = game.categories;
+            }
+            else
+            {
+                Feedback = "Error processing request.";
+            }
+        }
+
 
         public HubViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -118,6 +146,12 @@ namespace HudlRT.ViewModels
         {
             var season = (Season)eventArgs.ClickedItem;
             GetGames(season); 
+        }
+
+        public void GameSelected(ItemClickEventArgs eventArgs)
+        {
+            var game = (Game)eventArgs.ClickedItem;
+            GetGameCategories(game);
         }
     }
 }
