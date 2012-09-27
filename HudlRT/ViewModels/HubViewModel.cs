@@ -139,13 +139,16 @@ namespace HudlRT.ViewModels
         {
             var team = (Team)eventArgs.ClickedItem;
             Seasons = team.seasons;
+            Games = null;
+            Categories = null;
 
         }
 
         public void SeasonSelected(ItemClickEventArgs eventArgs)
         {
             var season = (Season)eventArgs.ClickedItem;
-            GetGames(season); 
+            GetGames(season);
+            Categories = null;
         }
 
         public void GameSelected(ItemClickEventArgs eventArgs)
