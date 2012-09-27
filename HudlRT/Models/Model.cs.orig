@@ -35,9 +35,9 @@ namespace HudlRT.Models
             team.name = teamDTO.Name;
             team.school = teamDTO.School.Name;
             team.teamID = teamDTO.TeamId;
-            foreach (SeasonDTO seasonDTO in teamDTO.Seasons)
+            foreach (SeasonDTO sDTO in teamDTO.Seasons)
             {
-                team.seasons.Add(Season.FromDTO(seasonDTO, team));
+                team.seasons.Add(Season.FromDTO(sDTO, team));
             }
             return team;
         }
@@ -53,6 +53,7 @@ namespace HudlRT.Models
 
         public Season()
         {
+<<<<<<< HEAD
             games = new BindableCollection<Game>();
         }
 
@@ -64,6 +65,19 @@ namespace HudlRT.Models
             s.seasonID = seasonDTO.SeasonId;
             s.year = seasonDTO.Year;
             return s;
+=======
+            BindableCollection<Game> games = new BindableCollection<Game>();
+            foreach (GameDTO gDTO in gameDTOs)
+            {
+                Game game = new Game();
+                game.gameId = gDTO.GameId;
+                game.isHome = gDTO.Ishome;
+                game.opponent = gDTO.Opponent;
+                game.date = gDTO.Date;
+                games.Add(game);
+            }
+            this.games = games;
+>>>>>>> 8895f4eaa753925c3b1fd6e8944200a14c954fc6
         }
     }
 
@@ -75,19 +89,32 @@ namespace HudlRT.Models
         public BindableCollection<Category> categories { get; set; }
         public long gameId { get; set; }
 
+<<<<<<< HEAD
         public Game()
         {
-            categories = new BindableCollection<Category>();
+            categories = new List<Category>();
         }
-        
+
         public static Game FromDTO(GameDTO gameDTO)
         {
             Game game = new Game();
-            game.gameId = gameDTO.GameId;
             game.isHome = gameDTO.Ishome;
             game.opponent = gameDTO.Opponent;
             game.date = gameDTO.Date;
             return game;
+=======
+        public void setCategories(BindableCollection<CategoryDTO> categoryDTOs)
+        {
+            BindableCollection<Category> categories = new BindableCollection<Category>();
+            foreach (CategoryDTO cDTO in categoryDTOs)
+            {
+                Category category = new Category();
+                category.name = cDTO.Name;
+                categories.Add(category);
+                category.categoryId = cDTO.CategoryId;
+            }
+            this.categories = categories;
+>>>>>>> 8895f4eaa753925c3b1fd6e8944200a14c954fc6
         }
     }
 
@@ -105,7 +132,6 @@ namespace HudlRT.Models
         public static Category FromDTO(CategoryDTO categoryDTO)
         {
             Category category = new Category();
-            category.categoryId = categoryDTO.CategoryId;
             category.name = categoryDTO.Name;
             return category;
         }

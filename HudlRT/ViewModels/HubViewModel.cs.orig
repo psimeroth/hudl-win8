@@ -11,8 +11,8 @@ namespace HudlRT.ViewModels
 {
     public class HubViewModel : ViewModelBase
     {
-        private Model model;
         private readonly INavigationService navigationService;
+        private Model model;
 
         private string feedback;
         public string Feedback
@@ -58,19 +58,8 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private BindableCollection<Category> categories;
-        public BindableCollection<Category> Categories
-        {
-            get { return categories; }
-            set
-            {
-                categories = value;
-                NotifyOfPropertyChange(() => Categories);
-            }
-        }
-
-        public HubViewModel(INavigationService navigationService)
-            : base(navigationService)
+<<<<<<< HEAD
+        public HubViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
             model = new Model();
@@ -80,6 +69,17 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+=======
+        private BindableCollection<Category> categories;
+        public BindableCollection<Category> Categories
+        {
+            get { return categories; }
+            set
+            {
+                categories = value;
+                NotifyOfPropertyChange(() => Categories);
+            }
+>>>>>>> 8895f4eaa753925c3b1fd6e8944200a14c954fc6
         }
 
         public async void GetTeams()
@@ -91,9 +91,10 @@ namespace HudlRT.ViewModels
             if (!teams.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<BindableCollection<TeamDTO>>(teams);
-                foreach (TeamDTO teamDto in obj)
+                //model.setTeams(obj);
+                foreach (TeamDTO t in obj)
                 {
-                    model.teams.Add(Team.FromDTO(teamDto));
+                    model.teams.Add(Team.FromDTO(t));
                 }
                 Teams = model.teams;
             }
@@ -112,8 +113,7 @@ namespace HudlRT.ViewModels
             if (!games.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<BindableCollection<GameDTO>>(games);
-                foreach (GameDTO gameDTO in obj)
-                {
+                foreach(GameDTO gameDTO in obj){
                     s.games.Add(Game.FromDTO(gameDTO));
                 }
                 Games = s.games;
@@ -133,10 +133,7 @@ namespace HudlRT.ViewModels
             if (!categories.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<BindableCollection<CategoryDTO>>(categories);
-                foreach (CategoryDTO categoryDTO in obj)
-                {
-                    game.categories.Add(Category.FromDTO(categoryDTO));
-                }
+                game.setCategories(obj);
                 Categories = game.categories;
             }
             else
