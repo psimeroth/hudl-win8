@@ -28,6 +28,7 @@ namespace HudlRT.Common
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
         public const string URL_SERVICE_GET_SCHEDULE = "teams/#/schedule";//returns games
+        public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/#/schedule?season=%";//returns games
         public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/#/categories";//returns categories
         public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
         public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips";//returns clips

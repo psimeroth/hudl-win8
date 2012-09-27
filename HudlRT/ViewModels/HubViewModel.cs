@@ -48,6 +48,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Game> games;
+        public BindableCollection<Game> Games
+        {
+            get { return games; }
+            set
+            {
+                games = value;
+                NotifyOfPropertyChange(() => Games);
+            }
+        }
+
         public async void GetTeams()
         {
             // Get the username and password from the view
@@ -66,15 +77,16 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async void GetGames(long gameId)
+        public async void GetGames(Season s)
         {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE.Replace("#", gameId.ToString()));
+            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
 
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!games.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<BindableCollection<GameDTO>>(games);
-                Teams = model.teams;
+                s.setGames(obj);
+                Games = s.games;
             }
             else
             {
@@ -105,7 +117,7 @@ namespace HudlRT.ViewModels
         public void SeasonSelected(ItemClickEventArgs eventArgs)
         {
             var season = (Season)eventArgs.ClickedItem;
-
+            GetGames(season); 
         }
     }
 }

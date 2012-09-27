@@ -30,19 +30,39 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]">
+            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="Name" Text="{Binding name}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListViewItem x:Name="Varsity_ListViewItem" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                </ListViewItem>
+                <ListViewItem x:Name="JV_ListViewItem" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                </ListViewItem>
             </ListView>
-            <ListView x:Name="weekListView" Grid.Column="1"/>
-            <ListView x:Name="playlistListView" Grid.Column="2"/>
+            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock x:Name="SeasonName" Text="{Binding name}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView x:Name="Games" Grid.Column="2" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock x:Name="GameName" Text="{Binding opponent}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView x:Name="playlistListView" Grid.Column="3" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" Grid.Row="1">
+
+            </ListView>
         </Grid>
 
     </Grid>
