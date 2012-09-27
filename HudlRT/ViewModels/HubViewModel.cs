@@ -6,7 +6,6 @@ using Windows.UI.Xaml.Controls;
 using HudlRT.Common;
 using Newtonsoft.Json;
 using Windows.Storage;
-using HudlRT.Models;
 
 namespace HudlRT.ViewModels
 {
@@ -84,7 +83,8 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                Feedback = "Error processing request.";
+                Feedback = "Error processing GetTeams request.";
+                Teams = null;
             }
         }
 
@@ -101,7 +101,8 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                Feedback = "Error processing request.";
+                Feedback = "Error processing GetGames request.";
+                Games = null;
             }
         }
 
@@ -118,7 +119,8 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                Feedback = "Error processing request.";
+                Feedback = "Error processing GetGameCategories request.";
+                Categories = null;
             }
         }
 
@@ -137,22 +139,24 @@ namespace HudlRT.ViewModels
 
         public void TeamSelected(ItemClickEventArgs eventArgs)
         {
+            Feedback = null;
             var team = (Team)eventArgs.ClickedItem;
             Seasons = team.seasons;
             Games = null;
             Categories = null;
-
         }
 
         public void SeasonSelected(ItemClickEventArgs eventArgs)
         {
+            Feedback = null;
             var season = (Season)eventArgs.ClickedItem;
             GetGames(season);
-            Categories = null;
+            Categories = null;            
         }
 
         public void GameSelected(ItemClickEventArgs eventArgs)
         {
+            Feedback = null;
             var game = (Game)eventArgs.ClickedItem;
             GetGameCategories(game);
         }
