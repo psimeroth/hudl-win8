@@ -22,10 +22,11 @@ namespace HudlRT.Models
                 team.name = tDTO.Name;
                 team.school = tDTO.School.Name;
                 team.teamID = tDTO.TeamId;
-                team.seasons = new List<Season>();
+                team.seasons = new BindableCollection<Season>();
                 foreach(SeasonDTO sDTO in tDTO.Seasons)
                 {
                     Season s = new Season();
+                    s.owningTeam = team;
                     s.name = sDTO.Name;
                     s.seasonID = sDTO.SeasonId;
                     s.year = sDTO.Year;
@@ -43,7 +44,7 @@ namespace HudlRT.Models
         public string school { get; set; }
         public string name { get; set; }
         public long teamID { get; set; }
-        public List<Season> seasons { get; set; }
+        public BindableCollection<Season> seasons { get; set; }
     }
 
     public class Season
@@ -52,7 +53,7 @@ namespace HudlRT.Models
         public long seasonID { get; set; }
         public int year { get; set; }
         public List<Game> games { get; set; }
-
+        public Team owningTeam { get; set; }
         public void setGames(List<GameDTO> gameDTOs)//assuming these are only games for this season
         {
             List<Game> games = new List<Game>();
