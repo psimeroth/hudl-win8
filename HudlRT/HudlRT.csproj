@@ -130,7 +130,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\agile-hudl-logo.jpg" />
+    <Content Include="Assets\agile-hudl-logo-dark.png" />
+    <Content Include="Assets\agile-hudl-logo-light.png" />
     <Content Include="Assets\Hudl_Partial150.png" />
     <Content Include="Assets\Hudl_Partial30.png" />
     <Content Include="Assets\SplashScreen.png" />
