@@ -41,10 +41,6 @@
                         <TextBlock x:Name="Name" Text="{Binding name}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <ListViewItem x:Name="Varsity_ListViewItem" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
-                </ListViewItem>
-                <ListViewItem x:Name="JV_ListViewItem" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
-                </ListViewItem>
             </ListView>
             <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True">
                 <ListView.ItemTemplate>
@@ -60,8 +56,12 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="playlistListView" Grid.Column="3" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" Grid.Row="1">
-
+            <ListView x:Name="Categories" Grid.Column="3" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock x:Name="CategoryName" Text="{Binding name}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
         </Grid>
 
