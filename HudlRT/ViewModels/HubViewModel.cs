@@ -91,9 +91,10 @@ namespace HudlRT.ViewModels
             if (!teams.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<BindableCollection<TeamDTO>>(teams);
-                foreach (TeamDTO teamDto in obj)
+                model.teams = new BindableCollection<Team>();
+                foreach (TeamDTO teamDTO in obj)
                 {
-                    model.teams.Add(Team.FromDTO(teamDto));
+                    model.teams.Add(Team.FromDTO(teamDTO));
                 }
                 Teams = model.teams;
             }
@@ -111,6 +112,7 @@ namespace HudlRT.ViewModels
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!games.Equals(""))
             {
+                s.games = new BindableCollection<Game>();
                 var obj = JsonConvert.DeserializeObject<BindableCollection<GameDTO>>(games);
                 foreach (GameDTO gameDTO in obj)
                 {
@@ -132,6 +134,7 @@ namespace HudlRT.ViewModels
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!categories.Equals(""))
             {
+                game.categories = new BindableCollection<Category>();
                 var obj = JsonConvert.DeserializeObject<BindableCollection<CategoryDTO>>(categories);
                 foreach (CategoryDTO categoryDTO in obj)
                 {
