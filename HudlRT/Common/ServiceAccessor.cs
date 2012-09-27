@@ -41,25 +41,32 @@ namespace HudlRT.Common
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallGet(string url)
         {
-            var req = (HttpWebRequest) WebRequest.Create(URL_BASE + url);
-            req.ContentType = "application/json";
-            req.Method = "GET";
-
-            // Get the auth token from the App Data and make sure it's not null
-            var authtoken = ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"];
-            if (authtoken != null)
+            try
             {
-                req.Headers["hudl-authtoken"] = (string) authtoken;
-            }
+                var req = (HttpWebRequest)WebRequest.Create(URL_BASE + url);
+                req.ContentType = "application/json";
+                req.Method = "GET";
 
-            using (var response = await req.GetResponseAsync())
-            {
-                using (var responseStream = response.GetResponseStream())
+                // Get the auth token from the App Data and make sure it's not null
+                var authtoken = ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"];
+                if (authtoken != null)
                 {
-                    var reader = new StreamReader(responseStream);
-                    var answer = reader.ReadToEnd();
-                    return answer;
+                    req.Headers["hudl-authtoken"] = (string)authtoken;
                 }
+
+                using (var response = await req.GetResponseAsync())
+                {
+                    using (var responseStream = response.GetResponseStream())
+                    {
+                        var reader = new StreamReader(responseStream);
+                        var answer = reader.ReadToEnd();
+                        return answer;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return "";//how to handle exceptions?
             }
         }
 
@@ -71,25 +78,32 @@ namespace HudlRT.Common
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallPost(string url, string jsonString)
         {
-            var req = (HttpWebRequest)WebRequest.Create(URL_BASE_SECURE + url);
-            req.ContentType = "application/json";
-            req.Method = "POST";
-
-            using (var requestStream = await req.GetRequestStreamAsync())
+            try
             {
-                var writer = new StreamWriter(requestStream);
-                writer.Write(jsonString);
-                writer.Flush();
-            }
+                var req = (HttpWebRequest)WebRequest.Create(URL_BASE_SECURE + url);
+                req.ContentType = "application/json";
+                req.Method = "POST";
 
-            using (var response = await req.GetResponseAsync())
-            {
-                using (var responseStream = response.GetResponseStream())
+                using (var requestStream = await req.GetRequestStreamAsync())
                 {
-                    var reader = new StreamReader(responseStream);
-                    var answer = reader.ReadToEnd();
-                    return answer;
+                    var writer = new StreamWriter(requestStream);
+                    writer.Write(jsonString);
+                    writer.Flush();
                 }
+
+                using (var response = await req.GetResponseAsync())
+                {
+                    using (var responseStream = response.GetResponseStream())
+                    {
+                        var reader = new StreamReader(responseStream);
+                        var answer = reader.ReadToEnd();
+                        return answer;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return "";
             }
         }
     }

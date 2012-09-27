@@ -54,6 +54,7 @@ namespace HudlRT.Models
         public Season()
         {
             games = new BindableCollection<Game>();
+                game.gameId = gDTO.GameId;
         }
 
         public static Season FromDTO(SeasonDTO seasonDTO, Team team)
@@ -72,12 +73,27 @@ namespace HudlRT.Models
         public string opponent { get; set; }
         public DateTime date { get; set; }
         public bool isHome { get; set; }
-        public List<Category> categories { get; set; }
+        public BindableCollection<Category> categories { get; set; }
+        public long gameId { get; set; }
 
         public Game()
         {
             categories = new List<Category>();
         }
+        
+        public void setCategories(BindableCollection<CategoryDTO> categoryDTOs)
+        {
+            BindableCollection<Category> categories = new BindableCollection<Category>();
+            foreach (CategoryDTO cDTO in categoryDTOs)
+            {
+                Category category = new Category();
+                category.name = cDTO.Name;
+                categories.Add(category);
+                category.categoryId = cDTO.CategoryId;
+            }
+            this.categories = categories;
+       }
+      
 
         public static Game FromDTO(GameDTO gameDTO)
         {
@@ -93,6 +109,7 @@ namespace HudlRT.Models
     {
         public string name { get; set; }
         public List<Cutup> cutups { get; set; }
+        public long categoryId { get; set; }
 
         public Category()
         {
