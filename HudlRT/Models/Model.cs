@@ -94,12 +94,12 @@ namespace HudlRT.Models
     public class Category
     {
         public string name { get; set; }
-        public List<Cutup> cutups { get; set; }
+        public BindableCollection<Cutup> cutups { get; set; }
         public long categoryId { get; set; }
 
         public Category()
         {
-            cutups = new List<Cutup>();
+            cutups = new BindableCollection<Cutup>();
         }
 
         public static Category FromDTO(CategoryDTO categoryDTO)
@@ -115,16 +115,18 @@ namespace HudlRT.Models
     {
         public string name { get; set; }
         public int clipCount { get; set; }
-        public List<Clip> clips { get; set; }
+        public long cutupId { get; set; }
+        public BindableCollection<Clip> clips { get; set; }
 
         public Cutup()
         {
-            clips = new List<Clip>();
+            clips = new BindableCollection<Clip>();
         }
 
         public static Cutup FromDTO(CutupDTO cutupDTO)
         {
             Cutup cutup = new Cutup();
+            cutup.cutupId = cutupDTO.CutupID;
             cutup.clipCount = cutupDTO.ClipCount;
             cutup.name = cutupDTO.Name;
             return cutup;
@@ -134,17 +136,20 @@ namespace HudlRT.Models
     public class Clip
     {
         public string name { get; set; }
-        public List<Angle> angles { get; set; }
-        public List<BreakdownData> breakdownData { get; set; }
+        public long clipId { get; set; }
+        public BindableCollection<Angle> angles { get; set; }
+        public BindableCollection<BreakdownData> breakdownData { get; set; }
 
         public Clip()
         {
-            breakdownData = new List<BreakdownData>();
+            breakdownData = new BindableCollection<BreakdownData>();
+            angles = new BindableCollection<Angle>();
         }
 
         public static Clip FromDTO(ClipDTO clipDTO)
         {
             Clip clip = new Clip();
+            clip.clipId = clipDTO.ClipID;
             foreach (AngleDTO angleDTO in clipDTO.Angles)
             {
                 clip.angles.Add(Angle.FromDTO(angleDTO));

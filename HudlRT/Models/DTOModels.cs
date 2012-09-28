@@ -73,7 +73,7 @@ namespace HudlRT.Models
 
     public class ClipResponseDTO
     {
-        public ClipsListDTO AlipsList { get; set; }
+        public ClipsListDTO ClipsList { get; set; }
         public string[] DisplayColumns { get; set; }
     }
 

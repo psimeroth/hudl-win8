@@ -32,7 +32,8 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
@@ -41,9 +42,6 @@
                     <DataTemplate>
                         <StackPanel>
                             <TextBlock x:Name="Name" Text="{Binding name}"/>
-                            <ComboBox x:Name="Seasons" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False">
-                                <TextBlock x:Name="SeasonName" Text="{Binding name}"/>
-                            </ComboBox>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -62,10 +60,17 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Categories" Grid.Column="3" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" Grid.Row="1">
+            <ListView x:Name="Categories" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="CategoryName" Text="{Binding name}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView x:Name="Cutups" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock x:Name="CutupName" Text="{Binding name}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
