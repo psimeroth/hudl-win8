@@ -15,12 +15,12 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace HudlPrototype
+namespace HudlRT.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class VideoPlayerView : Page
     {
 
         private bool _isFullscreenToggle = false;
@@ -44,7 +44,7 @@ namespace HudlPrototype
             set { _rootNamespace = value; }
         }
 
-        public MainPage()
+        public VideoPlayerView()
         {
             this.InitializeComponent();
 
@@ -70,7 +70,7 @@ namespace HudlPrototype
                 Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale, false);
 
             var dataSource = fif.GetVirtualizedFilesVector();
-            videosList.ItemsSource = dataSource;
+            //videosList.ItemsSource = dataSource;
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -110,7 +110,7 @@ namespace HudlPrototype
             if (this.IsFullscreen)
             {
                 header.Visibility = Visibility.Collapsed;
-                videosList.Visibility = Visibility.Collapsed;
+                Clips.Visibility = Visibility.Collapsed;
                 TransportControlsPanel.Visibility = Visibility.Collapsed;
                 appBar.Visibility = Visibility.Visible;
 
@@ -125,7 +125,7 @@ namespace HudlPrototype
             else
             {
                 header.Visibility = Visibility.Visible;
-                videosList.Visibility = Visibility.Visible;
+                Clips.Visibility = Visibility.Visible;
                 TransportControlsPanel.Visibility = Visibility.Visible;
                 appBar.Visibility = Visibility.Collapsed;
 

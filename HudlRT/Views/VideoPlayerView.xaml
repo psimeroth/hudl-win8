@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="HudlPrototype.MainPage"
+    x:Class="HudlRT.Views.VideoPlayerView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:HudlRT"
@@ -102,12 +102,12 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
-            <ListView x:Name="videosList" Grid.Column="1"
+            <ListView x:Name="Clips" Grid.Column="1"
                       SelectionChanged="VideosList_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding DisplayName}"
+                            <TextBlock Text="{Binding clipId}"
                                FontSize="24" Margin="5,0,0,0" TextWrapping="Wrap" />
                         </StackPanel>
                     </DataTemplate>
