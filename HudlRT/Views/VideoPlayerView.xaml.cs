@@ -70,6 +70,7 @@ namespace HudlRT.Views
                 Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale, false);
 
             var dataSource = fif.GetVirtualizedFilesVector();
+            
             //videosList.ItemsSource = dataSource;
         }
 

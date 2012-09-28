@@ -8,6 +8,7 @@ using HudlRT.Parameters;
 using HudlRT.Models;
 using HudlRT.Common;
 using Newtonsoft.Json;
+using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.ViewModels
 {
