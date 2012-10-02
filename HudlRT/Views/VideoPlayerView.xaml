@@ -38,36 +38,37 @@
         </AppBar>
     </Page.BottomAppBar>
 
-    <Grid x:Name="mainGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="140" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid Name="header">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" />
-            <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="480" />
-            </Grid.ColumnDefinitions>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <ContentControl x:Name="videoContainer"
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid x:Name="mainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="140" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Name="header">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" />
+                <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="480" />
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <ContentControl x:Name="videoContainer"
                             KeyUp="VideoContainer_KeyUp"
                             HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" 
                             Height="400" Grid.Row="0" 
                             DataContext="{Binding Video}">
-                    <MediaElement Name="videoMediaElement"
+                        <MediaElement Name="videoMediaElement"
                               MediaOpened="videoElement_MediaOpened" 
                               MediaEnded="videoMediaElement_MediaEnded" 
                               MediaFailed="videoMediaElement_MediaFailed"
@@ -75,47 +76,90 @@
                               PosterSource="Assets/Hudl_logo.png"
                               AutoPlay="False" 
                               Source="{Binding fileLocation}"/>
-                </ContentControl>
-                <!-- Transport Controls -->
-                <StackPanel Name="TransportControlsPanel"
+                    </ContentControl>
+                    <!-- Transport Controls -->
+                    <StackPanel Name="TransportControlsPanel"
                     Grid.Row="1"
                     HorizontalAlignment="Center" 
                     Width="600">
-                    <Slider Name="timelineSlider" Margin="10,0" Width="600"/>
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" />
-                            <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"/>
-                            <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource AppBarButtonStyle}"
+                        <Slider Name="timelineSlider" Margin="10,0" Width="600"/>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" />
+                                <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"/>
+                                <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource AppBarButtonStyle}"
                                     AutomationProperties.Name="Stop" Content="[]"/>
-                            <Button x:Name="btnReverse" Click="btnReverse_Click" Style="{StaticResource SkipBackAppBarButtonStyle}"/>
-                            <Button x:Name="btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button x:Name="btnMute" Click="btnMute_Click" Style="{StaticResource AppBarButtonStyle}"
+                                <Button x:Name="btnReverse" Click="btnReverse_Click" Style="{StaticResource SkipBackAppBarButtonStyle}"/>
+                                <Button x:Name="btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button x:Name="btnMute" Click="btnMute_Click" Style="{StaticResource AppBarButtonStyle}"
                                 AutomationProperties.Name="Mute" Content="X"/>
-                            <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
+                                <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
                                     Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Content="[-]" />
-                            <Button x:Name="btnVolumeUp" Click="btnVolumeUp_Click"
+                                <Button x:Name="btnVolumeUp" Click="btnVolumeUp_Click"
                                     Style="{StaticResource AppBarButtonStyle}"  AutomationProperties.Name="Volume" Content="+"/>
-                            <Button x:Name="btnVolumeDown" Click="btnVolumeDown_Click" Style="{StaticResource AppBarButtonStyle}"
+                                <Button x:Name="btnVolumeDown" Click="btnVolumeDown_Click" Style="{StaticResource AppBarButtonStyle}"
                                     AutomationProperties.Name="Volume" Content="--" />
-                            <ProgressBar x:Name="vol" Height="15" Width="80" Background="White" FlowDirection="LeftToRight" Value="100" />
+                                <ProgressBar x:Name="vol" Height="15" Width="80" Background="White" FlowDirection="LeftToRight" Value="100" />
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </Grid>
-            <ListView x:Name="Clips" Grid.Column="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding name}"
+                </Grid>
+                <ListView x:Name="Clips" Grid.Column="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding name}"
                                FontSize="24" Margin="5,0,0,0" TextWrapping="Wrap" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 
-            </ListView>
+                </ListView>
+            </Grid>
+        </Grid>
+
+        <Grid x:Name="full_mainGrid" Visibility="Collapsed">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Margin="10,0,5,0">ODK:</TextBlock>
+                <TextBlock Grid.Column="1" Margin="5,0,10,0">D</TextBlock>
+                <TextBlock Grid.Column="2" Margin="10,0,5,0">DN:</TextBlock>
+                <TextBlock Grid.Column="3" Margin="5,0,10,0">2</TextBlock>
+                <TextBlock Grid.Column="4" Margin="10,0,5,0">DIST:</TextBlock>
+                <TextBlock Grid.Column="5" Margin="5,0,10,0">7</TextBlock>
+                <TextBlock Grid.Column="6" Margin="10,0,5,0">YARD LN:</TextBlock>
+                <TextBlock Grid.Column="7" Margin="5,0,10,0">-38</TextBlock>
+
+            </Grid>
+            
+            <StackPanel Name="full_rightControls" HorizontalAlignment="Left" VerticalAlignment="Center" Background="White" Opacity="0.5">
+                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" />
+                <Button x:Name="full_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"/>
+                <Button x:Name="full_btnStop" Click="btnStop_Click" Style="{StaticResource AppBarButtonStyle}"
+                                AutomationProperties.Name="Stop" Content="[]"/>
+            </StackPanel>
+
+            <StackPanel Name="full_leftControls" HorizontalAlignment="Right" VerticalAlignment="Center" Background="White" Opacity="0.5">
+                <Button x:Name="full_btnFullScreenToggle_AppBar" Click="btnFullScreenToggle_Click"
+                                    Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Content="[-]" />
+                <Button x:Name="full_btnVolumeUp_AppBar" Click="btnVolumeUp_Click"
+                                    Style="{StaticResource AppBarButtonStyle}"  AutomationProperties.Name="Volume" Content="+"/>
+                <Button x:Name="full_btnVolumeDown_AppBar" Click="btnVolumeDown_Click" Style="{StaticResource AppBarButtonStyle}"
+                                    AutomationProperties.Name="Volume" Content="--" />
+            </StackPanel>
         </Grid>
 
     </Grid>
