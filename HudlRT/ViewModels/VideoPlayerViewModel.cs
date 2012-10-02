@@ -69,6 +69,10 @@ namespace HudlRT.ViewModels
             {
                 
             }
+            if (Clips.Count > 0)
+            {
+                Video = Clips.First().angles.ElementAt(0);
+            }
             //(if Clips.count == 0) .. do something figure this out earlier somehow?
         }
 
