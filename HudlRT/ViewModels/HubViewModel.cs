@@ -230,9 +230,9 @@ namespace HudlRT.ViewModels
             });
         }
 
-        //protected override void SaveState(Dictionary<String, Object> pageState)
-        //{
-        //    pageState["model"] = model;
-        //}
+        public void GoBack()
+        {
+            navigationService.NavigateToViewModel<LoginViewModel>();
+        }
     }
 }
