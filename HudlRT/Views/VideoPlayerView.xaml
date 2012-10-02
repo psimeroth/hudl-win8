@@ -5,6 +5,7 @@
     xmlns:local="using:HudlRT"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -64,14 +65,16 @@
                             KeyUp="VideoContainer_KeyUp"
                             HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" 
-                            Height="400" Grid.Row="0" >
+                            Height="400" Grid.Row="0" 
+                            DataContext="{Binding Video}">
                     <MediaElement Name="videoMediaElement"
                               MediaOpened="videoElement_MediaOpened" 
                               MediaEnded="videoMediaElement_MediaEnded" 
                               MediaFailed="videoMediaElement_MediaFailed"
                               CurrentStateChanged="videoMediaElement_CurrentStateChanged"
                               PosterSource="Assets/Hudl_logo.png"
-                              AutoPlay="False" />
+                              AutoPlay="False" 
+                              Source="{Binding fileLocation}"/>
                 </ContentControl>
                 <!-- Transport Controls -->
                 <StackPanel Name="TransportControlsPanel"
@@ -102,8 +105,7 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
-            <ListView x:Name="Clips" Grid.Column="1"
-                      SelectionChanged="VideosList_SelectionChanged">
+            <ListView x:Name="Clips" Grid.Column="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>

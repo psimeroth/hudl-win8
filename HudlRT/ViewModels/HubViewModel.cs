@@ -95,10 +95,7 @@ namespace HudlRT.ViewModels
 
         public async void GetTeams()
         {
-            // Get the username and password from the view
             var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
-
-            // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!teams.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
@@ -119,8 +116,6 @@ namespace HudlRT.ViewModels
         public async void GetGames(Season s)
         {
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
-
-            // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!games.Equals(""))
             {
                 s.games = new BindableCollection<Game>();
@@ -141,8 +136,6 @@ namespace HudlRT.ViewModels
         public async void GetGameCategories(Game game)
         {
             var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
-
-            // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!categories.Equals(""))
             {
                 game.categories = new BindableCollection<Category>();
@@ -163,7 +156,6 @@ namespace HudlRT.ViewModels
         public async void GetCutupsByCategory(Category category)
         {
             var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
-            // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!cutups.Equals(""))
             {
                 category.cutups = new BindableCollection<Cutup>();

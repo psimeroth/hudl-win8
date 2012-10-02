@@ -26,12 +26,21 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Clips);
             }
         }
+        private Angle video;
+        public Angle Video
+        {
+            get { return video; }
+            set
+            {
+                video = value;
+                NotifyOfPropertyChange(() => Video);
+            }
+        }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
         }
-
 
         protected override void OnActivate()
         {
@@ -42,7 +51,6 @@ namespace HudlRT.ViewModels
         public async void GetClipsByCutup(Cutup cutup)
         {
             var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!clips.Equals(""))
             {
                 cutup.clips = new BindableCollection<Clip>();
@@ -58,6 +66,11 @@ namespace HudlRT.ViewModels
                 
             }
         }
-        
+
+        public void ClipSelected(ItemClickEventArgs eventArgs)
+        {
+            var clip = (Clip)eventArgs.ClickedItem;
+            Video = clip.angles.ElementAt(0);
+        }
     }
 }
