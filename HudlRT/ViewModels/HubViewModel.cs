@@ -14,7 +14,7 @@ namespace HudlRT.ViewModels
     {
         private Model model;
         private readonly INavigationService navigationService;
-
+        public PagePassParameter Parameter { get; set; }
         private string feedback;
         public string Feedback
         {
@@ -91,6 +91,14 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+            if (Parameter != null)
+            {
+                Teams = Parameter.teams;
+                Games = Parameter.games;
+                Seasons = Parameter.seasons;
+                Categories = Parameter.categories;
+                Cutups = Parameter.cutups;
+            }
         }
 
         public async void GetTeams()
@@ -211,10 +219,20 @@ namespace HudlRT.ViewModels
         {
             Feedback = null;
             var cutup = (Cutup)eventArgs.ClickedItem;
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>(new VideoParameter
+            navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
             {
-                Value = cutup
+                Value = cutup,
+                teams = teams,
+                games = games,
+                categories = categories,
+                seasons = seasons,
+                cutups = cutups
             });
         }
+
+        //protected override void SaveState(Dictionary<String, Object> pageState)
+        //{
+        //    pageState["model"] = model;
+        //}
     }
 }

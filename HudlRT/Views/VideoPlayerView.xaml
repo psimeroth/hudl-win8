@@ -109,7 +109,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding clipId}"
+                            <TextBlock Text="{Binding name}"
                                FontSize="24" Margin="5,0,0,0" TextWrapping="Wrap" />
                         </StackPanel>
                     </DataTemplate>

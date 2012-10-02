@@ -110,7 +110,7 @@
     <Compile Include="Common\ServiceAccessor.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
-    <Compile Include="Parameters\VideoParameter.cs" />
+    <Compile Include="Parameters\PagePassParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\HubViewModel.cs" />

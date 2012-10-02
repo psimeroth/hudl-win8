@@ -137,6 +137,7 @@ namespace HudlRT.Models
     {
         public string name { get; set; }
         public long clipId { get; set; }
+        public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
         public BindableCollection<BreakdownData> breakdownData { get; set; }
 
@@ -150,9 +151,19 @@ namespace HudlRT.Models
         {
             Clip clip = new Clip();
             clip.clipId = clipDTO.ClipID;
+            clip.order = clipDTO.OriginalOrder + 1;
+            clip.name = "Clip " + clip.order;
             foreach (AngleDTO angleDTO in clipDTO.Angles)
             {
-                clip.angles.Add(Angle.FromDTO(angleDTO));
+                Angle a = Angle.FromDTO(angleDTO);
+                if (a != null)
+                {
+                    clip.angles.Add(a);
+                }
+                else
+                {
+                    return null;
+                }
             }
             return clip;
         }
@@ -173,13 +184,20 @@ namespace HudlRT.Models
 
         public static Angle FromDTO(AngleDTO angleDTO)
         {
-            Angle angle = new Angle();
-            angle.angleName = angleDTO.AngleName;
-            angle.clipAngleId = angleDTO.ClipAngleID;
-            angle.duration = angleDTO.Duration;
-            angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;
-            angle.thumbnailLocation = angleDTO.LargeThumbnailFileName;
-            return angle;
+            if (angleDTO.Files.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                Angle angle = new Angle();
+                angle.angleName = angleDTO.AngleName;
+                angle.clipAngleId = angleDTO.ClipAngleID;
+                angle.duration = angleDTO.Duration;
+                angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;//throws error if there is no filename
+                angle.thumbnailLocation = angleDTO.LargeThumbnailFileName;
+                return angle;
+            }
         }
     }
 

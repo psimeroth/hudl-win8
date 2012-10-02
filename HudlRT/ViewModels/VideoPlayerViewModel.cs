@@ -15,7 +15,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        public VideoParameter Parameter { get; set; }
+        public PagePassParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
         {
@@ -57,7 +57,11 @@ namespace HudlRT.ViewModels
                 var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
                 foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
                 {
-                    cutup.clips.Add(Clip.FromDTO(clipDTO));
+                    Clip c = Clip.FromDTO(clipDTO);
+                    if (c != null)
+                    {
+                        cutup.clips.Add(c);
+                    }
                 }
                 Clips = cutup.clips;
             }
@@ -65,12 +69,18 @@ namespace HudlRT.ViewModels
             {
                 
             }
+            //(if Clips.count == 0) .. do something figure this out earlier somehow?
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
             var clip = (Clip)eventArgs.ClickedItem;
             Video = clip.angles.ElementAt(0);
+        }
+
+        public void GoBack()
+        {
+            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
         }
     }
 }
