@@ -86,18 +86,12 @@ namespace HudlRT.Models
     public class ClipDTO
     {
         public long ClipID { get; set; }
-        public BreakDownDataDTO BreakdownData { get; set; }
+        public Dictionary<string, string> breakdownData { get; set; }
 
         public List<AngleDTO> Angles { get; set; }
         public long OriginalOrder { get; set; }
     }
 
-    public class BreakDownDataDTO
-    {
-        public float DIST { get; set; }
-        public long PLAY { get; set; }//needs to be changed
-        public long QTR { get; set; }
-    }
 
     public class AngleDTO
     {
