@@ -37,7 +37,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" Grid.ColumnSpan="2" Margin="10,0,263,0" HorizontalContentAlignment="Left">
+            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -46,7 +46,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" Grid.ColumnSpan="2" Margin="10,0,263,0">
+            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" >
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="SeasonName" Text="{Binding name}"/>
