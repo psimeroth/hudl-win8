@@ -12,11 +12,6 @@ namespace HudlRT.ViewModels
             this.navigationService = navigationService;
         }
 
-        public void GoBack()
-        {
-            navigationService.GoBack();
-        }
-
         public bool CanGoBack
         {
             get

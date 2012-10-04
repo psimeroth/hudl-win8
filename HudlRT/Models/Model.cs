@@ -139,11 +139,12 @@ namespace HudlRT.Models
         public long clipId { get; set; }
         public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
-        public BindableCollection<BreakdownData> breakdownData { get; set; }
+        public Dictionary<string, string> breakdownData { get; set; }
+
 
         public Clip()
         {
-            breakdownData = new BindableCollection<BreakdownData>();
+            breakdownData = new Dictionary<string, string>();
             angles = new BindableCollection<Angle>();
         }
 
@@ -153,6 +154,12 @@ namespace HudlRT.Models
             clip.clipId = clipDTO.ClipID;
             clip.order = clipDTO.OriginalOrder + 1;
             clip.name = "Clip " + clip.order;
+            Dictionary<string, string> upperedBDD = new Dictionary<string,string>();
+            foreach(string s in clipDTO.breakdownData.Keys)
+            {
+                upperedBDD.Add(s.ToUpper(), clipDTO.breakdownData[s]);
+            }
+            clip.breakdownData = upperedBDD;
             foreach (AngleDTO angleDTO in clipDTO.Angles)
             {
                 Angle a = Angle.FromDTO(angleDTO);
