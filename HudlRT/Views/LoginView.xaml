@@ -13,7 +13,7 @@
         <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Center" Width="Auto">
             <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Center" Height="149" />
             <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" />
-            <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,0,5" />
+            <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,0,5" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" />
             
             <Grid>
                 <Grid Grid.Row="0">

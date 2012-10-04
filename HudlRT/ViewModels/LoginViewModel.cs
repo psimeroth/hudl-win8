@@ -5,6 +5,7 @@ using HudlRT.Common;
 using Newtonsoft.Json;
 using Windows.Storage;
 using HudlRT.Models;
+using Windows.UI.Xaml.Input;
 
 namespace HudlRT.ViewModels
 {
@@ -57,6 +58,19 @@ namespace HudlRT.ViewModels
             else
             {
                 LoginFeedback = "Please check your username and password.";
+            }
+        }
+
+        /// <summary>
+        /// Key handler for the password field of the login view.
+        /// </summary>
+        /// <param name="e">Key up event which occured.</param>
+        public void KeyPress(KeyRoutedEventArgs e)
+        {
+            // If the key pressed was Enter call the Login method.
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                Login();
             }
         }
     }
