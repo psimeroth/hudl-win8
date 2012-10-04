@@ -37,35 +37,35 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Teams">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock x:Name="TeamName" Text="{Binding name}" MinHeight="75" VerticalAlignment="Center" FontSize="18"/>
+                        <TextBlock x:Name="TeamName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Seasons">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="SeasonName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Games" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+            <ListView x:Name="Games" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Weeks">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="GameName" Text="{Binding opponent}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Categories" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+            <ListView x:Name="Categories" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Categories">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="CategoryName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Cutups" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+            <ListView x:Name="Cutups" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Cutups">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="CutupName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
