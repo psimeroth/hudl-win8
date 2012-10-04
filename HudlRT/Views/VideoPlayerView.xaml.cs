@@ -113,7 +113,6 @@ namespace HudlRT.Views
                 header.Visibility = Visibility.Collapsed;
                 Clips.Visibility = Visibility.Collapsed;
                 TransportControlsPanel.Visibility = Visibility.Collapsed;
-                appBar.Visibility = Visibility.Visible;
 
                 full_mainGrid.Visibility = Visibility.Visible;
 
@@ -130,7 +129,6 @@ namespace HudlRT.Views
                 header.Visibility = Visibility.Visible;
                 Clips.Visibility = Visibility.Visible;
                 TransportControlsPanel.Visibility = Visibility.Visible;
-                appBar.Visibility = Visibility.Collapsed;
 
                 full_mainGrid.Visibility = Visibility.Collapsed;
 
@@ -195,31 +193,25 @@ namespace HudlRT.Views
             if (videoMediaElement.IsMuted)
             {
                 videoMediaElement.IsMuted = false;
-                vol.Value = _previousVolValue;
-                vol_AppBar.Value = _previousVolValue;
+                //vol.Value = _previousVolValue;
             }
 
             if (videoMediaElement.Volume < 1)
             {
                 videoMediaElement.Volume += .1;
             }
-            vol.Value -= 10;
-            vol_AppBar.Value -= 10;
+            //vol.Value -= 10;
         }
 
         private void btnMute_Click(object sender, RoutedEventArgs e)
         {
             if (videoMediaElement.IsMuted)
             {
-                vol.Value = _previousVolValue;
-                vol_AppBar.Value = _previousVolValue;
             }
             else
             {
-                _previousVolValue = vol.Value;
-                _previousVolValue = vol_AppBar.Value;
-                vol.Value = 0;
-                vol_AppBar.Value = 0;
+                //_previousVolValue = vol.Value;
+                //vol.Value = 0;
             }
             videoMediaElement.IsMuted = !videoMediaElement.IsMuted;
 
@@ -230,16 +222,14 @@ namespace HudlRT.Views
             if (videoMediaElement.IsMuted)
             {
                 videoMediaElement.IsMuted = false;
-                vol.Value = _previousVolValue;
-                vol_AppBar.Value = _previousVolValue;
+                //vol.Value = _previousVolValue;
             }
 
             if (videoMediaElement.Volume > 0)
             {
                 videoMediaElement.Volume -= .1;
             }
-            vol.Value += 10;
-            vol_AppBar.Value += 10;
+            //vol.Value += 10;
         }
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
