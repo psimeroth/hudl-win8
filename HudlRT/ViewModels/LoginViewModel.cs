@@ -24,16 +24,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        //private LoginModel login;
-        //public LoginModel Login { 
-        //    get { return login; }
-        //    set
-        //    {
-        //        login = value;
-        //        NotifyOfPropertyChange(() => Login);
-        //    }
-        //}
-
         private string buttonText;
         public string ButtonText
         {
@@ -45,6 +35,7 @@ namespace HudlRT.ViewModels
             }
         }
 
+        // Bound to the visibility of the login form stack panel
         private string formVisibility;
         public string FormVisibility
         {
@@ -56,6 +47,7 @@ namespace HudlRT.ViewModels
             }
         }
 
+        // Bound to the visibility of the progress ring. Swaps with 
         private string progressRingVisibility;
         public string ProgressRingVisibility
         {
@@ -94,7 +86,6 @@ namespace HudlRT.ViewModels
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
 
             // Show the user a call is being made in the background
-            //TODO
             ButtonText = "loading";
             FormVisibility = "Collapsed";
             ProgressRingVisibility = "Visible";
@@ -103,7 +94,6 @@ namespace HudlRT.ViewModels
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
 
             // Dismiss the loading indicator
-            //TODO
             ButtonText = "login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
