@@ -35,13 +35,7 @@
             <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" NineGrid="0,10,0,0"/>
         </Grid>
         
-        <Grid x:Name="MiddleCategoryGrid" Grid.Row="1">
-            <Grid.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="1"/>
-                    <GradientStop Color="#333333" Offset="0.524"/>
-                </LinearGradientBrush>
-            </Grid.Background>
+        <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -150,7 +144,7 @@
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="#FF6700"/>
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
