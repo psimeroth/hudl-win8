@@ -45,14 +45,14 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private string buttonVisibility;
-        public string ButtonVisibility
+        private string formVisibility;
+        public string FormVisibility
         {
-            get { return buttonVisibility; }
+            get { return formVisibility; }
             set
             {
-                buttonVisibility = value;
-                NotifyOfPropertyChange(() => ButtonVisibility);
+                formVisibility = value;
+                NotifyOfPropertyChange(() => FormVisibility);
             }
         }
 
@@ -79,7 +79,7 @@ namespace HudlRT.ViewModels
 
             //Login = new LoginModel();
             ButtonText = "login";
-            ButtonVisibility = "Visible";
+            FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
 
@@ -96,7 +96,7 @@ namespace HudlRT.ViewModels
             // Show the user a call is being made in the background
             //TODO
             ButtonText = "loading";
-            ButtonVisibility = "Collapsed";
+            FormVisibility = "Collapsed";
             ProgressRingVisibility = "Visible";
 
             // Call the login web service
@@ -105,7 +105,7 @@ namespace HudlRT.ViewModels
             // Dismiss the loading indicator
             //TODO
             ButtonText = "login";
-            ButtonVisibility = "Visible";
+            FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
 
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
