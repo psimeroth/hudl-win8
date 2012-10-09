@@ -9,12 +9,25 @@
     mc:Ignorable="d">
     
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="319" VerticalAlignment="Center" Width="500" Margin="433,259,433,190">
-            <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" VerticalAlignment="Center" HorizontalAlignment="Center" Width="500" Height="149" Margin="0" />
-            <TextBox x:Name="UserName" TextWrapping="Wrap" Text=""/>
-            <PasswordBox x:Name="Password" />
-            <Button x:Name="Login" Content="login" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="300,0,0,0"/>
-            <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="54" Width="500"/>
+
+        <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Center" Width="Auto">
+            <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Center" Height="170" />
+            <StackPanel Visibility="{Binding FormVisibility}">
+                <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" />
+                <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,0,5" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" />
+                <Grid>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" Grid.Column="0" FontSize="14"/>
+                        <Button x:Name="Login" Content="{Binding ButtonText}" HorizontalAlignment="Right" MinHeight="50" MinWidth="100" Grid.Column="1" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" />
+
+                    </Grid>
+                </Grid>
+            </StackPanel>
+            <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" HorizontalAlignment="Center" Height="75" Width="75" Foreground="#0099FF" />
         </StackPanel>
 
     </Grid>

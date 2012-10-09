@@ -5,6 +5,7 @@ using HudlRT.Common;
 using Newtonsoft.Json;
 using Windows.Storage;
 using HudlRT.Models;
+using Windows.UI.Xaml.Input;
 
 namespace HudlRT.ViewModels
 {
@@ -23,6 +24,49 @@ namespace HudlRT.ViewModels
             }
         }
 
+        //private LoginModel login;
+        //public LoginModel Login { 
+        //    get { return login; }
+        //    set
+        //    {
+        //        login = value;
+        //        NotifyOfPropertyChange(() => Login);
+        //    }
+        //}
+
+        private string buttonText;
+        public string ButtonText
+        {
+            get { return buttonText; }
+            set
+            {
+                buttonText = value;
+                NotifyOfPropertyChange(() => ButtonText);
+            }
+        }
+
+        private string formVisibility;
+        public string FormVisibility
+        {
+            get { return formVisibility; }
+            set
+            {
+                formVisibility = value;
+                NotifyOfPropertyChange(() => FormVisibility);
+            }
+        }
+
+        private string progressRingVisibility;
+        public string ProgressRingVisibility
+        {
+            get { return progressRingVisibility; }
+            set
+            {
+                progressRingVisibility = value;
+                NotifyOfPropertyChange(() => ProgressRingVisibility);
+            }
+        }
+
         private readonly INavigationService navigationService;
         public LoginViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -33,9 +77,13 @@ namespace HudlRT.ViewModels
         {
             base.OnInitialize();
 
+            //Login = new LoginModel();
+            ButtonText = "login";
+            FormVisibility = "Visible";
+            ProgressRingVisibility = "Collapsed";
         }
 
-        public async void Login()
+        public async void LoginAttempt()
         {
             // Get the username and password from the view
             if (UserName == null && Password == null)
@@ -44,12 +92,26 @@ namespace HudlRT.ViewModels
                 Password = "rightmeow!";
             }
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
-            var login = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
+
+            // Show the user a call is being made in the background
+            //TODO
+            ButtonText = "loading";
+            FormVisibility = "Collapsed";
+            ProgressRingVisibility = "Visible";
+
+            // Call the login web service
+            var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
+
+            // Dismiss the loading indicator
+            //TODO
+            ButtonText = "login";
+            FormVisibility = "Visible";
+            ProgressRingVisibility = "Collapsed";
 
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
-            if (!login.Equals(""))
+            if (!loginResponse.Equals(""))
             {
-                var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(login);
+                var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
                 ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"] = obj.Token;
                 LoginFeedback = "";
                 navigationService.NavigateToViewModel(typeof(HubViewModel));
@@ -57,6 +119,19 @@ namespace HudlRT.ViewModels
             else
             {
                 LoginFeedback = "Please check your username and password.";
+            }
+        }
+
+        /// <summary>
+        /// Key handler for the password field of the login view.
+        /// </summary>
+        /// <param name="e">Key up event which occured.</param>
+        public void KeyPress(KeyRoutedEventArgs e)
+        {
+            // If the key pressed was Enter call the Login method.
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                LoginAttempt();
             }
         }
     }
