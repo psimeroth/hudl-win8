@@ -28,7 +28,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}"  IsTabStop="False"/>
+                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" />
                 <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
             </Grid>
             <Grid Grid.Row="1">
