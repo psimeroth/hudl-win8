@@ -41,7 +41,7 @@ namespace HudlRT.ViewModels
             if (UserName == null && Password == null)
             {
                 UserName = "jacobataylor09@gmail.com";
-                Password = "abcd";
+                Password = "rightmeow!";
             }
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
             var login = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
