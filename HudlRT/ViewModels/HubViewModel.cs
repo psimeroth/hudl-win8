@@ -80,12 +80,50 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Cutups);
             }
         }
+        private Team selectedTeam;
+        public Team SelectedTeam
+        {
+            get { return selectedTeam; }
+            set
+            {
+                selectedTeam = value;
+                NotifyOfPropertyChange(() => SelectedTeam);
+            }
+        }
+        private Season selectedSeason;
+        public Season SelectedSeason
+        {
+            get { return selectedSeason; }
+            set
+            {
+                selectedSeason = value;
+                NotifyOfPropertyChange(() => SelectedSeason);
+            }
+        }
+        private Game selectedGame;
+        public Game SelectedGame
+        {
+            get { return selectedGame; }
+            set
+            {
+                selectedGame = value;
+                NotifyOfPropertyChange(() => SelectedGame);
+            }
+        }
+        private Category selectedCategory;
+        public Category SelectedCategory
+        {
+            get { return selectedCategory; }
+            set
+            {
+                selectedCategory = value;
+                NotifyOfPropertyChange(() => SelectedCategory);
+            }
+        }
 
         public HubViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
-            model = new Model();
-            GetTeams();
         }
 
         protected override void OnActivate()
@@ -98,6 +136,15 @@ namespace HudlRT.ViewModels
                 Seasons = Parameter.seasons;
                 Categories = Parameter.categories;
                 Cutups = Parameter.cutups;
+                SelectedTeam = Parameter.selectedTeam;
+                SelectedSeason = Parameter.selectedSeason;
+                SelectedGame = Parameter.selectedGame;
+                SelectedCategory = Parameter.selectedCategory;
+            }
+            else
+            {
+                model = new Model();
+                GetTeams();
             }
         }
 
@@ -185,7 +232,13 @@ namespace HudlRT.ViewModels
         {
             Feedback = null;
             var team = (Team)eventArgs.ClickedItem;
+            
+            SelectedTeam = team;
+            ListView x = (ListView)eventArgs.OriginalSource;
+            x.SelectedItem = team;
+
             Seasons = team.seasons;
+            SelectedSeason = null;
             Games = null;
             Categories = null;
             Cutups = null;
@@ -195,6 +248,11 @@ namespace HudlRT.ViewModels
         {
             Feedback = null;
             var season = (Season)eventArgs.ClickedItem;
+
+            SelectedSeason = season;
+            ListView x = (ListView)eventArgs.OriginalSource;
+            x.SelectedItem = season;
+
             GetGames(season);
             Categories = null;
             Cutups = null;
@@ -204,6 +262,11 @@ namespace HudlRT.ViewModels
         {
             Feedback = null;
             var game = (Game)eventArgs.ClickedItem;
+
+            SelectedGame = game;
+            ListView x = (ListView)eventArgs.OriginalSource;
+            x.SelectedItem = game;
+
             GetGameCategories(game);
             Cutups = null;
         }
@@ -212,6 +275,11 @@ namespace HudlRT.ViewModels
         {
             Feedback = null;
             var category = (Category)eventArgs.ClickedItem;
+
+            SelectedCategory = category;
+            ListView x = (ListView)eventArgs.OriginalSource;
+            x.SelectedItem = category;
+
             GetCutupsByCategory(category);
         }
 
@@ -219,14 +287,19 @@ namespace HudlRT.ViewModels
         {
             Feedback = null;
             var cutup = (Cutup)eventArgs.ClickedItem;
+
             navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
             {
-                Value = cutup,
                 teams = teams,
                 games = games,
                 categories = categories,
                 seasons = seasons,
-                cutups = cutups
+                cutups = cutups,
+                selectedTeam = SelectedTeam,
+                selectedSeason = SelectedSeason,
+                selectedGame = SelectedGame,
+                selectedCategory = SelectedCategory,
+                selectedCutup = cutup
             });
         }
 

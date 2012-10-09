@@ -47,7 +47,7 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            GetClipsByCutup(Parameter.Value);
+            GetClipsByCutup(Parameter.selectedCutup);
         }
 
         public async void GetClipsByCutup(Cutup cutup)
