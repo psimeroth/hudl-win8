@@ -82,7 +82,7 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="2" Margin ="5,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" Background="#FFFF6700">
+            <Grid x:Name="gridHeaders" Grid.Row="2" Margin ="5,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" Background="#FFFF6700">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="170" />
                     <ColumnDefinition Width="170" />

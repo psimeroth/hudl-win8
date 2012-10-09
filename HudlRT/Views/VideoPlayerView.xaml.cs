@@ -112,6 +112,7 @@ namespace HudlRT.Views
             {
                 header.Visibility = Visibility.Collapsed;
                 Clips.Visibility = Visibility.Collapsed;
+                gridHeaders.Visibility = Visibility.Collapsed;
                 TransportControlsPanel.Visibility = Visibility.Collapsed;
 
                 full_mainGrid.Visibility = Visibility.Visible;
@@ -128,6 +129,7 @@ namespace HudlRT.Views
             {
                 header.Visibility = Visibility.Visible;
                 Clips.Visibility = Visibility.Visible;
+                gridHeaders.Visibility = Visibility.Visible;
                 TransportControlsPanel.Visibility = Visibility.Visible;
 
                 full_mainGrid.Visibility = Visibility.Collapsed;
