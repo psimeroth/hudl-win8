@@ -68,36 +68,45 @@
             <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedIndex="{Binding SelectedTeam}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock x:Name="TeamName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
+                        <Border MinHeight="75">
+                            <TextBlock x:Name="TeamName" Text="{Binding name}"  FontSize="18" VerticalAlignment="Center"/>
+                        </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedIndex="{Binding SelectedSeason}">
-
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock x:Name="SeasonName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
+                        <Border MinHeight="75">
+                            <TextBlock x:Name="SeasonName" Text="{Binding name}"  FontSize="18" VerticalAlignment="Center"/>
+                        </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             <ListView x:Name="Games" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedIndex="{Binding SelectedGame}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock x:Name="GameName" Text="{Binding opponent}" MinHeight="75" FontSize="18"/>
+                        <Border MinHeight="75">
+                            <TextBlock x:Name="GameName" Text="{Binding opponent}" FontSize="18" VerticalAlignment="Center"/>
+                        </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             <ListView x:Name="Categories" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedCategory}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock x:Name="CategoryName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
+                        <Border MinHeight="75">
+                            <TextBlock x:Name="CategoryName" Text="{Binding name}" VerticalAlignment="Center" FontSize="18"/>
+                        </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             <ListView x:Name="Cutups" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock x:Name="CutupName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
+                        <Border MinHeight="75">
+                            <TextBlock x:Name="CutupName" Text="{Binding name}" VerticalAlignment="Center" FontSize="18"/>
+                        </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
