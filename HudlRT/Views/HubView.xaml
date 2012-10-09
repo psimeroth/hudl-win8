@@ -10,11 +10,38 @@
 
     <Page.Resources>
         <x:String x:Key="Hudl">Hudl</x:String>
+        <Style TargetType="TextBlock" x:Key="columnHeaderStyle">
+            <Setter Property="FontSize" Value="40"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Orange" Offset="1"/>
+                        <GradientStop Color="#FF6700"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="White" Offset="1"/>
+                        <GradientStop Color="#AFAFAF"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <!-- Value="Gray"/>
+            <Setter Property="BorderThickness" Value="0,1"/>
+            <Setter Property="BorderBrush" Value="White"/>-->
+        </Style>
     </Page.Resources>
 
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -28,6 +55,26 @@
             <TextBlock x:Name ="Feedback" Grid.Column="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="74" Width="340" Margin="520,30,0,0"/>
         </Grid>
         <Grid Grid.Row="1">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="#333333" Offset="0.524"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Teams" Style="{StaticResource columnHeaderStyle}"/>
+            <TextBlock Grid.Column="1" Text="Seasons" Style="{StaticResource columnHeaderStyle}"/>
+            <TextBlock Grid.Column="2" Text="Games" Style="{StaticResource columnHeaderStyle}"/>
+            <TextBlock Grid.Column="3" Text="Categories" Style="{StaticResource columnHeaderStyle}"/>
+            <TextBlock Grid.Column="4" Text="Cutups" Style="{StaticResource columnHeaderStyle}"/>
+        </Grid>
+        <Grid Grid.Row="2" Margin="0,5,0,0" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -37,35 +84,35 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Teams">
+            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="0,0,3,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="TeamName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Seasons">
+                </ListView.ItemTemplate> 
+           </ListView>
+            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="2,0,3,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="SeasonName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Games" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Weeks">
+            <ListView x:Name="Games" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="2,0,3,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="GameName" Text="{Binding opponent}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Categories" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Categories">
+            <ListView x:Name="Categories" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="2,0,3,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="CategoryName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Cutups" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Header="Cutups">
+            <ListView x:Name="Cutups" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="2,0,0,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock x:Name="CutupName" Text="{Binding name}" MinHeight="75" FontSize="18"/>
