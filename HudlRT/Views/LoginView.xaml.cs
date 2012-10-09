@@ -34,5 +34,10 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
+
+        private async void RedirectToSignup(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("http://www.hudl.com/signup"));
+        }
     }
 }
