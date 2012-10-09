@@ -84,14 +84,14 @@
             </Grid>
             <Grid Grid.Row="2" Margin ="5,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" Background="#FFFF6700">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="210" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Play" FontSize="20"/>
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="ODK" FontSize="20"/>
@@ -110,14 +110,14 @@
                     <DataTemplate>
                         <Grid VerticalAlignment ="Center" Margin ="5,0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="210" />
-                                <ColumnDefinition Width="210" />
-                                <ColumnDefinition Width="210" />
-                                <ColumnDefinition Width="210" />
-                                <ColumnDefinition Width="210" />
-                                <ColumnDefinition Width="210" />
-                                <ColumnDefinition Width="210" />
-                                <ColumnDefinition Width="210" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="170" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
                                 Text ="{Binding play}"/>
