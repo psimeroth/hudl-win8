@@ -1,4 +1,4 @@
-﻿<Page
+﻿<common:LayoutAwarePage
     x:Class="HudlRT.Views.LoginView"
     IsTabStop="false"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,9 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:caliburn="using:Caliburn.Micro"
+    xmlns:common="using:HudlRT.Common"
     mc:Ignorable="d">
     
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="RootGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+
+        <!--For snapped view-->
+        <StackPanel x:Name="SnappedImage" Grid.RowSpan="1" Visibility="Collapsed" Background="#FF6700">
+            <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png"  Visibility="Collapsed"/>
+            <TextBlock/>
+        </StackPanel>
 
         <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Center" Width="Auto">
             <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Center" Height="170" />
@@ -30,5 +37,44 @@
             <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" HorizontalAlignment="Center" Height="75" Width="75" Foreground="#0099FF" />
         </StackPanel>
 
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="FullScreenLandscape">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Filled">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="FullScreenPortrait">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Snapped">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="loginStackPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="#FF6700"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
     </Grid>
-</Page>
+</common:LayoutAwarePage>

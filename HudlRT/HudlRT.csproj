@@ -107,6 +107,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
@@ -137,6 +138,8 @@
   <ItemGroup>
     <Content Include="Assets\agile-hudl-logo-dark.png" />
     <Content Include="Assets\agile-hudl-logo-light.png" />
+    <Content Include="Assets\Hudl_Metro150 Centered.png" />
+    <Content Include="Assets\Hudl_Metro150.png" />
     <Content Include="Assets\Hudl_Partial150.png" />
     <Content Include="Assets\Hudl_Partial30.png" />
     <Content Include="Assets\SplashScreen.png" />
@@ -148,6 +151,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Common\CustomStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Common\Controls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
