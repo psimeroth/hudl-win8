@@ -20,10 +20,14 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!--For snapped view-->
-        <Image x:Name="SnappedImage" Grid.RowSpan="3" Source="ms-appx:///Assets/Hudl_Metro150 Centered.png"  Visibility="Collapsed"/>
-        
+        <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
+            <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
+            <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
+        </StackPanel>
+
+
         <Grid x:Name="TopTitleGrid" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

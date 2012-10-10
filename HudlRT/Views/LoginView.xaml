@@ -12,9 +12,9 @@
     <Grid x:Name="RootGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
 
         <!--For snapped view-->
-        <StackPanel x:Name="SnappedImage" Grid.RowSpan="1" Visibility="Collapsed" Background="{StaticResource HudlOrange}">
-            <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png"  Visibility="Collapsed"/>
-            <TextBlock/>
+        <StackPanel x:Name="SnappedImage" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
+                <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
+                <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
         <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Top" Width="Auto" Margin="0,50,0,0">
