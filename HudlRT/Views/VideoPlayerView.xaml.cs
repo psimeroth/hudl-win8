@@ -22,7 +22,6 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class VideoPlayerView : Page
     {
-
         private bool _isFullscreenToggle = false;
         public bool IsFullscreen
         {
@@ -102,6 +101,8 @@ namespace HudlRT.Views
 
                 }
             }
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
         }
 
         private void FullscreenToggle()
@@ -112,7 +113,8 @@ namespace HudlRT.Views
             {
                 header.Visibility = Visibility.Collapsed;
                 Clips.Visibility = Visibility.Collapsed;
-                TransportControlsPanel.Visibility = Visibility.Collapsed;
+                TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
+                TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
 
                 full_mainGrid.Visibility = Visibility.Visible;
 
@@ -128,7 +130,8 @@ namespace HudlRT.Views
             {
                 header.Visibility = Visibility.Visible;
                 Clips.Visibility = Visibility.Visible;
-                TransportControlsPanel.Visibility = Visibility.Visible;
+                TransportControlsPanel_Left.Visibility = Visibility.Visible;
+                TransportControlsPanel_Right.Visibility = Visibility.Visible;
 
                 full_mainGrid.Visibility = Visibility.Collapsed;
 
@@ -164,28 +167,62 @@ namespace HudlRT.Views
 
             SetupTimer();
             videoMediaElement.Play();
+            btnPlay.Visibility = Visibility.Collapsed;
+            btnPause.Visibility = Visibility.Visible;
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.Pause();
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.Stop();
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
+        }
+
+        private void btnFastForward_Click(object sender, RoutedEventArgs e)
+        {
+            videoMediaElement.DefaultPlaybackRate = 2.0;
+            videoMediaElement.Play();
+            btnPlay.Visibility = Visibility.Collapsed;
+            btnPause.Visibility = Visibility.Visible;
+        }
+
+        private void btnFastReverse_Click(object sender, RoutedEventArgs e)
+        {
+            videoMediaElement.DefaultPlaybackRate = -2.0;
+            videoMediaElement.Play();
+            btnPlay.Visibility = Visibility.Collapsed;
+            btnPause.Visibility = Visibility.Visible;
+        }
+
+        private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
+        {
+            videoMediaElement.DefaultPlaybackRate = -0.5;
+            videoMediaElement.Play();
+            btnPlay.Visibility = Visibility.Collapsed;
+            btnPause.Visibility = Visibility.Visible;
+        }
+
+        private void btnSlowForward_Click(object sender, RoutedEventArgs e)
+        {
+            videoMediaElement.DefaultPlaybackRate = 0.5;
+            videoMediaElement.Play();
+            btnPlay.Visibility = Visibility.Collapsed;
+            btnPause.Visibility = Visibility.Visible;
         }
 
         private void btnForward_Click(object sender, RoutedEventArgs e)
         {
-            videoMediaElement.DefaultPlaybackRate = 2.0;
-            videoMediaElement.Play();
         }
 
         private void btnReverse_Click(object sender, RoutedEventArgs e)
         {
-            videoMediaElement.DefaultPlaybackRate = -2.0;
-            videoMediaElement.Play();
         }
 
         private void btnVolumeDown_Click(object sender, RoutedEventArgs e)
@@ -249,6 +286,8 @@ namespace HudlRT.Views
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
             StopTimer();
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
             //timelineSlider.Value = 0.0;
         }
 
