@@ -42,8 +42,6 @@
         <GradientStop Color="{StaticResource HudlDarkGrayColor}" Offset="0.524"/>
     </LinearGradientBrush>
 
->>>>>>> Added snap-to-side functionality. Also created a custom styles file where all of
-
     <!--STYLES!!!!!!-->
     <Style x:Key="ListViewItemStyle1" TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
