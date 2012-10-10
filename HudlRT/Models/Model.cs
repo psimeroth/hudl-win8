@@ -135,7 +135,6 @@ namespace HudlRT.Models
 
     public class Clip
     {
-        public string name { get; set; }
         public long clipId { get; set; }
         public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
@@ -166,7 +165,10 @@ namespace HudlRT.Models
             Clip clip = new Clip();
             clip.clipId = clipDTO.ClipID;
             clip.order = clipDTO.OriginalOrder + 1;
-            clip.name = "Clip " + clip.order;
+            clip.odk = "-";
+            clip.hash = "-";
+            clip.playType = "-";
+            clip.result = "-";
             Dictionary<string, string> upperedBDD = new Dictionary<string,string>();
             foreach(string s in clipDTO.breakdownData.Keys)
             {
