@@ -115,6 +115,7 @@ namespace HudlRT.Views
                 Clips.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
+                gridHeaders.Visibility = Visibility.Collapsed;
 
                 full_mainGrid.Visibility = Visibility.Visible;
 
@@ -132,7 +133,6 @@ namespace HudlRT.Views
                 Clips.Visibility = Visibility.Visible;
                 TransportControlsPanel_Left.Visibility = Visibility.Visible;
                 TransportControlsPanel_Right.Visibility = Visibility.Visible;
-
                 full_mainGrid.Visibility = Visibility.Collapsed;
 
                 videoContainer.Width = _previousVideoContainerSize.Width;
