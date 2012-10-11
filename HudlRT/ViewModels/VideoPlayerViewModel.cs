@@ -49,6 +49,8 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private int index = 0;
+
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
@@ -93,6 +95,34 @@ namespace HudlRT.ViewModels
         {
             var clip = (Clip)eventArgs.ClickedItem;
             Video = clip.angles.ElementAt(0);
+        }
+
+        public void NextClip(ItemClickEventArgs eventArgs)
+        {
+            if (Clips.Count > 1)
+            {
+                if (index == (Clips.Count - 1))
+                {
+                    Video = Clips.First().angles.ElementAt(0);
+                    index = 0;
+                }
+                else
+                    Video = Clips.ElementAt(++index).angles.ElementAt(0);
+            }
+        }
+
+        public void PreviousClip(ItemClickEventArgs eventArgs)
+        {
+            if (Clips.Count > 1)
+            {
+                if (index == 0)
+                {
+                    Video = Clips.Last().angles.ElementAt(0);
+                    index = Clips.Count - 1;
+                }
+                else
+                    Video = Clips.ElementAt(--index).angles.ElementAt(0);
+            }
         }
 
         async void save_myFile(string uri)

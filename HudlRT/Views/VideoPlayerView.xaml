@@ -48,7 +48,8 @@
                                     Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
                             <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource AppBarButtonStyle}"
                                     AutomationProperties.Name="Stop" Foreground="{StaticResource HudlLightBlue}" Content="&#xE20D;" FontSize="30"/>
-                            <Button x:Name="btnReverse" Click="btnReverse_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
+                            <Button x:Name="btnReverse" Click="btnReverse_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
+                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
                             <Button x:Name="btnSlowReverse" Click="btnSlowReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" 
                                     Content="&#xE016;" FontSize="30"/>
                             <Button x:Name="btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
@@ -83,7 +84,8 @@
                                     Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE1D9;" FontSize="30"/>
                             <Button Style="{StaticResource HiddenButtonStyle}" />
-                            <Button x:Name="btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
+                            <Button x:Name="btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
+                                    caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]"/>
                             <Button x:Name="btnSlowForward" Click="btnSlowForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE017;" FontSize="30"/>
                             <Button x:Name="btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
