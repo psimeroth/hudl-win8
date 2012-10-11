@@ -10,7 +10,7 @@
     
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
 
-        <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Top" Width="Auto" Margin="0,50,0,0">
+        <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Center" Width="Auto" Margin="0,0,0,0">
             <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Center" Height="170" />
             <StackPanel Visibility="{Binding FormVisibility}">
                 <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="425"  />

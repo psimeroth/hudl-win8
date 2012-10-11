@@ -21,9 +21,24 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class LoginView : Page
     {
+        private int keyboardOffset = 0;
+
         public LoginView()
         {
             this.InitializeComponent();
+
+            // Register a handler to slide the login form up if a virtual keyboard in displayed on the screen.
+            Windows.UI.ViewManagement.InputPane.GetForCurrentView().Showing += (s, args) =>
+                {
+                    keyboardOffset = (int)args.OccludedRect.Height;
+                    loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, -1 * keyboardOffset, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
+                };
+
+            // Register a handler to slide the login form down if a virtual keyboard is removed from the screen.
+            Windows.UI.ViewManagement.InputPane.GetForCurrentView().Hiding += (s, args) =>
+                {
+                    loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, 0, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
+                };
         }
 
         /// <summary>
@@ -35,6 +50,11 @@ namespace HudlRT.Views
         {
         }
 
+        /// <summary>
+        /// Click handler for the New to Hudl button. Simply redirects to the Hudl signup webpage.
+        /// </summary>
+        /// <param name="sender">The New to Hudl button.</param>
+        /// <param name="e">Associated click event.</param>
         private async void RedirectToSignup(object sender, RoutedEventArgs e)
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri("http://www.hudl.com/signup"));
