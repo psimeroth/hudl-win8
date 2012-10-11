@@ -39,6 +39,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Clip selectedClip;
+        public Clip SelectedClip
+        {
+            get { return selectedClip; }
+            set
+            {
+                selectedClip = value;
+                NotifyOfPropertyChange(() => SelectedClip);
+            }
+        }
+
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
@@ -74,6 +85,7 @@ namespace HudlRT.ViewModels
             if (Clips.Count > 0)
             {
                 Video = Clips.First().angles.ElementAt(0);
+                SelectedClip = Clips.First();
             }
             //(if Clips.count == 0) .. do something figure this out earlier somehow?
         }
@@ -81,6 +93,7 @@ namespace HudlRT.ViewModels
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
             var clip = (Clip)eventArgs.ClickedItem;
+            SelectedClip = clip;
             Video = clip.angles.ElementAt(0);
         }
 

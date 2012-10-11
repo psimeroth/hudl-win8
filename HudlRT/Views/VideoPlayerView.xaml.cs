@@ -139,6 +139,7 @@ namespace HudlRT.Views
                 Clips.Visibility = Visibility.Visible;
                 TransportControlsPanel_Left.Visibility = Visibility.Visible;
                 TransportControlsPanel_Right.Visibility = Visibility.Visible;
+                gridHeaders.Visibility = Visibility.Visible;
 
                 // Hide the full screen controls
                 full_mainGrid.Visibility = Visibility.Collapsed;
@@ -176,6 +177,8 @@ namespace HudlRT.Views
 
             SetupTimer();
             videoMediaElement.Play();
+
+            // Here we need to collapse and expand both full and non full screen buttons
             btnPlay.Visibility = Visibility.Collapsed;
             full_btnPlay.Visibility = Visibility.Collapsed;
             btnPause.Visibility = Visibility.Visible;
@@ -185,6 +188,8 @@ namespace HudlRT.Views
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.Pause();
+
+            // Here we need to collapse and expand both full and non full screen buttons
             btnPause.Visibility = Visibility.Collapsed;
             full_btnPause.Visibility = Visibility.Collapsed;
             btnPlay.Visibility = Visibility.Visible;

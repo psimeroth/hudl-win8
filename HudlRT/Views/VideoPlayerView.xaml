@@ -156,31 +156,22 @@
         </Grid>
 
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
-            <Grid Background="Black" Opacity="0.5" Height="30" Width="Auto" VerticalAlignment="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Margin="10,0,5,0" Foreground="White" FontSize="15">ODK:</TextBlock>
-                <TextBlock Grid.Column="1" Margin="5,0,10,0" Foreground="White" FontSize="15">D</TextBlock>
-                <TextBlock Grid.Column="2" Margin="10,0,5,0" Foreground="White" FontSize="15">DN:</TextBlock>
-                <TextBlock Grid.Column="3" Margin="5,0,10,0" Foreground="White" FontSize="15">2</TextBlock>
-                <TextBlock Grid.Column="4" Margin="10,0,5,0" Foreground="White" FontSize="15">DIST:</TextBlock>
-                <TextBlock Grid.Column="5" Margin="5,0,10,0" Foreground="White" FontSize="15">7</TextBlock>
-                <TextBlock Grid.Column="6" Margin="10,0,5,0" Foreground="White" FontSize="15">YARD LN:</TextBlock>
-                <TextBlock Grid.Column="7" Margin="5,0,10,0" Foreground="White" FontSize="15">-38</TextBlock>
-                
+            <Grid DataContext="{Binding SelectedClip}" Background="Black" Opacity="0.5" Height="50" Width="Auto" VerticalAlignment="Top">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">ODK:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding odk}" />
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Down:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding down}" />
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Dist:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding dist}" />
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Yard Ln:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding yardLn}" />
+                </StackPanel>
             </Grid>
 
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,60,0,0" Orientation="Vertical" Width="150">
-                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"/>
+                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" />
                 <Button x:Name="full_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
                                     Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"/>
                 <Button x:Name="full_btnStop" Click="btnStop_Click" Style="{StaticResource AppBarButtonStyle}"
