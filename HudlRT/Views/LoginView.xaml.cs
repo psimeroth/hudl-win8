@@ -12,6 +12,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -40,6 +42,18 @@ namespace HudlRT.Views
                 {
                     loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, 0, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
                 };
+
+            // Set the login image here
+            var height = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"];
+            var width = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"];
+            var x = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"];
+            var y = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"];
+
+            loginImage.Height = height;
+            loginImage.Width = Width;
+            loginStackPanel.Margin = new Thickness(0,y,0,0);
+            //loginImage.Margin = new Thickness(0, -5, 0, 0);
+            
         }
 
         /// <summary>
