@@ -48,6 +48,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => CutupName);
             }
         }
+        private Clip selectedClip;
+        public Clip SelectedClip
+        {
+            get { return selectedClip; }
+            set
+            {
+                selectedClip = value;
+                NotifyOfPropertyChange(() => SelectedClip);
+            }
+        }
 
         private int index = 0;
 
@@ -97,8 +107,8 @@ namespace HudlRT.ViewModels
             }
             if (Clips.Count > 0)
             {
-                Video = Clips.First().angles.ElementAt(0);
                 SelectedClip = Clips.First();
+                Video = SelectedClip.angles.ElementAt(0);
             }
             //(if Clips.count == 0) .. do something figure this out earlier somehow?
         }
@@ -116,11 +126,13 @@ namespace HudlRT.ViewModels
             {
                 if (index == (Clips.Count - 1))
                 {
-                    Video = Clips.First().angles.ElementAt(0);
+                    SelectedClip = Clips.First();
+                    Video = SelectedClip.angles.ElementAt(0);
                     index = 0;
                 }
                 else
-                    Video = Clips.ElementAt(++index).angles.ElementAt(0);
+                    SelectedClip = Clips.ElementAt(++index);
+                    Video = SelectedClip.angles.ElementAt(0);
             }
         }
 
@@ -130,11 +142,13 @@ namespace HudlRT.ViewModels
             {
                 if (index == 0)
                 {
-                    Video = Clips.Last().angles.ElementAt(0);
+                    SelectedClip = Clips.Last();
+                    Video = SelectedClip.angles.ElementAt(0);
                     index = Clips.Count - 1;
                 }
                 else
-                    Video = Clips.ElementAt(--index).angles.ElementAt(0);
+                    SelectedClip = Clips.ElementAt(--index);
+                    Video = SelectedClip.angles.ElementAt(0);
             }
         }
 
