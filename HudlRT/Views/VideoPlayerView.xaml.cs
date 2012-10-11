@@ -112,17 +112,21 @@ namespace HudlRT.Views
 
             if (this.IsFullscreen)
             {
+                // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
                 Clips.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaders.Visibility = Visibility.Collapsed;
 
+                // Show the full screen controls
                 full_mainGrid.Visibility = Visibility.Visible;
 
+                // Save the video containers size
                 _previousVideoContainerSize.Width = videoContainer.ActualWidth;
                 _previousVideoContainerSize.Height = videoContainer.ActualHeight;
 
+                // Set the video container to fullscreen
                 videoContainer.Width = Window.Current.Bounds.Width;
                 videoContainer.Height = Window.Current.Bounds.Height;
                 videoMediaElement.Width = Window.Current.Bounds.Width;
@@ -130,13 +134,17 @@ namespace HudlRT.Views
             }
             else
             {
+                // Show the non full screen controls
                 header.Visibility = Visibility.Visible;
                 Clips.Visibility = Visibility.Visible;
                 TransportControlsPanel_Left.Visibility = Visibility.Visible;
                 TransportControlsPanel_Right.Visibility = Visibility.Visible;
+                gridHeaders.Visibility = Visibility.Visible;
 
+                // Hide the full screen controls
                 full_mainGrid.Visibility = Visibility.Collapsed;
 
+                // Reset the video container to it's original height
                 videoContainer.Width = _previousVideoContainerSize.Width;
                 videoContainer.Height = _previousVideoContainerSize.Height;
                 videoMediaElement.Width = _previousVideoContainerSize.Width;
@@ -169,15 +177,23 @@ namespace HudlRT.Views
 
             SetupTimer();
             videoMediaElement.Play();
+
+            // Here we need to collapse and expand both full and non full screen buttons
             btnPlay.Visibility = Visibility.Collapsed;
+            full_btnPlay.Visibility = Visibility.Collapsed;
             btnPause.Visibility = Visibility.Visible;
+            full_btnPause.Visibility = Visibility.Visible;
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.Pause();
+
+            // Here we need to collapse and expand both full and non full screen buttons
             btnPause.Visibility = Visibility.Collapsed;
+            full_btnPause.Visibility = Visibility.Collapsed;
             btnPlay.Visibility = Visibility.Visible;
+            full_btnPlay.Visibility = Visibility.Visible;
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
