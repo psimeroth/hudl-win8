@@ -38,6 +38,18 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Video);
             }
         }
+        private string cutupName;
+        public string CutupName
+        {
+            get { return cutupName; }
+            set
+            {
+                cutupName = value;
+                NotifyOfPropertyChange(() => CutupName);
+            }
+        }
+
+        private int index = 0;
 
         private Clip selectedClip;
         public Clip SelectedClip
@@ -59,6 +71,7 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
             GetClipsByCutup(Parameter.selectedCutup);
+            CutupName = Parameter.selectedCutup.name;
         }
 
         public async void GetClipsByCutup(Cutup cutup)
@@ -95,6 +108,34 @@ namespace HudlRT.ViewModels
             var clip = (Clip)eventArgs.ClickedItem;
             SelectedClip = clip;
             Video = clip.angles.ElementAt(0);
+        }
+
+        public void NextClip(ItemClickEventArgs eventArgs)
+        {
+            if (Clips.Count > 1)
+            {
+                if (index == (Clips.Count - 1))
+                {
+                    Video = Clips.First().angles.ElementAt(0);
+                    index = 0;
+                }
+                else
+                    Video = Clips.ElementAt(++index).angles.ElementAt(0);
+            }
+        }
+
+        public void PreviousClip(ItemClickEventArgs eventArgs)
+        {
+            if (Clips.Count > 1)
+            {
+                if (index == 0)
+                {
+                    Video = Clips.Last().angles.ElementAt(0);
+                    index = Clips.Count - 1;
+                }
+                else
+                    Video = Clips.ElementAt(--index).angles.ElementAt(0);
+            }
         }
 
         async void save_myFile(string uri)

@@ -26,12 +26,9 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Name="header">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="36,0,0,10" />
+                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="50,0,0,6" />
                 <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
+                <TextBlock x:Name="CutupName" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid Background="Black">
@@ -51,7 +48,8 @@
                                     Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
                             <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource AppBarButtonStyle}"
                                     AutomationProperties.Name="Stop" Foreground="{StaticResource HudlLightBlue}" Content="&#xE20D;" FontSize="30"/>
-                            <Button x:Name="btnReverse" Click="btnReverse_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
+                            <Button x:Name="btnReverse" Click="btnReverse_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
+                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
                             <Button x:Name="btnSlowReverse" Click="btnSlowReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" 
                                     Content="&#xE016;" FontSize="30"/>
                             <Button x:Name="btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
@@ -86,7 +84,8 @@
                                     Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE1D9;" FontSize="30"/>
                             <Button Style="{StaticResource HiddenButtonStyle}" />
-                            <Button x:Name="btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
+                            <Button x:Name="btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
+                                    caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]"/>
                             <Button x:Name="btnSlowForward" Click="btnSlowForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE017;" FontSize="30"/>
                             <Button x:Name="btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
@@ -95,7 +94,7 @@
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="2" Margin ="5,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False">
+            <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="2" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="170" />
                     <ColumnDefinition Width="170" />
