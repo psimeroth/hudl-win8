@@ -116,8 +116,7 @@
 
             </Grid>
 
-            <ListView x:Name="Clips" Grid.Column="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]"
-                      Grid.Row="3">
+            <ListView x:Name="Clips" Grid.Column="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedClip}" Grid.Row="3">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid VerticalAlignment ="Center" Margin ="5,0">
