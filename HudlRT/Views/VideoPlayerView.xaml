@@ -121,8 +121,7 @@
 
             </Grid>
 
-            <ListView x:Name="Clips" Grid.Column="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]"
-                      Grid.Row="3">
+            <ListView x:Name="Clips" Grid.Column="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedClip}" Grid.Row="3">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid VerticalAlignment ="Center" Margin ="5,0">
@@ -161,44 +160,48 @@
 
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Margin="10,0,5,0">ODK:</TextBlock>
-                <TextBlock Grid.Column="1" Margin="5,0,10,0">D</TextBlock>
-                <TextBlock Grid.Column="2" Margin="10,0,5,0">DN:</TextBlock>
-                <TextBlock Grid.Column="3" Margin="5,0,10,0">2</TextBlock>
-                <TextBlock Grid.Column="4" Margin="10,0,5,0">DIST:</TextBlock>
-                <TextBlock Grid.Column="5" Margin="5,0,10,0">7</TextBlock>
-                <TextBlock Grid.Column="6" Margin="10,0,5,0">YARD LN:</TextBlock>
-                <TextBlock Grid.Column="7" Margin="5,0,10,0">-38</TextBlock>
-
+            <Grid DataContext="{Binding SelectedClip}" Background="Black" Opacity="0.5" Height="50" Width="Auto" VerticalAlignment="Top">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">ODK:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding odk}" />
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Down:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding down}" />
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Dist:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding dist}" />
+                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Yard Ln:</TextBlock>
+                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding yardLn}" />
+                </StackPanel>
             </Grid>
 
-            <StackPanel Name="full_rightControls" HorizontalAlignment="Left" VerticalAlignment="Center" Background="White" Opacity="0.5">
-                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" />
-                <Button x:Name="full_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"/>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,60,0,0" Orientation="Vertical" Width="150">
+                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="full_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
+                                    Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
                 <Button x:Name="full_btnStop" Click="btnStop_Click" Style="{StaticResource AppBarButtonStyle}"
-                                AutomationProperties.Name="Stop" Content="[]"/>
+                                    AutomationProperties.Name="" Foreground="{StaticResource HudlLightBlue}" Content="&#xE20D;" FontSize="30" HorizontalAlignment="Center" />
+                <Button x:Name="full_btnReverse" Click="btnReverse_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="full_btnSlowReverse" Click="btnSlowReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" 
+                                    Content="&#xE016;" FontSize="30" HorizontalAlignment="Center"/>
+                <Button x:Name="full_btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
+                                    Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20" HorizontalAlignment="Center">
+                    <Button.Projection>
+                        <PlaneProjection RotationY="180"/>
+                    </Button.Projection>
+                </Button>
             </StackPanel>
 
-            <StackPanel Name="full_leftControls" HorizontalAlignment="Right" VerticalAlignment="Center" Background="White" Opacity="0.5">
-                <Button x:Name="full_btnFullScreenToggle_AppBar" Click="btnFullScreenToggle_Click"
-                                    Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Content="[-]" />
-                <Button x:Name="full_btnVolumeUp_AppBar" Click="btnVolumeUp_Click"
-                                    Style="{StaticResource AppBarButtonStyle}"  AutomationProperties.Name="Volume" Content="+"/>
-                <Button x:Name="full_btnVolumeDown_AppBar" Click="btnVolumeDown_Click" Style="{StaticResource AppBarButtonStyle}"
-                                    AutomationProperties.Name="Volume" Content="--" />
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,60,0,0" Orientation="Vertical" Width="150">
+                <Button x:Name="full_btnFullScreenToggle" Click="btnFullScreenToggle_Click"
+                                        Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="" Foreground="{StaticResource HudlLightBlue}"
+                                        Content="&#xE1D9;" FontSize="30" HorizontalAlignment="Center"/>
+                <Button Style="{StaticResource HiddenButtonStyle}" />
+                <Button x:Name="full_btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="full_btnSlowForward" Click="btnSlowForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
+                                        Content="&#xE017;" FontSize="30" HorizontalAlignment="Center"/>
+                <Button x:Name="full_btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
+                                        Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"/>
             </StackPanel>
+
         </Grid>
 
         <VisualStateManager.VisualStateGroups>
