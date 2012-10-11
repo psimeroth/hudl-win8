@@ -61,17 +61,6 @@ namespace HudlRT.ViewModels
 
         private int index = 0;
 
-        private Clip selectedClip;
-        public Clip SelectedClip
-        {
-            get { return selectedClip; }
-            set
-            {
-                selectedClip = value;
-                NotifyOfPropertyChange(() => SelectedClip);
-            }
-        }
-
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
