@@ -118,19 +118,31 @@ namespace HudlRT.Views
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaders.Visibility = Visibility.Collapsed;
-
+                //mainGrid.RowDefinitions.RemoveAt(2);
+                //mainGrid.RowDefinitions.ElementAt(2).Height = new Windows.UI.Xaml.GridLength(0);
+                mainGrid.UpdateLayout();
                 // Show the full screen controls
                 full_mainGrid.Visibility = Visibility.Visible;
 
-                // Save the video containers size
-                _previousVideoContainerSize.Width = videoContainer.ActualWidth;
-                _previousVideoContainerSize.Height = videoContainer.ActualHeight;
+                //// Save the video containers size
+                //_previousVideoContainerSize.Width = videoContainer.ActualWidth;
+                //_previousVideoContainerSize.Height = videoContainer.ActualHeight;
 
-                // Set the video container to fullscreen
-                videoContainer.Width = Window.Current.Bounds.Width;
-                videoContainer.Height = Window.Current.Bounds.Height;
-                videoMediaElement.Width = Window.Current.Bounds.Width;
-                videoMediaElement.Height = Window.Current.Bounds.Height;
+                //// Set the video container to fullscreen
+                //videoContainer.Width = Window.Current.Bounds.Width;
+                //videoContainer.Height = Window.Current.Bounds.Height;
+                //MediaPlayer.Width = Window.Current.Bounds.Width;
+                //MediaPlayer.Height = Window.Current.Bounds.Height;
+                //MediaPlayer.UpdateLayout();
+                //videoContainer.UpdateLayout();
+                //videoMediaElement.Width = Window.Current.Bounds.Width;
+                //videoMediaElement.Height = Window.Current.Bounds.Height;
+                //videoMediaElement.UpdateLayout();
+                var offset = videoMediaElement.TransformToVisual(mainGrid).TransformPoint(new Point());
+                CanvasMover.X = -offset.X;
+                CanvasMover.Y = -offset.Y;
+                this.videoMediaElement.Height = Window.Current.Bounds.Height;
+                this.videoMediaElement.Width = Window.Current.Bounds.Width;
             }
             else
             {
