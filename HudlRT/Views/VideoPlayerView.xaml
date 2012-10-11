@@ -28,7 +28,7 @@
             <Grid Name="header">
                 <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="50,0,0,6" />
                 <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
-                <TextBox x:Name="CutupName" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" FontSize="28"/>
+                <TextBlock x:Name="CutupName" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid Background="Black">
