@@ -8,10 +8,11 @@
     xmlns:caliburn="using:Caliburn.Micro"
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
+    xmlns:mmppf="using:Microsoft.PlayerFramework"
     mc:Ignorable="d">
 
     <Grid x:Name="RootGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        
+
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
             <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
@@ -60,24 +61,28 @@
                             </Button>
                         </StackPanel>
                         <StackPanel x:Name="MediaPlayer" Orientation="Vertical" HorizontalAlignment="Center" Grid.Column="1">
+
                             <ContentControl x:Name="videoContainer"
                             KeyUp="VideoContainer_KeyUp"
                             HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" 
-                            Height="450" Grid.Row="0" 
+                            Height="500"
                             DataContext="{Binding Video}"
-                                        Grid.Column="1"
-                                            Margin="0,20,0,0">
-                                <MediaElement Name="videoMediaElement"
+                            Margin="0,10,0,0">
+                                <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
+                                                   AutoPlay="False"
+                                                   MediaOpened="videoElement_MediaOpened"
+                                                   MediaEnded="videoMediaElement_MediaEnded"
+                                                   />
+                                <!--<MediaElement Name="videoMediaElement"
                               MediaOpened="videoElement_MediaOpened" 
                               MediaEnded="videoMediaElement_MediaEnded" 
                               MediaFailed="videoMediaElement_MediaFailed"
-                              CurrentStateChanged="videoMediaElement_CurrentStateChanged"
                               PosterSource="Assets/Hudl_logo.png"
                               AutoPlay="False" 
-                              Source="{Binding fileLocation}"/>
+                              Source="{Binding fileLocation}"/>-->
                             </ContentControl>
-                            <Slider Name="timelineSlider" Height="35" Style="{StaticResource SliderStyle}"/>
+                            <!--<Slider Name="timelineSlider" Height="0" Style="{StaticResource SliderStyle}" Visibility="Collapsed"/>-->
                         </StackPanel>
                         <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
                             <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
