@@ -38,6 +38,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Video);
             }
         }
+        private string cutupName;
+        public string CutupName
+        {
+            get { return cutupName; }
+            set
+            {
+                cutupName = value;
+                NotifyOfPropertyChange(() => CutupName);
+            }
+        }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -48,6 +58,7 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
             GetClipsByCutup(Parameter.selectedCutup);
+            CutupName = Parameter.selectedCutup.name;
         }
 
         public async void GetClipsByCutup(Cutup cutup)
