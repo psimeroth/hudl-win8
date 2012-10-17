@@ -31,12 +31,11 @@ namespace HudlRT.Views
         }
 
         private Size _previousVideoContainerSize = new Size();
-        private double _previousVolValue = 0;
-
-        private DispatcherTimer _timer;
-        private bool _sliderpressed = false;
+        private Size _previousVideoSize = new Size();
 
         private string _rootNamespace;
+
+        private Brush background;
 
         public string RootNamespace
         {
@@ -112,6 +111,8 @@ namespace HudlRT.Views
 
             if (this.IsFullscreen)
             {
+                background = RootGrid.Background;
+                RootGrid.Background = new SolidColorBrush();
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
@@ -127,6 +128,8 @@ namespace HudlRT.Views
                 // Save the video containers size
                 _previousVideoContainerSize.Width = videoContainer.ActualWidth;
                 _previousVideoContainerSize.Height = videoContainer.ActualHeight;
+                _previousVideoSize.Width = videoMediaElement.ActualWidth;
+                _previousVideoSize.Height = videoMediaElement.ActualHeight;
 
                 // Set the video container to fullscreen
                 videoContainer.Width = Window.Current.Bounds.Width;
@@ -137,6 +140,7 @@ namespace HudlRT.Views
             }
             else
             {
+                RootGrid.Background = background;
                 // Show the non full screen controls
                 header.Visibility = Visibility.Visible;
                 Clips.Visibility = Visibility.Visible;
@@ -150,8 +154,9 @@ namespace HudlRT.Views
                 // Reset the video container to it's original height
                 videoContainer.Width = _previousVideoContainerSize.Width;
                 videoContainer.Height = _previousVideoContainerSize.Height;
-                videoMediaElement.Width = _previousVideoContainerSize.Width;
-                videoMediaElement.Height = _previousVideoContainerSize.Height;
+                videoMediaElement.Width = _previousVideoSize.Width;
+                videoMediaElement.Height = _previousVideoSize.Height;
+                
                 VideoGrid.Margin = new Thickness(0, 70, 0, 0);
             }
         }
