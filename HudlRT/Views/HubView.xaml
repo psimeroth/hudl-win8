@@ -14,9 +14,12 @@
     </Page.Resources>
     
     <!--Actual Layout-->
-    <Grid x:Name="RootGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="5">
+    <Grid x:Name="RootGrid" Margin="5">
+        <Grid.Background>
+            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
+        </Grid.Background>
         <Grid.RowDefinitions>
-            <RowDefinition Height="140"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -28,15 +31,16 @@
         </StackPanel>
 
 
-        <Grid x:Name="TopTitleGrid" Grid.Row="0">
+        <Grid x:Name="TopTitleGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsTabStop="False"/>
+            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
+            <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
             <TextBlock x:Name ="Feedback" Grid.Column="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="74" Width="340" Margin="520,30,0,0"/>
-            <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" NineGrid="0,10,0,0"/>
+            <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
         </Grid>
         
         <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1">

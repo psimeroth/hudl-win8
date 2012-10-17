@@ -10,23 +10,25 @@
     xmlns:ic="using:HudlRT.Views"
     mc:Ignorable="d">
 
-    <Grid x:Name="RootGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        
+    <Grid x:Name="RootGrid">
+        <Grid.Background>
+            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
+        </Grid.Background>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
             <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
-        <Grid x:Name="mainGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
                 <RowDefinition Height="525" />
-                <RowDefinition Height="25" />
+                <RowDefinition Height="50" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Name="header">
-                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="50,0,0,6" />
+                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
                 <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
                 <TextBlock x:Name="CutupName" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
             </Grid>

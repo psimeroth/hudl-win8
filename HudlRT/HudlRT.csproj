@@ -143,10 +143,13 @@
     <Content Include="Assets\agile-hudl-logo-dark.png" />
     <Content Include="Assets\agile-hudl-logo-light.png" />
     <Content Include="Assets\agile-hudl-text-dark.png" />
+    <Content Include="Assets\dark_BG_Tiled.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
     <Content Include="Assets\Hudl_Metro150.png" />
     <Content Include="Assets\Hudl_Partial150.png" />
     <Content Include="Assets\Hudl_Partial30.png" />
+    <Content Include="Assets\light_BG_Tiled.png" />
+    <Content Include="Assets\medium_BG_Tiled.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
     <None Include="Package.StoreAssociation.xml" />
