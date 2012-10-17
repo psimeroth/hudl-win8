@@ -8,6 +8,7 @@
     xmlns:caliburn="using:Caliburn.Micro"
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
+    xmlns:mmppf="using:Microsoft.PlayerFramework"
     mc:Ignorable="d">
 
     <Grid x:Name="RootGrid">
@@ -32,13 +33,13 @@
                 <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
                 <TextBlock x:Name="CutupName" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" x:Name="Container1">
                 <Grid Background="Black">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Grid>
+                    <Grid x:Name="Container2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150" />
                             <ColumnDefinition Width="*" />
@@ -61,26 +62,37 @@
                                 </Button.Projection>
                             </Button>
                         </StackPanel>
-                        <StackPanel x:Name="MediaPlayer" Orientation="Vertical" HorizontalAlignment="Center" Grid.Column="1">
-                            <ContentControl x:Name="videoContainer"
+                        <!--<Canvas Grid.Column="1" HorizontalAlignment="Center" Height="500">
+                            <Canvas.RenderTransform>
+                                <TranslateTransform x:Name="CanvasMover"/>
+                            </Canvas.RenderTransform>-->
+                        <!--<ContentControl x:Name="videoContainer"
                             KeyUp="VideoContainer_KeyUp"
+                            Grid.Column="1"
                             HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" 
-                            Height="450" Grid.Row="0" 
+                            Height="500"
                             DataContext="{Binding Video}"
-                                        Grid.Column="1"
-                                            Margin="0,20,0,0">
-                                <MediaElement Name="videoMediaElement"
+                            Margin="0,10,0,0">
+                                <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
+                                                   AutoPlay="False"
+                                                   MediaOpened="videoElement_MediaOpened"
+                                                   MediaEnded="videoMediaElement_MediaEnded"
+                                                   MediaFailed="videoMediaElement_MediaFailed"
+                                                   IsFullScreen="True"
+                                                   AutoHide="False"
+
+                                                   />-->
+                        <!--<MediaElement Name="videoMediaElement"
                               MediaOpened="videoElement_MediaOpened" 
                               MediaEnded="videoMediaElement_MediaEnded" 
                               MediaFailed="videoMediaElement_MediaFailed"
-                              CurrentStateChanged="videoMediaElement_CurrentStateChanged"
                               PosterSource="Assets/Hudl_logo.png"
                               AutoPlay="False" 
-                              Source="{Binding fileLocation}"/>
-                            </ContentControl>
-                            <Slider Name="timelineSlider" Height="35" Style="{StaticResource SliderStyle}"/>
-                        </StackPanel>
+                              Source="{Binding fileLocation}"/>-->
+                        <!--</ContentControl>
+                        </Canvas>-->
+                        <!--<Slider Name="timelineSlider" Height="0" Style="{StaticResource SliderStyle}" Visibility="Collapsed"/>-->
                         <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
                             <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
                                     Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
@@ -155,6 +167,24 @@
 
         </Grid>
 
+        <Grid x:Name="VideoGrid" VerticalAlignment="Top" Margin="0,70,0,0">
+            <ContentControl x:Name="videoContainer"
+                            KeyUp="VideoContainer_KeyUp"
+                            HorizontalContentAlignment="Center" 
+                            Height="500"
+                            DataContext="{Binding Video}">
+                <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
+                                                   AutoPlay="False"
+                                                   MediaOpened="videoElement_MediaOpened"
+                                                   MediaEnded="videoMediaElement_MediaEnded"
+                                                   MediaFailed="videoMediaElement_MediaFailed"
+                                                   IsFullScreen="True"
+                                                   AutoHide="False"
+
+                                                   />
+            </ContentControl>
+        </Grid>
+
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
 
             <Grid DataContext="{Binding SelectedClip}" Background="Black" Opacity="0.5" Height="50" Width="Auto" VerticalAlignment="Top">
@@ -188,9 +218,9 @@
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,60,0,0" Orientation="Vertical" Width="150">
-                <Button x:Name="full_btnFullScreenToggle" Click="btnFullScreenToggle_Click"
-                                        Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="" Foreground="{StaticResource HudlLightBlue}"
-                                        Content="&#xE1D9;" FontSize="30" HorizontalAlignment="Center"/>
+                <Button x:Name="btnExitFullScreen" Click="btnFullScreenToggle_Click"
+                                    Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
+                                    Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
                 <Button Style="{StaticResource HiddenButtonStyle}" />
                 <Button x:Name="full_btnForward" Click="btnForward_Click" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
                 <Button x:Name="full_btnSlowForward" Click="btnSlowForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
@@ -242,8 +272,5 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-
-
-
     </Grid>
 </common:LayoutAwarePage>
