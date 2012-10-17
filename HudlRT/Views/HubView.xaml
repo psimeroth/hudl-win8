@@ -37,10 +37,9 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
-            <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
-            <TextBlock x:Name ="Feedback" Grid.Column="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="74" Width="340" Margin="520,30,0,0"/>
-            <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
+            <Image x:Name="Logo" Grid.Column="0" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
+            <TextBlock x:Name ="Feedback" Grid.Column="1" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Top" Width="500" Height="Auto"/>
+            <Button x:Name="LogOut" Grid.Column="2" Content="Log Out" Width="100" Height="60" HorizontalAlignment="Right" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Opacity="0.9"/>
         </Grid>
         
         <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1">
