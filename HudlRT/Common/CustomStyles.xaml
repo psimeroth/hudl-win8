@@ -22,9 +22,17 @@
         <GradientStop Color="Orange" Offset="1" />
         <GradientStop Color="{StaticResource HudlOrangeColor}" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="WhiteToMediumGrayGradient" EndPoint="0.5,1" StartPoint="0.5,0" Opacity=".50">
+    <LinearGradientBrush x:Key="BlackToWhiteGradient" EndPoint="0.5,0.2" StartPoint="0.5,0" Opacity="0.15">
         <GradientStop Color="White" Offset="1"/>
-        <GradientStop Color="{StaticResource HudlMediumGrayColor}" />
+        <GradientStop Color="Black" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="BlackToWhiteGradient_VideoGrid" EndPoint="0.5,0.4" StartPoint="0.5,0" Opacity="0.20">
+        <GradientStop Color="White" Offset="1"/>
+        <GradientStop Color="Black" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="WhiteToBlackGradient" EndPoint="0.5,1" StartPoint="0.5,.96" Opacity="0.2">
+        <GradientStop Color="White"/>
+        <GradientStop Color="Black" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="BlackToDarkGrayGradient" EndPoint="0.5,1" StartPoint="0.5,0">
         <GradientStop Color="Black" Offset="1"/>
@@ -683,10 +691,10 @@
         <Setter Property="IsDoubleTapEnabled" Value="False"/>
         <Setter Property="IsHoldingEnabled" Value="False"/>
         <Setter Property="IsRightTapEnabled" Value="False"/>
-        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        <Setter Property="BorderThickness" Value="0,0,2,0"/>
         <Setter Property="BorderBrush" Value="Gainsboro"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="Background" Value="{StaticResource WhiteToMediumGrayGradient}"/>
+        <Setter Property="Background" Value="{StaticResource BlackToWhiteGradient}"/>
     </Style>
     <Style TargetType="TextBlock" x:Key="listViewItem_TextBlockStyle">
         <Setter Property="FontSize" Value="18"/>
