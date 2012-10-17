@@ -114,35 +114,26 @@ namespace HudlRT.Views
             {
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
+                header.UpdateLayout();
                 Clips.Visibility = Visibility.Collapsed;
+                Clips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaders.Visibility = Visibility.Collapsed;
-                //mainGrid.RowDefinitions.RemoveAt(2);
-                //mainGrid.RowDefinitions.ElementAt(2).Height = new Windows.UI.Xaml.GridLength(0);
-                mainGrid.UpdateLayout();
+
                 // Show the full screen controls
                 full_mainGrid.Visibility = Visibility.Visible;
 
-                //// Save the video containers size
-                //_previousVideoContainerSize.Width = videoContainer.ActualWidth;
-                //_previousVideoContainerSize.Height = videoContainer.ActualHeight;
+                // Save the video containers size
+                _previousVideoContainerSize.Width = videoContainer.ActualWidth;
+                _previousVideoContainerSize.Height = videoContainer.ActualHeight;
 
-                //// Set the video container to fullscreen
-                //videoContainer.Width = Window.Current.Bounds.Width;
-                //videoContainer.Height = Window.Current.Bounds.Height;
-                //MediaPlayer.Width = Window.Current.Bounds.Width;
-                //MediaPlayer.Height = Window.Current.Bounds.Height;
-                //MediaPlayer.UpdateLayout();
-                //videoContainer.UpdateLayout();
-                //videoMediaElement.Width = Window.Current.Bounds.Width;
-                //videoMediaElement.Height = Window.Current.Bounds.Height;
-                //videoMediaElement.UpdateLayout();
-                var offset = videoMediaElement.TransformToVisual(mainGrid).TransformPoint(new Point());
-                CanvasMover.X = -offset.X;
-                CanvasMover.Y = -offset.Y;
-                this.videoMediaElement.Height = Window.Current.Bounds.Height;
-                this.videoMediaElement.Width = Window.Current.Bounds.Width;
+                // Set the video container to fullscreen
+                videoContainer.Width = Window.Current.Bounds.Width;
+                videoContainer.Height = Window.Current.Bounds.Height;
+                videoMediaElement.Width = Window.Current.Bounds.Width;
+                videoMediaElement.Height = Window.Current.Bounds.Height;
+                VideoGrid.Margin = new Thickness(0, 0, 0, 0);
             }
             else
             {
@@ -161,6 +152,7 @@ namespace HudlRT.Views
                 videoContainer.Height = _previousVideoContainerSize.Height;
                 videoMediaElement.Width = _previousVideoContainerSize.Width;
                 videoMediaElement.Height = _previousVideoContainerSize.Height;
+                VideoGrid.Margin = new Thickness(0, 70, 0, 0);
             }
         }
 
@@ -306,6 +298,19 @@ namespace HudlRT.Views
             //    2);
             btnPause.Visibility = Visibility.Collapsed;
             btnPlay.Visibility = Visibility.Visible;
+
+            //double videoWidth = videoMediaElement.ActualWidth;
+            //double videoHeight = videoMediaElement.ActualHeight;
+
+            //double cellWidth = Container2.ColumnDefinitions.ElementAt(1).ActualWidth;
+            ////double cellHeight = Container1.RowDefinitions.ElementAt(1).ActualHeight;
+
+            //double widthDifference = cellWidth - videoWidth;
+            ////double heightDifference = cellHeight - videoHeight;
+
+
+            //Canvas.SetLeft(playerCanvas, 300);
+            //playerCanvas.UpdateLayout();
 
             //timelineSlider.Maximum = absvalue;
 

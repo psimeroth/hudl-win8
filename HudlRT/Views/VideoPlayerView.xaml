@@ -19,6 +19,7 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
+
         <Grid x:Name="mainGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
@@ -60,14 +61,13 @@
                                 </Button.Projection>
                             </Button>
                         </StackPanel>
-                        <StackPanel x:Name="MediaPlayer" Orientation="Vertical" HorizontalAlignment="Center" Grid.Column="1">
-                            <Canvas x:Name="playerCanvas">
-                                <Canvas.RenderTransform>
-                                    <TranslateTransform  x:Name="CanvasMover" />
-                                </Canvas.RenderTransform>
-
-                            <ContentControl x:Name="videoContainer"
+                        <!--<Canvas Grid.Column="1" HorizontalAlignment="Center" Height="500">
+                            <Canvas.RenderTransform>
+                                <TranslateTransform x:Name="CanvasMover"/>
+                            </Canvas.RenderTransform>-->
+                        <!--<ContentControl x:Name="videoContainer"
                             KeyUp="VideoContainer_KeyUp"
+                            Grid.Column="1"
                             HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" 
                             Height="500"
@@ -78,18 +78,20 @@
                                                    MediaOpened="videoElement_MediaOpened"
                                                    MediaEnded="videoMediaElement_MediaEnded"
                                                    MediaFailed="videoMediaElement_MediaFailed"
-                                                   />
-                                <!--<MediaElement Name="videoMediaElement"
+                                                   IsFullScreen="True"
+                                                   AutoHide="False"
+
+                                                   />-->
+                        <!--<MediaElement Name="videoMediaElement"
                               MediaOpened="videoElement_MediaOpened" 
                               MediaEnded="videoMediaElement_MediaEnded" 
                               MediaFailed="videoMediaElement_MediaFailed"
                               PosterSource="Assets/Hudl_logo.png"
                               AutoPlay="False" 
                               Source="{Binding fileLocation}"/>-->
-                            </ContentControl>
-                            </Canvas>
-                            <!--<Slider Name="timelineSlider" Height="0" Style="{StaticResource SliderStyle}" Visibility="Collapsed"/>-->
-                        </StackPanel>
+                        <!--</ContentControl>
+                        </Canvas>-->
+                        <!--<Slider Name="timelineSlider" Height="0" Style="{StaticResource SliderStyle}" Visibility="Collapsed"/>-->
                         <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
                             <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
                                     Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
@@ -162,6 +164,24 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+        </Grid>
+
+        <Grid x:Name="VideoGrid" VerticalAlignment="Top" Margin="0,70,0,0">
+            <ContentControl x:Name="videoContainer"
+                            KeyUp="VideoContainer_KeyUp"
+                            HorizontalContentAlignment="Center" 
+                            Height="500"
+                            DataContext="{Binding Video}">
+                <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
+                                                   AutoPlay="False"
+                                                   MediaOpened="videoElement_MediaOpened"
+                                                   MediaEnded="videoMediaElement_MediaEnded"
+                                                   MediaFailed="videoMediaElement_MediaFailed"
+                                                   IsFullScreen="True"
+                                                   AutoHide="False"
+
+                                                   />
+            </ContentControl>
         </Grid>
 
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
@@ -251,8 +271,5 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-
-
-
     </Grid>
 </common:LayoutAwarePage>

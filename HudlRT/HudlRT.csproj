@@ -134,6 +134,10 @@
     <None Include="Caliburn.Micro.WinRT.Sample_TemporaryKey.pfx" />
     <None Include="HudlRT_StoreKey.pfx" />
     <None Include="packages.config" />
+    <None Include="VideoPlayer\Microsoft Player Framework\extension.packcomponent" />
+    <None Include="VideoPlayer\Microsoft Player Framework\License.rtf" />
+    <None Include="VideoPlayer\Microsoft Player Framework\Readme.rtf" />
+    <None Include="VideoPlayer\Microsoft Player Framework\Redist\CommonConfiguration\neutral\Microsoft.PlayerFramework\Microsoft.PlayerFramework.pri" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\agile-hudl-logo-dark.png" />
@@ -145,6 +149,11 @@
     <Content Include="Assets\Hudl_Partial30.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\extension.vsixmanifest" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\MMPPF.ico" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\References\CommonConfiguration\neutral\Microsoft.PlayerFramework.dll" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\References\CommonConfiguration\neutral\Microsoft.PlayerFramework.xml" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\SDKManifest.xml" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +171,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Common\StandardStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VideoPlayer\Microsoft Player Framework\Redist\CommonConfiguration\neutral\Microsoft.PlayerFramework\Themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
