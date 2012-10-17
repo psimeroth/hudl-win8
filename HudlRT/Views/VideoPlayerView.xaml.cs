@@ -13,8 +13,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.ApplicationSettings;
-using Windows.UI.Popups;
 
 namespace HudlRT.Views
 {
@@ -47,8 +45,6 @@ namespace HudlRT.Views
         public VideoPlayerView()
         {
             this.InitializeComponent();
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_CommandsRequested;
-
             Loaded += new RoutedEventHandler(MainPage_Loaded);
         }
 
