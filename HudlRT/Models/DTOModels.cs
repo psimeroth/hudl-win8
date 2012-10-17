@@ -16,6 +16,7 @@ namespace HudlRT.Models
     public class LoginResponseDTO
     {
         public string Token { get; set; }
+        public string UserId { get; set; }
     }
 
     public class TeamDTO
@@ -108,5 +109,12 @@ namespace HudlRT.Models
         public long Quality { get; set; }
         public string FileName { get; set; }
         public long FileSize { get; set; }
+    }
+
+    public class FeaturePrivilege
+    {
+        public long FeaturePrivilegeId { get; set; }
+        public string Name { get; set; }
+        public bool IsLabs { get; set; }
     }
 }

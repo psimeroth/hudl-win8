@@ -93,24 +93,45 @@ namespace HudlRT.ViewModels
             // Call the login web service
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
 
-            // Dismiss the loading indicator
-            ButtonText = "login";
-            FormVisibility = "Visible";
-            ProgressRingVisibility = "Collapsed";
-
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
             if (!loginResponse.Equals(""))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
                 ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"] = obj.Token;
+                ApplicationData.Current.RoamingSettings.Values["hudl-userId"] = obj.UserId;
                 LoginFeedback = "";
-                navigationService.NavigateToViewModel(typeof(HubViewModel));
+
+                //need to save privileges to roamingsettings
+                string urlExtension = "privileges/" + ApplicationData.Current.RoamingSettings.Values["hudl-userId"].ToString();
+                var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension);
+                if (!privilegesResponse.Equals(""))
+                {
+                    //Needs to be improved in the future if we want to 
+                    if ( privilegesResponse.Contains("Win8App") )
+                    {
+                         navigationService.NavigateToViewModel(typeof(HubViewModel));
+                    }
+                    else
+                    {
+                        navigationService.NavigateToViewModel(typeof(FeatureDisabledViewModel));
+                    }
+                }
+                else
+                {
+                    LoginFeedback = "Connection with server failed, please try again";
+                }
             }
             else
             {
-                LoginFeedback = "Please check your username and password.";
+                LoginFeedback = "Invalid Username or Password.";
             }
+
+            // Dismiss the loading indicator
+            ButtonText = "login";
+            FormVisibility = "Visible";
+            ProgressRingVisibility = "Collapsed";
         }
+
 
         /// <summary>
         /// Key handler for the password field of the login view.

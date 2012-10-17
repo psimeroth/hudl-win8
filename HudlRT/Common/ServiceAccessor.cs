@@ -43,26 +43,13 @@ namespace HudlRT.Common
         {
             try
             {
-                var req = (HttpWebRequest)WebRequest.Create(URL_BASE + url);
-                req.ContentType = "application/json";
-                req.Method = "GET";
-
-                // Get the auth token from the App Data and make sure it's not null
-                var authtoken = ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"];
-                if (authtoken != null)
-                {
-                    req.Headers["hudl-authtoken"] = (string)authtoken;
-                }
-
-                using (var response = await req.GetResponseAsync())
-                {
-                    using (var responseStream = response.GetResponseStream())
-                    {
-                        var reader = new StreamReader(responseStream);
-                        var answer = reader.ReadToEnd();
-                        return answer;
-                    }
-                }
+                var httpClient = new HttpClient();
+                Uri uri = new Uri(URL_BASE + url);
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+                httpRequestMessage.Headers.Add("hudl-authtoken", ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"].ToString());
+                httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return await response.Content.ReadAsStringAsync();
             }
             catch (Exception)
             {
@@ -80,26 +67,14 @@ namespace HudlRT.Common
         {
             try
             {
-                var req = (HttpWebRequest)WebRequest.Create(URL_BASE_SECURE + url);
-                req.ContentType = "application/json";
-                req.Method = "POST";
-
-                using (var requestStream = await req.GetRequestStreamAsync())
-                {
-                    var writer = new StreamWriter(requestStream);
-                    writer.Write(jsonString);
-                    writer.Flush();
-                }
-
-                using (var response = await req.GetResponseAsync())
-                {
-                    using (var responseStream = response.GetResponseStream())
-                    {
-                        var reader = new StreamReader(responseStream);
-                        var answer = reader.ReadToEnd();
-                        return answer;
-                    }
-                }
+                var httpClient = new HttpClient();
+                Uri uri = new Uri(URL_BASE_SECURE + url);
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+                httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
+                httpRequestMessage.Content = new StringContent(jsonString);
+                httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return await response.Content.ReadAsStringAsync();
             }
             catch (Exception)
             {
