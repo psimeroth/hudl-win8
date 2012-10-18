@@ -298,7 +298,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid x:Name="RootGrid" Width="100" Background="Transparent">
-                        <StackPanel VerticalAlignment="Top" Margin="0,5,0,11">
+                        <StackPanel VerticalAlignment="Top" Margin="0,0,0,0">
                             <Grid Width="80" Height="80" Margin="0,0,0,-4" HorizontalAlignment="Center">
                                 <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource AppBarItemBackgroundThemeBrush}"/>
                                 <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0"/>

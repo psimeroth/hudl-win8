@@ -1,4 +1,5 @@
 ﻿using HudlRT.Common;
+using HudlRT.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,8 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
+        private int selectedIndex { get; set; }
+        private bool rightClicked { get; set; }
         private bool _isFullscreenToggle = false;
         public bool IsFullscreen
         {
@@ -67,39 +70,22 @@ namespace HudlRT.Views
 
             var dataSource = fif.GetVirtualizedFilesVector();
             
-            //videosList.ItemsSource = dataSource;
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            //videoMediaElement.CurrentStateChanged += videoMediaElement_CurrentStateChanged;
-            //timelineSlider.ValueChanged += timelineSlider_ValueChanged;
-
-            //PointerEventHandler pointerpressedhandler = new PointerEventHandler(slider_PointerEntered);
-            //timelineSlider.AddHandler(Control.PointerPressedEvent, pointerpressedhandler, true);
-
-            //PointerEventHandler pointerreleasedhandler = new PointerEventHandler(slider_PointerCaptureLost);
-            //timelineSlider.AddHandler(Control.PointerCaptureLostEvent, pointerreleasedhandler, true);
         }
 
-        private async void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
+            Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
+
+            if (rightClicked)
             {
-                Windows.Storage.BulkAccess.FileInformation fileInfo = e.AddedItems[0] as Windows.Storage.BulkAccess.FileInformation;
-                if (fileInfo != null)
-                {
-
-                    Windows.Storage.StorageFile file = await Windows.Storage.StorageFile.GetFileFromPathAsync(fileInfo.Path);
-
-                    var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-
-                    videoMediaElement.SetSource(stream, file.ContentType);
-
-                }
+                ListView l = (ListView)sender;
+                l.SelectedIndex = selectedIndex;
+                rightClicked = false;
             }
-            btnPause.Visibility = Visibility.Collapsed;
-            btnPlay.Visibility = Visibility.Visible;
         }
 
         private void FullscreenToggle()
@@ -110,6 +96,7 @@ namespace HudlRT.Views
             {
                 background = RootGrid.Background;
                 RootGrid.Background = new SolidColorBrush();
+                dataPanel.Background = new SolidColorBrush();
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
@@ -181,14 +168,11 @@ namespace HudlRT.Views
                 videoMediaElement.PlaybackRate = 1.0;
             }
 
-            //SetupTimer();
             videoMediaElement.Play();
 
             // Here we need to collapse and expand both full and non full screen buttons
-            btnPlay.Visibility = Visibility.Collapsed;
-            full_btnPlay.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Visible;
-            full_btnPause.Visibility = Visibility.Visible;
+            setPauseVisible();
+            setStopVisibile();
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
@@ -196,153 +180,70 @@ namespace HudlRT.Views
             videoMediaElement.Pause();
 
             // Here we need to collapse and expand both full and non full screen buttons
-            btnPause.Visibility = Visibility.Collapsed;
-            full_btnPause.Visibility = Visibility.Collapsed;
-            btnPlay.Visibility = Visibility.Visible;
-            full_btnPlay.Visibility = Visibility.Visible;
+            setPlayVisible();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.Stop();
-            btnPause.Visibility = Visibility.Collapsed;
-            btnPlay.Visibility = Visibility.Visible;
+            setPlayVisible();
+            setPrevVisible();
         }
 
         private void btnFastForward_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.DefaultPlaybackRate = 2.0;
             videoMediaElement.Play();
-            btnPlay.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Visible;
+            
+            setPauseVisible();
+            setStopVisibile();
         }
 
         private void btnFastReverse_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.DefaultPlaybackRate = -2.0;
             videoMediaElement.Play();
-            btnPlay.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Visible;
+            setPauseVisible();
         }
 
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.DefaultPlaybackRate = -0.5;
             videoMediaElement.Play();
-            btnPlay.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Visible;
+            setPauseVisible();
         }
 
         private void btnSlowForward_Click(object sender, RoutedEventArgs e)
         {
             videoMediaElement.DefaultPlaybackRate = 0.5;
             videoMediaElement.Play();
-            btnPlay.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Visible;
-        }
-
-        private void btnForward_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void btnReverse_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void btnVolumeDown_Click(object sender, RoutedEventArgs e)
-        {
-            if (videoMediaElement.IsMuted)
-            {
-                videoMediaElement.IsMuted = false;
-                //vol.Value = _previousVolValue;
-            }
-
-            if (videoMediaElement.Volume < 1)
-            {
-                videoMediaElement.Volume += .1;
-            }
-            //vol.Value -= 10;
-        }
-
-        private void btnMute_Click(object sender, RoutedEventArgs e)
-        {
-            if (videoMediaElement.IsMuted)
-            {
-            }
-            else
-            {
-                //_previousVolValue = vol.Value;
-                //vol.Value = 0;
-            }
-            videoMediaElement.IsMuted = !videoMediaElement.IsMuted;
-
-        }
-
-        private void btnVolumeUp_Click(object sender, RoutedEventArgs e)
-        {
-            if (videoMediaElement.IsMuted)
-            {
-                videoMediaElement.IsMuted = false;
-                //vol.Value = _previousVolValue;
-            }
-
-            if (videoMediaElement.Volume > 0)
-            {
-                videoMediaElement.Volume -= .1;
-            }
-            //vol.Value += 10;
+            
+            setPauseVisible();
+            setStopVisibile();
         }
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
-            //double absvalue = Math.Round(
-            //    videoMediaElement.NaturalDuration.TimeSpan.TotalSeconds,
-            //    2);
-            btnPause.Visibility = Visibility.Collapsed;
-            btnPlay.Visibility = Visibility.Visible;
-
-            //double videoWidth = videoMediaElement.ActualWidth;
-            //double videoHeight = videoMediaElement.ActualHeight;
-
-            //double cellWidth = Container2.ColumnDefinitions.ElementAt(1).ActualWidth;
-            ////double cellHeight = Container1.RowDefinitions.ElementAt(1).ActualHeight;
-
-            //double widthDifference = cellWidth - videoWidth;
-            ////double heightDifference = cellHeight - videoHeight;
-
-
-            //Canvas.SetLeft(playerCanvas, 300);
-            //playerCanvas.UpdateLayout();
-
-            //timelineSlider.Maximum = absvalue;
-
-            //timelineSlider.StepFrequency =
-            //    SliderFrequency(videoMediaElement.NaturalDuration.TimeSpan);
-
-            //SetupTimer();
+            setPlayVisible();
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
-            //StopTimer();
-            btnPause.Visibility = Visibility.Collapsed;
-            btnPlay.Visibility = Visibility.Visible;
-            //timelineSlider.Value = 0.0;
+            setPlayVisible();
+            setPrevVisible();
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            // get HRESULT from event args 
             string hr = GetHresultFromErrorMessage(e);
 
-            // Handle media failed event appropriately 
         }
 
         private string GetHresultFromErrorMessage(ExceptionRoutedEventArgs e)
         {
             String hr = String.Empty;
             String token = "HRESULT - ";
-            const int hrLength = 10;     // eg "0xFFFFFFFF"
+            const int hrLength = 10; 
 
             int tokenPos = e.ErrorMessage.IndexOf(token, StringComparison.Ordinal);
             if (tokenPos != -1)
@@ -353,114 +254,82 @@ namespace HudlRT.Views
             return hr;
         }
 
-        //void slider_PointerEntered(object sender, PointerRoutedEventArgs e)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("Pointer entered event fired");
-        //    _sliderpressed = true;
-        //}
+        private void videoMediaElement_Tapped(object sender, TappedRoutedEventArgs e)
+        {
 
-        //void slider_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("Pointer capture lost event fired");
-        //    System.Diagnostics.Debug.WriteLine("Slider value at capture lost {0}", timelineSlider.Value);
-        //    //myMediaElement.PlaybackRate = 1;
-        //    videoMediaElement.Position = TimeSpan.FromSeconds(timelineSlider.Value);
-        //    _sliderpressed = false;
-        //}
+            if (btnPlay.Visibility == Visibility.Collapsed)
+            {
+                btnPause_Click(null, null);
+            }
+            else
+            {
+                btnPlay_Click(null, null);
+            }
+        }
 
-        //void timelineSlider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("Slider old value = {0} new value = {1}.", e.OldValue, e.NewValue);
-        //    if (!_sliderpressed)
-        //    {
-        //        videoMediaElement.Position = TimeSpan.FromSeconds(e.NewValue);
-        //    }
-        //}
+        private void setPlayVisible()
+        {
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
 
-        //private void SetupTimer()
-        //{
-        //    _timer = new DispatcherTimer();
-        //    _timer.Interval = TimeSpan.FromSeconds(timelineSlider.StepFrequency);
-        //    StartTimer();
-        //}
+            full_btnPause.Visibility = Visibility.Collapsed;
+            full_btnPlay.Visibility = Visibility.Visible;
+        }
 
-        //private void _timer_Tick(object sender, object e)
-        //{
-        //    if (!_sliderpressed)
-        //    {
-        //        timelineSlider.Value = videoMediaElement.Position.TotalSeconds;
-        //    }
-        //}
+        private void setPauseVisible()
+        {
+            btnPlay.Visibility = Visibility.Collapsed;
+            btnPause.Visibility = Visibility.Visible;
 
-        //private void StartTimer()
-        //{
-        //    _timer.Tick += _timer_Tick;
-        //    _timer.Start();
-        //}
+            full_btnPlay.Visibility = Visibility.Collapsed;
+            full_btnPause.Visibility = Visibility.Visible;
+        }
 
-        //private void StopTimer()
-        //{
-        //    _timer.Stop();
-        //    _timer.Tick -= _timer_Tick;
-        //}
+        private void setStopVisibile()
+        {
+            btnReverse.Visibility = Visibility.Collapsed;
+            btnStop.Visibility = Visibility.Visible;
 
-        //void videoMediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
-        //{
-        //    if (videoMediaElement.CurrentState == MediaElementState.Playing)
-        //    {
-        //        if (_sliderpressed)
-        //        {
-        //            _timer.Stop();
-        //        }
-        //        else
-        //        {
-        //            _timer.Start();
-        //        }
-        //        MediaControl.IsPlaying = true;
-        //    }
+            full_btnReverse.Visibility = Visibility.Collapsed;
+            full_btnStop.Visibility = Visibility.Visible;
+        }
 
-        //    if (videoMediaElement.CurrentState == MediaElementState.Paused)
-        //    {
-        //        _timer.Stop();
-        //        MediaControl.IsPlaying = false;
-        //    }
+        private void setPrevVisible()
+        {
+            btnStop.Visibility = Visibility.Collapsed;
+            btnReverse.Visibility = Visibility.Visible;
 
-        //    if (videoMediaElement.CurrentState == MediaElementState.Stopped)
-        //    {
-        //        _timer.Stop();
-        //        timelineSlider.Value = 0;
-        //        MediaControl.IsPlaying = false;
-        //    }
-        //}
+            full_btnStop.Visibility = Visibility.Collapsed;
+            full_btnReverse.Visibility = Visibility.Visible;
+        }
 
-        //private double SliderFrequency(TimeSpan timevalue)
-        //{
-        //    double stepfrequency = -1;
+        private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
+        {
+            btnExpandGrid.Visibility = Visibility.Collapsed;
+            btnCollapseGrid.Visibility = Visibility.Visible;
+            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(375);
+            Container1.RowDefinitions.First().Height = new GridLength(375);
 
-        //    double absvalue = (int)Math.Round(timevalue.TotalSeconds, MidpointRounding.AwayFromZero);
-        //    stepfrequency = (int)(Math.Round(absvalue / 100));
+            videoContainer.Height = 350;
+       
+        }
 
-        //    if (timevalue.TotalMinutes >= 10 && timevalue.TotalMinutes < 30)
-        //    {
-        //        stepfrequency = 10;
-        //    }
-        //    else if (timevalue.TotalMinutes >= 30 && timevalue.TotalMinutes < 60)
-        //    {
-        //        stepfrequency = 30;
-        //    }
-        //    else if (timevalue.TotalHours >= 1)
-        //    {
-        //        stepfrequency = 60;
-        //    }
+        private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
+        {
+            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
+            Container1.RowDefinitions.First().Height = new GridLength(525);
 
-        //    if (stepfrequency == 0) stepfrequency += 1;
+            videoContainer.Height = 500;
+            btnCollapseGrid.Visibility = Visibility.Collapsed;
+            btnExpandGrid.Visibility = Visibility.Visible;
+        }
 
-        //    if (stepfrequency == 1)
-        //    {
-        //        stepfrequency = absvalue / 100;
-        //    }
-
-        //    return stepfrequency;
-        //}
+        private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            ListView l = (ListView)sender;
+            selectedIndex = l.SelectedIndex;
+            rightClicked = true;
+            e.Handled = true;
+        }
     }
 }

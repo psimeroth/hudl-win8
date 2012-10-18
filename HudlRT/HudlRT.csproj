@@ -151,6 +151,7 @@
     <Content Include="Assets\Beta.png" />
     <Content Include="Assets\Beta_Question.png" />
     <Content Include="Assets\dark_BG_Tiled.png" />
+    <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
     <Content Include="Assets\Hudl_Metro150.png" />
