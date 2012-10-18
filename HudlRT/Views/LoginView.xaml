@@ -9,10 +9,7 @@
     xmlns:common="using:HudlRT.Common"
     mc:Ignorable="d">
     
-    <Grid x:Name="RootGrid">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid x:Name="RootGrid" Background="White">
         <Grid.Resources>
             <Storyboard x:Name="PositionLoginForm">
                 <RepositionThemeAnimation Storyboard.TargetName="loginStackPanel" SpeedRatio="0.2" />
