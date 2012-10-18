@@ -305,7 +305,7 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
-            navigationService.NavigateToViewModel<LoginViewModel>();
+            navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
         }
     }
 }
