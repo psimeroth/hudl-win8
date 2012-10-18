@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -12,8 +14,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.Storage;
-using System.Threading.Tasks;
+using Windows.UI.ApplicationSettings;
+using Windows.UI.Popups;
+
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,9 +29,12 @@ namespace HudlRT.Views
     {
         private int keyboardOffset = 0;
 
+        private double y = 0;
+
         public LoginView()
         {
             this.InitializeComponent();
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_CommandsRequested;
 
             // Register a handler to slide the login form up if a virtual keyboard in displayed on the screen.
             Windows.UI.ViewManagement.InputPane.GetForCurrentView().Showing += (s, args) =>
@@ -42,18 +48,6 @@ namespace HudlRT.Views
                 {
                     loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, 0, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
                 };
-
-            // Set the login image here
-            var height = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"];
-            var width = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"];
-            var x = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"];
-            var y = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"];
-
-            loginImage.Height = height;
-            loginImage.Width = Width;
-            loginStackPanel.Margin = new Thickness(0,y,0,0);
-            //loginImage.Margin = new Thickness(0, -5, 0, 0);
-            
         }
 
         /// <summary>
@@ -63,6 +57,44 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (e.Parameter != null)
+            {
+                SplashScreen splash = (SplashScreen)e.Parameter;
+                splash.Dismissed += new TypedEventHandler<SplashScreen, object>(DismissedEventHandler);
+
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"] = splash.ImageLocation.Left;
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"] = splash.ImageLocation.Top;
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"] = splash.ImageLocation.Height;
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"] = splash.ImageLocation.Width;
+            }
+            else
+            {
+                loginFormStackPanel.Opacity = 1;
+            }
+
+            // Set the login image here
+            var height = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"];
+            var width = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"];
+            var x = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"];
+            y = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"];
+
+            loginImage.Height = height;
+            loginImage.Width = Width;
+            loginStackPanel.Margin = new Thickness(0, y, 0, 0);
+            //loginImage.Margin = new Thickness(0, -5, 0, 0);
+        }
+
+        void DismissedEventHandler(SplashScreen sender, object e)
+        {
+            Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, PageLoadAnimations);
+        }
+
+        private void PageLoadAnimations()
+        {
+            PositionLoginForm.Begin();
+            loginStackPanel.Margin = new Thickness(0, y - 100, 0, 0);
+            FadeInForm.BeginTime = new TimeSpan(0, 0, 1);
+            FadeInForm.Begin();
         }
 
         /// <summary>

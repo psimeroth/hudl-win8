@@ -14,8 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace HudlRT.Views
 {
     /// <summary>
@@ -31,12 +29,11 @@ namespace HudlRT.Views
         }
 
         private Size _previousVideoContainerSize = new Size();
-        private double _previousVolValue = 0;
-
-        private DispatcherTimer _timer;
-        private bool _sliderpressed = false;
+        private Size _previousVideoSize = new Size();
 
         private string _rootNamespace;
+
+        private Brush background;
 
         public string RootNamespace
         {
@@ -47,7 +44,6 @@ namespace HudlRT.Views
         public VideoPlayerView()
         {
             this.InitializeComponent();
-
             Loaded += new RoutedEventHandler(MainPage_Loaded);
         }
 
@@ -76,14 +72,14 @@ namespace HudlRT.Views
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            videoMediaElement.CurrentStateChanged += videoMediaElement_CurrentStateChanged;
-            timelineSlider.ValueChanged += timelineSlider_ValueChanged;
+            //videoMediaElement.CurrentStateChanged += videoMediaElement_CurrentStateChanged;
+            //timelineSlider.ValueChanged += timelineSlider_ValueChanged;
 
-            PointerEventHandler pointerpressedhandler = new PointerEventHandler(slider_PointerEntered);
-            timelineSlider.AddHandler(Control.PointerPressedEvent, pointerpressedhandler, true);
+            //PointerEventHandler pointerpressedhandler = new PointerEventHandler(slider_PointerEntered);
+            //timelineSlider.AddHandler(Control.PointerPressedEvent, pointerpressedhandler, true);
 
-            PointerEventHandler pointerreleasedhandler = new PointerEventHandler(slider_PointerCaptureLost);
-            timelineSlider.AddHandler(Control.PointerCaptureLostEvent, pointerreleasedhandler, true);
+            //PointerEventHandler pointerreleasedhandler = new PointerEventHandler(slider_PointerCaptureLost);
+            //timelineSlider.AddHandler(Control.PointerCaptureLostEvent, pointerreleasedhandler, true);
         }
 
         private async void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -112,9 +108,13 @@ namespace HudlRT.Views
 
             if (this.IsFullscreen)
             {
+                background = RootGrid.Background;
+                RootGrid.Background = new SolidColorBrush();
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
+                header.UpdateLayout();
                 Clips.Visibility = Visibility.Collapsed;
+                Clips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaders.Visibility = Visibility.Collapsed;
@@ -125,15 +125,19 @@ namespace HudlRT.Views
                 // Save the video containers size
                 _previousVideoContainerSize.Width = videoContainer.ActualWidth;
                 _previousVideoContainerSize.Height = videoContainer.ActualHeight;
+                _previousVideoSize.Width = videoMediaElement.ActualWidth;
+                _previousVideoSize.Height = videoMediaElement.ActualHeight;
 
                 // Set the video container to fullscreen
                 videoContainer.Width = Window.Current.Bounds.Width;
                 videoContainer.Height = Window.Current.Bounds.Height;
                 videoMediaElement.Width = Window.Current.Bounds.Width;
                 videoMediaElement.Height = Window.Current.Bounds.Height;
+                VideoGrid.Margin = new Thickness(0, 0, 0, 0);
             }
             else
             {
+                RootGrid.Background = background;
                 // Show the non full screen controls
                 header.Visibility = Visibility.Visible;
                 Clips.Visibility = Visibility.Visible;
@@ -147,8 +151,10 @@ namespace HudlRT.Views
                 // Reset the video container to it's original height
                 videoContainer.Width = _previousVideoContainerSize.Width;
                 videoContainer.Height = _previousVideoContainerSize.Height;
-                videoMediaElement.Width = _previousVideoContainerSize.Width;
-                videoMediaElement.Height = _previousVideoContainerSize.Height;
+                videoMediaElement.Width = _previousVideoSize.Width;
+                videoMediaElement.Height = _previousVideoSize.Height;
+                
+                VideoGrid.Margin = new Thickness(0, 70, 0, 0);
             }
         }
 
@@ -175,7 +181,7 @@ namespace HudlRT.Views
                 videoMediaElement.PlaybackRate = 1.0;
             }
 
-            SetupTimer();
+            //SetupTimer();
             videoMediaElement.Play();
 
             // Here we need to collapse and expand both full and non full screen buttons
@@ -289,21 +295,36 @@ namespace HudlRT.Views
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
-            double absvalue = Math.Round(
-                videoMediaElement.NaturalDuration.TimeSpan.TotalSeconds,
-                2);
+            //double absvalue = Math.Round(
+            //    videoMediaElement.NaturalDuration.TimeSpan.TotalSeconds,
+            //    2);
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
 
-            timelineSlider.Maximum = absvalue;
+            //double videoWidth = videoMediaElement.ActualWidth;
+            //double videoHeight = videoMediaElement.ActualHeight;
 
-            timelineSlider.StepFrequency =
-                SliderFrequency(videoMediaElement.NaturalDuration.TimeSpan);
+            //double cellWidth = Container2.ColumnDefinitions.ElementAt(1).ActualWidth;
+            ////double cellHeight = Container1.RowDefinitions.ElementAt(1).ActualHeight;
 
-            SetupTimer();
+            //double widthDifference = cellWidth - videoWidth;
+            ////double heightDifference = cellHeight - videoHeight;
+
+
+            //Canvas.SetLeft(playerCanvas, 300);
+            //playerCanvas.UpdateLayout();
+
+            //timelineSlider.Maximum = absvalue;
+
+            //timelineSlider.StepFrequency =
+            //    SliderFrequency(videoMediaElement.NaturalDuration.TimeSpan);
+
+            //SetupTimer();
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
-            StopTimer();
+            //StopTimer();
             btnPause.Visibility = Visibility.Collapsed;
             btnPlay.Visibility = Visibility.Visible;
             //timelineSlider.Value = 0.0;
@@ -332,114 +353,114 @@ namespace HudlRT.Views
             return hr;
         }
 
-        void slider_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("Pointer entered event fired");
-            _sliderpressed = true;
-        }
+        //void slider_PointerEntered(object sender, PointerRoutedEventArgs e)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("Pointer entered event fired");
+        //    _sliderpressed = true;
+        //}
 
-        void slider_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("Pointer capture lost event fired");
-            System.Diagnostics.Debug.WriteLine("Slider value at capture lost {0}", timelineSlider.Value);
-            //myMediaElement.PlaybackRate = 1;
-            videoMediaElement.Position = TimeSpan.FromSeconds(timelineSlider.Value);
-            _sliderpressed = false;
-        }
+        //void slider_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("Pointer capture lost event fired");
+        //    System.Diagnostics.Debug.WriteLine("Slider value at capture lost {0}", timelineSlider.Value);
+        //    //myMediaElement.PlaybackRate = 1;
+        //    videoMediaElement.Position = TimeSpan.FromSeconds(timelineSlider.Value);
+        //    _sliderpressed = false;
+        //}
 
-        void timelineSlider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("Slider old value = {0} new value = {1}.", e.OldValue, e.NewValue);
-            if (!_sliderpressed)
-            {
-                videoMediaElement.Position = TimeSpan.FromSeconds(e.NewValue);
-            }
-        }
+        //void timelineSlider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("Slider old value = {0} new value = {1}.", e.OldValue, e.NewValue);
+        //    if (!_sliderpressed)
+        //    {
+        //        videoMediaElement.Position = TimeSpan.FromSeconds(e.NewValue);
+        //    }
+        //}
 
-        private void SetupTimer()
-        {
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(timelineSlider.StepFrequency);
-            StartTimer();
-        }
+        //private void SetupTimer()
+        //{
+        //    _timer = new DispatcherTimer();
+        //    _timer.Interval = TimeSpan.FromSeconds(timelineSlider.StepFrequency);
+        //    StartTimer();
+        //}
 
-        private void _timer_Tick(object sender, object e)
-        {
-            if (!_sliderpressed)
-            {
-                timelineSlider.Value = videoMediaElement.Position.TotalSeconds;
-            }
-        }
+        //private void _timer_Tick(object sender, object e)
+        //{
+        //    if (!_sliderpressed)
+        //    {
+        //        timelineSlider.Value = videoMediaElement.Position.TotalSeconds;
+        //    }
+        //}
 
-        private void StartTimer()
-        {
-            _timer.Tick += _timer_Tick;
-            _timer.Start();
-        }
+        //private void StartTimer()
+        //{
+        //    _timer.Tick += _timer_Tick;
+        //    _timer.Start();
+        //}
 
-        private void StopTimer()
-        {
-            _timer.Stop();
-            _timer.Tick -= _timer_Tick;
-        }
+        //private void StopTimer()
+        //{
+        //    _timer.Stop();
+        //    _timer.Tick -= _timer_Tick;
+        //}
 
-        void videoMediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
-        {
-            if (videoMediaElement.CurrentState == MediaElementState.Playing)
-            {
-                if (_sliderpressed)
-                {
-                    _timer.Stop();
-                }
-                else
-                {
-                    _timer.Start();
-                }
-                MediaControl.IsPlaying = true;
-            }
+        //void videoMediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
+        //{
+        //    if (videoMediaElement.CurrentState == MediaElementState.Playing)
+        //    {
+        //        if (_sliderpressed)
+        //        {
+        //            _timer.Stop();
+        //        }
+        //        else
+        //        {
+        //            _timer.Start();
+        //        }
+        //        MediaControl.IsPlaying = true;
+        //    }
 
-            if (videoMediaElement.CurrentState == MediaElementState.Paused)
-            {
-                _timer.Stop();
-                MediaControl.IsPlaying = false;
-            }
+        //    if (videoMediaElement.CurrentState == MediaElementState.Paused)
+        //    {
+        //        _timer.Stop();
+        //        MediaControl.IsPlaying = false;
+        //    }
 
-            if (videoMediaElement.CurrentState == MediaElementState.Stopped)
-            {
-                _timer.Stop();
-                timelineSlider.Value = 0;
-                MediaControl.IsPlaying = false;
-            }
-        }
+        //    if (videoMediaElement.CurrentState == MediaElementState.Stopped)
+        //    {
+        //        _timer.Stop();
+        //        timelineSlider.Value = 0;
+        //        MediaControl.IsPlaying = false;
+        //    }
+        //}
 
-        private double SliderFrequency(TimeSpan timevalue)
-        {
-            double stepfrequency = -1;
+        //private double SliderFrequency(TimeSpan timevalue)
+        //{
+        //    double stepfrequency = -1;
 
-            double absvalue = (int)Math.Round(timevalue.TotalSeconds, MidpointRounding.AwayFromZero);
-            stepfrequency = (int)(Math.Round(absvalue / 100));
+        //    double absvalue = (int)Math.Round(timevalue.TotalSeconds, MidpointRounding.AwayFromZero);
+        //    stepfrequency = (int)(Math.Round(absvalue / 100));
 
-            if (timevalue.TotalMinutes >= 10 && timevalue.TotalMinutes < 30)
-            {
-                stepfrequency = 10;
-            }
-            else if (timevalue.TotalMinutes >= 30 && timevalue.TotalMinutes < 60)
-            {
-                stepfrequency = 30;
-            }
-            else if (timevalue.TotalHours >= 1)
-            {
-                stepfrequency = 60;
-            }
+        //    if (timevalue.TotalMinutes >= 10 && timevalue.TotalMinutes < 30)
+        //    {
+        //        stepfrequency = 10;
+        //    }
+        //    else if (timevalue.TotalMinutes >= 30 && timevalue.TotalMinutes < 60)
+        //    {
+        //        stepfrequency = 30;
+        //    }
+        //    else if (timevalue.TotalHours >= 1)
+        //    {
+        //        stepfrequency = 60;
+        //    }
 
-            if (stepfrequency == 0) stepfrequency += 1;
+        //    if (stepfrequency == 0) stepfrequency += 1;
 
-            if (stepfrequency == 1)
-            {
-                stepfrequency = absvalue / 100;
-            }
+        //    if (stepfrequency == 1)
+        //    {
+        //        stepfrequency = absvalue / 100;
+        //    }
 
-            return stepfrequency;
-        }
+        //    return stepfrequency;
+        //}
     }
 }
