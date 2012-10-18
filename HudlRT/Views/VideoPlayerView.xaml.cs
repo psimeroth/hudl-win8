@@ -37,8 +37,6 @@ namespace HudlRT.Views
         private string _rootNamespace;
 
         private Brush background;
-        double expandedWidth;
-        double shrunkenWidth;
 
         public string RootNamespace
         {
@@ -227,8 +225,6 @@ namespace HudlRT.Views
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
             setPlayVisible();
-            expandedWidth = videoMediaElement.ActualWidth;
-            shrunkenWidth = expandedWidth * .7;
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
@@ -319,7 +315,7 @@ namespace HudlRT.Views
 
             videoContainer.Height = 350;
             videoMediaElement.Height = 350;
-            videoMediaElement.Width = shrunkenWidth;
+            Clips.SelectionChanged += VideosList_SelectionChanged;
        
         }
 
@@ -333,7 +329,6 @@ namespace HudlRT.Views
 
             videoContainer.Height = 500;
             videoMediaElement.Height = 500;
-            videoMediaElement.Width = expandedWidth;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
