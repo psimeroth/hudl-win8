@@ -37,6 +37,8 @@ namespace HudlRT.Views
         private string _rootNamespace;
 
         private Brush background;
+        double expandedWidth;
+        double shrunkenWidth;
 
         public string RootNamespace
         {
@@ -225,6 +227,8 @@ namespace HudlRT.Views
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
             setPlayVisible();
+            expandedWidth = videoMediaElement.ActualWidth;
+            shrunkenWidth = expandedWidth * .7;
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
@@ -307,21 +311,29 @@ namespace HudlRT.Views
         {
             btnExpandGrid.Visibility = Visibility.Collapsed;
             btnCollapseGrid.Visibility = Visibility.Visible;
+
+            double width = videoMediaElement.ActualWidth * .7;
+
             mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(375);
             Container1.RowDefinitions.First().Height = new GridLength(375);
 
             videoContainer.Height = 350;
+            videoMediaElement.Height = 350;
+            videoMediaElement.Width = shrunkenWidth;
        
         }
 
         private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
         {
+            btnCollapseGrid.Visibility = Visibility.Collapsed;
+            btnExpandGrid.Visibility = Visibility.Visible;
+
             mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
             Container1.RowDefinitions.First().Height = new GridLength(525);
 
             videoContainer.Height = 500;
-            btnCollapseGrid.Visibility = Visibility.Collapsed;
-            btnExpandGrid.Visibility = Visibility.Visible;
+            videoMediaElement.Height = 500;
+            videoMediaElement.Width = expandedWidth;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
