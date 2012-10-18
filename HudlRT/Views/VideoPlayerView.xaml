@@ -44,7 +44,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="150" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,170,0,0">
                             <Button x:Name="btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20">
                                 <Button.Projection>
@@ -61,7 +61,7 @@
                             <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
                                     Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
                         </StackPanel>
-                        <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
+                    <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" Margin="0,170,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
                             <Button x:Name="btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" FontSize="20"/>
                             <Button x:Name="btnSlowForward" Click="btnSlowForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
@@ -188,7 +188,7 @@
                 </StackPanel>
             </Grid>
 
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,230,0,0" Orientation="Vertical" Width="150">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,224,0,0" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20" HorizontalAlignment="Center">
                     <Button.Projection>
@@ -206,7 +206,7 @@
                                     Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,230,0,0" Orientation="Vertical" Width="150">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,224,0,0" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                         Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"/>
                 <Button x:Name="full_btnSlowForward" Click="btnSlowForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
