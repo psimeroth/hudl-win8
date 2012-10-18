@@ -39,7 +39,7 @@
             </Grid.ColumnDefinitions>
             <Image x:Name="Logo" Grid.Column="0" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
             <TextBlock x:Name ="Feedback" Grid.Column="1" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Top" Width="500" Height="Auto"/>
-            <Button x:Name="LogOut" Grid.Column="2" Content="Log Out" Width="100" Height="60" HorizontalAlignment="Right" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Opacity="0.9"/>
+            <Button x:Name="LogOut" Grid.Column="2" Content="Log Out" Width="100" Height="60" HorizontalAlignment="Right" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Opacity="0.9" FontSize="18"/>
         </Grid>
         
         <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1">
