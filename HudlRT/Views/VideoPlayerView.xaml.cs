@@ -22,6 +22,8 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
+        private int selectedIndex { get; set; }
+        private bool rightClicked { get; set; }
         private bool _isFullscreenToggle = false;
         public bool IsFullscreen
         {
@@ -77,6 +79,13 @@ namespace HudlRT.Views
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
+
+            if (rightClicked)
+            {
+                ListView l = (ListView)sender;
+                l.SelectedIndex = selectedIndex;
+                rightClicked = false;
+            }
         }
 
         private void FullscreenToggle()
@@ -315,5 +324,12 @@ namespace HudlRT.Views
             btnExpandGrid.Visibility = Visibility.Visible;
         }
 
+        private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            ListView l = (ListView)sender;
+            selectedIndex = l.SelectedIndex;
+            rightClicked = true;
+            e.Handled = true;
+        }
     }
 }
