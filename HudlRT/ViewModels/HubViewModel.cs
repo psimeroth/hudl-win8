@@ -7,6 +7,7 @@ using HudlRT.Common;
 using HudlRT.Parameters;
 using Newtonsoft.Json;
 using Windows.Storage;
+using Windows.UI.ApplicationSettings;
 
 namespace HudlRT.ViewModels
 {
@@ -124,6 +125,8 @@ namespace HudlRT.ViewModels
         public HubViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
+            CharmsData.navigationService = navigationService;
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
 
         protected override void OnActivate()
