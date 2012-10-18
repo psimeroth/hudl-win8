@@ -109,6 +109,7 @@
     </Compile>
     <Compile Include="Common\CharmsData.cs" />
     <Compile Include="Common\LayoutAwarePage.cs" />
+    <Compile Include="Common\BetaDialog.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
@@ -149,7 +150,6 @@
     <Content Include="Assets\agile-hudl-logo-light.png" />
     <Content Include="Assets\agile-hudl-text-dark.png" />
     <Content Include="Assets\Beta.png" />
-    <Content Include="Assets\Beta_Question.png" />
     <Content Include="Assets\dark_BG_Tiled.png" />
     <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />

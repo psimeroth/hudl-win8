@@ -70,7 +70,7 @@ namespace HudlRT.ViewModels
             base.OnInitialize();
 
             //Login = new LoginModel();
-            ButtonText = "login";
+            ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
