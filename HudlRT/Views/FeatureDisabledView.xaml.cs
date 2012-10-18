@@ -24,7 +24,7 @@ namespace HudlRT.Views
     {
         public FeatureDisabledView()
         {
-            //this.InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
