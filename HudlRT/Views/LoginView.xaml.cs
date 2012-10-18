@@ -35,7 +35,7 @@ namespace HudlRT.Views
         public LoginView()
         {
             this.InitializeComponent();
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_CommandsRequested;
+            //SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_CommandsRequested;
         }
 
         /// <summary>
