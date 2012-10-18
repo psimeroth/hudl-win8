@@ -9,8 +9,6 @@
     xmlns:common="using:HudlRT.Common"
     mc:Ignorable="d">
     
-    <Grid x:Name="RootGrid" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-
     <Grid x:Name="RootGrid">
         <Grid.Background>
             <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
