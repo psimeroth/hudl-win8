@@ -13,6 +13,7 @@ namespace HudlRT.Common
     {
         public static void SettingCharmManager_CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs eventArgs)
         {
+            eventArgs.Request.ApplicationCommands.Clear();
             eventArgs.Request.ApplicationCommands.Add(new SettingsCommand("privacypolicy", "Privacy Policy", OpenPrivacyPolicy));
         }
 
