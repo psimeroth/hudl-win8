@@ -307,21 +307,28 @@ namespace HudlRT.Views
         {
             btnExpandGrid.Visibility = Visibility.Collapsed;
             btnCollapseGrid.Visibility = Visibility.Visible;
+
+            double width = videoMediaElement.ActualWidth * .7;
+
             mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(375);
             Container1.RowDefinitions.First().Height = new GridLength(375);
 
             videoContainer.Height = 350;
+            videoMediaElement.Height = 350;
+            Clips.SelectionChanged += VideosList_SelectionChanged;
        
         }
 
         private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
         {
+            btnCollapseGrid.Visibility = Visibility.Collapsed;
+            btnExpandGrid.Visibility = Visibility.Visible;
+
             mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
             Container1.RowDefinitions.First().Height = new GridLength(525);
 
             videoContainer.Height = 500;
-            btnCollapseGrid.Visibility = Visibility.Collapsed;
-            btnExpandGrid.Visibility = Visibility.Visible;
+            videoMediaElement.Height = 500;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)

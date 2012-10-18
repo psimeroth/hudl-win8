@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Windows.Storage;
 using HudlRT.Models;
 using Windows.UI.Xaml.Input;
+using Windows.UI.ApplicationSettings;
 
 namespace HudlRT.ViewModels
 {
@@ -63,6 +64,8 @@ namespace HudlRT.ViewModels
         public LoginViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
+            CharmsData.navigationService = navigationService;
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_LoginCommandsRequested;
         }
 
         protected override void OnInitialize()
@@ -73,6 +76,8 @@ namespace HudlRT.ViewModels
             ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
+
+            
         }
 
         public async void LoginAttempt()

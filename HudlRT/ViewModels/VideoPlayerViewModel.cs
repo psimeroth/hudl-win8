@@ -106,8 +106,6 @@ namespace HudlRT.ViewModels
         {
             var clip = (Clip)eventArgs.ClickedItem;
             SelectedClip = clip;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = clip;
             Video = clip.angles.ElementAt(0);
             index = (int)clip.order;
         }
