@@ -15,7 +15,7 @@
         </Grid.Background>
         <Grid.Resources>
             <Storyboard x:Name="PositionLoginForm">
-                <RepositionThemeAnimation Storyboard.TargetName="loginStackPanel" FromVerticalOffset="100" SpeedRatio="0.2" />
+                <RepositionThemeAnimation Storyboard.TargetName="loginStackPanel" SpeedRatio="0.2" />
             </Storyboard>
             <Storyboard x:Name="FadeInForm">
                 <DoubleAnimation Storyboard.TargetName="loginFormStackPanel" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="1" />
@@ -33,19 +33,16 @@
             <Image x:Name="loginImage" Source="ms-appx:///Assets/hudlsplash.png" HorizontalAlignment="Center" Height="170" />
 
             <StackPanel x:Name="loginFormStackPanel" Visibility="{Binding FormVisibility}" Margin="0,-70,0,0" Opacity="0">
-                <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="425"  />
-                <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="425" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" />
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
+                        <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="500"  />
+                        <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" />
+                    </StackPanel>
 
-                <Grid>
-                    <Grid Grid.Row="0">
-                        <Grid Grid.Column="0">
-                            <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" FontSize="18" Foreground="Red"/>
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <Button x:Name="Login" Content="{Binding ButtonText}" HorizontalAlignment="Right" MinHeight="50" MinWidth="100" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" />
-                        </Grid>
-                    </Grid>
-                </Grid>
+                    <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="110" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="0,-5,0,0" />
+                </StackPanel>
+
+                <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="40" FontSize="18" Foreground="Red"/>
 
                 <Grid>
                     <Grid Grid.Row="0">

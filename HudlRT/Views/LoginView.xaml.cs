@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Media.Animation;
 
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -35,19 +36,6 @@ namespace HudlRT.Views
         {
             this.InitializeComponent();
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_CommandsRequested;
-
-            // Register a handler to slide the login form up if a virtual keyboard in displayed on the screen.
-            Windows.UI.ViewManagement.InputPane.GetForCurrentView().Showing += (s, args) =>
-                {
-                    keyboardOffset = (int)args.OccludedRect.Height;
-                    loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, -1 * keyboardOffset, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
-                };
-
-            // Register a handler to slide the login form down if a virtual keyboard is removed from the screen.
-            Windows.UI.ViewManagement.InputPane.GetForCurrentView().Hiding += (s, args) =>
-                {
-                    loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, 0, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
-                };
         }
 
         /// <summary>
@@ -66,9 +54,11 @@ namespace HudlRT.Views
                 ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"] = splash.ImageLocation.Top;
                 ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"] = splash.ImageLocation.Height;
                 ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"] = splash.ImageLocation.Width;
+                loginStackPanel.Margin = new Thickness(0, splash.ImageLocation.Top, 0, 0);
             }
             else
             {
+                loginStackPanel.Margin = new Thickness(0, 0, 0, 0);
                 loginFormStackPanel.Opacity = 1;
             }
 
@@ -80,8 +70,6 @@ namespace HudlRT.Views
 
             loginImage.Height = height;
             loginImage.Width = Width;
-            loginStackPanel.Margin = new Thickness(0, y, 0, 0);
-            //loginImage.Margin = new Thickness(0, -5, 0, 0);
         }
 
         void DismissedEventHandler(SplashScreen sender, object e)
@@ -91,8 +79,9 @@ namespace HudlRT.Views
 
         private void PageLoadAnimations()
         {
+            ((RepositionThemeAnimation)PositionLoginForm.Children.ElementAt(0)).FromVerticalOffset = y + 10;
             PositionLoginForm.Begin();
-            loginStackPanel.Margin = new Thickness(0, y - 100, 0, 0);
+            loginStackPanel.Margin = new Thickness(0, -10, 0, 0);
             FadeInForm.BeginTime = new TimeSpan(0, 0, 1);
             FadeInForm.Begin();
         }
