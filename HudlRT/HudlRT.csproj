@@ -139,6 +139,7 @@
     <Content Include="Assets\agile-hudl-logo-dark.png" />
     <Content Include="Assets\agile-hudl-logo-light.png" />
     <Content Include="Assets\agile-hudl-text-dark.png" />
+    <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
     <Content Include="Assets\Hudl_Metro150.png" />
     <Content Include="Assets\Hudl_Partial150.png" />

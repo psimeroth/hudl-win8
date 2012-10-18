@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using HudlRT.ViewModels;
 using Windows.ApplicationModel.Activation;
 using Caliburn.Micro;
+using Windows.UI.Xaml;
 
 
 namespace HudlRT
@@ -42,6 +43,13 @@ namespace HudlRT
         protected override Type GetDefaultViewModel()
         {
             return typeof (LoginViewModel);
+        }
+
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        {
+            base.OnLaunched(args);
+            
+            EnsurePage(args);
         }
     }
 }
