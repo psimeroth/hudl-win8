@@ -21,7 +21,8 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class HubView : LayoutAwarePage
     {
-        //public event EventHandler<MainPageSizeChangedEventArgs> MainPageResized;
+        private int selectedIndex { get; set; }
+        private bool rightClicked { get; set; }
 
         public HubView()
         {
@@ -36,6 +37,24 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+        }
+
+        private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            ListView l = (ListView)sender;
+            selectedIndex = l.SelectedIndex;
+            rightClicked = true;
+            e.Handled = true;
+        }
+
+        private void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (rightClicked)
+            {
+                ListView l = (ListView)sender;
+                l.SelectedIndex = selectedIndex;
+                rightClicked = false;
+            }
         }
     }
 }
