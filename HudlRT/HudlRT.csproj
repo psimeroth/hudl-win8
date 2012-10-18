@@ -107,6 +107,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\CharmsData.cs" />
     <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
     <Compile Include="Models\DTOModels.cs" />
@@ -185,7 +186,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-	<Page Include="Views\FeatureDisabledView.xaml">
+    <Page Include="Views\FeatureDisabledView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
