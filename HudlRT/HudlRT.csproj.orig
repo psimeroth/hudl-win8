@@ -12,9 +12,11 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>Caliburn.Micro.WinRT.Sample_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>HudlRT_StoreKey.pfx</PackageCertificateKeyFile>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\Caliburn.Micro.WinRT\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <PackageCertificateThumbprint>DE9ECF51A9140E213100EC6963E18C0242485A77</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -105,40 +107,79 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-<<<<<<< HEAD
-    <Compile Include="Models\Models.cs" />
-    <Compile Include="Models\Team.cs" />
-=======
+    <Compile Include="Common\CharmsData.cs" />
+    <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
->>>>>>> 146a69f9ccd919655c7c6ab13f6dfb037850557b
+    <Compile Include="Models\DTOModels.cs" />
+    <Compile Include="Models\Model.cs" />
+    <Compile Include="Parameters\PagePassParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\FeatureDisabledViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\HubViewModel.cs" />
+    <Compile Include="ViewModels\VideoPlayerViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\FeatureDisabledView.xaml.cs">
+      <DependentUpon>FeatureDisabledView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HubView.xaml.cs">
       <DependentUpon>HubView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\VideoPlayerView.xaml.cs">
+      <DependentUpon>VideoPlayerView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="HudlRT_TemporaryKey.pfx" />
+    <None Include="Caliburn.Micro.WinRT.Sample_TemporaryKey.pfx" />
+    <None Include="HudlRT_StoreKey.pfx" />
     <None Include="packages.config" />
+    <None Include="VideoPlayer\Microsoft Player Framework\extension.packcomponent" />
+    <None Include="VideoPlayer\Microsoft Player Framework\License.rtf" />
+    <None Include="VideoPlayer\Microsoft Player Framework\Readme.rtf" />
+    <None Include="VideoPlayer\Microsoft Player Framework\Redist\CommonConfiguration\neutral\Microsoft.PlayerFramework\Microsoft.PlayerFramework.pri" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\agile-hudl-logo.jpg" />
+    <Content Include="Assets\agile-hudl-logo-dark.png" />
+    <Content Include="Assets\agile-hudl-logo-light.png" />
+    <Content Include="Assets\agile-hudl-text-dark.png" />
+    <Content Include="Assets\Beta.png" />
+    <Content Include="Assets\Beta_Question.png" />
+    <Content Include="Assets\dark_BG_Tiled.png" />
+<<<<<<< HEAD
+    <Content Include="Assets\hudl-hi-res-logo.png" />
+=======
+    <Content Include="Assets\hudlsplash.png" />
+>>>>>>> f3fb13adcf824a452e7abf899b90dfe542837e56
+    <Content Include="Assets\Hudl_Metro150 Centered.png" />
+    <Content Include="Assets\Hudl_Metro150.png" />
+    <Content Include="Assets\Hudl_Partial150.png" />
+    <Content Include="Assets\Hudl_Partial30.png" />
+    <Content Include="Assets\light_BG_Tiled.png" />
+    <Content Include="Assets\medium_BG_Tiled.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\extension.vsixmanifest" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\MMPPF.ico" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\References\CommonConfiguration\neutral\Microsoft.PlayerFramework.dll" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\References\CommonConfiguration\neutral\Microsoft.PlayerFramework.xml" />
+    <Content Include="VideoPlayer\Microsoft Player Framework\SDKManifest.xml" />
+    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Common\CustomStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Common\Controls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -148,11 +189,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="VideoPlayer\Microsoft Player Framework\Redist\CommonConfiguration\neutral\Microsoft.PlayerFramework\Themes\generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\FeatureDisabledView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\HubView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VideoPlayerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -176,6 +229,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utilities\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.5.0">
+      <Name>Microsoft Media Platform: Player Framework</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

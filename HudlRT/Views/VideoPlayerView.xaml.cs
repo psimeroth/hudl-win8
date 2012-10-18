@@ -344,5 +344,11 @@ namespace HudlRT.Views
             rightClicked = true;
             e.Handled = true;
         }
+
+        private void betaClick(object sender, RoutedEventArgs e)
+        {
+            Common.BetaDialog.ShowBetaDialog(sender, e);
+        }
+
     }
 }

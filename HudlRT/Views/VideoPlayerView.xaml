@@ -29,9 +29,18 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Name="header">
-                <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
-                <Image Grid.Column="1" Source="Assets/Hudl_logo.jpg" HorizontalAlignment="Left" />
-                <TextBlock x:Name="CutupName" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
+                <Image x:Name="HiddenSpacingImage" Grid.Column="1" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0" Opacity="0"/>
+                <TextBlock x:Name="CutupName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
+                <Image x:Name="BetaTag" Grid.Column="3" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0"/>
+                <Button x:Name="btnMore" Grid.Column="4" Style="{StaticResource MoreButtonStyle}" Margin="0,0,10,6" Click="betaClick"/>
             </Grid>
                 <Grid Background="Black" Grid.Row="1" x:Name="Container1">
                     <Grid.RowDefinitions>
