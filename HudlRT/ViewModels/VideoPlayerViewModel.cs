@@ -107,6 +107,7 @@ namespace HudlRT.ViewModels
             var clip = (Clip)eventArgs.ClickedItem;
             SelectedClip = clip;
             Video = clip.angles.ElementAt(0);
+            index = (int)clip.order;
         }
 
         public void NextClip(ItemClickEventArgs eventArgs)
