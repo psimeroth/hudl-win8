@@ -164,7 +164,7 @@ namespace HudlRT.Models
         {
             Clip clip = new Clip();
             clip.clipId = clipDTO.ClipID;
-            clip.order = clipDTO.OriginalOrder + 1;
+            clip.order = clipDTO.OriginalOrder;
             clip.odk = "-";
             clip.hash = "-";
             clip.playType = "-";
