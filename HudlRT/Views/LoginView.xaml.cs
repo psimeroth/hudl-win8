@@ -28,14 +28,11 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class LoginView : LayoutAwarePage
     {
-        private int keyboardOffset = 0;
-
         private double y = 0;
 
         public LoginView()
         {
             this.InitializeComponent();
-            //SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_CommandsRequested;
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace HudlRT.Common
     class CharmsData
     {
         public static INavigationService navigationService { get; set; }
-        public static void SettingCharmManager_CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs eventArgs)
+        public static void SettingCharmManager_LoginCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs eventArgs)
         {
             eventArgs.Request.ApplicationCommands.Clear();
             eventArgs.Request.ApplicationCommands.Add(new SettingsCommand("privacypolicy", "Privacy Policy", OpenPrivacyPolicy));
