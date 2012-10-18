@@ -87,6 +87,7 @@ namespace HudlRT.Views
             {
                 background = RootGrid.Background;
                 RootGrid.Background = new SolidColorBrush();
+                dataPanel.Background = new SolidColorBrush();
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
@@ -291,6 +292,27 @@ namespace HudlRT.Views
 
             full_btnStop.Visibility = Visibility.Collapsed;
             full_btnReverse.Visibility = Visibility.Visible;
+        }
+
+        private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
+        {
+            btnExpandGrid.Visibility = Visibility.Collapsed;
+            btnCollapseGrid.Visibility = Visibility.Visible;
+            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(375);
+            Container1.RowDefinitions.First().Height = new GridLength(375);
+
+            videoContainer.Height = 350;
+       
+        }
+
+        private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
+        {
+            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
+            Container1.RowDefinitions.First().Height = new GridLength(525);
+
+            videoContainer.Height = 500;
+            btnCollapseGrid.Visibility = Visibility.Collapsed;
+            btnExpandGrid.Visibility = Visibility.Visible;
         }
 
     }
