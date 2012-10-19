@@ -124,7 +124,7 @@
 
                 </Grid>
 
-                <ListView x:Name="Clips" Grid.Row="1" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedClip}" Background="{StaticResource BlackToWhiteGradient_VideoGrid}"
+                <ListView x:Name="Clips" Grid.Row="1" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedClip}" Background="{StaticResource BlackToWhiteGradient_VideoGrid}"
                           PointerPressed="ListViewItemPointerPressed">
                     <ListView.ItemTemplate>
                         <DataTemplate>
