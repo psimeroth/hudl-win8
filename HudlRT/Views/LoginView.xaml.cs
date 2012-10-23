@@ -42,7 +42,7 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter != null)
+            if (e.Parameter != null && e.Parameter.GetType() != typeof(string))
             {
                 SplashScreen splash = (SplashScreen)e.Parameter;
                 splash.Dismissed += new TypedEventHandler<SplashScreen, object>(DismissedEventHandler);
@@ -57,6 +57,10 @@ namespace HudlRT.Views
             {
                 loginStackPanel.Margin = new Thickness(0, 0, 0, 0);
                 loginFormStackPanel.Opacity = 1;
+                if (e.Parameter.GetType() == typeof(string))
+                {
+                    UserName.Text = e.Parameter.ToString();
+                }
             }
 
             // Set the login image here

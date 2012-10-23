@@ -306,7 +306,7 @@ namespace HudlRT.ViewModels
             });
         }
 
-        public void GoBack()
+        public void LogOut()
         {
             navigationService.NavigateToViewModel<LoginViewModel>();
         }
