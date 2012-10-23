@@ -154,7 +154,7 @@ namespace HudlRT.ViewModels
         public async void GetTeams()
         {
             var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
-            if (!teams.Equals(""))
+            if (!string.IsNullOrEmpty(teams))
             {
                 var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
                 model.teams = new BindableCollection<Team>();
@@ -174,7 +174,7 @@ namespace HudlRT.ViewModels
         public async void GetGames(Season s)
         {
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
-            if (!games.Equals(""))
+            if (!string.IsNullOrEmpty(games))
             {
                 s.games = new BindableCollection<Game>();
                 var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
@@ -194,7 +194,7 @@ namespace HudlRT.ViewModels
         public async void GetGameCategories(Game game)
         {
             var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
-            if (!categories.Equals(""))
+            if (!string.IsNullOrEmpty(categories))
             {
                 game.categories = new BindableCollection<Category>();
                 var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
@@ -214,7 +214,7 @@ namespace HudlRT.ViewModels
         public async void GetCutupsByCategory(Category category)
         {
             var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
-            if (!cutups.Equals(""))
+            if (!string.IsNullOrEmpty(cutups))
             {
                 category.cutups = new BindableCollection<Cutup>();
                 var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);

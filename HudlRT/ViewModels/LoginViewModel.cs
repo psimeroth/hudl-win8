@@ -99,7 +99,7 @@ namespace HudlRT.ViewModels
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
 
             // Once the async call completes check the response, if good show the hub view, if not show an error message.
-            if (!loginResponse.Equals(""))
+            if (!string.IsNullOrEmpty(loginResponse))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
                 ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"] = obj.Token;
@@ -113,16 +113,16 @@ namespace HudlRT.ViewModels
                 //need to save privileges to roamingsettings
                 string urlExtension = "privileges/" + ApplicationData.Current.RoamingSettings.Values["hudl-userId"].ToString();
                 var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension);
-                if (!privilegesResponse.Equals(""))
+                if (!string.IsNullOrEmpty(privilegesResponse))
                 {
                     //Needs to be improved in the future if we want to 
                     if ( privilegesResponse.Contains("Win8App") )
                     {
-                         navigationService.NavigateToViewModel(typeof(HubViewModel));
+                         navigationService.NavigateToViewModel<HubViewModel>();
                     }
                     else
                     {
-                        navigationService.NavigateToViewModel(typeof(FeatureDisabledViewModel));
+                        navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
                     }
                 }
                 else

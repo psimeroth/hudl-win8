@@ -76,7 +76,7 @@ namespace HudlRT.ViewModels
         public async void GetClipsByCutup(Cutup cutup)
         {
             var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            if (!clips.Equals(""))
+            if (!string.IsNullOrEmpty(clips))
             {
                 cutup.clips = new BindableCollection<Clip>();
                 var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
