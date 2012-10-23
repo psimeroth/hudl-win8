@@ -248,7 +248,14 @@ namespace HudlRT.Models
                 angle.angleName = angleDTO.AngleName;
                 angle.clipAngleId = angleDTO.ClipAngleID;
                 angle.duration = angleDTO.Duration;
-                angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;//throws error if there is no filename
+                if (angleDTO.Files.FirstOrDefault() != null)
+                {
+                    angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;//throws error if there is no filename
+                }
+                else
+                {
+                    return null;
+                }
                 angle.thumbnailLocation = angleDTO.LargeThumbnailFileName;
                 return angle;
             }
