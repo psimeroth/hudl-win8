@@ -114,11 +114,11 @@ namespace HudlRT.ViewModels
                     //Needs to be improved in the future if we want to 
                     if ( privilegesResponse.Contains("Win8App") )
                     {
-                         navigationService.NavigateToViewModel(typeof(HubViewModel));
+                         navigationService.NavigateToViewModel<HubViewModel>();
                     }
                     else
                     {
-                        navigationService.NavigateToViewModel(typeof(FeatureDisabledViewModel));
+                        navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
                     }
                 }
                 else
