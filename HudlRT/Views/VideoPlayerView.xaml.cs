@@ -22,6 +22,8 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
+        private int selectedIndex { get; set; }
+        private bool rightClicked { get; set; }
         private bool _isFullscreenToggle = false;
         public bool IsFullscreen
         {
@@ -77,6 +79,13 @@ namespace HudlRT.Views
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
+
+            if (rightClicked)
+            {
+                ListView l = (ListView)sender;
+                l.SelectedIndex = selectedIndex;
+                rightClicked = false;
+            }
         }
 
         private void FullscreenToggle()
@@ -87,6 +96,7 @@ namespace HudlRT.Views
             {
                 background = RootGrid.Background;
                 RootGrid.Background = new SolidColorBrush();
+                dataPanel.Background = new SolidColorBrush();
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
@@ -163,6 +173,7 @@ namespace HudlRT.Views
             // Here we need to collapse and expand both full and non full screen buttons
             setPauseVisible();
             setStopVisibile();
+            setPlaybackButtonsVisible();
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
@@ -171,6 +182,7 @@ namespace HudlRT.Views
 
             // Here we need to collapse and expand both full and non full screen buttons
             setPlayVisible();
+            setPlaybackButtonsVisible();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -178,49 +190,88 @@ namespace HudlRT.Views
             videoMediaElement.Stop();
             setPlayVisible();
             setPrevVisible();
+            setPlaybackButtonsVisible();
         }
 
         private void btnFastForward_Click(object sender, RoutedEventArgs e)
         {
+            
             videoMediaElement.DefaultPlaybackRate = 2.0;
             videoMediaElement.Play();
             
             setPauseVisible();
             setStopVisibile();
+            setPlaybackButtonsVisible();
+
+            btnFastForward.Visibility = Visibility.Collapsed;
+            btnFastForward_Checked.Visibility = Visibility.Visible;
+
+            full_btnFastForward.Visibility = Visibility.Collapsed;
+            full_btnFastForward_Checked.Visibility = Visibility.Visible;
+
         }
 
         private void btnFastReverse_Click(object sender, RoutedEventArgs e)
         {
+
             videoMediaElement.DefaultPlaybackRate = -2.0;
             videoMediaElement.Play();
             setPauseVisible();
+            setPlaybackButtonsVisible();
+
+            btnFastReverse.Visibility = Visibility.Collapsed;
+            btnFastReverse_Checked.Visibility = Visibility.Visible;
+
+            full_btnFastReverse.Visibility = Visibility.Collapsed;
+            full_btnFastReverse_Checked.Visibility = Visibility.Visible;
         }
 
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
         {
+
             videoMediaElement.DefaultPlaybackRate = -0.5;
             videoMediaElement.Play();
             setPauseVisible();
+            setPlaybackButtonsVisible();
+
+            btnSlowReverse.Visibility = Visibility.Collapsed;
+            btnSlowReverse_Checked.Visibility = Visibility.Visible;
+
+            full_btnSlowReverse.Visibility = Visibility.Collapsed;
+            full_btnSlowReverse_Checked.Visibility = Visibility.Visible;
         }
 
         private void btnSlowForward_Click(object sender, RoutedEventArgs e)
         {
+
             videoMediaElement.DefaultPlaybackRate = 0.5;
             videoMediaElement.Play();
             
             setPauseVisible();
             setStopVisibile();
+            setPlaybackButtonsVisible();
+
+            btnSlowForward.Visibility = Visibility.Collapsed;
+            btnSlowForward_Checked.Visibility = Visibility.Visible;
+
+            full_btnSlowForward.Visibility = Visibility.Collapsed;
+            full_btnSlowForward_Checked.Visibility = Visibility.Visible;
         }
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
-            setPlayVisible();
+            videoMediaElement.DefaultPlaybackRate = 1.0;
+            videoMediaElement.PlaybackRate = 1.0;
+            setPauseVisible();
+            setStopVisibile();
+            setPlaybackButtonsVisible();
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
             setPlayVisible();
             setPrevVisible();
+            setPlaybackButtonsVisible();
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -291,6 +342,80 @@ namespace HudlRT.Views
 
             full_btnStop.Visibility = Visibility.Collapsed;
             full_btnReverse.Visibility = Visibility.Visible;
+        }
+
+        private void setPlaybackButtonsVisible()
+        {
+            btnFastForward_Checked.Visibility = Visibility.Collapsed;
+            btnFastForward.Visibility = Visibility.Visible;
+
+            btnFastReverse_Checked.Visibility = Visibility.Collapsed;
+            btnFastReverse.Visibility = Visibility.Visible;
+
+            btnSlowForward_Checked.Visibility = Visibility.Collapsed;
+            btnSlowForward.Visibility = Visibility.Visible;
+
+            btnSlowReverse_Checked.Visibility = Visibility.Collapsed;
+            btnSlowReverse.Visibility = Visibility.Visible;
+
+            full_btnFastForward_Checked.Visibility = Visibility.Collapsed;
+            full_btnFastForward.Visibility = Visibility.Visible;
+
+            full_btnFastReverse_Checked.Visibility = Visibility.Collapsed;
+            full_btnFastReverse.Visibility = Visibility.Visible;
+
+            full_btnSlowForward_Checked.Visibility = Visibility.Collapsed;
+            full_btnSlowForward.Visibility = Visibility.Visible;
+
+            full_btnSlowReverse_Checked.Visibility = Visibility.Collapsed;
+            full_btnSlowReverse.Visibility = Visibility.Visible;
+        }
+
+        private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
+        {
+            btnExpandGrid.Visibility = Visibility.Collapsed;
+            btnCollapseGrid.Visibility = Visibility.Visible;
+
+            TransportControlsPanel_Left.Margin = new Thickness(0, 18, 0, 0);
+            TransportControlsPanel_Right.Margin = new Thickness(0, 18, 0, 0);
+
+            double width = videoMediaElement.ActualWidth * .7;
+
+            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(375);
+            Container1.RowDefinitions.First().Height = new GridLength(375);
+
+            videoContainer.Height = 350;
+            videoMediaElement.Height = 350;
+            Clips.SelectionChanged += VideosList_SelectionChanged;
+       
+        }
+
+        private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
+        {
+            btnCollapseGrid.Visibility = Visibility.Collapsed;
+            btnExpandGrid.Visibility = Visibility.Visible;
+
+            TransportControlsPanel_Left.Margin = new Thickness(0, 170, 0, 0);
+            TransportControlsPanel_Right.Margin = new Thickness(0, 170, 0, 0);
+
+            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
+            Container1.RowDefinitions.First().Height = new GridLength(525);
+
+            videoContainer.Height = 500;
+            videoMediaElement.Height = 500;
+        }
+
+        private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            ListView l = (ListView)sender;
+            selectedIndex = l.SelectedIndex;
+            rightClicked = true;
+            e.Handled = true;
+        }
+
+        private void betaClick(object sender, RoutedEventArgs e)
+        {
+            Common.BetaDialog.ShowBetaDialog(sender, e);
         }
 
     }
