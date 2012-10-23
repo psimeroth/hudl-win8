@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Media.Animation;
 
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -25,25 +28,11 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class LoginView : LayoutAwarePage
     {
-        private int keyboardOffset = 0;
+        private double y = 0;
 
         public LoginView()
         {
             this.InitializeComponent();
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_CommandsRequested;
-
-            // Register a handler to slide the login form up if a virtual keyboard in displayed on the screen.
-            Windows.UI.ViewManagement.InputPane.GetForCurrentView().Showing += (s, args) =>
-                {
-                    keyboardOffset = (int)args.OccludedRect.Height;
-                    loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, -1 * keyboardOffset, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
-                };
-
-            // Register a handler to slide the login form down if a virtual keyboard is removed from the screen.
-            Windows.UI.ViewManagement.InputPane.GetForCurrentView().Hiding += (s, args) =>
-                {
-                    loginStackPanel.Margin = new Thickness(loginStackPanel.Margin.Left, 0, loginStackPanel.Margin.Right, loginStackPanel.Margin.Bottom);
-                };
         }
 
         /// <summary>
@@ -53,6 +42,45 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (e.Parameter != null)
+            {
+                SplashScreen splash = (SplashScreen)e.Parameter;
+                splash.Dismissed += new TypedEventHandler<SplashScreen, object>(DismissedEventHandler);
+
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"] = splash.ImageLocation.Left;
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"] = splash.ImageLocation.Top;
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"] = splash.ImageLocation.Height;
+                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"] = splash.ImageLocation.Width;
+                loginStackPanel.Margin = new Thickness(0, splash.ImageLocation.Top, 0, 0);
+            }
+            else
+            {
+                loginStackPanel.Margin = new Thickness(0, 0, 0, 0);
+                loginFormStackPanel.Opacity = 1;
+            }
+
+            // Set the login image here
+            var height = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"];
+            var width = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"];
+            var x = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"];
+            y = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"];
+
+            loginImage.Height = height;
+            loginImage.Width = Width;
+        }
+
+        void DismissedEventHandler(SplashScreen sender, object e)
+        {
+            Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, PageLoadAnimations);
+        }
+
+        private void PageLoadAnimations()
+        {
+            ((RepositionThemeAnimation)PositionLoginForm.Children.ElementAt(0)).FromVerticalOffset = y + 10;
+            PositionLoginForm.Begin();
+            loginStackPanel.Margin = new Thickness(0, -10, 0, 0);
+            FadeInForm.BeginTime = new TimeSpan(0, 0, 1);
+            FadeInForm.Begin();
         }
 
         /// <summary>

@@ -35,9 +35,14 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Image x:Name="Logo" Grid.Column="0" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
-            <TextBlock x:Name ="Feedback" Grid.Column="1" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Top" Width="500" Height="Auto"/>
+            <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" Visibility="Collapsed"/>
+            <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
+            <Image x:Name="BetaTag" Grid.Column="3" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0"/>
+            <Button x:Name="btnMore" Click="betaClick" Grid.Column="4" Style="{StaticResource MoreButtonStyle}" Margin="0,0,0,6"/>
         </Grid>
         
         <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1">
@@ -64,7 +69,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedTeam}" Style="{StaticResource listView_SectionPageStyle}">
+            <ListView x:Name="Teams" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedTeam}" Style="{StaticResource listView_SectionPageStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border MinHeight="75">
@@ -73,7 +78,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Seasons" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedSeason}" Style="{StaticResource listView_SectionPageStyle}">
+            <ListView x:Name="Seasons" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedSeason}" Style="{StaticResource listView_SectionPageStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border MinHeight="75">
@@ -82,7 +87,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Games" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedGame}" Style="{StaticResource listView_SectionPageStyle}">
+            <ListView x:Name="Games" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedGame}" Style="{StaticResource listView_SectionPageStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border MinHeight="75">
@@ -91,7 +96,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Categories" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedCategory}" Style="{StaticResource listView_SectionPageStyle}">
+            <ListView x:Name="Categories" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedCategory}" Style="{StaticResource listView_SectionPageStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border MinHeight="75">
@@ -100,7 +105,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="Cutups" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}">
+            <ListView x:Name="Cutups" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border MinHeight="75">

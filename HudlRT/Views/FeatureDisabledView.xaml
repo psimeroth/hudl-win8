@@ -10,7 +10,117 @@
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock x:Name="BetaNotification"  />
+    <Grid x:Name="RootGrid">
+        <Grid.Background>
+            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!--For snapped view-->
+        <StackPanel x:Name="SnappedImage" Grid.RowSpan="2" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
+            <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
+            <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
+        </StackPanel>
+
+
+        <Grid x:Name="TopTitleGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
+            <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
+            <Image x:Name="BetaTag" Grid.Column="3" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0"/>
+
+        </Grid>
+        <Grid x:Name="MainBaseGrid" Grid.Row="2" Background="{StaticResource BlackToWhiteGradient}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="600"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="NotificationGrid" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="WelcomeHeader" Grid.Row="0" FontSize="36" FontWeight="ExtraBlack" Margin="20,60,0,0">
+                    Welcome to Hudl for Windows 8!
+                </TextBlock>
+                <TextBlock x:Name="WelcomeText" Grid.Row="2" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
+                    The application is currently a closed beta,
+                    but thanks for stopping by! Check back soon
+                    to see the whole app in action.
+                </TextBlock>
+                <TextBlock x:Name="ParticipateHeader" Grid.Row="3" FontSize="36" FontWeight="ExtraBlack" Margin="20,40,0,0">
+                    Want to Participate?
+                </TextBlock>
+                <TextBlock x:Name="ParticipateText" Grid.Row="4" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
+                    If you’d like to try out the beta, we’d
+                    love to get your feedback! Please contact
+                    Kyle Deterding for more details:
+                </TextBlock>
+                <HyperlinkButton x:Name="hyperlinkButtonEmail" Grid.Row="5" NavigateUri="mailto:kyle.deterding@hudl.com?subject=HudlRT%20Beta%20Access" Margin="30,0,0,0" Padding="0">
+                    <HyperlinkButton.Content>
+                        <TextBlock TextWrapping="Wrap" Text="kyle.deterding@hudl.com" FontSize="30" Foreground="{StaticResource HudlLightBlue}" />
+                    </HyperlinkButton.Content>
+                </HyperlinkButton>
+            </Grid>
+            <Grid x:Name="SideImageGrid" Grid.Column="1">
+                <Image x:Name="SideImage" Grid.Column="1" Source="ms-appx:///Assets/hudl-hi-res-logo.png" Width="300" Margin="20,-200,20,0"/>
+            </Grid>
+        </Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="FullScreenLandscape">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Filled">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="FullScreenPortrait">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Snapped">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopTitleGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MainBaseGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
     </Grid>
 </common:LayoutAwarePage>

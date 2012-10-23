@@ -9,34 +9,38 @@
     xmlns:common="using:HudlRT.Common"
     mc:Ignorable="d">
     
-    <Grid x:Name="RootGrid">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid x:Name="RootGrid" Background="White">
+        <Grid.Resources>
+            <Storyboard x:Name="PositionLoginForm">
+                <RepositionThemeAnimation Storyboard.TargetName="loginStackPanel" SpeedRatio="0.2" />
+            </Storyboard>
+            <Storyboard x:Name="FadeInForm">
+                <DoubleAnimation Storyboard.TargetName="loginFormStackPanel" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="1" />
+            </Storyboard>
+        </Grid.Resources>
+        <Image Source="ms-appx:///Assets/Beta.png" Height="60" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,0"/>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
-                <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
-                <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
+            <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
+            <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
-        <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Center" Width="Auto" Margin="0,0,0,0">
-            <Image x:Name="loginImage" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Center" Height="170" />
-            <StackPanel Visibility="{Binding FormVisibility}">
-                <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="425"  />
-                
-                <Grid>
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,3,5" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="0" />
-                        <Button x:Name="Login" Content="{Binding ButtonText}" HorizontalAlignment="Right" MinHeight="56" MinWidth="100" Grid.Column="1" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" Margin="0,-5,-3,0" FontSize="18" />
-                    </Grid>
-                </Grid>
+        <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" Width="Auto" Margin="0,0,0,0">
 
-                <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" FontSize="18" Foreground="Red"/>
-                
+            <Image x:Name="loginImage" Source="ms-appx:///Assets/hudlsplash.png" HorizontalAlignment="Center" Height="170" />
+
+            <StackPanel x:Name="loginFormStackPanel" Visibility="{Binding FormVisibility}" Margin="0,-70,0,0" Opacity="0">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
+                        <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="500"  />
+                        <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" />
+                    </StackPanel>
+
+                    <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="110" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="0,-5,0,0" />
+                </StackPanel>
+
+                <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="40" FontSize="18" Foreground="Red"/>
+
                 <Grid>
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
