@@ -39,8 +39,6 @@
                 <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
                 <Image x:Name="HiddenSpacingImage" Grid.Column="1" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0" Opacity="0"/>
                 <TextBlock x:Name="CutupName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
-                <Image x:Name="BetaTag" Grid.Column="3" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0"/>
-                <Button x:Name="btnMore" Grid.Column="4" Style="{StaticResource MoreButtonStyle}" Margin="0,0,10,6" Click="betaClick"/>
             </Grid>
                 <Grid Background="Black" Grid.Row="1" x:Name="Container1">
                     <Grid.RowDefinitions>
@@ -289,6 +287,9 @@
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VideoGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

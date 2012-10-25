@@ -18,7 +18,6 @@
                 <DoubleAnimation Storyboard.TargetName="loginFormStackPanel" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="1" />
             </Storyboard>
         </Grid.Resources>
-        <Image Source="ms-appx:///Assets/Beta.png" Height="60" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,0"/>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
             <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
