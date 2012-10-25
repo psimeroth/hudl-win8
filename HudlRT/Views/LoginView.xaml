@@ -27,16 +27,29 @@
         <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" Width="Auto" Margin="0,0,0,0">
 
             <Image x:Name="loginImage" Source="ms-appx:///Assets/hudlsplash.png" HorizontalAlignment="Center" Height="170" />
-
+            
             <StackPanel x:Name="loginFormStackPanel" Visibility="{Binding FormVisibility}" Margin="0,-70,0,0" Opacity="0">
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Orientation="Vertical">
-                        <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="500"  />
-                        <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="0,0,0,5" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" />
-                    </StackPanel>
 
-                    <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="110" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="0,-5,0,0" />
-                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" Margin="0,-5,0,0">Username</TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="1" FontSize="25" VerticalAlignment="Center" Margin="0,-5,0,0">Password</TextBlock>
+
+                    <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" Grid.Column="1" Grid.Row="0" />
+                    <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="1" Grid.Row="1" />
+
+                    <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="110" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="0,-5,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" />
+                </Grid>
 
                 <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="40" FontSize="18" Foreground="Red"/>
 
