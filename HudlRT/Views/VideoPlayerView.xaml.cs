@@ -60,11 +60,20 @@ namespace HudlRT.Views
 
             videoMediaElement.ManipulationStarted += videoMediaElement_ManipulationStarted;
             videoMediaElement.ManipulationCompleted += videoMediaElement_ManipulationCompleted;
+            videoMediaElement.ManipulationDelta += videoMediaElement_ManipulationDelta;
 
             gridHeaders.RenderTransform = this.dragTranslation;
             Clips.RenderTransform = this.dragTranslation;
             
             Loaded += new RoutedEventHandler(MainPage_Loaded);
+        }
+
+        void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if (e.Delta.Scale >= 1.1 && !IsFullscreen)
+                FullscreenToggle();
+            else if (e.Delta.Scale <= .92 && IsFullscreen)
+                FullscreenToggle();
         }
 
         void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
