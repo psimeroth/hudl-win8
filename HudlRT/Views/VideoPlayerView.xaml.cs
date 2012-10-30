@@ -88,7 +88,7 @@ namespace HudlRT.Views
                 FullscreenToggle();
 
             Point currentPoint = e.Position;
-            if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 200))
+            if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
             {
                 FullscreenToggle();
                 if (!isGridCollapsed)
