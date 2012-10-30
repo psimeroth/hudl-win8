@@ -116,11 +116,11 @@ namespace HudlRT.Views
                     btnCollapseGrid_Click(null, null);
             }
 
-            else if (initialPoint.Y - currentPoint.Y >= 50 && isGridCollapsed && !IsFullscreen)
+            else if (initialPoint.Y - currentPoint.Y >= 75 && isGridCollapsed && !IsFullscreen)
                 btnExpandGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -50 && !isGridCollapsed && !IsFullscreen)
+            else if (initialPoint.Y - currentPoint.Y <= -75 && !isGridCollapsed && !IsFullscreen)
                 btnCollapseGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -50 && isGridCollapsed && !IsFullscreen)
+            else if (initialPoint.Y - currentPoint.Y <= -75 && isGridCollapsed && !IsFullscreen)
                 FullscreenToggle();
         }
 
