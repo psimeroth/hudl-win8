@@ -82,7 +82,6 @@ namespace HudlRT.Views
 
         void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if ((currentPoint.X == 0 && currentPoint.Y == 0) || (currentPoint.X - e.Position.X <= 50 && currentPoint.X - e.Position.X >= -50))
                 currentPoint = e.Position;
         }
 
@@ -449,8 +448,8 @@ namespace HudlRT.Views
             btnExpandGrid.Visibility = Visibility.Collapsed;
             btnCollapseGrid.Visibility = Visibility.Visible;
 
-            TransportControlsPanel_Left.Margin = new Thickness(0, 18, 0, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(0, 18, 0, 0);
+            TransportControlsPanel_Left.Margin = new Thickness(0, 18, 45, 0);
+            TransportControlsPanel_Right.Margin = new Thickness(45, 18, 0, 0);
 
             double width = videoMediaElement.ActualWidth * .7;
 
@@ -468,8 +467,8 @@ namespace HudlRT.Views
             btnCollapseGrid.Visibility = Visibility.Collapsed;
             btnExpandGrid.Visibility = Visibility.Visible;
 
-            TransportControlsPanel_Left.Margin = new Thickness(0, 170, 0, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(0, 170, 0, 0);
+            TransportControlsPanel_Left.Margin = new Thickness(0, 110, 45, 0);
+            TransportControlsPanel_Right.Margin = new Thickness(45, 110, 0, 0);
 
             mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
             Container1.RowDefinitions.First().Height = new GridLength(525);
