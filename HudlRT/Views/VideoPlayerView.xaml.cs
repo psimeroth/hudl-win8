@@ -45,6 +45,7 @@ namespace HudlRT.Views
         }
 
         Point initialPoint = new Point();
+        Point currentPoint = new Point();
         bool isGridCollapsed = true;
         private  TranslateTransform dragTranslation;
 
@@ -57,6 +58,7 @@ namespace HudlRT.Views
 
             gridHeaders.ManipulationStarted += gridHeaders_ManipulationStarted;
             gridHeaders.ManipulationDelta += gridHeaders_ManipulationDelta;
+            gridHeaders.ManipulationInertiaStarting += gridHeaders_ManipulationInertiaStarting;
 
             videoMediaElement.ManipulationStarted += videoMediaElement_ManipulationStarted;
             videoMediaElement.ManipulationCompleted += videoMediaElement_ManipulationCompleted;
@@ -66,6 +68,16 @@ namespace HudlRT.Views
             Clips.RenderTransform = this.dragTranslation;
             
             Loaded += new RoutedEventHandler(MainPage_Loaded);
+        }
+
+        void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+        {
+            if (initialPoint.Y - currentPoint.Y >= 150 && isGridCollapsed)
+                btnExpandGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -150 && !isGridCollapsed)
+                btnCollapseGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -150 && isGridCollapsed)
+                FullscreenToggle();
         }
 
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -104,15 +116,7 @@ namespace HudlRT.Views
 
         void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            Point currentPoint = e.Position;
-            if (initialPoint.Y - currentPoint.Y >= 150 && isGridCollapsed)
-                btnExpandGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -150 && !isGridCollapsed)
-                btnCollapseGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -150 && isGridCollapsed)
-                FullscreenToggle();
-
-            
+            currentPoint = e.Position;
         }
 
         void gridHeaders_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
