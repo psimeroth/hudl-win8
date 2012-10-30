@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
+using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 
 namespace HudlRT.ViewModels
 {
@@ -60,6 +62,8 @@ namespace HudlRT.ViewModels
         }
 
         private int index = 0;
+        Point initialPoint = new Point();
+        Point currentPoint = new Point();
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -139,6 +143,29 @@ namespace HudlRT.ViewModels
                 else
                     SelectedClip = Clips.ElementAt(--index);
                     Video = SelectedClip.angles.ElementAt(0);
+            }
+        }
+
+        void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            currentPoint = e.Position;
+        }
+
+        void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            initialPoint = e.Position;
+        }
+
+        void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventHandler e)
+        {
+            if (initialPoint.X - currentPoint.X >= 50)
+            {
+                NextClip(null);
+            }
+
+            else if (initialPoint.X - currentPoint.X <= -50)
+            {
+                PreviousClip(null);
             }
         }
 

@@ -94,14 +94,6 @@ namespace HudlRT.Views
                 if (!isGridCollapsed)
                     btnCollapseGrid_Click(null, null);
             }
-
-            else if (initialPoint.X - currentPoint.X >= -50)
-            {
-            }
-
-            else if (initialPoint.X - currentPoint.X <= -50)
-            {
-            }
         }
 
         void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)

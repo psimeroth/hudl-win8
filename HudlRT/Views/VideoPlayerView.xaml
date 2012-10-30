@@ -191,7 +191,10 @@
                                    IsSkipAheadEnabled="False"
                                    IsSkipBackEnabled="False"
                                    IsVolumeVisible="False"
-                                   ManipulationMode="All"/>
+                                   ManipulationMode="All"
+                                   caliburn:Message.Attach="[Event ManipulationStarted] = [Action videoMediaElement_ManipulationStarted($this,$eventArgs)];
+                                   [Event ManipulationDelta] = [Action videoMediaElement_ManipulationDelta($this,$eventArgs)];
+                                   [Event ManipulationInertiaStarting] = [Action videoMediaElement_ManipulationInertiaStarting($this,$eventArgs)]"/>
             </ContentControl>
         </Grid>
 
