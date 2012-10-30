@@ -56,7 +56,7 @@ namespace HudlRT.Views
             dragTranslation = new TranslateTransform();
 
             gridHeaders.ManipulationStarted += gridHeaders_ManipulationStarted;
-            gridHeaders.ManipulationCompleted += gridHeaders_ManipulationCompleted;
+            gridHeaders.ManipulationDelta += gridHeaders_ManipulationDelta;
 
             videoMediaElement.ManipulationStarted += videoMediaElement_ManipulationStarted;
             videoMediaElement.ManipulationCompleted += videoMediaElement_ManipulationCompleted;
@@ -74,6 +74,22 @@ namespace HudlRT.Views
                 FullscreenToggle();
             else if (e.Delta.Scale <= .92 && IsFullscreen)
                 FullscreenToggle();
+
+            Point currentPoint = e.Position;
+            if (initialPoint.Y - currentPoint.Y >= 75 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 200))
+            {
+                FullscreenToggle();
+                if (!isGridCollapsed)
+                    btnCollapseGrid_Click(null, null);
+            }
+
+            else if (initialPoint.X - currentPoint.X >= -75)
+            {
+            }
+
+            else if (initialPoint.X - currentPoint.X <= -75)
+            {
+            }
         }
 
         void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
@@ -83,23 +99,17 @@ namespace HudlRT.Views
 
         void videoMediaElement_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            Point currentPoint = e.Position;
-            if (initialPoint.Y - currentPoint.Y >= 75 && IsFullscreen &&  (initialPoint.Y >= Window.Current.Bounds.Height - 200))
-            {
-                FullscreenToggle();
-                if (!isGridCollapsed)
-                    btnCollapseGrid_Click(null, null);
-            }
+            
         }
 
-        void gridHeaders_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             Point currentPoint = e.Position;
             if (initialPoint.Y - currentPoint.Y >= 75 && isGridCollapsed)
                 btnExpandGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= 75 && !isGridCollapsed)
+            else if (initialPoint.Y - currentPoint.Y <= -75 && !isGridCollapsed)
                 btnCollapseGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= 75 && isGridCollapsed)
+            else if (initialPoint.Y - currentPoint.Y <= -75 && isGridCollapsed)
                 FullscreenToggle();
 
             
