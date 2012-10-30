@@ -94,6 +94,10 @@ namespace HudlRT.Views
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             currentPoint = e.Position;
+            if (e.Delta.Scale >= 1.1 && !IsFullscreen)
+                FullscreenToggle();
+            else if (e.Delta.Scale <= .92 && IsFullscreen)
+                FullscreenToggle();
         }
             
 
@@ -104,12 +108,7 @@ namespace HudlRT.Views
 
         private void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
         {
-            if (e.Delta.Scale >= 1.1 && !IsFullscreen)
-                FullscreenToggle();
-            else if (e.Delta.Scale <= .92 && IsFullscreen)
-                FullscreenToggle();
-
-            else if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
+            if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
             {
                 FullscreenToggle();
                 if (!isGridCollapsed)
