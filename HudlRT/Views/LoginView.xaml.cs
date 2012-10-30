@@ -42,7 +42,7 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter != null && e.Parameter.GetType() != typeof(string))
+            if (e.Parameter != null)
             {
                 SplashScreen splash = (SplashScreen)e.Parameter;
                 splash.Dismissed += new TypedEventHandler<SplashScreen, object>(DismissedEventHandler);
@@ -57,10 +57,6 @@ namespace HudlRT.Views
             {
                 loginStackPanel.Margin = new Thickness(0, 0, 0, 0);
                 loginFormStackPanel.Opacity = 1;
-                if (e.Parameter.GetType() == typeof(string))
-                {
-                    UserName.Text = e.Parameter.ToString();
-                }
             }
 
             // Set the login image here
@@ -71,6 +67,14 @@ namespace HudlRT.Views
 
             loginImage.Height = height;
             loginImage.Width = Width;
+
+            //If Username exists in roaming settings, enter it for user
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            if (roamingSettings.Values["UserName"] != null)
+            {
+                UserName.Text = roamingSettings.Values["UserName"].ToString();
+                Password.SelectAll();
+            }
         }
 
         void DismissedEventHandler(SplashScreen sender, object e)

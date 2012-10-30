@@ -107,8 +107,8 @@ namespace HudlRT.ViewModels
                 LoginFeedback = "";
 
                 //save username to app data
-                Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                localSettings.Values["UserName"] = UserName;
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                roamingSettings.Values["UserName"] = UserName;
 
                 //need to save privileges to roamingsettings
                 string urlExtension = "privileges/" + ApplicationData.Current.RoamingSettings.Values["hudl-userId"].ToString();
