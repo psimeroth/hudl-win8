@@ -76,18 +76,18 @@ namespace HudlRT.Views
                 FullscreenToggle();
 
             Point currentPoint = e.Position;
-            if (initialPoint.Y - currentPoint.Y >= 75 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 200))
+            if (initialPoint.Y - currentPoint.Y >= 150 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 200))
             {
                 FullscreenToggle();
                 if (!isGridCollapsed)
                     btnCollapseGrid_Click(null, null);
             }
 
-            else if (initialPoint.X - currentPoint.X >= -75)
+            else if (initialPoint.X - currentPoint.X >= -150)
             {
             }
 
-            else if (initialPoint.X - currentPoint.X <= -75)
+            else if (initialPoint.X - currentPoint.X <= -150)
             {
             }
         }
