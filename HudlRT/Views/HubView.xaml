@@ -41,8 +41,6 @@
             </Grid.ColumnDefinitions>
             <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" Visibility="Collapsed"/>
             <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
-            <Image x:Name="BetaTag" Grid.Column="3" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0"/>
-            <Button x:Name="btnMore" Click="betaClick" Grid.Column="4" Style="{StaticResource MoreButtonStyle}" Margin="0,0,0,6"/>
         </Grid>
         
         <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1">
