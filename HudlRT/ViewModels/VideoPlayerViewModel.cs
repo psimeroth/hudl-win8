@@ -165,12 +165,12 @@ namespace HudlRT.ViewModels
 
         void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventHandler e)
         {
-            if (initialPoint.X - currentPoint.X >= 75 && !isFullScreenGesture)
+            if (initialPoint.X - currentPoint.X >= 50 && !isFullScreenGesture)
             {
                 NextClip(null);
             }
 
-            else if (initialPoint.X - currentPoint.X <= -75 && !isFullScreenGesture)
+            else if (initialPoint.X - currentPoint.X <= -50 && !isFullScreenGesture)
             {
                 PreviousClip(null);
             }
