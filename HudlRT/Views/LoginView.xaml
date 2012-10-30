@@ -42,8 +42,8 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" Margin="0,-5,0,0">Username</TextBlock>
-                    <TextBlock Grid.Column="0" Grid.Row="1" FontSize="25" VerticalAlignment="Center" Margin="0,-5,0,0">Password</TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0">Username</TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0">Password</TextBlock>
 
                     <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" Grid.Column="1" Grid.Row="0" />
                     <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="1" Grid.Row="1" />
