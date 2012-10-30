@@ -72,11 +72,11 @@ namespace HudlRT.Views
 
         void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
         {
-            if (initialPoint.Y - currentPoint.Y >= 150 && isGridCollapsed)
+            if (initialPoint.Y - currentPoint.Y >= 75 && isGridCollapsed)
                 btnExpandGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -150 && !isGridCollapsed)
+            else if (initialPoint.Y - currentPoint.Y <= -75 && !isGridCollapsed)
                 btnCollapseGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -150 && isGridCollapsed)
+            else if (initialPoint.Y - currentPoint.Y <= -75 && isGridCollapsed)
                 FullscreenToggle();
         }
 
@@ -95,11 +95,11 @@ namespace HudlRT.Views
                     btnCollapseGrid_Click(null, null);
             }
 
-            else if (initialPoint.X - currentPoint.X >= -150)
+            else if (initialPoint.X - currentPoint.X >= -75)
             {
             }
 
-            else if (initialPoint.X - currentPoint.X <= -150)
+            else if (initialPoint.X - currentPoint.X <= -75)
             {
             }
         }
