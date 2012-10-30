@@ -61,7 +61,7 @@ namespace HudlRT.Views
             gridHeaders.ManipulationInertiaStarting += gridHeaders_ManipulationInertiaStarting;
 
             videoMediaElement.ManipulationStarted += videoMediaElement_ManipulationStarted;
-            videoMediaElement.ManipulationCompleted += videoMediaElement_ManipulationCompleted;
+            videoMediaElement.ManipulationInertiaStarting += videoMediaElement_ManipulationInertiaStarting;
             videoMediaElement.ManipulationDelta += videoMediaElement_ManipulationDelta;
 
             gridHeaders.RenderTransform = this.dragTranslation;
@@ -80,40 +80,48 @@ namespace HudlRT.Views
                 FullscreenToggle();
         }
 
+        void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if ((currentPoint.X == 0 && currentPoint.Y == 0) || (currentPoint.X - e.Position.X <= 50 && currentPoint.X - e.Position.X >= -50))
+                currentPoint = e.Position;
+        }
+
+        void gridHeaders_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            initialPoint = e.Position;
+        }
+
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if (e.Delta.Scale >= 1.1 && !IsFullscreen)
-                FullscreenToggle();
-            else if (e.Delta.Scale <= .92 && IsFullscreen)
-                FullscreenToggle();
-
-            Point currentPoint = e.Position;
-            if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
-            {
-                FullscreenToggle();
-                if (!isGridCollapsed)
-                    btnCollapseGrid_Click(null, null);
-            }
+            currentPoint = e.Position;
         }
+            
 
         void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             initialPoint = e.Position;
         }
 
-        void videoMediaElement_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        private void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
         {
-            
-        }
+            if (e.Delta.Scale >= 1.1 && !IsFullscreen)
+                FullscreenToggle();
+            else if (e.Delta.Scale <= .92 && IsFullscreen)
+                FullscreenToggle();
 
-        void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            currentPoint = e.Position;
-        }
+            else if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
+            {
+                FullscreenToggle();
+                if (!isGridCollapsed)
+                    btnCollapseGrid_Click(null, null);
+            }
 
-        void gridHeaders_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
-        {
-            initialPoint = e.Position;
+            else if (initialPoint.Y - currentPoint.Y >= 50 && isGridCollapsed && !IsFullscreen)
+                btnExpandGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -50 && !isGridCollapsed && !IsFullscreen)
+                btnCollapseGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -50 && isGridCollapsed && !IsFullscreen)
+                FullscreenToggle();
         }
 
         /// <summary>
