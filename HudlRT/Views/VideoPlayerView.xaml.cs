@@ -105,11 +105,11 @@ namespace HudlRT.Views
         void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             Point currentPoint = e.Position;
-            if (initialPoint.Y - currentPoint.Y >= 75 && isGridCollapsed)
+            if (initialPoint.Y - currentPoint.Y >= 150 && isGridCollapsed)
                 btnExpandGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -75 && !isGridCollapsed)
+            else if (initialPoint.Y - currentPoint.Y <= -150 && !isGridCollapsed)
                 btnCollapseGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -75 && isGridCollapsed)
+            else if (initialPoint.Y - currentPoint.Y <= -150 && isGridCollapsed)
                 FullscreenToggle();
 
             
