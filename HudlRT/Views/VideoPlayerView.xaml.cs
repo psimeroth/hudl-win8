@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using HudlRT.Models;
 
 namespace HudlRT.Views
 {
@@ -64,8 +65,13 @@ namespace HudlRT.Views
 
             gridHeaders.RenderTransform = this.dragTranslation;
             Clips.RenderTransform = this.dragTranslation;
-            
+            gridScroll.ViewChanged += scrollHeaders;
             Loaded += new RoutedEventHandler(MainPage_Loaded);
+        }
+
+        private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            gridHeaderScroll.ScrollToHorizontalOffset(gridScroll.HorizontalOffset);
         }
 
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -148,7 +154,9 @@ namespace HudlRT.Views
 
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
+            //Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
+            Clip selected = (Clip)((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem;
+            gridScroll.ScrollToVerticalOffset((selected.play-1) * 46);
 
             if (rightClicked)
             {
