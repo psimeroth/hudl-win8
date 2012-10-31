@@ -10,7 +10,6 @@
     xmlns:ic="using:HudlRT.Views"
     xmlns:mmppf="using:Microsoft.PlayerFramework"
     mc:Ignorable="d">
-
     
     <Grid x:Name="RootGrid">
         <Grid.Background>
@@ -25,7 +24,7 @@
         <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
-                <RowDefinition Height="525" />
+                <RowDefinition x:Name="mainGrid_Row2" Height="525" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Name="header">
@@ -39,12 +38,10 @@
                 <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
                 <Image x:Name="HiddenSpacingImage" Grid.Column="1" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0" Opacity="0"/>
                 <TextBlock x:Name="CutupName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
-                <Image x:Name="BetaTag" Grid.Column="3" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0"/>
-                <Button x:Name="btnMore" Grid.Column="4" Style="{StaticResource MoreButtonStyle}" Margin="0,0,10,6" Click="betaClick"/>
             </Grid>
                 <Grid Background="Black" Grid.Row="1" x:Name="Container1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="525" />
+                        <RowDefinition x:Name="Container1_Row1" Height="525" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid x:Name="Container2">
@@ -53,7 +50,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="150" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,170,0,0">
+                    <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,110,45,0">
                             <Button x:Name="btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20">
                                 <Button.Projection>
@@ -74,11 +71,11 @@
                                     caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
                             <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"
                                     Visibility="Collapsed"/>
-                            <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
-                            <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
-                                    Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
-                        </StackPanel>
-                    <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" Margin="0,170,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
+                        <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
+                                    Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
+                                    Content="&#xE1D9;" FontSize="30"/>
+                    </StackPanel>
+                    <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" Margin="45,110,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
                             <Button x:Name="btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" FontSize="20"/>
                         <Button x:Name="btnFastForward_Checked" Click="btnPlay_Click" Style="{StaticResource AppBarButtonStyle_Checked}" Foreground="{StaticResource HudlOrange}"
@@ -89,10 +86,10 @@
                                     Content="&#xE017;" FontSize="30" Visibility="Collapsed"/>
                             <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
                                     caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]"/>
-                            <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
-                                    Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
-                                    Content="&#xE1D9;" FontSize="30"/>
-                        </StackPanel>
+                        <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
+                        <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
+                                    Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
+                    </StackPanel>
                     </Grid>
             </Grid>
             <Grid Grid.Row="2" x:Name="dataPanel">
@@ -103,7 +100,8 @@
                 <Grid.Background>
                     <ImageBrush ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
                 </Grid.Background>
-                <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False">
+                <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False"
+                      ManipulationMode="All" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="170" />
                         <ColumnDefinition Width="170" />
@@ -181,16 +179,20 @@
                             Height="500"
                             DataContext="{Binding Video}">
                 <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
-                                                   AutoPlay="True"
-                                                   MediaOpened="videoElement_MediaOpened"
-                                                   MediaEnded="videoMediaElement_MediaEnded"
-                                                   MediaFailed="videoMediaElement_MediaFailed"
-                                                   IsFullScreen="True"
-                                                   AutoHide="False"
-                                                   Tapped="videoMediaElement_Tapped"
-                                                  
-
-                                                   />
+                                   AutoPlay="True"
+                                   MediaOpened="videoElement_MediaOpened"
+                                   MediaEnded="videoMediaElement_MediaEnded"
+                                   MediaFailed="videoMediaElement_MediaFailed"
+                                   IsFullScreen="True"
+                                   AutoHide="False"
+                                   Tapped="videoMediaElement_Tapped"
+                                   IsSkipAheadEnabled="False"
+                                   IsSkipBackEnabled="False"
+                                   IsVolumeVisible="False"
+                                   ManipulationMode="All"
+                                   caliburn:Message.Attach="[Event ManipulationStarted] = [Action videoMediaElement_ManipulationStarted($this,$eventArgs)];
+                                   [Event ManipulationDelta] = [Action videoMediaElement_ManipulationDelta($this,$eventArgs)];
+                                   [Event ManipulationInertiaStarting] = [Action videoMediaElement_ManipulationInertiaStarting($this,$eventArgs)]"/>
             </ContentControl>
         </Grid>
 
@@ -209,7 +211,7 @@
                 </StackPanel>
             </Grid>
 
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,224,0,0" Orientation="Vertical" Width="150">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-22,194,0,0" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20" HorizontalAlignment="Center">
                     <Button.Projection>
@@ -230,12 +232,12 @@
                         caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
                 <Button x:Name="full_btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"
                                     Visibility="Collapsed" AutomationProperties.Name=""/>
-                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
-                <Button x:Name="full_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
-                                    Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="btnExitFullScreen" Click="btnFullScreenToggle_Click"
+                                    Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
+                                    Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,224,0,0" Orientation="Vertical" Width="150">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,194,-22,0" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                         Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"/>
                 <Button x:Name="full_btnFastForward_Checked" Click="btnPlay_Click" Style="{StaticResource AppBarButtonStyle_Checked}" Foreground="{StaticResource HudlOrange}"
@@ -246,9 +248,9 @@
                                         Content="&#xE017;" FontSize="30" HorizontalAlignment="Center" Visibility="Collapsed"/>
                 <Button x:Name="full_btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name=""
                         caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]"/>
-                <Button x:Name="btnExitFullScreen" Click="btnFullScreenToggle_Click"
-                                    Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
-                                    Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
+                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="full_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
+                                    Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
             </StackPanel>
 
         </Grid>
@@ -289,6 +291,9 @@
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VideoGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

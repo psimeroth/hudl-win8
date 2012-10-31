@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
+using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 
 namespace HudlRT.ViewModels
 {
@@ -60,6 +62,9 @@ namespace HudlRT.ViewModels
         }
 
         private int index = 0;
+        Point initialPoint = new Point();
+        Point currentPoint;
+        bool isFullScreenGesture = false;
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -139,6 +144,35 @@ namespace HudlRT.ViewModels
                 else
                     SelectedClip = Clips.ElementAt(--index);
                     Video = SelectedClip.angles.ElementAt(0);
+            }
+        }
+
+        void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if ((currentPoint.X == 0 && currentPoint.Y == 0) || (currentPoint.X - e.Position.X <= 50 && currentPoint.X - e.Position.X >= -50))
+                currentPoint = e.Position;
+
+            if (e.Delta.Scale >= 1.1 || e.Delta.Scale <= .92)
+                isFullScreenGesture = true;
+        }
+
+        void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            isFullScreenGesture = false;
+            initialPoint = e.Position;
+            currentPoint = new Point();
+        }
+
+        void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventHandler e)
+        {
+            if (initialPoint.X - currentPoint.X >= 50 && !isFullScreenGesture)
+            {
+                NextClip(null);
+            }
+
+            else if (initialPoint.X - currentPoint.X <= -50 && !isFullScreenGesture)
+            {
+                PreviousClip(null);
             }
         }
 

@@ -83,11 +83,6 @@ namespace HudlRT.ViewModels
         public async void LoginAttempt()
         {
             // Get the username and password from the view
-            if (UserName == null && Password == null)
-            {
-                UserName = "jacobataylor09@gmail.com";
-                Password = "rightmeow!";
-            }
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
 
             // Show the user a call is being made in the background

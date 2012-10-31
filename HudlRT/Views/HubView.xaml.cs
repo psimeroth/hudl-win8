@@ -56,10 +56,5 @@ namespace HudlRT.Views
                 rightClicked = false;
             }
         }
-
-        private void betaClick(object sender, RoutedEventArgs e)
-        {
-            Common.BetaDialog.ShowBetaDialog(sender, e);
-        }
     }
 }

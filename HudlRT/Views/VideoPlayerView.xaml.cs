@@ -44,10 +44,82 @@ namespace HudlRT.Views
             set { _rootNamespace = value; }
         }
 
+        Point initialPoint = new Point();
+        Point currentPoint = new Point();
+        bool isGridCollapsed = true;
+        private  TranslateTransform dragTranslation;
+
         public VideoPlayerView()
         {
             this.InitializeComponent();
+
+
+            dragTranslation = new TranslateTransform();
+
+            gridHeaders.ManipulationStarted += gridHeaders_ManipulationStarted;
+            gridHeaders.ManipulationDelta += gridHeaders_ManipulationDelta;
+            gridHeaders.ManipulationInertiaStarting += gridHeaders_ManipulationInertiaStarting;
+
+            videoMediaElement.ManipulationStarted += videoMediaElement_ManipulationStarted;
+            videoMediaElement.ManipulationInertiaStarting += videoMediaElement_ManipulationInertiaStarting;
+            videoMediaElement.ManipulationDelta += videoMediaElement_ManipulationDelta;
+
+            gridHeaders.RenderTransform = this.dragTranslation;
+            Clips.RenderTransform = this.dragTranslation;
+            
             Loaded += new RoutedEventHandler(MainPage_Loaded);
+        }
+
+        void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+        {
+            if (initialPoint.Y - currentPoint.Y >= 50 && isGridCollapsed)
+                btnExpandGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -50 && !isGridCollapsed)
+                btnCollapseGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -50 && isGridCollapsed)
+                FullscreenToggle();
+        }
+
+        void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+                currentPoint = e.Position;
+        }
+
+        void gridHeaders_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            initialPoint = e.Position;
+        }
+
+        void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            currentPoint = e.Position;
+            if (e.Delta.Scale >= 1.1 && !IsFullscreen)
+                FullscreenToggle();
+            else if (e.Delta.Scale <= .92 && IsFullscreen)
+                FullscreenToggle();
+        }
+            
+
+        void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            initialPoint = e.Position;
+        }
+
+        private void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+        {
+            if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
+            {
+                FullscreenToggle();
+                if (!isGridCollapsed)
+                    btnCollapseGrid_Click(null, null);
+            }
+
+            else if (initialPoint.Y - currentPoint.Y >= 75 && isGridCollapsed && !IsFullscreen)
+                btnExpandGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -75 && !isGridCollapsed && !IsFullscreen)
+                btnCollapseGrid_Click(null, null);
+            else if (initialPoint.Y - currentPoint.Y <= -75 && isGridCollapsed && !IsFullscreen)
+                FullscreenToggle();
         }
 
         /// <summary>
@@ -229,7 +301,7 @@ namespace HudlRT.Views
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
         {
 
-            videoMediaElement.DefaultPlaybackRate = -0.5;
+            videoMediaElement.DefaultPlaybackRate = -1.0;
             videoMediaElement.Play();
             setPauseVisible();
             setPlaybackButtonsVisible();
@@ -376,8 +448,8 @@ namespace HudlRT.Views
             btnExpandGrid.Visibility = Visibility.Collapsed;
             btnCollapseGrid.Visibility = Visibility.Visible;
 
-            TransportControlsPanel_Left.Margin = new Thickness(0, 18, 0, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(0, 18, 0, 0);
+            TransportControlsPanel_Left.Margin = new Thickness(0, 18, 45, 0);
+            TransportControlsPanel_Right.Margin = new Thickness(45, 18, 0, 0);
 
             double width = videoMediaElement.ActualWidth * .7;
 
@@ -386,7 +458,7 @@ namespace HudlRT.Views
 
             videoContainer.Height = 350;
             videoMediaElement.Height = 350;
-            Clips.SelectionChanged += VideosList_SelectionChanged;
+            isGridCollapsed = false;
        
         }
 
@@ -395,14 +467,15 @@ namespace HudlRT.Views
             btnCollapseGrid.Visibility = Visibility.Collapsed;
             btnExpandGrid.Visibility = Visibility.Visible;
 
-            TransportControlsPanel_Left.Margin = new Thickness(0, 170, 0, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(0, 170, 0, 0);
+            TransportControlsPanel_Left.Margin = new Thickness(0, 110, 45, 0);
+            TransportControlsPanel_Right.Margin = new Thickness(45, 110, 0, 0);
 
             mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
             Container1.RowDefinitions.First().Height = new GridLength(525);
 
             videoContainer.Height = 500;
             videoMediaElement.Height = 500;
+            isGridCollapsed = true;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
@@ -412,11 +485,5 @@ namespace HudlRT.Views
             rightClicked = true;
             e.Handled = true;
         }
-
-        private void betaClick(object sender, RoutedEventArgs e)
-        {
-            Common.BetaDialog.ShowBetaDialog(sender, e);
-        }
-
     }
 }
