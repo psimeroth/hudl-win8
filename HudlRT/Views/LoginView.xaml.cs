@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Input;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -73,7 +74,8 @@ namespace HudlRT.Views
             if (roamingSettings.Values["UserName"] != null)
             {
                 UserName.Text = roamingSettings.Values["UserName"].ToString();
-                Password.SelectAll();
+                UserName.SelectionStart = UserName.Text.ToCharArray().Length;
+                UserName.SelectionLength = 0;
             }
         }
 
@@ -100,5 +102,6 @@ namespace HudlRT.Views
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri("http://www.hudl.com/signup"));
         }
+
     }
 }
