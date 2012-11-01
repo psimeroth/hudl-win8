@@ -198,7 +198,7 @@
 
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
 
-            <Grid DataContext="{Binding SelectedClip}" Background="Black" Opacity="0.4" Height="50" Width="Auto" VerticalAlignment="Top">
+            <Grid DataContext="{Binding SelectedClip}" Background="#AA000000" Height="50" Width="Auto" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">ODK:</TextBlock>
                     <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding odk}" />
@@ -211,7 +211,7 @@
                 </StackPanel>
             </Grid>
 
-            <Rectangle HorizontalAlignment="Left" Width="130" Margin="-22,194,0,206" Fill="Black" Opacity=".4" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Left" Width="130" Margin="-22,194,0,218" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
             
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-22,194,0,0" Orientation="Vertical" Width="150" Background="Transparent">
                 <Button x:Name="full_btnFastReverse" Click="btnFastReverse_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
@@ -239,7 +239,7 @@
                                     Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <Rectangle HorizontalAlignment="Right" Width="130" Margin="0,194,-22,206" Fill="Black" Opacity=".4" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Right" Width="130" Margin="0,194,-22,218" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
             
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,194,-22,0" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastForward" Click="btnFastForward_Click" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
