@@ -68,6 +68,16 @@ namespace HudlRT.Views
             Clips.RenderTransform = this.dragTranslation;
             
             Loaded += new RoutedEventHandler(MainPage_Loaded);
+
+            btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
+            full_btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
+            btnSlowForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowForward_Click), true);
+            full_btnSlowForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowForward_Click), true);
+            btnFastReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastReverse_Click), true);
+            full_btnFastReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastReverse_Click), true);
+            btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
+            full_btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
+
         }
 
         void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
@@ -245,7 +255,6 @@ namespace HudlRT.Views
             // Here we need to collapse and expand both full and non full screen buttons
             setPauseVisible();
             setStopVisibile();
-            setPlaybackButtonsVisible();
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
@@ -254,7 +263,6 @@ namespace HudlRT.Views
 
             // Here we need to collapse and expand both full and non full screen buttons
             setPlayVisible();
-            setPlaybackButtonsVisible();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -262,7 +270,6 @@ namespace HudlRT.Views
             videoMediaElement.Stop();
             setPlayVisible();
             setPrevVisible();
-            setPlaybackButtonsVisible();
         }
 
         private void btnFastForward_Click(object sender, RoutedEventArgs e)
@@ -273,14 +280,6 @@ namespace HudlRT.Views
             
             setPauseVisible();
             setStopVisibile();
-            setPlaybackButtonsVisible();
-
-            btnFastForward.Visibility = Visibility.Collapsed;
-            btnFastForward_Checked.Visibility = Visibility.Visible;
-
-            full_btnFastForward.Visibility = Visibility.Collapsed;
-            full_btnFastForward_Checked.Visibility = Visibility.Visible;
-
         }
 
         private void btnFastReverse_Click(object sender, RoutedEventArgs e)
@@ -289,13 +288,6 @@ namespace HudlRT.Views
             videoMediaElement.DefaultPlaybackRate = -2.0;
             videoMediaElement.Play();
             setPauseVisible();
-            setPlaybackButtonsVisible();
-
-            btnFastReverse.Visibility = Visibility.Collapsed;
-            btnFastReverse_Checked.Visibility = Visibility.Visible;
-
-            full_btnFastReverse.Visibility = Visibility.Collapsed;
-            full_btnFastReverse_Checked.Visibility = Visibility.Visible;
         }
 
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
@@ -304,13 +296,6 @@ namespace HudlRT.Views
             videoMediaElement.DefaultPlaybackRate = -1.0;
             videoMediaElement.Play();
             setPauseVisible();
-            setPlaybackButtonsVisible();
-
-            btnSlowReverse.Visibility = Visibility.Collapsed;
-            btnSlowReverse_Checked.Visibility = Visibility.Visible;
-
-            full_btnSlowReverse.Visibility = Visibility.Collapsed;
-            full_btnSlowReverse_Checked.Visibility = Visibility.Visible;
         }
 
         private void btnSlowForward_Click(object sender, RoutedEventArgs e)
@@ -321,13 +306,6 @@ namespace HudlRT.Views
             
             setPauseVisible();
             setStopVisibile();
-            setPlaybackButtonsVisible();
-
-            btnSlowForward.Visibility = Visibility.Collapsed;
-            btnSlowForward_Checked.Visibility = Visibility.Visible;
-
-            full_btnSlowForward.Visibility = Visibility.Collapsed;
-            full_btnSlowForward_Checked.Visibility = Visibility.Visible;
         }
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
@@ -336,14 +314,12 @@ namespace HudlRT.Views
             videoMediaElement.PlaybackRate = 1.0;
             setPauseVisible();
             setStopVisibile();
-            setPlaybackButtonsVisible();
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
             setPlayVisible();
             setPrevVisible();
-            setPlaybackButtonsVisible();
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -414,33 +390,6 @@ namespace HudlRT.Views
 
             full_btnStop.Visibility = Visibility.Collapsed;
             full_btnReverse.Visibility = Visibility.Visible;
-        }
-
-        private void setPlaybackButtonsVisible()
-        {
-            btnFastForward_Checked.Visibility = Visibility.Collapsed;
-            btnFastForward.Visibility = Visibility.Visible;
-
-            btnFastReverse_Checked.Visibility = Visibility.Collapsed;
-            btnFastReverse.Visibility = Visibility.Visible;
-
-            btnSlowForward_Checked.Visibility = Visibility.Collapsed;
-            btnSlowForward.Visibility = Visibility.Visible;
-
-            btnSlowReverse_Checked.Visibility = Visibility.Collapsed;
-            btnSlowReverse.Visibility = Visibility.Visible;
-
-            full_btnFastForward_Checked.Visibility = Visibility.Collapsed;
-            full_btnFastForward.Visibility = Visibility.Visible;
-
-            full_btnFastReverse_Checked.Visibility = Visibility.Collapsed;
-            full_btnFastReverse.Visibility = Visibility.Visible;
-
-            full_btnSlowForward_Checked.Visibility = Visibility.Collapsed;
-            full_btnSlowForward.Visibility = Visibility.Visible;
-
-            full_btnSlowReverse_Checked.Visibility = Visibility.Collapsed;
-            full_btnSlowReverse.Visibility = Visibility.Visible;
         }
 
         private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
