@@ -122,6 +122,8 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Clip> Clips = new BindableCollection<Clip>();
+
         public HubViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
@@ -290,7 +292,30 @@ namespace HudlRT.ViewModels
         {
             Feedback = null;
             var cutup = (Cutup)eventArgs.ClickedItem;
+            GetClipsByCutup(cutup);
+        }
 
+        public async void GetClipsByCutup(Cutup cutup)
+        {
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
+            if (!string.IsNullOrEmpty(clips))
+            {
+                cutup.clips = new BindableCollection<Clip>();
+                var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
+                cutup.displayColumns = obj.DisplayColumns;
+                foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
+                {
+                    Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
+                    if (c != null)
+                    {
+                        cutup.clips.Add(c);
+                    }
+                }
+            }
+            else
+            {
+
+            }
             navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
             {
                 teams = teams,

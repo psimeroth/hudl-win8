@@ -70,7 +70,7 @@
                         <Button x:Name="btnSlowReverse_Checked" Click="btnPlay_Click" Style="{StaticResource AppBarButtonStyle_Checked}" Foreground="{StaticResource HudlOrange}" 
                                     Content="&#xE016;" FontSize="30" Visibility="Collapsed"/>
                         <Button x:Name="btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
-                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
+                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" Click="ScrollPreviousGrid"/>
                         <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"
                                     Visibility="Collapsed"/>
                         <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
@@ -87,7 +87,7 @@
                         <Button x:Name="btnSlowForward_Checked" Click="btnPlay_Click" Style="{StaticResource AppBarButtonStyle_Checked}" Foreground="{StaticResource HudlOrange}"
                                     Content="&#xE017;" FontSize="30" Visibility="Collapsed"/>
                         <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
-                                    caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]"/>
+                                    caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]" Click="ScrollNextGrid"/>
                         <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
                                     Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE1D9;" FontSize="30"/>
@@ -103,91 +103,14 @@
                 <Grid.Background>
                     <ImageBrush ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
                 </Grid.Background>
-                <ScrollViewer x:Name="gridHeaderScroll" Width="1366" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden">
+                <ScrollViewer x:Name="gridHeaderScroll" Width="1366" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                     <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False"
                       ManipulationMode="All" ScrollViewer.HorizontalScrollMode="Enabled">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="50*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Play" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="1" Text="ODK" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="2" Text="Down" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="3" Text="Dist" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="4" Text="Hash" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="5" Text="Yard Ln" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="6" Text="Play Type" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="7" Text="Play Type" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="8" Text="Play Type" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="9" Text="Play Type" Style="{StaticResource columnHeaderStyle}"/>
-                        <TextBlock Grid.Column="10" Text="Quarter" Style="{StaticResource columnHeaderStyle}"/>
-                        <StackPanel HorizontalAlignment="Right" Grid.Column="11">
-                            <Button x:Name="btnExpandGrid" Click="btnExpandGrid_Click" Style="{StaticResource ExpandButtonStyle}" Content="&#xE110;"
-                                Foreground="{StaticResource HudlLightBlue}" />
-                            <Button x:Name="btnCollapseGrid" Click="btnCollapseGrid_Click" Style="{StaticResource ExpandButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
-                                Content="&#xE110;" Visibility="Collapsed">
-                                <Button.Projection>
-                                    <PlaneProjection RotationX="180"/>
-                                </Button.Projection>
-                            </Button>
-                        </StackPanel>
-
                     </Grid>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" Width="1366" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"  Grid.Row="1">
-                    <ListView x:Name="Clips"  IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedClip}" Background="{StaticResource BlackToWhiteGradient_VideoGrid}"
+                    <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle2}" SelectedItem="{Binding SelectedClip}"
                           PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True" >
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid VerticalAlignment ="Center" Margin ="5,0" ScrollViewer.BringIntoViewOnFocusChange="True">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                        <ColumnDefinition Width="170" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding play}"/>
-                                    <TextBlock Grid.Column="1" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding odk}"/>
-                                    <TextBlock Grid.Column="2" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding down}"/>
-                                    <TextBlock Grid.Column="3" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding dist}"/>
-                                    <TextBlock Grid.Column="4" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding hash}"/>
-                                    <TextBlock Grid.Column="5" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding yardLn}"/>
-                                    <TextBlock Grid.Column="6" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding playType}"/>
-                                    <TextBlock Grid.Column="7" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding quarter}"/>
-                                    <TextBlock Grid.Column="8" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding quarter}"/>
-                                    <TextBlock Grid.Column="9" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding quarter}"/>
-                                    <TextBlock Grid.Column="10" Margin="1" TextWrapping="NoWrap" VerticalAlignment="Center"
-                                    Text ="{Binding quarter}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
                     </ListView>
                 </ScrollViewer>
             </Grid>
@@ -249,7 +172,7 @@
                 <Button x:Name="full_btnSlowReverse_Checked" Click="btnPlay_Click" Style="{StaticResource AppBarButtonStyle_Checked}" Foreground="{StaticResource HudlOrange}" 
                                     Content="&#xE016;" FontSize="30" HorizontalAlignment="Center" Visibility="Collapsed"/>
                 <Button x:Name="full_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
-                        caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
+                        caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" Click="ScrollPreviousGrid"/>
                 <Button x:Name="full_btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"
                                     Visibility="Collapsed" AutomationProperties.Name=""/>
                 <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
@@ -267,7 +190,7 @@
                 <Button x:Name="full_btnSlowForward_Checked" Click="btnPlay_Click" Style="{StaticResource AppBarButtonStyle_Checked}" Foreground="{StaticResource HudlOrange}"
                                         Content="&#xE017;" FontSize="30" HorizontalAlignment="Center" Visibility="Collapsed"/>
                 <Button x:Name="full_btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name=""
-                        caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]"/>
+                        caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]" Click="ScrollNextGrid"/>
                 <Button x:Name="btnExitFullScreen" Click="btnFullScreenToggle_Click"
                                     Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>

@@ -15,6 +15,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using HudlRT.Models;
+using HudlRT.Parameters;
+using Windows.UI.Xaml.Markup;
+using Windows.UI;
 
 namespace HudlRT.Views
 {
@@ -145,6 +148,45 @@ namespace HudlRT.Views
                 Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale, false);
 
             var dataSource = fif.GetVirtualizedFilesVector();
+
+           PagePassParameter pass = (PagePassParameter)e.Parameter;
+           string[] displayColumns = pass.cutups.First().displayColumns;
+           var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
+           string columnDefinitions = "";
+           string rowText = "";
+           if (displayColumns != null)
+           {
+               for (int i = 0; i < displayColumns.Length; i++)
+               {
+                   ColumnDefinition col = new ColumnDefinition();
+                   col.Width = new GridLength(130);
+                   gridHeaders.ColumnDefinitions.Add(col);
+                   if (i != displayColumns.Length - 1)
+                   {
+                       columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
+                   }
+                   else
+                   {
+                       columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
+                   }
+                   rowText = rowText + @"<TextBlock  Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
+                   Border b = new Border();
+                   b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
+                   b.BorderThickness = new Thickness(1,0,1,0);
+                   TextBlock t = new TextBlock();
+                   t.Text = displayColumns[i];
+                   b.SetValue(Grid.RowProperty, 0);
+                   b.SetValue(Grid.ColumnProperty, i);
+                   t.Style = (Style)Application.Current.Resources["videoPlayerGridHeaderStyle"];
+                   t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                   b.Child = t;
+                   gridHeaders.Children.Add(b);
+               }
+           }
+           template = template.Replace("@", columnDefinitions).Replace("%", rowText);
+
+           var dt = (DataTemplate)XamlReader.Load(template);
+           Clips.ItemTemplate = dt;
             
         }
 
@@ -155,8 +197,7 @@ namespace HudlRT.Views
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
-            Clip selected = (Clip)((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem;
-            gridScroll.ScrollToVerticalOffset((selected.play-1) * 46);
+            
 
             if (rightClicked)
             {
@@ -178,11 +219,11 @@ namespace HudlRT.Views
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
-                Clips.Visibility = Visibility.Collapsed;
+                gridScroll.Visibility = Visibility.Collapsed;
                 Clips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
-                gridHeaders.Visibility = Visibility.Collapsed;
+                gridHeaderScroll.Visibility = Visibility.Collapsed;
 
                 // Show the full screen controls
                 full_mainGrid.Visibility = Visibility.Visible;
@@ -205,10 +246,10 @@ namespace HudlRT.Views
                 RootGrid.Background = background;
                 // Show the non full screen controls
                 header.Visibility = Visibility.Visible;
-                Clips.Visibility = Visibility.Visible;
+                gridScroll.Visibility = Visibility.Visible;
                 TransportControlsPanel_Left.Visibility = Visibility.Visible;
                 TransportControlsPanel_Right.Visibility = Visibility.Visible;
-                gridHeaders.Visibility = Visibility.Visible;
+                gridHeaderScroll.Visibility = Visibility.Visible;
 
                 // Hide the full screen controls
                 full_mainGrid.Visibility = Visibility.Collapsed;
@@ -220,6 +261,7 @@ namespace HudlRT.Views
                 videoMediaElement.Height = _previousVideoSize.Height;
                 
                 VideoGrid.Margin = new Thickness(0, 70, 0, 0);
+                
             }
         }
 
@@ -451,9 +493,6 @@ namespace HudlRT.Views
 
         private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
         {
-            btnExpandGrid.Visibility = Visibility.Collapsed;
-            btnCollapseGrid.Visibility = Visibility.Visible;
-
             TransportControlsPanel_Left.Margin = new Thickness(0, 18, 0, 0);
             TransportControlsPanel_Right.Margin = new Thickness(0, 18, 0, 0);
 
@@ -470,9 +509,6 @@ namespace HudlRT.Views
 
         private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
         {
-            btnCollapseGrid.Visibility = Visibility.Collapsed;
-            btnExpandGrid.Visibility = Visibility.Visible;
-
             TransportControlsPanel_Left.Margin = new Thickness(0, 170, 0, 0);
             TransportControlsPanel_Right.Margin = new Thickness(0, 170, 0, 0);
 
@@ -495,6 +531,30 @@ namespace HudlRT.Views
         private void betaClick(object sender, RoutedEventArgs e)
         {
             Common.BetaDialog.ShowBetaDialog(sender, e);
+        }
+
+        private void ScrollNextGrid(object sender, RoutedEventArgs e)
+        {
+            if ((Clips.SelectedIndex+1) == Clips.Items.Count)
+            {
+                gridScroll.ScrollToVerticalOffset(0);
+            }
+            else
+            {
+                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 31);
+            }
+        }
+
+        private void ScrollPreviousGrid(object sender, RoutedEventArgs e)
+        {
+            if ((Clips.SelectedIndex) == 0)
+            {
+                gridScroll.ScrollToVerticalOffset((Clips.Items.Count-1)*31);
+            }
+            else
+            {
+                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex-2) * 31);
+            }
         }
     }
 }

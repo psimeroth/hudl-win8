@@ -69,37 +69,14 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            GetClipsByCutup(Parameter.selectedCutup);
-            CutupName = Parameter.selectedCutup.name;
-        }
-
-        public async void GetClipsByCutup(Cutup cutup)
-        {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            if (!string.IsNullOrEmpty(clips))
-            {
-                cutup.clips = new BindableCollection<Clip>();
-                var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-                foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
-                {
-                    Clip c = Clip.FromDTO(clipDTO);
-                    if (c != null)
-                    {
-                        cutup.clips.Add(c);
-                    }
-                }
-                Clips = cutup.clips;
-            }
-            else
-            {
-                
-            }
+            //GetClipsByCutup(Parameter.selectedCutup);
+            Clips = Parameter.cutups.First().clips;
             if (Clips.Count > 0)
             {
                 SelectedClip = Clips.First();
                 Video = SelectedClip.angles.ElementAt(0);
             }
-            //(if Clips.count == 0) .. do something figure this out earlier somehow?
+            CutupName = Parameter.selectedCutup.name;
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)

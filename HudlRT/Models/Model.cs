@@ -117,7 +117,7 @@ namespace HudlRT.Models
         public int clipCount { get; set; }
         public long cutupId { get; set; }
         public BindableCollection<Clip> clips { get; set; }
-
+        public string[] displayColumns { get; set; }
         public Cutup()
         {
             clips = new BindableCollection<Clip>();
@@ -139,17 +139,7 @@ namespace HudlRT.Models
         public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
         //public Dictionary<string, string> breakdownData { get; set; }
-
-        //attempt at making grid on video page by adding members to the clip
-        public int play { get; set; }
-        public string odk { get; set; }
-        public int down { get; set; }
-        public double dist { get; set; }
-        public string hash { get; set; }
-        public double yardLn { get; set; }
-        public string playType { get; set; }
-        public string result { get; set; }
-        public int quarter { get; set; }
+        public string[] breakDownData { get; set; }
 
 
 
@@ -160,50 +150,24 @@ namespace HudlRT.Models
             angles = new BindableCollection<Angle>();
         }
 
-        public static Clip FromDTO(ClipDTO clipDTO)
+        public static Clip FromDTO(ClipDTO clipDTO, string[] displayColumns)
         {
             Clip clip = new Clip();
+            clip.breakDownData = new string[displayColumns.Length];
             clip.clipId = clipDTO.ClipID;
             clip.order = clipDTO.OriginalOrder;
-            clip.odk = "-";
-            clip.hash = "-";
-            clip.playType = "-";
-            clip.result = "-";
-            Dictionary<string, string> upperedBDD = new Dictionary<string,string>();
-            foreach(string s in clipDTO.breakdownData.Keys)
+            for (int i = 0; i < clip.breakDownData.Length; i++)
             {
-                //upperedBDD.Add(s.ToUpper(), clipDTO.breakdownData[s]);
-                switch (s.ToUpper())
+                clip.breakDownData[i] = "-";
+            }
+            foreach(string key in clipDTO.breakdownData.Keys)
+            {
+                for (int i = 0; i < displayColumns.Length; i++)
                 {
-                    case "PLAY #":
-                        clip.play = Convert.ToInt32(clipDTO.breakdownData[s]);
-                        break;
-                    case "ODK":
-                        clip.odk = clipDTO.breakdownData[s];
-                        break;
-                    case "DN":
-                        clip.down = Convert.ToInt32(clipDTO.breakdownData[s]);
-                        break;
-                    case "DIST":
-                        clip.dist = Convert.ToDouble(clipDTO.breakdownData[s]);
-                        break;
-                    case "HASH":
-                        clip.hash = clipDTO.breakdownData[s];
-                        break;
-                    case "YARD LN":
-                        clip.yardLn = Convert.ToDouble(clipDTO.breakdownData[s]);
-                        break;
-                    case "PLAY TYPE":
-                        clip.playType = clipDTO.breakdownData[s];
-                        break;
-                    case "RESULT":
-                        clip.result = clipDTO.breakdownData[s];
-                        break;
-                    case "QTR":
-                        clip.quarter = Convert.ToInt32(clipDTO.breakdownData[s]);
-                        break;
-                    default:
-                        break;
+                    if (key.ToUpper() == displayColumns[i].ToUpper())
+                    {
+                        clip.breakDownData[i] = clipDTO.breakdownData[key];
+                    }
                 }
             }
             //clip.breakdownData = upperedBDD;
