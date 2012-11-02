@@ -87,8 +87,8 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <ScrollViewer x:Name="gridHeaderScroll" Width="1366" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-                    <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False"
-                      ManipulationMode="All" ScrollViewer.HorizontalScrollMode="Enabled">
+                    <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False"
+                      ManipulationMode="All" >
                     </Grid>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" Width="1366" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"  Grid.Row="1">

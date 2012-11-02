@@ -71,6 +71,7 @@ namespace HudlRT.Views
             gridHeaders.RenderTransform = this.dragTranslation;
             Clips.RenderTransform = this.dragTranslation;
             gridScroll.ViewChanged += scrollHeaders;
+            //gridHeaderScroll.ViewChanged += scrollGrid;
             Loaded += new RoutedEventHandler(MainPage_Loaded);
 
             btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
@@ -86,8 +87,16 @@ namespace HudlRT.Views
 
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
         {
+            
             gridHeaderScroll.ScrollToHorizontalOffset(gridScroll.HorizontalOffset);
-        }        void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+        }
+
+        private void scrollGrid(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            gridScroll.ScrollToHorizontalOffset(gridHeaderScroll.HorizontalOffset);
+        }
+
+        void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
         {
             if (initialPoint.Y - currentPoint.Y >= 50 && isGridCollapsed)
                 btnExpandGrid_Click(null, null);
@@ -95,11 +104,13 @@ namespace HudlRT.Views
                 btnCollapseGrid_Click(null, null);
             else if (initialPoint.Y - currentPoint.Y <= -50 && isGridCollapsed)
                 FullscreenToggle();
+
         }
 
         void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-                currentPoint = e.Position;
+            currentPoint = e.Position;
+            gridScroll.ScrollToHorizontalOffset(gridScroll.HorizontalOffset + (initialPoint.X - currentPoint.X));
         }
 
         void gridHeaders_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
@@ -127,16 +138,7 @@ namespace HudlRT.Views
             if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
             {
                 FullscreenToggle();
-                if (!isGridCollapsed)
-                    btnCollapseGrid_Click(null, null);
             }
-
-            else if (initialPoint.Y - currentPoint.Y >= 75 && isGridCollapsed && !IsFullscreen)
-                btnExpandGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -75 && !isGridCollapsed && !IsFullscreen)
-                btnCollapseGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -75 && isGridCollapsed && !IsFullscreen)
-                FullscreenToggle();
         }
 
         /// <summary>
@@ -197,7 +199,7 @@ namespace HudlRT.Views
 
            var dt = (DataTemplate)XamlReader.Load(template);
            Clips.ItemTemplate = dt;
-            
+           btnExpandGrid_Click(null, null);
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
