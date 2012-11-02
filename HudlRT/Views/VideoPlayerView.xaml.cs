@@ -50,8 +50,10 @@ namespace HudlRT.Views
 
         Point initialPoint = new Point();
         Point currentPoint = new Point();
-        bool isGridCollapsed = true;
+        bool isGridCollapsed = false;
         private  TranslateTransform dragTranslation;
+        private double smallVideoSizeWidth;
+        private double expandedVideoSizeWidth;
 
         public VideoPlayerView()
         {
@@ -139,6 +141,15 @@ namespace HudlRT.Views
             {
                 FullscreenToggle();
             }
+            if (initialPoint.X - currentPoint.X >= 50)
+            {
+                ScrollNextGrid(null, null);
+            }
+
+            else if (initialPoint.X - currentPoint.X <= -50)
+            {
+                ScrollPreviousGrid(null, null);
+            }
         }
 
         /// <summary>
@@ -199,7 +210,7 @@ namespace HudlRT.Views
 
            var dt = (DataTemplate)XamlReader.Load(template);
            Clips.ItemTemplate = dt;
-           btnExpandGrid_Click(null, null);
+           //btnExpandGrid_Click(null, null);
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -364,6 +375,16 @@ namespace HudlRT.Views
             videoMediaElement.PlaybackRate = 1.0;
             setPauseVisible();
             setStopVisibile();
+            if (!isGridCollapsed && !IsFullscreen)
+            {
+                smallVideoSizeWidth = videoMediaElement.ActualWidth;
+                expandedVideoSizeWidth = smallVideoSizeWidth * (1 / .7); ;
+            }
+            if (isGridCollapsed && !IsFullscreen)
+            {
+                smallVideoSizeWidth = videoMediaElement.ActualWidth * .7;
+                expandedVideoSizeWidth = videoMediaElement.ActualWidth;
+            }
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
@@ -454,6 +475,7 @@ namespace HudlRT.Views
 
             videoContainer.Height = 350;
             videoMediaElement.Height = 350;
+            videoMediaElement.Width = smallVideoSizeWidth;
             isGridCollapsed = false;
        
         }
@@ -468,6 +490,7 @@ namespace HudlRT.Views
 
             videoContainer.Height = 500;
             videoMediaElement.Height = 500;
+            videoMediaElement.Width = expandedVideoSizeWidth;
             isGridCollapsed = true;
         }
 

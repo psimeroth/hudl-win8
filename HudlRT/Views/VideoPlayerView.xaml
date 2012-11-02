@@ -24,7 +24,7 @@
         <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
-                <RowDefinition x:Name="mainGrid_Row2" Height="525" />
+                <RowDefinition x:Name="mainGrid_Row2" Height="375" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Name="header">
@@ -40,7 +40,7 @@
             </Grid>
             <Grid Background="Black" Grid.Row="1" x:Name="Container1">
                 <Grid.RowDefinitions>
-                    <RowDefinition x:Name="Container1_Row1" Height="525" />
+                    <RowDefinition x:Name="Container1_Row1" Height="375" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid x:Name="Container2">
@@ -49,7 +49,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="150" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,110,45,0">
+                    <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,18,45,0">
                             <Button x:Name="btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20"
                                     PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click">
@@ -67,7 +67,7 @@
                                     Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE1D9;" FontSize="30"/>
                     </StackPanel>
-                    <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" Margin="45,110,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
+                    <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" Margin="45,18,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
                             <Button x:Name="btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" FontSize="20" PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
                         <Button x:Name="btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
@@ -105,7 +105,7 @@
             <ContentControl x:Name="videoContainer"
                             KeyUp="VideoContainer_KeyUp"
                             HorizontalContentAlignment="Center" 
-                            Height="500"
+                            Height="350"
                             DataContext="{Binding Video}">
                 <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
                                    AutoPlay="True"
