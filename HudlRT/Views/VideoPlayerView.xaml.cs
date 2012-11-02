@@ -541,7 +541,7 @@ namespace HudlRT.Views
             }
             else
             {
-                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 31);
+                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 39);
             }
         }
 
@@ -549,11 +549,11 @@ namespace HudlRT.Views
         {
             if ((Clips.SelectedIndex) == 0)
             {
-                gridScroll.ScrollToVerticalOffset((Clips.Items.Count-1)*31);
+                gridScroll.ScrollToVerticalOffset((Clips.Items.Count-1)*39);
             }
             else
             {
-                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex-2) * 31);
+                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex-2) * 39);
             }
         }
     }

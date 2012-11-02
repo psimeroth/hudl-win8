@@ -38,6 +38,17 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Video);
             }
         }
+
+        private string[] gridHeaders;
+        public string[] GridHeaders
+        {
+            get { return gridHeaders; }
+            set
+            {
+                gridHeaders = value;
+                NotifyOfPropertyChange(() => GridHeaders);
+            }
+        }
         private string cutupName;
         public string CutupName
         {
@@ -71,6 +82,7 @@ namespace HudlRT.ViewModels
             base.OnActivate();
             //GetClipsByCutup(Parameter.selectedCutup);
             Clips = Parameter.cutups.First().clips;
+            GridHeaders = Parameter.cutups.First().displayColumns;
             if (Clips.Count > 0)
             {
                 SelectedClip = Clips.First();

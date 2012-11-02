@@ -141,16 +141,18 @@
 
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
 
-            <Grid DataContext="{Binding SelectedClip}" Background="Black" Opacity="0.5" Height="50" Width="Auto" VerticalAlignment="Top">
+            <Grid Background="Black" Opacity="0.5" Height="50" Width="Auto" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">ODK:</TextBlock>
-                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding odk}" />
-                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Down:</TextBlock>
-                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding down}" />
-                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Dist:</TextBlock>
-                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding dist}" />
-                    <TextBlock Margin="10,0,5,0" Foreground="White" FontSize="25">Yard Ln:</TextBlock>
-                    <TextBlock Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding yardLn}" />
+                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[0]}"/>
+                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[0]}" />
+                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[1]}"/>
+                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[1]}" />
+                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[2]}"/>
+                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[2]}" />
+                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[3]}"/>
+                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[3]}" />
+                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[4]}"/>
+                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[4]}" />
                 </StackPanel>
             </Grid>
 
