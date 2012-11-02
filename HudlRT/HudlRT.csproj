@@ -109,7 +109,6 @@
     </Compile>
     <Compile Include="Common\CharmsData.cs" />
     <Compile Include="Common\LayoutAwarePage.cs" />
-    <Compile Include="Common\BetaDialog.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
