@@ -18,6 +18,11 @@
         <Grid.Background>
             <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
         </Grid.Background>
+        <Grid.Resources>
+            <Storyboard x:Name="FadeOutCol">
+                <DoubleAnimation Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="0" />
+            </Storyboard>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="50"/>
@@ -30,7 +35,6 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
-
         <Grid x:Name="TopTitleGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -42,8 +46,8 @@
             <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" Visibility="Collapsed"/>
             <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
         </Grid>
-        
-        <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1">
+
+        <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1" Visibility="{Binding ColVisibility}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -57,7 +61,8 @@
             <TextBlock Grid.Column="3" Text="Categories" Style="{StaticResource columnHeaderStyle}"/>
             <TextBlock Grid.Column="4" Text="Cutups" Style="{StaticResource columnHeaderStyle}"/>
         </Grid>
-        <Grid x:Name="BottomContentGrid" Grid.Row="2" Margin="0,1,0,0" Background="{StaticResource WhiteToBlackGradient}" >
+        <Grid x:Name="BottomContentGrid" Grid.Row="2" Margin="0,1,0,0" Background="{StaticResource WhiteToBlackGradient}" Visibility="{Binding ColVisibility}" >
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -112,6 +117,12 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+        </Grid>
+
+        <Grid>
+            <Canvas Canvas.ZIndex="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressRing x:Name="LoginProgressRing" Margin="-75,250,0,0" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" />
+            </Canvas>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>
