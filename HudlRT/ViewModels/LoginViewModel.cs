@@ -76,18 +76,18 @@ namespace HudlRT.ViewModels
             ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
-
-            
         }
 
         public async void LoginAttempt()
         {
             // Get the username and password from the view
+#if DEBUG
             if ( (UserName == null || UserName == "" ) && ( Password == null || Password == "" ))
             {
                 UserName = "windows8";
                 Password = "rightmeow!";
             }
+#endif
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
 
             // Show the user a call is being made in the background
