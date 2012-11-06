@@ -82,7 +82,7 @@ namespace HudlRT.ViewModels
         {
             // Get the username and password from the view
 #if DEBUG
-            if ( (UserName == null || UserName == "" ) && ( Password == null || Password == "" ))
+            if ((UserName == null || UserName == "" || UserName == "windows8") && (Password == null || Password == ""))
             {
                 UserName = "windows8";
                 Password = "rightmeow!";
