@@ -9,11 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.ViewModels
 {
-    class SectionViewModel : ViewModelBase
+    public class SectionViewModel : ViewModelBase
     {
         private SectionModel model;
         private readonly INavigationService navigationService;
@@ -81,6 +82,13 @@ namespace HudlRT.ViewModels
                 selectedCategory = value;
                 NotifyOfPropertyChange(() => SelectedCategory);
             }
+        }
+
+        public SectionViewModel(INavigationService navigationService) : base(navigationService)
+        {
+            this.navigationService = navigationService;
+            CharmsData.navigationService = navigationService;
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
 
         protected override void OnActivate()

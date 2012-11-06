@@ -22,9 +22,13 @@ namespace HudlRT.Common
     /// </summary>
     class ServiceAccessor
     {
+#if DEBUG
         private const string URL_BASE = "http://thor7/api/";
         private const string URL_BASE_SECURE = "https://thor7/api/";
-
+#else
+        private const string URL_BASE = "http://www.hudl.com/api/";
+        private const string URL_BASE_SECURE = "https://www.hudl.com/api/";
+#endif
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
         public const string URL_SERVICE_GET_SCHEDULE = "teams/#/schedule";//returns games

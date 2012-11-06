@@ -40,6 +40,17 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Video);
             }
         }
+
+        private string[] gridHeaders;
+        public string[] GridHeaders
+        {
+            get { return gridHeaders; }
+            set
+            {
+                gridHeaders = value;
+                NotifyOfPropertyChange(() => GridHeaders);
+            }
+        }
         private string cutupName;
         public string CutupName
         {
@@ -63,7 +74,8 @@ namespace HudlRT.ViewModels
 
         private int index = 0;
         Point initialPoint = new Point();
-        Point currentPoint = new Point();
+        Point currentPoint;
+        bool isFullScreenGesture = false;
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -73,37 +85,15 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            GetClipsByCutup(Parameter.selectedCutup);
-            CutupName = Parameter.selectedCutup.name;
-        }
-
-        public async void GetClipsByCutup(Cutup cutup)
-        {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            if (!string.IsNullOrEmpty(clips))
-            {
-                cutup.clips = new BindableCollection<Clip>();
-                var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-                foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
-                {
-                    Clip c = Clip.FromDTO(clipDTO);
-                    if (c != null)
-                    {
-                        cutup.clips.Add(c);
-                    }
-                }
-                Clips = cutup.clips;
-            }
-            else
-            {
-                
-            }
+            //GetClipsByCutup(Parameter.selectedCutup);
+            Clips = Parameter.cutups.First().clips;
+            GridHeaders = Parameter.cutups.First().displayColumns;
             if (Clips.Count > 0)
             {
                 SelectedClip = Clips.First();
                 Video = SelectedClip.angles.ElementAt(0);
             }
-            //(if Clips.count == 0) .. do something figure this out earlier somehow?
+            CutupName = Parameter.selectedCutup.name;
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
@@ -148,22 +138,28 @@ namespace HudlRT.ViewModels
 
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            currentPoint = e.Position;
+            if ((currentPoint.X == 0 && currentPoint.Y == 0) || (currentPoint.X - e.Position.X <= 50 && currentPoint.X - e.Position.X >= -50))
+                currentPoint = e.Position;
+
+            if (e.Delta.Scale >= 1.1 || e.Delta.Scale <= .92)
+                isFullScreenGesture = true;
         }
 
         void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
+            isFullScreenGesture = false;
             initialPoint = e.Position;
+            currentPoint = new Point();
         }
 
         void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventHandler e)
         {
-            if (initialPoint.X - currentPoint.X >= 50)
+            if (initialPoint.X - currentPoint.X >= 50 && !isFullScreenGesture)
             {
                 NextClip(null);
             }
 
-            else if (initialPoint.X - currentPoint.X <= -50)
+            else if (initialPoint.X - currentPoint.X <= -50 && !isFullScreenGesture)
             {
                 PreviousClip(null);
             }

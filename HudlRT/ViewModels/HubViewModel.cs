@@ -122,6 +122,33 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Clip> Clips = new BindableCollection<Clip>();
+
+
+        // Bound to the visibility of the progress ring. Swaps with 
+        private string progressRingVisibility;
+        public string ProgressRingVisibility
+        {
+            get { return progressRingVisibility; }
+            set
+            {
+                progressRingVisibility = value;
+                NotifyOfPropertyChange(() => ProgressRingVisibility);
+            }
+        }
+
+        // Bound to the visibility of the login form stack panel
+        private string colVisibility;
+        public string ColVisibility
+        {
+            get { return colVisibility; }
+            set
+            {
+                colVisibility = value;
+                NotifyOfPropertyChange(() => ColVisibility);
+            }
+        }
+
         public HubViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
@@ -149,6 +176,9 @@ namespace HudlRT.ViewModels
                 model = new Model();
                 GetTeams();
             }
+
+            ColVisibility = "Visible";
+            ProgressRingVisibility = "Collapsed";
         }
 
         public async void GetTeams()
@@ -156,18 +186,111 @@ namespace HudlRT.ViewModels
             var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
             if (!string.IsNullOrEmpty(teams))
             {
-                var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
-                model.teams = new BindableCollection<Team>();
-                foreach (TeamDTO teamDTO in obj)
+                try
                 {
-                    model.teams.Add(Team.FromDTO(teamDTO));
+                    var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
+                    model.teams = new BindableCollection<Team>();
+                    foreach (TeamDTO teamDTO in obj)
+                    {
+                        model.teams.Add(Team.FromDTO(teamDTO));
+                    }
                 }
+                catch (Exception)
+                {
+                    //show error message
+                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                }
+                
                 Teams = model.teams;
             }
             else
             {
                 Feedback = "Error processing GetTeams request.";
                 Teams = null;
+            }
+        }
+
+        public async void GetGames(Season s)
+        {
+            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
+            if (!string.IsNullOrEmpty(games))
+            {
+                try
+                {
+                    s.games = new BindableCollection<Game>();
+                    var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
+                    foreach (GameDTO gameDTO in obj)
+                    {
+                        s.games.Add(Game.FromDTO(gameDTO));
+                    }
+                }
+                catch (Exception)
+                {
+                    //show error message
+                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                }
+                Games = s.games;
+            }
+            else
+            {
+                Feedback = "Error processing GetGames request.";
+                Games = null;
+            }
+        }
+
+        public async void GetGameCategories(Game game)
+        {
+            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
+            if (!string.IsNullOrEmpty(categories))
+            {
+                try
+                {
+                    game.categories = new BindableCollection<Category>();
+                    var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
+                    foreach (CategoryDTO categoryDTO in obj)
+                    {
+                        game.categories.Add(Category.FromDTO(categoryDTO));
+                    }
+                }
+                catch (Exception)
+                {
+                    //show error message
+                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                }
+                Categories = game.categories;
+            }
+            else
+            {
+                Feedback = "Error processing GetGameCategories request.";
+                Categories = null;
+            }
+        }
+
+        public async void GetCutupsByCategory(Category category)
+        {
+            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
+            if (!string.IsNullOrEmpty(cutups))
+            {
+                try
+                {
+                    category.cutups = new BindableCollection<Cutup>();
+                    var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
+                    foreach (CutupDTO cutupDTO in obj)
+                    {
+                        category.cutups.Add(Cutup.FromDTO(cutupDTO));
+                    }
+                }
+                catch (Exception)
+                {
+                    //show error message
+                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                }
+                Cutups = category.cutups;
+            }
+            else
+            {
+                Feedback = "Error processing GetCutupsByCategory request.";
+                Cutups = null;
             }
         }
 
@@ -196,9 +319,86 @@ namespace HudlRT.ViewModels
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = season;
 
-            //GetGames(season);
+            GetGames(season);
             Categories = null;
             Cutups = null;
+        }
+
+        public void GameSelected(ItemClickEventArgs eventArgs)
+        {
+            Feedback = null;
+            var game = (Game)eventArgs.ClickedItem;
+
+            SelectedGame = game;
+            ListView x = (ListView)eventArgs.OriginalSource;
+            x.SelectedItem = game;
+
+            GetGameCategories(game);
+            Cutups = null;
+        }
+
+        public void CategorySelected(ItemClickEventArgs eventArgs)
+        {
+            Feedback = null;
+            var category = (Category)eventArgs.ClickedItem;
+
+            SelectedCategory = category;
+            ListView x = (ListView)eventArgs.OriginalSource;
+            x.SelectedItem = category;
+
+            GetCutupsByCategory(category);
+        }
+
+        public void CutupSelected(ItemClickEventArgs eventArgs)
+        {
+            Feedback = null;
+            var cutup = (Cutup)eventArgs.ClickedItem;
+            GetClipsByCutup(cutup);
+        }
+
+        public async void GetClipsByCutup(Cutup cutup)
+        {
+            ColVisibility = "Collapsed";
+            ProgressRingVisibility = "Visible";
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
+            if (!string.IsNullOrEmpty(clips))
+            {
+                try
+                {
+                    cutup.clips = new BindableCollection<Clip>();
+                    var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
+                    cutup.displayColumns = obj.DisplayColumns;
+                    foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
+                    {
+                        Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
+                        if (c != null)
+                        {
+                            cutup.clips.Add(c);
+                        }
+                    }
+                    ProgressRingVisibility = "Collapsed";
+                    ColVisibility = "Visible";
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
+                    {
+                        teams = teams,
+                        games = games,
+                        categories = categories,
+                        seasons = seasons,
+                        cutups = cutups,
+                        selectedTeam = SelectedTeam,
+                        selectedSeason = SelectedSeason,
+                        selectedGame = SelectedGame,
+                        selectedCategory = SelectedCategory,
+                        selectedCutup = cutup
+                    });
+                }
+                catch (Exception)
+                {
+                    ProgressRingVisibility = "Collapsed";
+                    ColVisibility = "Visible";
+                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                }
+            }
         }
 
         public void LogOut()
