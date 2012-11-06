@@ -171,66 +171,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async void GetGames(Season s)
-        {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
-            if (!string.IsNullOrEmpty(games))
-            {
-                s.games = new BindableCollection<Game>();
-                var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
-                foreach (GameDTO gameDTO in obj)
-                {
-                    s.games.Add(Game.FromDTO(gameDTO));
-                }
-                Games = s.games;
-            }
-            else
-            {
-                Feedback = "Error processing GetGames request.";
-                Games = null;
-            }
-        }
-
-        public async void GetGameCategories(Game game)
-        {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
-            if (!string.IsNullOrEmpty(categories))
-            {
-                game.categories = new BindableCollection<Category>();
-                var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
-                foreach (CategoryDTO categoryDTO in obj)
-                {
-                    game.categories.Add(Category.FromDTO(categoryDTO));
-                }
-                Categories = game.categories;
-            }
-            else
-            {
-                Feedback = "Error processing GetGameCategories request.";
-                Categories = null;
-            }
-        }
-
-        public async void GetCutupsByCategory(Category category)
-        {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
-            if (!string.IsNullOrEmpty(cutups))
-            {
-                category.cutups = new BindableCollection<Cutup>();
-                var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
-                foreach (CutupDTO cutupDTO in obj)
-                {
-                    category.cutups.Add(Cutup.FromDTO(cutupDTO));
-                }
-                Cutups = category.cutups;
-            }
-            else
-            {
-                Feedback = "Error processing GetCutupsByCategory request.";
-                Cutups = null;
-            }
-        }
-
         public void TeamSelected(ItemClickEventArgs eventArgs)
         {
             Feedback = null;
@@ -256,54 +196,9 @@ namespace HudlRT.ViewModels
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = season;
 
-            GetGames(season);
+            //GetGames(season);
             Categories = null;
             Cutups = null;
-        }
-
-        public void GameSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var game = (Game)eventArgs.ClickedItem;
-
-            SelectedGame = game;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = game;
-
-            GetGameCategories(game);
-            Cutups = null;
-        }
-
-        public void CategorySelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var category = (Category)eventArgs.ClickedItem;
-
-            SelectedCategory = category;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = category;
-
-            GetCutupsByCategory(category);
-        }
-
-        public void CutupSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var cutup = (Cutup)eventArgs.ClickedItem;
-
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-            {
-                teams = teams,
-                games = games,
-                categories = categories,
-                seasons = seasons,
-                cutups = cutups,
-                selectedTeam = SelectedTeam,
-                selectedSeason = SelectedSeason,
-                selectedGame = SelectedGame,
-                selectedCategory = SelectedCategory,
-                selectedCutup = cutup
-            });
         }
 
         public void LogOut()
