@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HudlRT.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace HudlRT.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SectionView : Page
+    public sealed partial class SectionView : LayoutAwarePage
     {
         public SectionView()
         {
