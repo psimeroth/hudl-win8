@@ -49,6 +49,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Season> seasonsForDropDown;
+        public BindableCollection<Season> SeasonsForDropDown
+        {
+            get { return seasonsForDropDown; }
+            set
+            {
+                seasonsForDropDown = value;
+                NotifyOfPropertyChange(() => SeasonsForDropDown);
+            }
+        }
+
         private BindableCollection<Game> games;
         public BindableCollection<Game> Games
         {
@@ -174,11 +185,73 @@ namespace HudlRT.ViewModels
             else
             {
                 model = new Model();
-                GetTeams();
+                //GetTeams();
+                PopulateDropDown();
             }
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
+        }
+
+        public async void PopulateDropDown()
+        {
+            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
+            if (!string.IsNullOrEmpty(teams))
+            {
+                try
+                {
+                    var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
+                    model.teams = new BindableCollection<Team>();
+                    foreach (TeamDTO teamDTO in obj)
+                    {
+                        model.teams.Add(Team.FromDTO(teamDTO));
+                    }
+
+                    Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                    long teamID = -1;
+                    long seasonID = -1;
+                    bool foundSavedSeason = false;
+                    if (roamingSettings.Values["hudl-teamID"] != null && roamingSettings.Values["hudl-seasonID"] != null)
+                    {
+                        teamID = (long)roamingSettings.Values["hudl-teamID"];
+                        seasonID = (long)roamingSettings.Values["hudl-seasonID"];
+                    }
+                    
+                    SeasonsForDropDown = new BindableCollection<Season>();
+                    foreach (Team team in model.teams)
+                    {
+                        foreach (Season season in team.seasons)
+                        {
+                            //School - Team - Season
+                            season.name = season.owningTeam.school + " - " + season.owningTeam.name + " - " + season.name;
+                            if (teamID == season.owningTeam.teamID && seasonID == season.seasonID)
+                            {
+                                SelectedSeason = season;
+                                foundSavedSeason = true;
+                            }
+                            SeasonsForDropDown.Add(season);
+                        }
+                    }
+                    if (!foundSavedSeason && SeasonsForDropDown.Count > 0)
+                    {
+                        SelectedSeason = SeasonsForDropDown[0];
+                    }
+                    //populate this/next game
+                    
+                }
+                catch (Exception)
+                {
+                    //show error message
+                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                }
+
+                Teams = model.teams;
+            }
+            else
+            {
+                Feedback = "Error processing GetTeams request.";
+                Teams = null;
+            }
         }
 
         public async void GetTeams()
@@ -312,8 +385,12 @@ namespace HudlRT.ViewModels
 
         public void SeasonSelected(ItemClickEventArgs eventArgs)
         {
-            Feedback = null;
             var season = (Season)eventArgs.ClickedItem;
+            //save username to app data
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            roamingSettings.Values["SavedSeason"] = season.name;
+            Feedback = null;
+            
 
             SelectedSeason = season;
             ListView x = (ListView)eventArgs.OriginalSource;
