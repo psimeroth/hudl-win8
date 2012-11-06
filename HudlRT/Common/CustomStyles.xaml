@@ -49,6 +49,7 @@
         <GradientStop Color="#11FFFFFF" Offset="1"/>
         <GradientStop Color="#00000000" Offset=".5"/>
     </LinearGradientBrush>
+    
     <!--STYLES!!!!!!-->
     <Style x:Key="ListViewItemStyle1" TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
@@ -1094,5 +1095,14 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    
+    <!-- Hub Page -->
+    <Style TargetType="TextBlock" x:Key="HubViewWeekHeaderStyle">
+        <Setter Property="FontSize" Value="40"/>
+        <Setter Property="Margin" Value="5,0"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{StaticResource WhiteToBlackGradient}" />
     </Style>
 </ResourceDictionary>

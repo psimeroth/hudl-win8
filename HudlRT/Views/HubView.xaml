@@ -53,7 +53,7 @@
             </Grid>
         </Grid>
        
-        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,1,0,0" Visibility="{Binding ColVisibility}" >
+        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,1,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="3*"/>
@@ -65,21 +65,29 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
-                    <TextBlock Text="This Week"/>
-                    <ListView x:Name="ThisWeek_ListView">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Up Next" Style="{StaticResource HubViewWeekHeaderStyle}"/>
+                    <ListView x:Name="NextWeek_ListView" BorderThickness="2">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Button x:Name="LastWeekCategory_Button" Content="{Binding name}"/>
+                                <Button x:Name="NextWeekCategory_Button" Content="{Binding name}"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <TextBlock Text="Last Week"/>
-                    <ListView x:Name="LastWeek_ListView">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Previous" Style="{StaticResource HubViewWeekHeaderStyle}"/>
+                    <ListView x:Name="PreviousWeek_ListView">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Button x:Name="LastWeekCategory_Button" Content="{Binding name}"/>
+                                <Button x:Name="PreviousWeekCategory_Button" Content="{Binding name}"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
