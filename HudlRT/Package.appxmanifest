@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="HudlRT.App">
-      <VisualElements DisplayName="Hudl" Logo="Assets\Hudl_Metro150.png" SmallLogo="Assets\Hudl_Partial30.png" Description="HudlRt" ForegroundText="light" BackgroundColor="#464646">
+      <VisualElements DisplayName="Hudl" Logo="Assets\Hudl_Metro150.png" SmallLogo="Assets\Hudl_Partial30.png" Description="HudlRt" ForegroundText="light" BackgroundColor="#FF6700">
         <DefaultTile ShowName="allLogos" />
         <SplashScreen Image="Assets\hudlsplash.png" BackgroundColor="#FFFFFF" />
         <InitialRotationPreference>
