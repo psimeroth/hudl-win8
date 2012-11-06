@@ -76,13 +76,18 @@ namespace HudlRT.ViewModels
             ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
-
-            
         }
 
         public async void LoginAttempt()
         {
             // Get the username and password from the view
+#if DEBUG
+            if ((UserName == null || UserName == "" || UserName == "windows8") && (Password == null || Password == ""))
+            {
+                UserName = "windows8";
+                Password = "rightmeow!";
+            }
+#endif
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
 
             // Show the user a call is being made in the background
@@ -102,8 +107,8 @@ namespace HudlRT.ViewModels
                 LoginFeedback = "";
 
                 //save username to app data
-                Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                localSettings.Values["UserName"] = UserName;
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                roamingSettings.Values["UserName"] = UserName;
 
                 //need to save privileges to roamingsettings
                 string urlExtension = "privileges/" + ApplicationData.Current.RoamingSettings.Values["hudl-userId"].ToString();
