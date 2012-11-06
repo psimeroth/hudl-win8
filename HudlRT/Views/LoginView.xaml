@@ -9,7 +9,8 @@
     xmlns:common="using:HudlRT.Common"
     mc:Ignorable="d">
     
-    <Grid x:Name="RootGrid" Background="White">
+    <Grid x:Name="RootGrid">
+        
         <Grid.Resources>
             <Storyboard x:Name="PositionLoginForm">
                 <RepositionThemeAnimation Storyboard.TargetName="loginStackPanel" SpeedRatio="0.2" />
@@ -17,7 +18,17 @@
             <Storyboard x:Name="FadeInForm">
                 <DoubleAnimation Storyboard.TargetName="loginFormStackPanel" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="1" />
             </Storyboard>
+            <Storyboard x:Name="FadeInBackground">
+                <DoubleAnimation Storyboard.TargetName="BackgroundGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="1" />
+            </Storyboard>
         </Grid.Resources>
+        
+        <!--Just a stack panel that spans the page to make the background fade in-->
+        <StackPanel x:Name="BackgroundGrid"  Opacity="0">
+            <StackPanel.Background>
+                <ImageBrush ImageSource="ms-appx:///Assets/medium_BG_Tiled.png"/>
+            </StackPanel.Background>
+        </StackPanel>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
             <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
@@ -42,13 +53,13 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0">Username</TextBlock>
-                    <TextBlock Grid.Column="0" Grid.Row="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0">Password</TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0" Foreground="White">Username</TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0" Foreground="White">Password</TextBlock>
 
                     <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" Grid.Column="1" Grid.Row="0" />
                     <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="1" Grid.Row="1" />
 
-                    <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="110" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="0,-5,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" />
+                    <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="109" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="0,-5,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Style="{StaticResource StandardButtonStyle}"/>
                 </Grid>
 
                 <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Height="40" FontSize="18" Foreground="Red"/>
@@ -60,8 +71,8 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="New to Hudl?" Grid.Column="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" />
-                        <Button Content="Check it out!" Grid.Column="1" FontSize="18" Click="RedirectToSignup" Margin="5,0,0,0" />
+                        <TextBlock Text="New to Hudl?" Grid.Column="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="White"/>
+                        <Button Content="Check it out!" Grid.Column="1" FontSize="18" Click="RedirectToSignup" Margin="5,0,0,0" Style="{StaticResource SecondaryButtonStyle}"/>
                     </Grid>
                 </Grid>
 
