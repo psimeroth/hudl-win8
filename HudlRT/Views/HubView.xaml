@@ -43,10 +43,10 @@
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
             <Grid Grid.Column="1">
-                <ComboBox x:Name="SchoolTeamSeason_ComboBox" Height="50" HorizontalAlignment="Right" Width="500" Margin="5">
+                <ComboBox x:Name="SchoolTeamSeason_ComboBox" Height="60" HorizontalAlignment="Right" Width="500" Margin="0,0,65,0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock x:Name="SeasonName" Text="{Binding name}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="SeasonName" Text="{Binding name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Foreground="White"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -54,44 +54,58 @@
         </Grid>
        
         <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,1,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="3*"/>
-            </Grid.RowDefinitions>
-            <Button Style="{StaticResource HubViewButtonStyle}">Video Library</Button>
-            <Grid x:Name="ThisLastWeek_Grid" Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="3*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Up Next" Style="{StaticResource HubViewWeekHeaderStyle}"/>
-                    <ListView x:Name="NextWeek_ListView" BorderThickness="2">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Button x:Name="NextWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid x:Name="Group1_Grid" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
+                <Button Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" Content="&#xE173; Video Library"/>
+                <Grid x:Name="RecentWeeks_Grid" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="Next_Grid" Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Up Next" Style="{StaticResource HubViewWeekHeaderStyle}"/>
+                        <ListView x:Name="NextWeek_ListView" BorderThickness="2">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="NextWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                    <Grid x:Name="Prev_Grid" Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Previous" Style="{StaticResource HubViewWeekHeaderStyle}"/>
+                        <ListView x:Name="PreviousWeek_ListView">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="PreviousWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
                 </Grid>
-                <Grid Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="3*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Previous" Style="{StaticResource HubViewWeekHeaderStyle}"/>
-                    <ListView x:Name="PreviousWeek_ListView">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Button x:Name="PreviousWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
+            </Grid>
+            
+            <Grid x:Name="Group2_Grid" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" Content="&#xE1A6; Last Viewed"/>
             </Grid>
         </Grid>            
 
