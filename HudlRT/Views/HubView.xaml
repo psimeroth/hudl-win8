@@ -43,7 +43,7 @@
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
             <Grid Grid.Column="1">
-                <ComboBox x:Name="SchoolTeamSeason_ComboBox" Height="50" MinWidth="500" MaxWidth="800" HorizontalAlignment="Right" Width="500">
+                <ComboBox x:Name="SeasonsDropDown" Height="50" MinWidth="500" MaxWidth="800" HorizontalAlignment="Right" Width="500" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock x:Name="SeasonName" Text="{Binding name}" VerticalAlignment="Center"/>

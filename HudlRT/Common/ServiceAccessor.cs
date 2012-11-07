@@ -78,6 +78,7 @@ namespace HudlRT.Common
                 httpRequestMessage.Content = new StringContent(jsonString);
                 httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
                 var response = await httpClient.SendAsync(httpRequestMessage);
+                //response.StatusCode 404 500 401
                 return await response.Content.ReadAsStringAsync();
             }
             catch (Exception)

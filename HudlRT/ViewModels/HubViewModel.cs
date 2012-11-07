@@ -50,13 +50,13 @@ namespace HudlRT.ViewModels
         }
 
         private BindableCollection<Season> seasonsForDropDown;
-        public BindableCollection<Season> SeasonsForDropDown
+        public BindableCollection<Season> SeasonsDropDown
         {
             get { return seasonsForDropDown; }
             set
             {
                 seasonsForDropDown = value;
-                NotifyOfPropertyChange(() => SeasonsForDropDown);
+                NotifyOfPropertyChange(() => SeasonsDropDown);
             }
         }
 
@@ -68,6 +68,28 @@ namespace HudlRT.ViewModels
             {
                 games = value;
                 NotifyOfPropertyChange(() => Games);
+            }
+        }
+
+        private Game mostRecentGameFootage;
+        public Game MostRecentGameFootage
+        {
+            get { return mostRecentGameFootage; }
+            set
+            {
+                mostRecentGameFootage = value;
+                NotifyOfPropertyChange(() => MostRecentGameFootage);
+            }
+        }
+
+        private Game otherRecentGameFootage;
+        public Game OtherRecentGameFootage
+        {
+            get { return otherRecentGameFootage; }
+            set
+            {
+                otherRecentGameFootage = value;
+                NotifyOfPropertyChange(() => OtherRecentGameFootage);
             }
         }
 
@@ -217,7 +239,7 @@ namespace HudlRT.ViewModels
                         seasonID = (long)roamingSettings.Values["hudl-seasonID"];
                     }
                     
-                    SeasonsForDropDown = new BindableCollection<Season>();
+                    SeasonsDropDown = new BindableCollection<Season>();
                     foreach (Team team in model.teams)
                     {
                         foreach (Season season in team.seasons)
@@ -229,14 +251,16 @@ namespace HudlRT.ViewModels
                                 SelectedSeason = season;
                                 foundSavedSeason = true;
                             }
-                            SeasonsForDropDown.Add(season);
+                            SeasonsDropDown.Add(season);
                         }
                     }
-                    if (!foundSavedSeason && SeasonsForDropDown.Count > 0)
+                    if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                     {
-                        SelectedSeason = SeasonsForDropDown[0];
+                        SelectedSeason = SeasonsDropDown[0];
                     }
                     //populate this/next game
+                    NotifyOfPropertyChange(() => SelectedSeason);
+                    GetGames(SelectedSeason);
                     
                 }
                 catch (Exception)
@@ -254,36 +278,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async void GetTeams()
-        {
-            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
-            if (!string.IsNullOrEmpty(teams))
-            {
-                try
-                {
-                    var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
-                    model.teams = new BindableCollection<Team>();
-                    foreach (TeamDTO teamDTO in obj)
-                    {
-                        model.teams.Add(Team.FromDTO(teamDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                
-                Teams = model.teams;
-            }
-            else
-            {
-                Feedback = "Error processing GetTeams request.";
-                Teams = null;
-            }
-        }
-
-        public async void GetGames(Season s)
+        public async void GetGames(Season s)//sets gameThisWeek and gameNextWeek
         {
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
             if (!string.IsNullOrEmpty(games))
@@ -291,11 +286,63 @@ namespace HudlRT.ViewModels
                 try
                 {
                     s.games = new BindableCollection<Game>();
+                    List<Game> gamesToBeSorted = new List<Game>();
                     var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
                     foreach (GameDTO gameDTO in obj)
                     {
                         s.games.Add(Game.FromDTO(gameDTO));
+                        gamesToBeSorted.Add(Game.FromDTO(gameDTO));
                     }
+                    gamesToBeSorted.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
+                    foreach (Game g in gamesToBeSorted)
+                    {
+                        var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", g.gameId.ToString()));
+                        if (!string.IsNullOrEmpty(categories))
+                        {
+                                g.categories = new BindableCollection<Category>();
+                                var cats = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
+                                foreach (CategoryDTO categoryDTO in cats)
+                                {
+                                    //check to see if category has a cutup
+                                    Category newCategory = Category.FromDTO(categoryDTO);
+                                    var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", newCategory.categoryId.ToString()));
+                                    newCategory.cutups = new BindableCollection<Cutup>();
+                                    if (!string.IsNullOrEmpty(cutups))
+                                    {    
+                                            var cuts = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
+                                            foreach (CutupDTO cutupDTO in cuts)
+                                            {
+                                                newCategory.cutups.Add(Cutup.FromDTO(cutupDTO));
+                                            }
+                                    }
+                                    if (newCategory.cutups.Count > 0)
+                                    {
+                                        g.categories.Add(newCategory);
+                                    }
+                                }
+                        }
+                    }
+                    int count = 0;
+                    foreach (Game g in gamesToBeSorted)
+                    {
+                        foreach (Category c in g.categories)
+                        {
+                            if (c.name == "Game Footage" && count == 1)
+                            {
+                                count++;
+                                OtherRecentGameFootage = g;
+                            }
+                            if (c.name == "Game Footage" && count == 0)
+                            {
+                                count++;
+                                MostRecentGameFootage = g;
+                            }
+                            
+
+                        }
+                    }
+                    NotifyOfPropertyChange(() => MostRecentGameFootage);
+                    NotifyOfPropertyChange(() => OtherRecentGameFootage);
                 }
                 catch (Exception)
                 {
@@ -367,51 +414,19 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void TeamSelected(ItemClickEventArgs eventArgs)
+        public void SeasonSelected(SelectionChangedEventArgs eventArgs)
         {
-            Feedback = null;
-            var team = (Team)eventArgs.ClickedItem;
-            
-            SelectedTeam = team;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = team;
+            if (eventArgs != null)
+            {
 
-            Seasons = team.seasons;
-            SelectedSeason = null;
-            Games = null;
-            Categories = null;
-            Cutups = null;
-        }
+                var selectedSeason = (Season)eventArgs.AddedItems[0];
+                ComboBox x = (ComboBox)eventArgs.OriginalSource;
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
+                roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
 
-        public void SeasonSelected(ItemClickEventArgs eventArgs)
-        {
-            var season = (Season)eventArgs.ClickedItem;
-            //save username to app data
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["SavedSeason"] = season.name;
-            Feedback = null;
-            
-
-            SelectedSeason = season;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = season;
-
-            GetGames(season);
-            Categories = null;
-            Cutups = null;
-        }
-
-        public void GameSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var game = (Game)eventArgs.ClickedItem;
-
-            SelectedGame = game;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = game;
-
-            GetGameCategories(game);
-            Cutups = null;
+                GetGames(selectedSeason);
+            }
         }
 
         public void CategorySelected(ItemClickEventArgs eventArgs)
@@ -424,58 +439,6 @@ namespace HudlRT.ViewModels
             x.SelectedItem = category;
 
             GetCutupsByCategory(category);
-        }
-
-        public void CutupSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var cutup = (Cutup)eventArgs.ClickedItem;
-            GetClipsByCutup(cutup);
-        }
-
-        public async void GetClipsByCutup(Cutup cutup)
-        {
-            ColVisibility = "Collapsed";
-            ProgressRingVisibility = "Visible";
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            if (!string.IsNullOrEmpty(clips))
-            {
-                try
-                {
-                    cutup.clips = new BindableCollection<Clip>();
-                    var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-                    cutup.displayColumns = obj.DisplayColumns;
-                    foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
-                    {
-                        Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
-                        if (c != null)
-                        {
-                            cutup.clips.Add(c);
-                        }
-                    }
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-                    {
-                        teams = teams,
-                        games = games,
-                        categories = categories,
-                        seasons = seasons,
-                        cutups = cutups,
-                        selectedTeam = SelectedTeam,
-                        selectedSeason = SelectedSeason,
-                        selectedGame = SelectedGame,
-                        selectedCategory = SelectedCategory,
-                        selectedCutup = cutup
-                    });
-                }
-                catch (Exception)
-                {
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-            }
         }
 
         public void LogOut()
