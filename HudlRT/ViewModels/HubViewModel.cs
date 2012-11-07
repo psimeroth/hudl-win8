@@ -183,113 +183,58 @@ namespace HudlRT.ViewModels
 
         public async void GetTeams()
         {
-            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
-            if (!string.IsNullOrEmpty(teams))
+            TeamResponse response = await ServiceAccessor.GetTeams();
+            if (response.success)
             {
-                try
-                {
-                    var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
-                    model.teams = new BindableCollection<Team>();
-                    foreach (TeamDTO teamDTO in obj)
-                    {
-                        model.teams.Add(Team.FromDTO(teamDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                
-                Teams = model.teams;
+                Teams = response.teams;
             }
-            else
+            else//could better handle exceptions
             {
-                Feedback = "Error processing GetTeams request.";
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Teams = null;
             }
         }
 
         public async void GetGames(Season s)
         {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
-            if (!string.IsNullOrEmpty(games))
+            GameResponse response = await ServiceAccessor.GetGames(s.owningTeam.teamID.ToString(), s.seasonID.ToString());
+            if (response.success)
             {
-                try
-                {
-                    s.games = new BindableCollection<Game>();
-                    var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
-                    foreach (GameDTO gameDTO in obj)
-                    {
-                        s.games.Add(Game.FromDTO(gameDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                Games = s.games;
+                Games = response.games;
             }
-            else
+            else//could better handle exceptions
             {
-                Feedback = "Error processing GetGames request.";
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Games = null;
             }
         }
 
         public async void GetGameCategories(Game game)
         {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
-            if (!string.IsNullOrEmpty(categories))
+            CategoryResponse response = await ServiceAccessor.GetGameCategories(game.gameId.ToString());
+            if (response.success)
             {
-                try
-                {
-                    game.categories = new BindableCollection<Category>();
-                    var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
-                    foreach (CategoryDTO categoryDTO in obj)
-                    {
-                        game.categories.Add(Category.FromDTO(categoryDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                Categories = game.categories;
+                Categories = response.categories;
+                game.categories = Categories;
             }
-            else
+            else//could better handle exceptions
             {
-                Feedback = "Error processing GetGameCategories request.";
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Categories = null;
             }
         }
 
         public async void GetCutupsByCategory(Category category)
         {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
-            if (!string.IsNullOrEmpty(cutups))
+            CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.categoryId.ToString());
+            if (response.success)
             {
-                try
-                {
-                    category.cutups = new BindableCollection<Cutup>();
-                    var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
-                    foreach (CutupDTO cutupDTO in obj)
-                    {
-                        category.cutups.Add(Cutup.FromDTO(cutupDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                Cutups = category.cutups;
+                Cutups = response.cutups;
+                category.cutups = Cutups;
             }
-            else
+            else//could better handle exceptions
             {
-                Feedback = "Error processing GetCutupsByCategory request.";
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Cutups = null;
             }
         }
@@ -360,44 +305,31 @@ namespace HudlRT.ViewModels
         {
             ColVisibility = "Collapsed";
             ProgressRingVisibility = "Visible";
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            if (!string.IsNullOrEmpty(clips))
+            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            if (response.success)
             {
-                try
+                ProgressRingVisibility = "Collapsed";
+                ColVisibility = "Visible";
+                cutup.clips = response.clips;
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
                 {
-                    cutup.clips = new BindableCollection<Clip>();
-                    var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-                    cutup.displayColumns = obj.DisplayColumns;
-                    foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
-                    {
-                        Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
-                        if (c != null)
-                        {
-                            cutup.clips.Add(c);
-                        }
-                    }
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-                    {
-                        teams = teams,
-                        games = games,
-                        categories = categories,
-                        seasons = seasons,
-                        cutups = cutups,
-                        selectedTeam = SelectedTeam,
-                        selectedSeason = SelectedSeason,
-                        selectedGame = SelectedGame,
-                        selectedCategory = SelectedCategory,
-                        selectedCutup = cutup
-                    });
-                }
-                catch (Exception)
-                {
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
+                    teams = teams,
+                    games = games,
+                    categories = categories,
+                    seasons = seasons,
+                    cutups = cutups,
+                    selectedTeam = SelectedTeam,
+                    selectedSeason = SelectedSeason,
+                    selectedGame = SelectedGame,
+                    selectedCategory = SelectedCategory,
+                    selectedCutup = cutup
+                });
+            }
+            else//could better handle exceptions
+            {
+                ProgressRingVisibility = "Collapsed";
+                ColVisibility = "Visible";
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
             }
         }
 
