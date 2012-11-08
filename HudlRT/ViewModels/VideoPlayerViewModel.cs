@@ -125,6 +125,10 @@ namespace HudlRT.ViewModels
         public void NextClip(int eventArgs)
         {
             int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
+            if (angleIndex < 0)
+            {
+                angleIndex = 0;
+            }
             if (angleIndex < SelectedClip.angles.Count() - 1)
             {
                 SelectedAngle = SelectedClip.angles.ElementAt(angleIndex + 1);
