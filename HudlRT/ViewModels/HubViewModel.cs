@@ -363,34 +363,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async void GetGameCategories(Game game)
-        {
-            CategoryResponse response = await ServiceAccessor.GetGameCategories(game.gameId.ToString());
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                game.categories = response.categories;
-            }
-            else//could better handle exceptions
-            {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-            }
-        }
-
-        public async void GetCutupsByCategory(Category category)
-        {
-            CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.categoryId.ToString());
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                Cutups = response.cutups;
-                category.cutups = Cutups;
-            }
-            else//could better handle exceptions
-            {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                Cutups = null;
-            }
-        }
-
         public void SeasonSelected(SelectionChangedEventArgs eventArgs)
         {
             if (eventArgs != null)
@@ -405,54 +377,22 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void CategorySelected(ItemClickEventArgs eventArgs)
+        public void NextCategorySelected(ItemClickEventArgs eventArgs)
         {
-            Feedback = null;
+            
             var category = (Category)eventArgs.ClickedItem;
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId};
+            navigationService.NavigateToViewModel<SectionViewModel>(param);
 
-            SelectedCategory = category;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = category;
-
-            GetCutupsByCategory(category);
         }
 
-        public void CutupSelected(ItemClickEventArgs eventArgs)
+        public void PreviousCategorySelected(ItemClickEventArgs eventArgs)
         {
-            Feedback = null;
-            var cutup = (Cutup)eventArgs.ClickedItem;
-            GetClipsByCutup(cutup);
-        }
 
-        public async void GetClipsByCutup(Cutup cutup)
-        {
-            ColVisibility = "Collapsed";
-            ProgressRingVisibility = "Visible";
-            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                ProgressRingVisibility = "Collapsed";
-                ColVisibility = "Visible";
-                cutup.clips = response.clips;
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-                {
-                    teams = teams,
-                    games = games,
-                    seasons = seasons,
-                    cutups = cutups,
-                    selectedTeam = SelectedTeam,
-                    selectedSeason = SelectedSeason,
-                    selectedGame = SelectedGame,
-                    selectedCategory = SelectedCategory,
-                    selectedCutup = cutup
-                });
-            }
-            else//could better handle exceptions
-            {
-                ProgressRingVisibility = "Collapsed";
-                ColVisibility = "Visible";
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-            }
+            var category = (Category)eventArgs.ClickedItem;
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId };
+            navigationService.NavigateToViewModel<SectionViewModel>(param);
+
         }
 
         public void LogOut()

@@ -18,7 +18,7 @@ namespace HudlRT.ViewModels
     {
         private SectionModel model;
         private readonly INavigationService navigationService;
-        public PagePassParameter Parameter { get; set; }
+        public HubSectionParameter Parameter { get; set; }
         private string feedback;
         public string Feedback
         {
@@ -96,16 +96,11 @@ namespace HudlRT.ViewModels
             base.OnActivate();
             if (Parameter != null)
             {
-                Games = Parameter.games;
-                Categories = Parameter.categories;
-                Cutups = Parameter.cutups;
-                SelectedGame = Parameter.selectedGame;
-                SelectedCategory = Parameter.selectedCategory;
             }
             else
             {
-                double teamID = (double)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
-                double seasonID = (double)ApplicationData.Current.RoamingSettings.Values["hudl-seasonID"];
+                double teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
+                double seasonID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-seasonID"];
                 GetGames(teamID, seasonID);
             }
         }
