@@ -57,6 +57,14 @@ namespace HudlRT.Common
         public BindableCollection<Clip> clips { get; set; }
     }
 
+    public class NoInternetConnectionException : Exception
+    {
+
+    }
+
+    public class GeneralInternetException : Exception
+    {
+    }
     /// <summary>
     /// Class used make API calls.
     /// </summary>
@@ -85,11 +93,6 @@ namespace HudlRT.Common
 
         public static async Task<LoginResponse> Login(string loginArgs)
         {
-            if (!ConnectedToInternet())
-            {
-                return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
-            }
-
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
             if (!string.IsNullOrEmpty(loginResponse))
             {
@@ -123,11 +126,6 @@ namespace HudlRT.Common
 
         public static async Task<TeamResponse> GetTeams()
         {
-            if (!ConnectedToInternet())
-            {
-                return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
-            }
-
             var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
             if (!string.IsNullOrEmpty(teams))
             {
@@ -154,11 +152,6 @@ namespace HudlRT.Common
 
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
-            if (!ConnectedToInternet())
-            {
-                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
-            }
-
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId));
             if (!string.IsNullOrEmpty(games))
             {
@@ -185,11 +178,6 @@ namespace HudlRT.Common
 
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
-            if (!ConnectedToInternet())
-            {
-                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
-            }
-
             var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId));
             if (!string.IsNullOrEmpty(categories))
             {
@@ -216,10 +204,6 @@ namespace HudlRT.Common
 
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
-            if (!ConnectedToInternet())
-            {
-                return new CutupResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
-            }
             var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId));
             if (!string.IsNullOrEmpty(cutups))
             {
@@ -246,11 +230,6 @@ namespace HudlRT.Common
 
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
-            if (!ConnectedToInternet())
-            {
-                return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
-            }
-
             var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()));
             if (!string.IsNullOrEmpty(clips))
             {
@@ -290,16 +269,31 @@ namespace HudlRT.Common
         {
             try
             {
+                if (!ConnectedToInternet())
+                {
+                    throw new NoInternetConnectionException();
+                }
                 var httpClient = new HttpClient();
                 Uri uri = new Uri(URL_BASE + url);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
                 httpRequestMessage.Headers.Add("hudl-authtoken", ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"].ToString());
                 httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
                 var response = await httpClient.SendAsync(httpRequestMessage);
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new GeneralInternetException();
+                }
+
                 return await response.Content.ReadAsStringAsync();
+            }
+            catch (NoInternetConnectionException e)
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+                return "";
             }
             catch (Exception)
             {
+                APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
                 return "";//how to handle exceptions?
             }
         }
@@ -314,6 +308,11 @@ namespace HudlRT.Common
         {
             try
             {
+                if (!ConnectedToInternet())
+                {
+                    throw new NoInternetConnectionException();
+                }
+
                 var httpClient = new HttpClient();
                 Uri uri = new Uri(URL_BASE_SECURE + url);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
@@ -322,10 +321,20 @@ namespace HudlRT.Common
                 httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
                 var response = await httpClient.SendAsync(httpRequestMessage);
                 //response.StatusCode 404 500 401
+                if(response.StatusCode !=HttpStatusCode.OK)
+                {
+                    throw new GeneralInternetException();
+                }
                 return await response.Content.ReadAsStringAsync();
+            }
+            catch (NoInternetConnectionException e)
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+                return "";
             }
             catch (Exception)
             {
+                APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
                 return "";
             }
         }

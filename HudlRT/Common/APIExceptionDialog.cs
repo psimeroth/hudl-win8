@@ -12,11 +12,26 @@ namespace HudlRT.Common
 {
     class APIExceptionDialog
     {
-        static public async void ShowExceptionDialog(object sender, RoutedEventArgs e)
+        static public void ShowNoInternetConnectionDialog(object sender, RoutedEventArgs e)
         {
-            // Create the message dialog and set its content
+            string message = "We didn't detect an internet connection.";
+            message += "\nPlease connect to the internet, and then try again. If you have connected to the internet and this error persists, please leave feedback with the button below or email kyle.deterding@hudl.com";
+            ShowExceptionDialog(message, sender, e);
+        }
+
+        static public void ShowGeneralExceptionDialog(object sender, RoutedEventArgs e)
+        {
             string message = "Looks like something broke!";
             message += "\nPlease let us know what you were doing prior to seeing this error and we will work on getting this problem resolved. You can leave feedback with the button below or email kyle.deterding@hudl.com";
+
+            ShowExceptionDialog(message, sender, e);
+        }
+
+
+        static private async void ShowExceptionDialog(string text, object sender, RoutedEventArgs e)
+        {
+            string message = text;
+            // Create the message dialog and set its content
             var messageDialog = new MessageDialog(message);
 
             // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
