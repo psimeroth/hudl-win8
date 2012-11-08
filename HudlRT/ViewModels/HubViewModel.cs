@@ -330,7 +330,7 @@ namespace HudlRT.ViewModels
                 if (NextGame != null)
                 {
                     CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
-                    if (catResponse.success)
+                    if (catResponse.status == SERVICE_RESPONSE.SUCCESS)
                     {
                         NextGameCategories = catResponse.categories;
                         NextGame.categories = NextGameCategories;
@@ -344,7 +344,7 @@ namespace HudlRT.ViewModels
                 if (PreviousGame != null)
                 {
                     CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
-                    if (catResponse.success)
+                    if (catResponse.status == SERVICE_RESPONSE.SUCCESS)
                     {
                         PreviousGameCategories = catResponse.categories;
                         PreviousGame.categories = PreviousGameCategories;
