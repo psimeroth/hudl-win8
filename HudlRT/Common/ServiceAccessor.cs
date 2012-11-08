@@ -10,9 +10,13 @@ using System.Net.Http;
 using Windows.Storage;
 using HudlRT.Models;
 using Caliburn.Micro;
+using Windows.Networking.Connectivity;
 
 namespace HudlRT.Common
 {
+
+    public enum SERVICE_RESPONSE { SUCCESS, NO_CONNECTION, NULL_RESPONSE, DESERIALIZATION, CREDENTIALS, PRIVILEGE };
+
     struct LoginSender
     {
         public string Username { get; set; }
@@ -21,43 +25,37 @@ namespace HudlRT.Common
 
     struct LoginResponse
     {
-        public bool success { get; set; }
-        public string reason { get; set; }
+        public SERVICE_RESPONSE status { get; set; }
     }
 
     struct TeamResponse
     {
         public BindableCollection<Team> teams { get; set; }
-        public bool success { get; set; }
-        public string reason { get; set; }
+        public SERVICE_RESPONSE status { get; set; }
     }
 
     struct GameResponse
     {
         public BindableCollection<Game> games { get; set; }
-        public bool success { get; set; }
-        public string reason { get; set; }
+        public SERVICE_RESPONSE status { get; set; }
     }
 
     struct CategoryResponse
     {
         public BindableCollection<Category> categories { get; set; }
-        public bool success { get; set; }
-        public string reason { get; set; }
+        public SERVICE_RESPONSE status { get; set; }
     }
 
     struct CutupResponse
     {
         public BindableCollection<Cutup> cutups { get; set; }
-        public bool success { get; set; }
-        public string reason { get; set; }
+        public SERVICE_RESPONSE status { get; set; }
     }
 
     struct ClipResponse
     {
         public BindableCollection<Clip> clips { get; set; }
-        public bool success { get; set; }
-        public string reason { get; set; }
+        public SERVICE_RESPONSE status { get; set; }
     }
 
     /// <summary>
@@ -80,9 +78,15 @@ namespace HudlRT.Common
         public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
         public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips";//returns clips
 
-
         public static async Task<LoginResponse> Login(string loginArgs)
         {
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            {
+                return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
+
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
             if (!string.IsNullOrEmpty(loginResponse))
             {
@@ -96,26 +100,33 @@ namespace HudlRT.Common
                     //Needs to be improved in the future if we want to 
                     if (privilegesResponse.Contains("Win8App"))
                     {
-                        return new LoginResponse { success = true, reason = null };
+                        return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
                     }
                     else
                     {
-                        return new LoginResponse { success = false, reason = "privilege" };
+                        return new LoginResponse { status = SERVICE_RESPONSE.PRIVILEGE};
                     }
                 }
                 else
                 {
-                    return new LoginResponse { success = false, reason = "null response" };
+                    return new LoginResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
                 }
             }
             else
             {
-                return new LoginResponse { success = false, reason = "credentials" };
+                return new LoginResponse { status = SERVICE_RESPONSE.CREDENTIALS };
             }
         }
 
         public static async Task<TeamResponse> GetTeams()
         {
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            {
+                return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION, teams = null };
+            }
+
             var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
             if (!string.IsNullOrEmpty(teams))
             {
@@ -127,21 +138,28 @@ namespace HudlRT.Common
                     {
                         teamCollection.Add(Team.FromDTO(teamDTO));
                     }
-                    return new TeamResponse { success = true, reason = null, teams = teamCollection};
+                    return new TeamResponse { status = SERVICE_RESPONSE.SUCCESS, teams = teamCollection };
                 }
                 catch (Exception)
                 {
-                    return new TeamResponse { success = false, reason = "deserialization", teams = null };
+                    return new TeamResponse { status = SERVICE_RESPONSE.DESERIALIZATION, teams = null };
                 }
             }
             else
             {
-                return new TeamResponse { success = false, reason = "null response", teams = null };
+                return new TeamResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, teams = null };
             }
         }
 
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            {
+                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION, games = null };
+            }
+
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId));
             if (!string.IsNullOrEmpty(games))
             {
@@ -153,21 +171,28 @@ namespace HudlRT.Common
                     {
                         gameCollection.Add(Game.FromDTO(gameDTO));
                     }
-                    return new GameResponse { success = true, reason = null, games = gameCollection };
+                    return new GameResponse { status = SERVICE_RESPONSE.SUCCESS, games = gameCollection };
                 }
                 catch (Exception)
                 {
-                    return new GameResponse { success = false, reason = "deserialization", games = null };
+                    return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION, games = null };
                 }
             }
             else
             {
-                return new GameResponse { success = false, reason = "null response", games = null };
+                return new GameResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, games = null };
             }
         }
 
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            {
+                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION, categories = null };
+            }
+
             var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId));
             if (!string.IsNullOrEmpty(categories))
             {
@@ -179,21 +204,27 @@ namespace HudlRT.Common
                     {
                         categoryCollection.Add(Category.FromDTO(categoryDTO));
                     }
-                    return new CategoryResponse { success = true, reason = null, categories = categoryCollection };
+                    return new CategoryResponse { status = SERVICE_RESPONSE.SUCCESS, categories = categoryCollection };
                 }
                 catch (Exception)
                 {
-                    return new CategoryResponse { success = false, reason = "deserialization", categories = null };
+                    return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION, categories = null };
                 }
             }
             else
             {
-                return new CategoryResponse { success = false, reason = "null response", categories = null };
+                return new CategoryResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, categories = null };
             }
         }
 
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            {
+                return new CutupResponse { status = SERVICE_RESPONSE.NO_CONNECTION, cutups = null };
+            }
             var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId));
             if (!string.IsNullOrEmpty(cutups))
             {
@@ -205,21 +236,29 @@ namespace HudlRT.Common
                     {
                         cutupCollection.Add(Cutup.FromDTO(cutupDTO));
                     }
-                    return new CutupResponse { success = true, reason = null, cutups = cutupCollection };
+                    return new CutupResponse { status = SERVICE_RESPONSE.SUCCESS, cutups = cutupCollection };
                 }
                 catch (Exception)
                 {
-                    return new CutupResponse { success = false, reason = "deserialization", cutups = null };
+                    return new CutupResponse { status = SERVICE_RESPONSE.DESERIALIZATION, cutups = null };
                 }
             }
             else
             {
-                return new CutupResponse { success = false, reason = "null response", cutups = null };
+                return new CutupResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, cutups = null };
             }
         }
 
         public static async Task<ClipResponse> GetCutupClips(Cutup cutup)
         {
+
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            {
+                return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION, clips = null };
+            }
+
             var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
             if (!string.IsNullOrEmpty(clips))
             {
@@ -236,16 +275,16 @@ namespace HudlRT.Common
                             clipCollection.Add(c);
                         }
                     }
-                    return new ClipResponse { success = true, reason = null, clips = clipCollection };
+                    return new ClipResponse { status = SERVICE_RESPONSE.SUCCESS, clips = clipCollection };
                 }
                 catch (Exception)
                 {
-                    return new ClipResponse { success = false, reason = "deserialization", clips = null };
+                    return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION, clips = null };
                 }
             }
             else
             {
-                return new ClipResponse { success = false, reason = "null response", clips = null };
+                return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, clips = null };
             }
         }
         

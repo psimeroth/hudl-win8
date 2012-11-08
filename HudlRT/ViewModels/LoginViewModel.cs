@@ -96,26 +96,27 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = "Visible";
 
             LoginResponse response = await ServiceAccessor.Login(loginArgs);
-            if (response.success)
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 roamingSettings.Values["UserName"] = UserName;
                 navigationService.NavigateToViewModel<HubViewModel>();
             }
-            else
+            else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
             {
-                if (response.reason == "privilege")
-                {
-                    navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
-                }
-                else if (response.reason == "null response")
-                {
-                    LoginFeedback = "Connection with server failed, please try again";
-                }
-                else if (response.reason == "credentials")
-                {
-                    LoginFeedback = "Invalid Username or Password";
-                }
+                navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
+            }
+            else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
+            {
+                LoginFeedback = "Connection with server failed, please try again";
+            }
+            else if (response.status == SERVICE_RESPONSE.CREDENTIALS)
+            {
+                LoginFeedback = "Invalid Username or Password";
+            }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                LoginFeedback = "No internet connection. Please connect to the internet and try again.";
             }
 
             // Dismiss the loading indicator

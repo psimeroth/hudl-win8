@@ -239,7 +239,7 @@ namespace HudlRT.ViewModels
         public async void PopulateDropDown()
         {
             TeamResponse response = await ServiceAccessor.GetTeams();
-            if (response.success)
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
@@ -282,11 +282,12 @@ namespace HudlRT.ViewModels
         public async void FindNextGame(Season s)//sets gameThisWeek and gameNextWeek
         {
             GameResponse response = await ServiceAccessor.GetGames(s.owningTeam.teamID.ToString(), s.seasonID.ToString());
+            
             NextGame = null;
             PreviousGame = null;
             NextGameCategories = null;
             PreviousGameCategories = null;
-            if (response.success)
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 if (response.games.Count > 0)
                 {
@@ -329,7 +330,7 @@ namespace HudlRT.ViewModels
                 if (NextGame != null)
                 {
                     CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
-                    if (catResponse.success)
+                    if (catResponse.status == SERVICE_RESPONSE.SUCCESS)
                     {
                         NextGameCategories = catResponse.categories;
                         NextGame.categories = NextGameCategories;
@@ -343,7 +344,7 @@ namespace HudlRT.ViewModels
                 if (PreviousGame != null)
                 {
                     CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
-                    if (catResponse.success)
+                    if (catResponse.status == SERVICE_RESPONSE.SUCCESS)
                     {
                         PreviousGameCategories = catResponse.categories;
                         PreviousGame.categories = PreviousGameCategories;
@@ -365,7 +366,7 @@ namespace HudlRT.ViewModels
         public async void GetGameCategories(Game game)
         {
             CategoryResponse response = await ServiceAccessor.GetGameCategories(game.gameId.ToString());
-            if (response.success)
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 game.categories = response.categories;
             }
@@ -378,7 +379,7 @@ namespace HudlRT.ViewModels
         public async void GetCutupsByCategory(Category category)
         {
             CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.categoryId.ToString());
-            if (response.success)
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Cutups = response.cutups;
                 category.cutups = Cutups;
@@ -428,7 +429,7 @@ namespace HudlRT.ViewModels
             ColVisibility = "Collapsed";
             ProgressRingVisibility = "Visible";
             ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
-            if (response.success)
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 ProgressRingVisibility = "Collapsed";
                 ColVisibility = "Visible";
