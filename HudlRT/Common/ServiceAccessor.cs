@@ -15,6 +15,10 @@ using HudlRT.ViewModels;
 
 namespace HudlRT.Common
 {
+    class Response
+    {
+        public SERVICE_RESPONSE status { get; set; }
+    }
 
     public enum SERVICE_RESPONSE { SUCCESS, NO_CONNECTION, NULL_RESPONSE, DESERIALIZATION, CREDENTIALS, PRIVILEGE };
 
@@ -24,39 +28,33 @@ namespace HudlRT.Common
         public string Password { get; set; }
     }
 
-    struct LoginResponse
+    class LoginResponse: Response
     {
-        public SERVICE_RESPONSE status { get; set; }
     }
 
-    struct TeamResponse
+    class TeamResponse: Response
     {
         public BindableCollection<Team> teams { get; set; }
-        public SERVICE_RESPONSE status { get; set; }
     }
 
-    struct GameResponse
+    class GameResponse: Response
     {
         public BindableCollection<Game> games { get; set; }
-        public SERVICE_RESPONSE status { get; set; }
     }
 
-    struct CategoryResponse
+    class CategoryResponse: Response
     {
         public BindableCollection<Category> categories { get; set; }
-        public SERVICE_RESPONSE status { get; set; }
     }
 
-    struct CutupResponse
+    class CutupResponse: Response
     {
         public BindableCollection<Cutup> cutups { get; set; }
-        public SERVICE_RESPONSE status { get; set; }
     }
 
-    struct ClipResponse
+    class ClipResponse: Response
     {
         public BindableCollection<Clip> clips { get; set; }
-        public SERVICE_RESPONSE status { get; set; }
     }
 
     /// <summary>
@@ -79,11 +77,15 @@ namespace HudlRT.Common
         public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
         public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips";//returns clips
 
-        public static async Task<LoginResponse> Login(string loginArgs)
+        public static bool ConnectedToInternet()
         {
             ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+            return !(InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0);
+        }
 
-            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+        public static async Task<LoginResponse> Login(string loginArgs)
+        {
+            if (!ConnectedToInternet())
             {
                 return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
@@ -121,11 +123,9 @@ namespace HudlRT.Common
 
         public static async Task<TeamResponse> GetTeams()
         {
-            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-
-            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            if (!ConnectedToInternet())
             {
-                return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION, teams = null };
+                return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
 
             var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
@@ -143,22 +143,20 @@ namespace HudlRT.Common
                 }
                 catch (Exception)
                 {
-                    return new TeamResponse { status = SERVICE_RESPONSE.DESERIALIZATION, teams = null };
+                    return new TeamResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
             else
             {
-                return new TeamResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, teams = null };
+                return new TeamResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
 
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
-            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-
-            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            if (!ConnectedToInternet())
             {
-                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION, games = null };
+                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
 
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId));
@@ -176,22 +174,20 @@ namespace HudlRT.Common
                 }
                 catch (Exception)
                 {
-                    return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION, games = null };
+                    return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
             else
             {
-                return new GameResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, games = null };
+                return new GameResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
 
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
-            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-
-            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            if (!ConnectedToInternet())
             {
-                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION, categories = null };
+                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
 
             var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId));
@@ -209,22 +205,20 @@ namespace HudlRT.Common
                 }
                 catch (Exception)
                 {
-                    return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION, categories = null };
+                    return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
             else
             {
-                return new CategoryResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, categories = null };
+                return new CategoryResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
 
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
-            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-
-            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            if (!ConnectedToInternet())
             {
-                return new CutupResponse { status = SERVICE_RESPONSE.NO_CONNECTION, cutups = null };
+                return new CutupResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
             var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId));
             if (!string.IsNullOrEmpty(cutups))
@@ -241,23 +235,20 @@ namespace HudlRT.Common
                 }
                 catch (Exception)
                 {
-                    return new CutupResponse { status = SERVICE_RESPONSE.DESERIALIZATION, cutups = null };
+                    return new CutupResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
             else
             {
-                return new CutupResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, cutups = null };
+                return new CutupResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
 
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
-
-            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-
-            if (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0)
+            if (!ConnectedToInternet())
             {
-                return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION, clips = null };
+                return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
 
             var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()));
@@ -280,15 +271,15 @@ namespace HudlRT.Common
                 }
                 catch (Exception)
                 {
-                    return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION, clips = null };
+                    return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
             else
             {
-                return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE, clips = null };
+                return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
-        
+
         /// <summary>
         /// Makes an API call to the base URL defined in AppData.cs using the GET method.
         /// </summary>
