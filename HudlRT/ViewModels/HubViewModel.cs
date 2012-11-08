@@ -236,6 +236,11 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = "Collapsed";
         }
 
+        public async void NavigateToSectionPage()
+        {
+            navigationService.NavigateToViewModel<SectionViewModel>();
+        }
+
         public async void PopulateDropDown()
         {
             TeamResponse response = await ServiceAccessor.GetTeams();
