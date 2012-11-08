@@ -18,6 +18,7 @@ namespace HudlRT.ViewModels
         private bool _isHome { get; set; }
         private long _gameId { get; set; }
         private BindableCollection<CategoryViewModel> _categories { get; set; }
+        private CategoryViewModel _selectedCategory { get; set; }
 
         public static GameViewModel FromDTO(GameDTO gameDTO)
         {
@@ -80,6 +81,16 @@ namespace HudlRT.ViewModels
             {
                 _categories = value;
                 NotifyOfPropertyChange(() => Categories);
+            }
+        }
+
+        public CategoryViewModel SelectedCategory
+        {
+            get { return _selectedCategory; }
+            set
+            {
+                _selectedCategory = value;
+                NotifyOfPropertyChange(() => SelectedCategory);
             }
         }
     }

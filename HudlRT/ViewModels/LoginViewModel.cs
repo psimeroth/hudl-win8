@@ -95,44 +95,28 @@ namespace HudlRT.ViewModels
             FormVisibility = "Collapsed";
             ProgressRingVisibility = "Visible";
 
-            // Call the login web service
-            var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
-
-            // Once the async call completes check the response, if good show the hub view, if not show an error message.
-            if (!string.IsNullOrEmpty(loginResponse))
+            LoginResponse response = await ServiceAccessor.Login(loginArgs);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
-                ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"] = obj.Token;
-                ApplicationData.Current.RoamingSettings.Values["hudl-userId"] = obj.UserId;
-                LoginFeedback = "";
-
-                //save username to app data
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 roamingSettings.Values["UserName"] = UserName;
-
-                //need to save privileges to roamingsettings
-                string urlExtension = "privileges/" + ApplicationData.Current.RoamingSettings.Values["hudl-userId"].ToString();
-                var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension);
-                if (!string.IsNullOrEmpty(privilegesResponse))
-                {
-                    //Needs to be improved in the future if we want to 
-                    if ( privilegesResponse.Contains("Win8App") )
-                    {
-                         navigationService.NavigateToViewModel<SectionViewModel>();
-                    }
-                    else
-                    {
-                        navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
-                    }
-                }
-                else
-                {
-                    LoginFeedback = "Connection with server failed, please try again";
-                }
+                navigationService.NavigateToViewModel<HubViewModel>();
             }
-            else
+            else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
             {
-                LoginFeedback = "Invalid Username or Password.";
+                navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
+            }
+            else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
+            {
+                LoginFeedback = "Connection with server failed, please try again";
+            }
+            else if (response.status == SERVICE_RESPONSE.CREDENTIALS)
+            {
+                LoginFeedback = "Invalid Username or Password";
+            }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                LoginFeedback = "No internet connection. Please connect to the internet and try again.";
             }
 
             // Dismiss the loading indicator

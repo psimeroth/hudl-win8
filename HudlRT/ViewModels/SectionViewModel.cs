@@ -31,7 +31,16 @@ namespace HudlRT.ViewModels
             }
         }
         
-        public BindableCollection<CutupViewModel> Cutups { get; set; }
+        private BindableCollection<CutupViewModel> _cutups { get; set; }
+        public BindableCollection<CutupViewModel> Cutups
+        {
+            get { return _cutups; }
+            set
+            {
+                _cutups = value;
+                NotifyOfPropertyChange(() => Cutups);
+            }
+        }
 
         // Maps to the selected game in the game list
         private GameViewModel selectedGame;
@@ -45,15 +54,15 @@ namespace HudlRT.ViewModels
             }
         }
 
-        // Maps to the selected item in the category list
-        private CategoryViewModel selectedCategory;
-        public CategoryViewModel SelectedCategory
+        // Maps to the selected item in the cutup list
+        private CutupViewModel _selectedCutup;
+        public CutupViewModel SelectedCutup
         {
-            get { return selectedCategory; }
+            get { return _selectedCutup; }
             set
             {
-                selectedCategory = value;
-                NotifyOfPropertyChange(() => SelectedCategory);
+                _selectedCutup = value;
+                NotifyOfPropertyChange(() => SelectedCutup);
             }
         }
 
@@ -129,6 +138,9 @@ namespace HudlRT.ViewModels
                     cats.Add(CategoryViewModel.FromDTO(categoryDTO));
                 }
                 SelectedGame.Categories = cats;
+                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+
+                GetCutupsByCategory(SelectedGame.SelectedCategory);
             }
             else
             {
@@ -136,26 +148,24 @@ namespace HudlRT.ViewModels
             }
         }
 
-        /*
-        public async void GetCutupsByCategory(Category category)
+        public async void GetCutupsByCategory(CategoryViewModel category)
         {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
+            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.CategoryId.ToString()));
             if (!string.IsNullOrEmpty(cutups))
             {
-                category.cutups = new BindableCollection<Cutup>();
+                var cuts = new BindableCollection<CutupViewModel>();
                 var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
                 foreach (CutupDTO cutupDTO in obj)
                 {
-                    category.cutups.Add(Cutup.FromDTO(cutupDTO));
+                    cuts.Add(CutupViewModel.FromDTO(cutupDTO));
                 }
-                Cutups = category.cutups;
+                Cutups = cuts;
             }
             else
             {
                 Cutups = null;
             }
         }
-        */
 
         public void GameSelected(ItemClickEventArgs eventArgs)
         {
@@ -170,18 +180,16 @@ namespace HudlRT.ViewModels
             Cutups = null;
         }
 
-        /*
         public void CategorySelected(ItemClickEventArgs eventArgs)
         {
-            var category = (Category)eventArgs.ClickedItem;
+            var category = (CategoryViewModel)eventArgs.ClickedItem;
 
-            SelectedCategory = category;
+            SelectedGame.SelectedCategory = category;
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = category;
 
             GetCutupsByCategory(category);
         }
-        */
 
         /*
         public void CutupSelected(ItemClickEventArgs eventArgs)

@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using HudlRT.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,15 @@ namespace HudlRT.ViewModels
         private long _cutupId { get; set; }
         //private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
+
+        public static CutupViewModel FromDTO(CutupDTO cutupDTO)
+        {
+            CutupViewModel cutup = new CutupViewModel();
+            cutup._cutupId = cutupDTO.CutupID;
+            cutup._clipCount = cutupDTO.ClipCount;
+            cutup._name = cutupDTO.Name;
+            return cutup;
+        }
 
         public string Name
         {

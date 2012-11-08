@@ -1,0 +1,18 @@
+﻿<UserControl
+    x:Class="HudlRT.Views.CutupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HudlRT.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:caliburn="using:Caliburn.Micro">
+    
+    <StackPanel Orientation="Horizontal" Height="100">
+        <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" HorizontalAlignment="Center" Height="80" Margin="10,0,0,0" />
+        <StackPanel Orientation="Vertical">
+            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Name" />
+            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="ClipCount" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>
