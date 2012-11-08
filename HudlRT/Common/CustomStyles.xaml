@@ -67,12 +67,12 @@
                     <Border x:Name="OuterContainer">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="Normal" />
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PointerOverBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="SelectionBackground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlLightBlue}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Stroke" Storyboard.TargetName="SelectedBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedPointerOverBorderThemeBrush}"/>
@@ -92,7 +92,7 @@
                                         <PointerDownThemeAnimation TargetName="ContentContainer"/>
                                         <DoubleAnimation Duration="0" To=".75" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PointerOverBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="SelectionBackground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlLightBlue}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Stroke" Storyboard.TargetName="SelectedBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedPointerOverBorderThemeBrush}"/>
@@ -175,17 +175,17 @@
                                 </VisualState>
                                 <VisualState x:Name="Selected">
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0" To=".25" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectionBackground"/>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectionBackground"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedSwiping">
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0" To=".25" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectionBackground"/>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectionBackground"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedUnfocused">
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0" To=".25" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectionBackground"/>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectionBackground"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -282,9 +282,9 @@
                             </Border>
                             <Border x:Name="ContentContainer">
                                 <Grid x:Name="InnerDragContent">
-                                    <Rectangle x:Name="PointerOverBorder" Fill="{StaticResource ListViewItemPointerOverBackgroundThemeBrush}" IsHitTestVisible="False" Margin="0" Opacity="0.25"/>
+                                    <Rectangle x:Name="PointerOverBorder" Fill="#AA000000" IsHitTestVisible="False" Margin="0"/>
                                     <Rectangle x:Name="FocusVisual" IsHitTestVisible="False" Opacity="0" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="2"/>
-                                    <Rectangle x:Name="SelectionBackground" Fill="{StaticResource HudlLightBlue}" Margin="0" Opacity="0"/>
+                                    <Rectangle x:Name="SelectionBackground" Fill="{StaticResource HudlOrange}" Margin="0" Opacity="0"/>
                                     <Border x:Name="ContentBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="0">
                                         <Grid>
                                             <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
