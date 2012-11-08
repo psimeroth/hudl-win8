@@ -16,11 +16,15 @@
     <!--Actual Layout-->
     <Grid x:Name="RootGrid" Margin="5">
         <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
+            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
         </Grid.Background>
+        <Grid.Resources>
+            <Storyboard x:Name="FadeOutCol">
+                <DoubleAnimation Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="0" />
+            </Storyboard>
+        </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="75"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -31,65 +35,35 @@
         </StackPanel>
 
 
-        <Grid x:Name="TopTitleGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" Visibility="Collapsed"/>
-            <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
+        <Grid x:Name="TopTitleGrid" >
+            <Grid Grid.Column="1" Height="50" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
+            <Grid Margin="65,0,0,0" Background="{StaticResource HudlBlackButton}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1"/>
+            </Grid>
+            <Grid Grid.Column="1" Height="50" VerticalAlignment="Top">
+                <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+            </Grid>
         </Grid>
 
-        
-        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,1,0,0" Background="{StaticResource WhiteToBlackGradient}" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+
+        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,0,0,0" Visibility="{Binding ColVisibility}" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="450"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical">
-                <ListView x:Name="Games" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedGame}" Style="{StaticResource listView_SectionPageStyle}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border MinHeight="75">
-                                <TextBlock x:Name="GameName" Text="{Binding opponent}" FontSize="18" VerticalAlignment="Center"/>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-            
-            <StackPanel Grid.Column="1" Grid.Row="0">
-                <ListView x:Name="Cutups" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border MinHeight="75">
-                                <TextBlock x:Name="CutupName" Text="{Binding name}" VerticalAlignment="Center" FontSize="18"/>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-            
             <!-- Vertical scrolling item list -->
-            <!--
-            <ListView x:Name="Categories" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedCategory}" Style="{StaticResource listView_SectionPageStyle}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border MinHeight="75">
-                            <TextBlock x:Name="CategoryName" Text="{Binding name}" VerticalAlignment="Center" FontSize="18"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            -->
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="65,0,40,40">
+                <ListView Name="Schedule" Margin="0,0,0,40" SelectedItem="{Binding SelectedGame}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
+                <Button Content="Downloads" MinHeight="80" MinWidth="345" FontSize="25" Style="{StaticResource StandardButtonStyle}"/>
+            </StackPanel>
             
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,65,40">
+                <ListView Name="Cutups" SelectedItem="{Binding SelectedCutup}" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
+            </StackPanel>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>

@@ -64,7 +64,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol">
+                <Button Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]">
                     <TextBlock>
                         <Run Text="&#xE173;" Foreground="{StaticResource HudlOrange}"/> Video Library
                     </TextBlock>
