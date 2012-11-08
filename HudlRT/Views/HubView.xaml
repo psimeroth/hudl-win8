@@ -46,7 +46,7 @@
                 <ComboBox x:Name="SeasonsDropDown" Height="60" HorizontalAlignment="Right" Width="500" Margin="0,0,60,0" Opacity=".75" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Foreground="White"/>
+                            <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -75,8 +75,8 @@
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="3*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Up Next" Style="{StaticResource HubViewWeekHeaderStyle}"/>
-                        <ListView x:Name="NextWeek_ListView" BorderThickness="2">
+                        <TextBlock DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource HubViewWeekHeaderStyle}" Grid.Row="0"/>
+                        <ListView x:Name="NextGameCategories" BorderThickness="2" Grid.Row="1">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Button x:Name="NextWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>
@@ -89,8 +89,8 @@
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="3*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Previous" Style="{StaticResource HubViewWeekHeaderStyle}"/>
-                        <ListView x:Name="PreviousWeek_ListView">
+                        <TextBlock DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource HubViewWeekHeaderStyle}" Grid.Row="0"/>
+                        <ListView x:Name="PreviousGameCategories" BorderThickness="2" Grid.Row="1">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Button x:Name="PreviousWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>

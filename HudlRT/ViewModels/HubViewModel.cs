@@ -71,14 +71,25 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private Game mostRecentGameFootage;
-        public Game MostRecentGameFootage
+        private Game nextGame;
+        public Game NextGame
         {
-            get { return mostRecentGameFootage; }
+            get { return nextGame; }
             set
             {
-                mostRecentGameFootage = value;
-                NotifyOfPropertyChange(() => MostRecentGameFootage);
+                nextGame = value;
+                NotifyOfPropertyChange(() => NextGame);
+            }
+        }
+
+        private Game previousGame;
+        public Game PreviousGame
+        {
+            get { return previousGame; }
+            set
+            {
+                previousGame = value;
+                NotifyOfPropertyChange(() => PreviousGame);
             }
         }
 
@@ -93,14 +104,25 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private BindableCollection<Category> categories;
-        public BindableCollection<Category> Categories
+        private BindableCollection<Category> nextGameCategories;
+        public BindableCollection<Category> NextGameCategories
         {
-            get { return categories; }
+            get { return nextGameCategories; }
             set
             {
-                categories = value;
-                NotifyOfPropertyChange(() => Categories);
+                nextGameCategories = value;
+                NotifyOfPropertyChange(() => NextGameCategories);
+            }
+        }
+
+        private BindableCollection<Category> previousGameCategories;
+        public BindableCollection<Category> PreviousGameCategories
+        {
+            get { return previousGameCategories; }
+            set
+            {
+                previousGameCategories = value;
+                NotifyOfPropertyChange(() => PreviousGameCategories);
             }
         }
 
@@ -197,7 +219,6 @@ namespace HudlRT.ViewModels
                 Teams = Parameter.teams;
                 Games = Parameter.games;
                 Seasons = Parameter.seasons;
-                Categories = Parameter.categories;
                 Cutups = Parameter.cutups;
                 SelectedTeam = Parameter.selectedTeam;
                 SelectedSeason = Parameter.selectedSeason;
@@ -261,6 +282,10 @@ namespace HudlRT.ViewModels
         public async void FindNextGame(Season s)//sets gameThisWeek and gameNextWeek
         {
             GameResponse response = await ServiceAccessor.GetGames(s.owningTeam.teamID.ToString(), s.seasonID.ToString());
+            NextGame = null;
+            PreviousGame = null;
+            NextGameCategories = null;
+            PreviousGameCategories = null;
             if (response.success)
             {
                 if (response.games.Count > 0)
@@ -275,7 +300,11 @@ namespace HudlRT.ViewModels
 
                     if (DateTime.Compare(DateTime.Now, lastGameDate) >= 0)
                     {
-                        MostRecentGameFootage = sortedGames[0];
+                        NextGame = sortedGames[0];
+                        if (sortedGames.Count >= 2)
+                        {
+                            PreviousGame = sortedGames[1];
+                        }
                     }
                     else
                     {
@@ -285,27 +314,51 @@ namespace HudlRT.ViewModels
                             {
                                 if (i == 0)
                                 {
-                                    MostRecentGameFootage = sortedGames[i];
+                                    NextGame = sortedGames[i];
                                 }
                                 else
                                 {
-                                    MostRecentGameFootage = sortedGames[i - 1];
+                                    NextGame = sortedGames[i - 1];
+                                    PreviousGame = sortedGames[i];
                                 }
                                 break;
                             }
                         }
                     }
                 }
-                else
+                if (NextGame != null)
                 {
-                    //set some visibility flags
-                    MostRecentGameFootage = null;
+                    CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
+                    if (catResponse.success)
+                    {
+                        NextGameCategories = catResponse.categories;
+                        NextGame.categories = NextGameCategories;
+                    }
+                    else//could better handle exceptions
+                    {
+                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                        NextGameCategories = null;
+                    }
+                }
+                if (PreviousGame != null)
+                {
+                    CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
+                    if (catResponse.success)
+                    {
+                        PreviousGameCategories = catResponse.categories;
+                        PreviousGame.categories = PreviousGameCategories;
+                    }
+                    else//could better handle exceptions
+                    {
+                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                        PreviousGameCategories = null;
+                    }
                 }
             }
             else//could better handle exceptions
             {
                 Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                MostRecentGameFootage = null;
+                NextGame = null;
             }
         }
 
@@ -314,13 +367,11 @@ namespace HudlRT.ViewModels
             CategoryResponse response = await ServiceAccessor.GetGameCategories(game.gameId.ToString());
             if (response.success)
             {
-                Categories = response.categories;
-                game.categories = Categories;
+                game.categories = response.categories;
             }
             else//could better handle exceptions
             {
                 Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                Categories = null;
             }
         }
 
@@ -386,7 +437,6 @@ namespace HudlRT.ViewModels
                 {
                     teams = teams,
                     games = games,
-                    categories = categories,
                     seasons = seasons,
                     cutups = cutups,
                     selectedTeam = SelectedTeam,
