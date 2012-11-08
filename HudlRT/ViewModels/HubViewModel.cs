@@ -286,63 +286,47 @@ namespace HudlRT.ViewModels
                 try
                 {
                     s.games = new BindableCollection<Game>();
-                    List<Game> gamesToBeSorted = new List<Game>();
+                    List<Game> sortedGames = new List<Game>();
                     var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
                     foreach (GameDTO gameDTO in obj)
                     {
-                        s.games.Add(Game.FromDTO(gameDTO));
-                        gamesToBeSorted.Add(Game.FromDTO(gameDTO));
+                        sortedGames.Add(Game.FromDTO(gameDTO));
                     }
-                    gamesToBeSorted.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
-                    foreach (Game g in gamesToBeSorted)
+                    if (sortedGames.Count > 0)
                     {
-                        var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", g.gameId.ToString()));
-                        if (!string.IsNullOrEmpty(categories))
-                        {
-                                g.categories = new BindableCollection<Category>();
-                                var cats = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
-                                foreach (CategoryDTO categoryDTO in cats)
-                                {
-                                    //check to see if category has a cutup
-                                    Category newCategory = Category.FromDTO(categoryDTO);
-                                    var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", newCategory.categoryId.ToString()));
-                                    newCategory.cutups = new BindableCollection<Cutup>();
-                                    if (!string.IsNullOrEmpty(cutups))
-                                    {    
-                                            var cuts = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
-                                            foreach (CutupDTO cutupDTO in cuts)
-                                            {
-                                                newCategory.cutups.Add(Cutup.FromDTO(cutupDTO));
-                                            }
-                                    }
-                                    if (newCategory.cutups.Count > 0)
-                                    {
-                                        g.categories.Add(newCategory);
-                                    }
-                                }
-                        }
-                    }
-                    int count = 0;
-                    foreach (Game g in gamesToBeSorted)
-                    {
-                        foreach (Category c in g.categories)
-                        {
-                            if (c.name == "Game Footage" && count == 1)
-                            {
-                                count++;
-                                OtherRecentGameFootage = g;
-                            }
-                            if (c.name == "Game Footage" && count == 0)
-                            {
-                                count++;
-                                MostRecentGameFootage = g;
-                            }
-                            
+                        sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
+                        DateTime lastGameDate = sortedGames[0].date;
 
+                        if (DateTime.Compare(DateTime.Now, lastGameDate) >= 0)
+                        {
+                            MostRecentGameFootage = sortedGames[0];
+                        }
+                        else
+                        {
+                            for(int i = 0; i < sortedGames.Count; i++)
+                            {
+                                if (DateTime.Compare(sortedGames[i].date, DateTime.Now) < 0)
+                                {
+                                    if (i == 0)
+                                    {
+                                        MostRecentGameFootage = sortedGames[i];
+                                    }
+                                    else
+                                    {
+                                        MostRecentGameFootage = sortedGames[i - 1];
+                                    }
+                                    break;
+                                }
+                            }
                         }
                     }
+                    else
+                    {
+                        //set some visibility flags
+                        MostRecentGameFootage = null;
+                    }
+                    //need to get categories for game now
                     NotifyOfPropertyChange(() => MostRecentGameFootage);
-                    NotifyOfPropertyChange(() => OtherRecentGameFootage);
                 }
                 catch (Exception)
                 {
