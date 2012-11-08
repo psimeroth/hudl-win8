@@ -104,7 +104,7 @@
                             KeyUp="VideoContainer_KeyUp"
                             HorizontalContentAlignment="Center" 
                             Height="350"
-                            DataContext="{Binding Video}">
+                            DataContext="{Binding SelectedAngle}">
                 <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
                                    AutoPlay="True"
                                    MediaOpened="videoElement_MediaOpened"

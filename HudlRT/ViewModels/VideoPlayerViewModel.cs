@@ -30,14 +30,14 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Clips);
             }
         }
-        private Angle video;
-        public Angle Video
+        private Angle selectedAngle;
+        public Angle SelectedAngle
         {
-            get { return video; }
+            get { return selectedAngle; }
             set
             {
-                video = value;
-                NotifyOfPropertyChange(() => Video);
+                selectedAngle = value;
+                NotifyOfPropertyChange(() => SelectedAngle);
             }
         }
 
@@ -91,7 +91,7 @@ namespace HudlRT.ViewModels
             if (Clips.Count > 0)
             {
                 SelectedClip = Clips.First();
-                Video = SelectedClip.angles.ElementAt(0);
+                SelectedAngle = SelectedClip.angles.ElementAt(0);
             }
             CutupName = Parameter.selectedCutup.name;
         }
@@ -100,39 +100,53 @@ namespace HudlRT.ViewModels
         {
             var clip = (Clip)eventArgs.ClickedItem;
             SelectedClip = clip;
-            Video = clip.angles.ElementAt(0);
+            SelectedAngle = clip.angles.ElementAt(0);
             index = (int)clip.order;
         }
 
         public void NextClip(ItemClickEventArgs eventArgs)
         {
-            if (Clips.Count > 1)
+            int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
+            if (angleIndex < SelectedClip.angles.Count() - 1)
             {
-                if (index == (Clips.Count - 1))
+                SelectedAngle = SelectedClip.angles.ElementAt(angleIndex + 1);
+            }
+            else
+            {
+                if (Clips.Count > 1)
                 {
-                    SelectedClip = Clips.First();
-                    Video = SelectedClip.angles.ElementAt(0);
-                    index = 0;
+                    if (index == (Clips.Count - 1))
+                    {
+                        SelectedClip = Clips.First();
+                        index = 0;
+                    }
+                    else
+                        SelectedClip = Clips.ElementAt(++index);
+                    SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
-                else
-                    SelectedClip = Clips.ElementAt(++index);
-                    Video = SelectedClip.angles.ElementAt(0);
             }
         }
 
         public void PreviousClip(ItemClickEventArgs eventArgs)
         {
-            if (Clips.Count > 1)
+            int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
+            if (angleIndex > 0)
             {
-                if (index == 0)
+                SelectedAngle = SelectedClip.angles.ElementAt(angleIndex - 1);
+            }
+            else
+            {
+                if (Clips.Count > 1)
                 {
-                    SelectedClip = Clips.Last();
-                    Video = SelectedClip.angles.ElementAt(0);
-                    index = Clips.Count - 1;
+                    if (index == 0)
+                    {
+                        SelectedClip = Clips.Last();
+                        index = Clips.Count - 1;
+                    }
+                    else
+                        SelectedClip = Clips.ElementAt(--index);
+                    SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
-                else
-                    SelectedClip = Clips.ElementAt(--index);
-                    Video = SelectedClip.angles.ElementAt(0);
             }
         }
 
