@@ -177,6 +177,7 @@
     <Content Include="Assets\Hudl_Partial30.png" />
     <Content Include="Assets\light_BG_Tiled.png" />
     <Content Include="Assets\medium_BG_Tiled.png" />
+    <Content Include="Assets\selectArrow.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="VideoPlayer\Microsoft Player Framework\extension.vsixmanifest" />

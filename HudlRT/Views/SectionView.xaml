@@ -56,6 +56,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
+            <Border BorderBrush="{StaticResource HudlMediumGray}" BorderThickness="0,0,2,0" Margin="0,0,0,20" />
             <Grid Grid.Row="0" Grid.Column="0" Margin="65,0,40,40">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
