@@ -707,6 +707,7 @@
     </Style>
     <Style TargetType="TextBlock" x:Key="listViewItem_TextBlockStyle">
         <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="White"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="Padding" Value="0,10"/>
