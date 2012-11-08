@@ -141,15 +141,6 @@ namespace HudlRT.Views
             {
                 FullscreenToggle();
             }
-            if (initialPoint.X - currentPoint.X >= 50)
-            {
-                ScrollNextGrid(null, null);
-            }
-
-            else if (initialPoint.X - currentPoint.X <= -50)
-            {
-                ScrollPreviousGrid(null, null);
-            }
         }
 
         /// <summary>
@@ -220,13 +211,17 @@ namespace HudlRT.Views
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
-            
+
 
             if (rightClicked)
             {
                 ListView l = (ListView)sender;
                 l.SelectedIndex = selectedIndex;
                 rightClicked = false;
+            }
+            else
+            {
+                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 39);
             }
         }
 
@@ -503,30 +498,6 @@ namespace HudlRT.Views
             selectedIndex = l.SelectedIndex;
             rightClicked = true;
             e.Handled = true;
-        }
-
-        private void ScrollNextGrid(object sender, RoutedEventArgs e)
-        {
-            if ((Clips.SelectedIndex+1) == Clips.Items.Count)
-            {
-                gridScroll.ScrollToVerticalOffset(0);
-            }
-            else
-            {
-                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 39);
-            }
-        }
-
-        private void ScrollPreviousGrid(object sender, RoutedEventArgs e)
-        {
-            if ((Clips.SelectedIndex) == 0)
-            {
-                gridScroll.ScrollToVerticalOffset((Clips.Items.Count-1)*39);
-            }
-            else
-            {
-                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex-2) * 39);
-            }
         }
     }
 }
