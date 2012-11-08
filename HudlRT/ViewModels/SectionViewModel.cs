@@ -18,7 +18,7 @@ namespace HudlRT.ViewModels
     {
         private SectionModel model;
         private readonly INavigationService navigationService;
-        public PagePassParameter Parameter { get; set; }
+        public HubSectionParameter Parameter { get; set; }
 
         private BindableCollection<GameViewModel> _schedule { get; set; }
         public BindableCollection<GameViewModel> Schedule
@@ -89,11 +89,8 @@ namespace HudlRT.ViewModels
             }
             catch (Exception ex)
             {
-                // THIS WILL NEED TO CHANGE. Possible solution is to show prompt to pick team/season although it should never be hit.
-                
-                // These values are here for debugging
-                teamID = 57823;
-                seasonID = 90841;
+                teamID = 0;
+                seasonID = 0;
             }
             
             GetGames(teamID, seasonID);
