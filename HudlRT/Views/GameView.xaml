@@ -5,7 +5,7 @@
     xmlns:local="using:HudlRT.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:cm="using:Caliburn.Micro"
+    xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
     <StackPanel Orientation="Vertical" Width="345">
@@ -14,6 +14,6 @@
             <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Text="-" />
             <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Opponent" />
         </StackPanel>
-        <ListView  Name="Categories" Margin="50,0,0,5" Background="LightGray"></ListView>
+        <ListView  Name="Categories" SelectedItem="{Binding SelectedCategory}" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" Margin="50,0,0,5" Background="LightGray"></ListView>
     </StackPanel>
 </UserControl>
