@@ -137,7 +137,7 @@ namespace HudlRT.ViewModels
                 }
                 else if (eventArgs == 1 && playbackType == 1)
                 {
-                    SelectedAngle = SelectedClip.angles.ElementAt(0);
+                    SelectedAngle = new Angle(SelectedClip.angles.ElementAt(0).fileLocation);
                 }
                 else if (Clips.Count > 1)
                 {
@@ -170,7 +170,9 @@ namespace HudlRT.ViewModels
                         index = Clips.Count - 1;
                     }
                     else
+                    {
                         SelectedClip = Clips.ElementAt(--index);
+                    }
                     SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
             }
@@ -191,11 +193,17 @@ namespace HudlRT.ViewModels
         public void setToggleButtonContent()
         {
             if (playbackType == 0)
+            {
                 ToggleButtonContent = "Playback: Once";
+            }
             else if (playbackType == 1)
+            {
                 ToggleButtonContent = "Playback: Loop";
+            }
             else
+            {
                 ToggleButtonContent = "Playback: Next";
+            }
         }
 
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
