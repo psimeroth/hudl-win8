@@ -71,7 +71,7 @@
                         <Button x:Name="btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE017;" FontSize="30" PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
                             <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
-                                    caliburn:Message.Attach="[Event Click] = [NextClip($eventArgs)]" Click="ScrollNextGrid"/>
+                                    caliburn:Message.Attach="[Event Click] = [NextClip(0)]" Click="ScrollNextGrid"/>
                         <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
                         <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
                                     Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>

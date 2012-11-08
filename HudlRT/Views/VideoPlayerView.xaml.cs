@@ -391,6 +391,9 @@ namespace HudlRT.Views
         {
             setPlayVisible();
             setPrevVisible();
+
+            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+            vm.NextClip(1);
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)

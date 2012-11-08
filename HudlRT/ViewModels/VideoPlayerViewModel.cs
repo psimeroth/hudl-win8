@@ -19,6 +19,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        private bool repeatVideoPlayback;
         public PagePassParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
@@ -85,7 +86,6 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            //GetClipsByCutup(Parameter.selectedCutup);
             Clips = Parameter.selectedCutup.clips;
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
@@ -94,6 +94,13 @@ namespace HudlRT.ViewModels
                 SelectedAngle = SelectedClip.angles.ElementAt(0);
             }
             CutupName = Parameter.selectedCutup.name;
+            
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            if (roamingSettings.Values["hudl-repeatPlayback"] == null)	
+            {
+                roamingSettings.Values["hudl-repeatPlayback"] = true;	
+            }	
+            repeatVideoPlayback = (bool)roamingSettings.Values["hudl-repeatPlayback"];
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
@@ -104,7 +111,7 @@ namespace HudlRT.ViewModels
             index = (int)clip.order;
         }
 
-        public void NextClip(ItemClickEventArgs eventArgs)
+        public void NextClip(int eventArgs)
         {
             int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
             if (angleIndex < SelectedClip.angles.Count() - 1)
@@ -113,7 +120,11 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                if (Clips.Count > 1)
+                if (eventArgs == 1 && repeatVideoPlayback == true)
+                {
+                    SelectedAngle = SelectedClip.angles.ElementAt(0);
+                } 
+                else if (Clips.Count > 1)
                 {
                     if (index == (Clips.Count - 1))
                     {
@@ -170,7 +181,7 @@ namespace HudlRT.ViewModels
         {
             if (initialPoint.X - currentPoint.X >= 50 && !isFullScreenGesture)
             {
-                NextClip(null);
+                NextClip(0);
             }
 
             else if (initialPoint.X - currentPoint.X <= -50 && !isFullScreenGesture)
