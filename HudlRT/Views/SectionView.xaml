@@ -56,10 +56,14 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <StackPanel Grid.Row="0" Grid.Column="0" Margin="65,0,40,40">
-                <ListView Name="Schedule" Margin="0,0,0,40" SelectedItem="{Binding SelectedGame}" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
-                <Button Content="Downloads" MinHeight="80" MinWidth="345" FontSize="25" Style="{StaticResource StandardButtonStyle}"/>
-            </StackPanel>
+            <Grid Grid.Row="0" Grid.Column="0" Margin="65,0,40,40">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="90" />
+                </Grid.RowDefinitions>
+                <ListView Grid.Row="0" Name="Schedule" Margin="0,0,0,40" SelectedItem="{Binding SelectedGame}" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
+                <Button Grid.Row="1" Content="Downloads" MinHeight="80" MinWidth="345" FontSize="25" Style="{StaticResource StandardButtonStyle}"/>
+            </Grid>
             
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,65,40">
                 <ListView Name="Cutups" SelectedItem="{Binding SelectedCutup}" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
