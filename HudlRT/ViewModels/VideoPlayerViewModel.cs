@@ -72,6 +72,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => SelectedClip);
             }
         }
+        private string toggleButtonContent;
+        public string ToggleButtonContent
+        {
+            get { return toggleButtonContent; }
+            set
+            {
+                toggleButtonContent = value;
+                NotifyOfPropertyChange(() => ToggleButtonContent);
+            }
+        }
 
         private int index = 0;
         Point initialPoint = new Point();
@@ -101,6 +111,7 @@ namespace HudlRT.ViewModels
                 roamingSettings.Values["hudl-playbackType"] = 0;	
             }
             playbackType = (int)roamingSettings.Values["hudl-playbackType"];
+            setToggleButtonContent();
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
@@ -172,8 +183,19 @@ namespace HudlRT.ViewModels
             {
                 playbackType = 0;
             }
+            setToggleButtonContent();
             Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-repeatPlayback"] = playbackType;
+            roamingSettings.Values["hudl-playbackType"] = playbackType;
+        }
+
+        public void setToggleButtonContent()
+        {
+            if (playbackType == 0)
+                ToggleButtonContent = "Playback: Once";
+            else if (playbackType == 1)
+                ToggleButtonContent = "Playback: Loop";
+            else
+                ToggleButtonContent = "Playback: Next";
         }
 
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
