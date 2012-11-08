@@ -56,6 +56,14 @@ namespace HudlRT.Models
     public class Season
     {
         public string name { get; set; }
+        public string FullName 
+        { 
+            get 
+            { 
+                return owningTeam.school + " - " + owningTeam.name + " - " + name; 
+            }  
+        }
+
         public long seasonID { get; set; }
         public int year { get; set; }
         public BindableCollection<Game> games { get; set; }

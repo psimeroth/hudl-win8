@@ -86,8 +86,8 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
             //GetClipsByCutup(Parameter.selectedCutup);
-            Clips = Parameter.cutups.First().clips;
-            GridHeaders = Parameter.cutups.First().displayColumns;
+            Clips = Parameter.selectedCutup.clips;
+            GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
                 SelectedClip = Clips.First();
