@@ -19,7 +19,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        private bool repeatVideoPlayback;
+        private int playbackType;
         public PagePassParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
@@ -96,11 +96,11 @@ namespace HudlRT.ViewModels
             CutupName = Parameter.selectedCutup.name;
             
             Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            if (roamingSettings.Values["hudl-repeatPlayback"] == null)	
+            if (roamingSettings.Values["hudl-playbackType"] == null)	
             {
-                roamingSettings.Values["hudl-repeatPlayback"] = true;	
-            }	
-            repeatVideoPlayback = (bool)roamingSettings.Values["hudl-repeatPlayback"];
+                roamingSettings.Values["hudl-playbackType"] = 0;	
+            }
+            playbackType = (int)roamingSettings.Values["hudl-playbackType"];
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
@@ -120,10 +120,14 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                if (eventArgs == 1 && repeatVideoPlayback == true)
+                if (eventArgs == 1 && playbackType == 0)
+                {
+                    //Do nothing
+                }
+                else if (eventArgs == 1 && playbackType == 1)
                 {
                     SelectedAngle = SelectedClip.angles.ElementAt(0);
-                } 
+                }
                 else if (Clips.Count > 1)
                 {
                     if (index == (Clips.Count - 1))
@@ -159,6 +163,17 @@ namespace HudlRT.ViewModels
                     SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
             }
+        }
+
+        public void playbackToggle()
+        {
+            playbackType++;
+            if (playbackType == 3)
+            {
+                playbackType = 0;
+            }
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            roamingSettings.Values["hudl-repeatPlayback"] = playbackType;
         }
 
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
