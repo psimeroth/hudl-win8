@@ -14,7 +14,7 @@
     </Page.Resources>
 
     <!--Actual Layout-->
-    <Grid x:Name="RootGrid" Margin="5">
+    <Grid x:Name="RootGrid">
         <Grid.Background>
             <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
         </Grid.Background>
@@ -41,6 +41,7 @@
                 <Border BorderBrush="Black" BorderThickness="1"/>
             </Grid>
             <Grid Grid.Column="1" Height="50" VerticalAlignment="Top">
+                <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,0" />
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
         </Grid>
@@ -56,10 +57,17 @@
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
-            <StackPanel Grid.Row="0" Grid.Column="0" Margin="65,0,40,40">
-                <ListView Name="Schedule" Margin="0,0,0,40" SelectedItem="{Binding SelectedGame}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
-                <Button Content="Downloads" MinHeight="80" MinWidth="345" FontSize="25" Style="{StaticResource StandardButtonStyle}"/>
-            </StackPanel>
+            <Border BorderBrush="{StaticResource HudlMediumGray}" BorderThickness="0,0,2,0" Margin="0,0,0,20" />
+            <Grid Grid.Row="0" Grid.Column="0" Margin="65,0,40,40">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="90" />
+                </Grid.RowDefinitions>
+                <ListView Grid.Row="0" Name="Schedule" Margin="0,0,0,40" SelectedItem="{Binding SelectedGame}" SelectionChanged="ListViewSelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
+                          PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}">
+                </ListView>
+                <Button Grid.Row="1" Content="Downloads" MinHeight="80" MinWidth="345" FontSize="25" Style="{StaticResource StandardButtonStyle}"/>
+            </Grid>
             
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,65,40">
                 <ListView Name="Cutups" SelectedItem="{Binding SelectedCutup}" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>

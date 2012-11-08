@@ -9,6 +9,6 @@
     mc:Ignorable="d">
     
     <StackPanel>
-        <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Name="Name" />
+        <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Name="Name" Foreground="Black" />
     </StackPanel>
 </UserControl>

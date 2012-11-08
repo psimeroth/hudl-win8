@@ -245,5 +245,11 @@ namespace HudlRT.ViewModels
         {
             navigationService.NavigateToViewModel<LoginViewModel>();
         }
+
+
+        public void GoBack()
+        {
+            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
+        }
     }
 }
