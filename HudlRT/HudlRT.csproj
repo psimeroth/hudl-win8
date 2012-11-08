@@ -115,7 +115,10 @@
     <Compile Include="Models\Model.cs" />
     <Compile Include="Parameters\PagePassParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\CutupViewModel.cs" />
     <Compile Include="ViewModels\FeatureDisabledViewModel.cs" />
+    <Compile Include="ViewModels\GameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\HubViewModel.cs" />
     <Compile Include="ViewModels\SectionViewModel.cs" />

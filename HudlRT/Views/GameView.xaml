@@ -14,6 +14,6 @@
             <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Text="-" />
             <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Opponent" />
         </StackPanel>
-        <ListView  Name="Cutups" Margin="50,0,0,5" Background="LightGray" Visibility="Collapsed"></ListView>
+        <ListView  Name="Categories" Margin="50,0,0,5" Background="LightGray"></ListView>
     </StackPanel>
 </UserControl>
