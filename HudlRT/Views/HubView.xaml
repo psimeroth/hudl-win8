@@ -43,23 +43,23 @@
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
             <Grid Grid.Column="1">
-                <ComboBox x:Name="SeasonsDropDown" Height="60" HorizontalAlignment="Right" Width="500" Margin="0,0,65,0" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]">
+                <ComboBox x:Name="SeasonsDropDown" Height="60" HorizontalAlignment="Right" Width="500" Margin="0,0,60,0" Opacity=".75" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock x:Name="SeasonName" Text="{Binding name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Foreground="White"/>
+                            <TextBlock x:Name="SeasonName" Text="{Binding name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="18"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </Grid>
         </Grid>
        
-        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,1,0,0">
+        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             
-            <Grid x:Name="Group1_Grid" Grid.Column="0">
+            <Grid x:Name="Group1_Grid" Grid.Column="0" Margin="30">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="3*"/>
@@ -70,7 +70,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid x:Name="Next_Grid" Grid.Column="0">
+                    <Grid x:Name="Next_Grid" Grid.Column="0" Margin="30">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="3*"/>
@@ -84,7 +84,7 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </Grid>
-                    <Grid x:Name="Prev_Grid" Grid.Column="1">
+                    <Grid x:Name="Prev_Grid" Grid.Column="1" Margin="30">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="3*"/>
@@ -101,11 +101,13 @@
                 </Grid>
             </Grid>
             
-            <Grid x:Name="Group2_Grid" Grid.Column="1">
+            <Grid x:Name="Group2_Grid" Grid.Column="1" Margin="30">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
+                    <RowDefinition Height="0"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" Content="&#xE1A6; Last Viewed"/>
+                <Button x:Name="Downloads_Button" Visibility="Collapsed" Grid.Row="1" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" Content="&#xE19C; Downloads"/>
             </Grid>
         </Grid>            
 

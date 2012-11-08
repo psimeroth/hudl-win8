@@ -1111,6 +1111,6 @@
         <Setter Property="Background" Value="{StaticResource HudlBlackButton}"/>
         <Setter Property="FontSize" Value="40"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Margin" Value="0,5"/>
     </Style>
 </ResourceDictionary>
