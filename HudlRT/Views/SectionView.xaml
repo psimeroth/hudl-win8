@@ -57,7 +57,7 @@
 
             <!-- Vertical scrolling item list -->
             <StackPanel Grid.Row="0" Grid.Column="0" Margin="65,0,40,40">
-                <ListView Name="Schedule" Margin="0,0,0,40" SelectedItem="{Binding SelectedGame}" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
+                <ListView Name="Schedule" Margin="0,0,0,40" SelectedItem="{Binding SelectedGame}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
                 <Button Content="Downloads" MinHeight="80" MinWidth="345" FontSize="25" Style="{StaticResource StandardButtonStyle}"/>
             </StackPanel>
             

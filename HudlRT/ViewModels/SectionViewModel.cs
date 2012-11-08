@@ -30,19 +30,32 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Schedule);
             }
         }
-
-        private BindableCollection<CategoryViewModel> _categories { get; set; }
-        public BindableCollection<CategoryViewModel> Categories
-        {
-            get { return _categories; }
-            set
-            {
-                _categories = value;
-                NotifyOfPropertyChange(() => Categories);
-            }
-        }
         
         public BindableCollection<CutupViewModel> Cutups { get; set; }
+
+        // Maps to the selected game in the game list
+        private GameViewModel selectedGame;
+        public GameViewModel SelectedGame
+        {
+            get { return selectedGame; }
+            set
+            {
+                selectedGame = value;
+                NotifyOfPropertyChange(() => SelectedGame);
+            }
+        }
+
+        // Maps to the selected item in the category list
+        private CategoryViewModel selectedCategory;
+        public CategoryViewModel SelectedCategory
+        {
+            get { return selectedCategory; }
+            set
+            {
+                selectedCategory = value;
+                NotifyOfPropertyChange(() => SelectedCategory);
+            }
+        }
 
         public SectionViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -95,6 +108,8 @@ namespace HudlRT.ViewModels
                     schedule.Add(GameViewModel.FromDTO(gameDTO));
                 }
                 Schedule = schedule;
+                SelectedGame = Schedule.FirstOrDefault();
+                GetGameCategories(SelectedGame);
             }
             else
             {
@@ -102,9 +117,9 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async void GetGameCategories(Game game)
+        public async void GetGameCategories(GameViewModel game)
         {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
+            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.GameId.ToString()));
             if (!string.IsNullOrEmpty(categories))
             {
                 var cats = new BindableCollection<CategoryViewModel>();
@@ -113,11 +128,11 @@ namespace HudlRT.ViewModels
                 {
                     cats.Add(CategoryViewModel.FromDTO(categoryDTO));
                 }
-                Categories = cats;
+                SelectedGame.Categories = cats;
             }
             else
             {
-                Categories = null;
+                SelectedGame.Categories = null;
             }
         }
 
@@ -142,11 +157,11 @@ namespace HudlRT.ViewModels
         }
         */
 
-        /*
         public void GameSelected(ItemClickEventArgs eventArgs)
         {
-            var game = (Game)eventArgs.ClickedItem;
+            var game = (GameViewModel)eventArgs.ClickedItem;
 
+            SelectedGame.Categories = null;
             SelectedGame = game;
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = game;
@@ -154,7 +169,6 @@ namespace HudlRT.ViewModels
             GetGameCategories(game);
             Cutups = null;
         }
-        */
 
         /*
         public void CategorySelected(ItemClickEventArgs eventArgs)
@@ -173,184 +187,58 @@ namespace HudlRT.ViewModels
         public void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (Cutup)eventArgs.ClickedItem;
+            GetClipsByCutup(cutup);
+        }
 
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
+        public async void GetClipsByCutup(Cutup cutup)
+        {
+            ColVisibility = "Collapsed";
+            ProgressRingVisibility = "Visible";
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
+            if (!string.IsNullOrEmpty(clips))
             {
-                games = games,
-                categories = categories,
-                cutups = cutups,
-                selectedGame = SelectedGame,
-                selectedCategory = SelectedCategory,
-                selectedCutup = cutup
-            });
+                try
+                {
+                    cutup.clips = new BindableCollection<Clip>();
+                    var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
+                    cutup.displayColumns = obj.DisplayColumns;
+                    foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
+                    {
+                        Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
+                        if (c != null)
+                        {
+                            cutup.clips.Add(c);
+                        }
+                    }
+                    ProgressRingVisibility = "Collapsed";
+                    ColVisibility = "Visible";
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
+                    {
+                        teams = teams,
+                        games = games,
+                        categories = categories,
+                        seasons = seasons,
+                        cutups = cutups,
+                        selectedTeam = SelectedTeam,
+                        selectedSeason = SelectedSeason,
+                        selectedGame = SelectedGame,
+                        selectedCategory = SelectedCategory,
+                        selectedCutup = cutup
+                    });
+                }
+                catch (Exception)
+                {
+                    ProgressRingVisibility = "Collapsed";
+                    ColVisibility = "Visible";
+                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                }
+            }
         }
         */
 
         public void LogOut()
         {
             navigationService.NavigateToViewModel<LoginViewModel>();
-        }
-    }
-
-    /// <summary>
-    /// Used for binding to a list of games
-    /// </summary>
-    public class GameViewModel : PropertyChangedBase
-    {
-        private string _opponent { get; set; }
-        private string _date { get; set; }
-        private bool _isHome { get; set; }
-        //private BindableCollection<Category> _categories { get; set; }
-        private long _gameId { get; set; }
-
-        public static GameViewModel FromDTO(GameDTO gameDTO)
-        {
-            GameViewModel game = new GameViewModel();
-            game._gameId = gameDTO.GameId;
-            game._isHome = gameDTO.Ishome;
-            game._opponent = gameDTO.Opponent;
-            game._date = gameDTO.Date.ToString("d");
-            return game;
-        }
-
-        public string Opponent
-        {
-            get { return _opponent; }
-            set
-            {
-                if (value == _opponent) return;
-                _opponent = value;
-                NotifyOfPropertyChange(() => Opponent);
-            }
-        }
-
-        public string Date
-        {
-            get { return _date; }
-            set
-            {
-                if (value == _date) return;
-                _date = value;
-                NotifyOfPropertyChange(() => Date);
-            }
-        }
-
-        public bool IsHome
-        {
-            get { return _isHome; }
-            set
-            {
-                if (value == _isHome) return;
-                _isHome = value;
-                NotifyOfPropertyChange(() => IsHome);
-            }
-        }
-
-        public long GameId
-        {
-            get { return _gameId; }
-            set
-            {
-                if (value == _gameId) return;
-                _gameId = value;
-                NotifyOfPropertyChange(() => GameId);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Used for binding to a list of categories
-    /// </summary>
-    public class CategoryViewModel : PropertyChangedBase
-    {
-        private string _name { get; set; }
-        //private BindableCollection<Category> _cutups { get; set; }
-        private long _categoryId { get; set; }
-
-        public static CategoryViewModel FromDTO(CategoryDTO catDTO)
-        {
-            CategoryViewModel cat = new CategoryViewModel();
-            cat._name = catDTO.Name;
-            cat._categoryId = catDTO.CategoryId;
-            return cat;
-        }
-
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == _name) return;
-                _name = value;
-                NotifyOfPropertyChange(() => Name);
-            }
-        }
-
-        public long CategoryId
-        {
-            get { return _categoryId; }
-            set
-            {
-                if (value == _categoryId) return;
-                _categoryId = value;
-                NotifyOfPropertyChange(() => CategoryId);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Used for binding to a list of cutups
-    /// </summary>
-    public class CutupViewModel : PropertyChangedBase
-    {
-        private string _name { get; set; }
-        private int _clipCount { get; set; }
-        private long _cutupId { get; set; }
-        //private BindableCollection<Clip> _clips { get; set; }
-        private string[] _displayColumns { get; set; }
-
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == _name) return;
-                _name = value;
-                NotifyOfPropertyChange(() => Name);
-            }
-        }
-
-        public int ClipCount
-        {
-            get { return _clipCount; }
-            set
-            {
-                if (value == _clipCount) return;
-                _clipCount = value;
-                NotifyOfPropertyChange(() => ClipCount);
-            }
-        }
-
-        public long CutupId
-        {
-            get { return _cutupId; }
-            set
-            {
-                if (value == _cutupId) return;
-                _cutupId = value;
-                NotifyOfPropertyChange(() => CutupId);
-            }
-        }
-
-        public string[] DisplayColumns
-        {
-            get { return _displayColumns; }
-            set
-            {
-                if (value == _displayColumns) return;
-                _displayColumns = value;
-                NotifyOfPropertyChange(() => DisplayColumns);
-            }
         }
     }
 }
