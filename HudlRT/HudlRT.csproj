@@ -118,16 +118,26 @@
     <Compile Include="ViewModels\FeatureDisabledViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\HubViewModel.cs" />
+    <Compile Include="ViewModels\SectionViewModel.cs" />
     <Compile Include="ViewModels\VideoPlayerViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\CategoryView.xaml.cs">
+      <DependentUpon>CategoryView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FeatureDisabledView.xaml.cs">
       <DependentUpon>FeatureDisabledView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GameView.xaml.cs">
+      <DependentUpon>GameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HubView.xaml.cs">
       <DependentUpon>HubView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SectionView.xaml.cs">
+      <DependentUpon>SectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VideoPlayerView.xaml.cs">
       <DependentUpon>VideoPlayerView.xaml</DependentUpon>
@@ -151,6 +161,8 @@
     <Content Include="Assets\agile-hudl-text-dark.png" />
     <Content Include="Assets\Beta.png" />
     <Content Include="Assets\dark_BG_Tiled.png" />
+    <Content Include="Assets\hudl-hi-res-white-medium.png" />
+    <Content Include="Assets\hudl-hi-res-white-small.png" />
     <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
@@ -190,7 +202,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\CategoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FeatureDisabledView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GameView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,6 +219,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

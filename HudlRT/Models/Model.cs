@@ -17,6 +17,16 @@ namespace HudlRT.Models
         }
     }
 
+    public class SectionModel
+    {
+        public BindableCollection<Game> games { get; set; }
+
+        public SectionModel()
+        {
+            games = new BindableCollection<Game>();
+        }
+    }
+
     public class Team
     {
         public string school { get; set; }
