@@ -24,8 +24,7 @@
             </Storyboard>
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="75"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -43,78 +42,74 @@
             <Grid Grid.Column="1" Height="50" VerticalAlignment="Top">
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
+            <Grid Grid.Column="1">
+                <ComboBox x:Name="SeasonsDropDown" Height="60" HorizontalAlignment="Right" Width="500" Margin="0,0,60,0" Opacity=".75" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
         </Grid>
-
-        <Grid x:Name="MiddleCategoryGrid" Background="{StaticResource BlackToDarkGrayGradient}" Grid.Row="1" Visibility="{Binding ColVisibility}">
+       
+        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="30">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Teams" Style="{StaticResource columnHeaderStyle}"/>
-            <TextBlock Grid.Column="1" Text="Seasons" Style="{StaticResource columnHeaderStyle}"/>
-            <TextBlock Grid.Column="2" Text="Games" Style="{StaticResource columnHeaderStyle}"/>
-            <TextBlock Grid.Column="3" Text="Categories" Style="{StaticResource columnHeaderStyle}"/>
-            <TextBlock Grid.Column="4" Text="Cutups" Style="{StaticResource columnHeaderStyle}"/>
-        </Grid>        
-        <Grid x:Name="BottomContentGrid" Grid.Row="2" Margin="0,1,0,0" Visibility="{Binding ColVisibility}" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Vertical scrolling item list -->
-            <ListView x:Name="Teams" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="0" IsItemClickEnabled="True" caliburn:Message.Attach="[Event ItemClick] = [TeamSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedTeam}" Style="{StaticResource listView_SectionPageStyle}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border MinHeight="75">
-                            <TextBlock x:Name="TeamName" Text="{Binding name}"  FontSize="18" VerticalAlignment="Center"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <ListView x:Name="Seasons" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="1" caliburn:Message.Attach="[Event ItemClick] = [SeasonSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedSeason}" Style="{StaticResource listView_SectionPageStyle}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border MinHeight="75">
-                            <TextBlock x:Name="SeasonName" Text="{Binding name}"  FontSize="18" VerticalAlignment="Center"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <ListView x:Name="Games" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="2" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsItemClickEnabled="True" BorderBrush="Gainsboro" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedGame}" Style="{StaticResource listView_SectionPageStyle}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border MinHeight="75">
-                            <TextBlock x:Name="GameName" Text="{Binding opponent}" FontSize="18" VerticalAlignment="Center"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <ListView x:Name="Categories" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="3" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" BorderBrush="Gainsboro" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" SelectedItem="{Binding SelectedCategory}" Style="{StaticResource listView_SectionPageStyle}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border MinHeight="75">
-                            <TextBlock x:Name="CategoryName" Text="{Binding name}" VerticalAlignment="Center" FontSize="18"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <ListView x:Name="Cutups" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" Grid.Column="4" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" BorderThickness="0,0,1,0" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border MinHeight="75">
-                            <TextBlock x:Name="CutupName" Text="{Binding name}" VerticalAlignment="Center" FontSize="18"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
+            
+            <Grid x:Name="Group1_Grid" Grid.Column="0" Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
+                <Button Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" Content="&#xE173; Video Library"/>
+                <Grid x:Name="RecentWeeks_Grid" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="Next_Grid" Grid.Column="0" Margin="30">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource HubViewWeekHeaderStyle}" Grid.Row="0"/>
+                        <ListView x:Name="NextGameCategories" BorderThickness="2" Grid.Row="1">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="NextWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                    <Grid x:Name="Prev_Grid" Grid.Column="1" Margin="30">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource HubViewWeekHeaderStyle}" Grid.Row="0"/>
+                        <ListView x:Name="PreviousGameCategories" BorderThickness="2" Grid.Row="1">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="PreviousWeekCategory_Button" Content="{Binding name}" Style="{StaticResource HubViewButtonStyle}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Grid>
+            </Grid>
+            
+            <Grid x:Name="Group2_Grid" Grid.Column="1" Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="0"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" Content="&#xE1A6; Last Viewed"/>
+                <Button x:Name="Downloads_Button" Visibility="Collapsed" Grid.Row="1" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" Content="&#xE19C; Downloads"/>
+            </Grid>
+        </Grid>            
 
         <Grid>
             <Canvas Canvas.ZIndex="50" HorizontalAlignment="Center" VerticalAlignment="Center">

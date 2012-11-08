@@ -84,12 +84,12 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <ScrollViewer x:Name="gridHeaderScroll" Width="1366" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                     <Grid x:Name="gridHeaders" Background="{StaticResource BlackToDarkGrayGradient}" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False"
                       ManipulationMode="All" >
                     </Grid>
                 </ScrollViewer>
-                <ScrollViewer x:Name="gridScroll" Width="1366" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"  Grid.Row="1">
+                <ScrollViewer x:Name="gridScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"  Grid.Row="1">
                     <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle2}" SelectedItem="{Binding SelectedClip}"
                           PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True" >
                     </ListView>

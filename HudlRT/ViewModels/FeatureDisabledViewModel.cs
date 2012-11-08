@@ -19,9 +19,7 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
-            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            string UserName = localSettings.Values["UserName"].ToString();
-            navigationService.NavigateToViewModel<LoginViewModel>(UserName);
+            navigationService.NavigateToViewModel<LoginViewModel>();
         }
     }
 }
