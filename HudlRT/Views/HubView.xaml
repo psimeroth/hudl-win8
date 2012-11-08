@@ -42,11 +42,12 @@
             <Grid Grid.Column="1" Height="50" VerticalAlignment="Top">
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
-            <Grid Grid.Column="1">
-                <ComboBox x:Name="SeasonsDropDown" Height="60" HorizontalAlignment="Right" Width="500" Margin="0,0,60,0" Opacity=".75" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]">
+            
+            <Grid Grid.Column="1" MinWidth ="700" Margin="0,0,60,0" HorizontalAlignment="Right">
+                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375"  Opacity="1" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]" ItemContainerStyle="{StaticResource HubViewComboBoxItemStyle}" BorderBrush="#00000000" Background="#00000000" Foreground="White">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20"/>
+                            <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
