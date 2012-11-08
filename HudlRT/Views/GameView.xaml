@@ -14,6 +14,6 @@
             <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Text="-" />
             <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Opponent" />
         </StackPanel>
-        <ListView  Name="Categories" SelectedItem="{Binding SelectedCategory}" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" Margin="50,0,0,5" Background="LightGray"></ListView>
+        <ListView  Name="Categories" IsItemClickEnabled="True" SelectedItem="{Binding SelectedCategory}" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" Margin="50,0,0,5" Background="LightGray"></ListView>
     </StackPanel>
 </UserControl>
