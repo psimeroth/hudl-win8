@@ -82,7 +82,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource HubViewWeekHeaderStyle}" Grid.Row="0"/>
                         <TextBlock DataContext ="{Binding NextGame}" Text="{Binding date}" Style="{StaticResource HubViewWeekHeaderDateStyle}" Grid.Row="1"/>
-                        <ListView x:Name="NextGameCategories" Margin ="0,15,0,0" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource HubViewListViewItemStyle}" SelectedItem="{Binding SelectedCategory}" Grid.Row = "2">
+                        <ListView x:Name="NextGameCategories" Margin ="0,15,0,0" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" caliburn:Message.Attach="[Event ItemClick] = [NextCategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource HubViewListViewItemStyle}" SelectedItem="{Binding SelectedCategory}" Grid.Row = "2">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock x:Name="NextWeekCategory_Button" Text="{Binding name}" Margin="5,0,0,0" VerticalAlignment="Center"/>
@@ -98,7 +98,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource HubViewWeekHeaderStyle}" Grid.Row="0"/>
                         <TextBlock DataContext ="{Binding PreviousGame}" Text="{Binding date}" Style="{StaticResource HubViewWeekHeaderDateStyle}" Grid.Row="1"/>
-                        <ListView x:Name="PreviousGameCategories" Margin ="0,15,0,0" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource HubViewListViewItemStyle}" SelectedItem="{Binding SelectedCategory}" Grid.Row = "2">
+                        <ListView x:Name="PreviousGameCategories" Margin ="0,15,0,0" IsSwipeEnabled="false" SelectionChanged="ItemListView_SelectionChanged" PointerPressed="ListViewItemPointerPressed" caliburn:Message.Attach="[Event ItemClick] = [PreviousCategorySelected($eventArgs)]" IsItemClickEnabled="True" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource HubViewListViewItemStyle}" SelectedItem="{Binding SelectedCategory}" Grid.Row = "2">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock x:Name="PreviousWeekCategory_Button" Text="{Binding name}" Margin="5,0,0,0"/>
