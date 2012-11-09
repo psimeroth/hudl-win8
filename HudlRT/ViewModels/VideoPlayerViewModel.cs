@@ -100,8 +100,11 @@ namespace HudlRT.ViewModels
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
-                SelectedClip = Clips.First();
-                SelectedAngle = SelectedClip.angles.ElementAt(0);
+                if (Clips.First().angles.Count() > 0)
+                {
+                    SelectedClip = Clips.First();
+                    SelectedAngle = SelectedClip.angles.ElementAt(0);
+                }
             }
             CutupName = Parameter.selectedCutup.name;
             
@@ -116,10 +119,13 @@ namespace HudlRT.ViewModels
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
-            var clip = (Clip)eventArgs.ClickedItem;
-            SelectedClip = clip;
-            SelectedAngle = clip.angles.ElementAt(0);
-            index = (int)clip.order;
+                var clip = (Clip)eventArgs.ClickedItem;
+                if (clip.angles.Count > 0)
+                {
+                    SelectedClip = clip;
+                    SelectedAngle = clip.angles.ElementAt(0);
+                    index = (int)clip.order;
+                }
         }
 
         public void NextClip(int eventArgs)
@@ -145,13 +151,16 @@ namespace HudlRT.ViewModels
                 }
                 else if (Clips.Count > 1)
                 {
-                    if (index == (Clips.Count - 1))
+                    if (index == (Clips.Count - 1) && Clips.First().angles.Count() > 0)
                     {
                         SelectedClip = Clips.First();
                         index = 0;
                     }
-                    else
+                    else if (Clips.ElementAt(index + 1).angles.Count() > 0)
+                    {
                         SelectedClip = Clips.ElementAt(++index);
+                    }
+                    
                     SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
             }
@@ -168,15 +177,16 @@ namespace HudlRT.ViewModels
             {
                 if (Clips.Count > 1)
                 {
-                    if (index == 0)
+                    if (index == 0 && Clips.Last().angles.Count() > 0)
                     {
                         SelectedClip = Clips.Last();
                         index = Clips.Count - 1;
                     }
-                    else
+                    else if (Clips.ElementAt(index - 1).angles.Count() > 0)
                     {
                         SelectedClip = Clips.ElementAt(--index);
                     }
+                    
                     SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
             }
