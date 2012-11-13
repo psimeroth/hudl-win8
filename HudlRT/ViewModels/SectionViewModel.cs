@@ -18,53 +18,33 @@ namespace HudlRT.ViewModels
     {
         private SectionModel model;
         private readonly INavigationService navigationService;
-        public PagePassParameter Parameter { get; set; }
-        private string feedback;
-        public string Feedback
+        public HubSectionParameter Parameter { get; set; }
+
+        private BindableCollection<GameViewModel> _schedule { get; set; }
+        public BindableCollection<GameViewModel> Schedule
         {
-            get { return feedback; }
+            get { return _schedule; }
             set
             {
-                feedback = value;
-                NotifyOfPropertyChange(() => Feedback);
+                _schedule = value;
+                NotifyOfPropertyChange(() => Schedule);
             }
         }
-
-        private BindableCollection<Game> games;
-        public BindableCollection<Game> Games
+        
+        private BindableCollection<CutupViewModel> _cutups { get; set; }
+        public BindableCollection<CutupViewModel> Cutups
         {
-            get { return games; }
+            get { return _cutups; }
             set
             {
-                games = value;
-                NotifyOfPropertyChange(() => Games);
-            }
-        }
-
-        private BindableCollection<Category> categories;
-        public BindableCollection<Category> Categories
-        {
-            get { return categories; }
-            set
-            {
-                categories = value;
-                NotifyOfPropertyChange(() => Categories);
-            }
-        }
-
-        private BindableCollection<Cutup> cutups;
-        public BindableCollection<Cutup> Cutups
-        {
-            get { return cutups; }
-            set
-            {
-                cutups = value;
+                _cutups = value;
                 NotifyOfPropertyChange(() => Cutups);
             }
         }
 
-        private Game selectedGame;
-        public Game SelectedGame
+        // Maps to the selected game in the game list
+        private GameViewModel selectedGame;
+        public GameViewModel SelectedGame
         {
             get { return selectedGame; }
             set
@@ -73,14 +53,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => SelectedGame);
             }
         }
-        private Category selectedCategory;
-        public Category SelectedCategory
+
+        // Maps to the selected item in the cutup list
+        private CutupViewModel _selectedCutup;
+        public CutupViewModel SelectedCutup
         {
-            get { return selectedCategory; }
+            get { return _selectedCutup; }
             set
             {
-                selectedCategory = value;
-                NotifyOfPropertyChange(() => SelectedCategory);
+                _selectedCutup = value;
+                NotifyOfPropertyChange(() => SelectedCutup);
             }
         }
 
@@ -89,92 +71,104 @@ namespace HudlRT.ViewModels
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
+
+            model = new SectionModel();
         }
 
         protected override void OnActivate()
         {
             base.OnActivate();
+
+            // Get the team and season ID
+            long teamID;
+            long seasonID;
+            try
+            {
+                teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
+                seasonID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-seasonID"];
+            }
+            catch (Exception ex)
+            {
+                teamID = 0;
+                seasonID = 0;
+            }
+            
+            GetGames(teamID, seasonID);
+
+            // Check if a specific cutup was passed to the page
             if (Parameter != null)
             {
-                Games = Parameter.games;
-                Categories = Parameter.categories;
-                Cutups = Parameter.cutups;
-                SelectedGame = Parameter.selectedGame;
-                SelectedCategory = Parameter.selectedCategory;
-            }
-            else
-            {
-                double teamID = (double)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
-                double seasonID = (double)ApplicationData.Current.RoamingSettings.Values["hudl-seasonID"];
-                GetGames(teamID, seasonID);
+                // not sure the format right now
             }
         }
 
-        public async void GetGames(double teamID, double seasonID)
+        public async void GetGames(long teamID, long seasonID)
         {
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamID.ToString()).Replace("%", seasonID.ToString()));
             if (!string.IsNullOrEmpty(games))
             {
-                model.games = new BindableCollection<Game>();
+                var schedule = new BindableCollection<GameViewModel>();
                 var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
                 foreach (GameDTO gameDTO in obj)
                 {
-                    model.games.Add(Game.FromDTO(gameDTO));
+                    schedule.Add(GameViewModel.FromDTO(gameDTO));
                 }
-                Games = model.games;
+                Schedule = schedule;
+                SelectedGame = Schedule.FirstOrDefault();
+                GetGameCategories(SelectedGame);
             }
             else
             {
-                Feedback = "Error processing GetGames request.";
-                Games = null;
+                Schedule = null;
             }
         }
 
-        public async void GetGameCategories(Game game)
+        public async void GetGameCategories(GameViewModel game)
         {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
+            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.GameId.ToString()));
             if (!string.IsNullOrEmpty(categories))
             {
-                game.categories = new BindableCollection<Category>();
+                var cats = new BindableCollection<CategoryViewModel>();
                 var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
                 foreach (CategoryDTO categoryDTO in obj)
                 {
-                    game.categories.Add(Category.FromDTO(categoryDTO));
+                    cats.Add(CategoryViewModel.FromDTO(categoryDTO));
                 }
-                Categories = game.categories;
+                SelectedGame.Categories = cats;
+                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+
+                GetCutupsByCategory(SelectedGame.SelectedCategory);
             }
             else
             {
-                Feedback = "Error processing GetGameCategories request.";
-                Categories = null;
+                SelectedGame.Categories = null;
             }
         }
 
-        public async void GetCutupsByCategory(Category category)
+        public async void GetCutupsByCategory(CategoryViewModel category)
         {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
+            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.CategoryId.ToString()));
             if (!string.IsNullOrEmpty(cutups))
             {
-                category.cutups = new BindableCollection<Cutup>();
+                var cuts = new BindableCollection<CutupViewModel>();
                 var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
                 foreach (CutupDTO cutupDTO in obj)
                 {
-                    category.cutups.Add(Cutup.FromDTO(cutupDTO));
+                    cuts.Add(CutupViewModel.FromDTO(cutupDTO));
                 }
-                Cutups = category.cutups;
+                Cutups = cuts;
             }
             else
             {
-                Feedback = "Error processing GetCutupsByCategory request.";
                 Cutups = null;
             }
         }
 
         public void GameSelected(ItemClickEventArgs eventArgs)
         {
-            Feedback = null;
-            var game = (Game)eventArgs.ClickedItem;
+            var game = (GameViewModel)eventArgs.ClickedItem;
 
+            SelectedGame.Categories = null;
             SelectedGame = game;
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = game;
@@ -185,35 +179,51 @@ namespace HudlRT.ViewModels
 
         public void CategorySelected(ItemClickEventArgs eventArgs)
         {
-            Feedback = null;
-            var category = (Category)eventArgs.ClickedItem;
+            var category = (CategoryViewModel)eventArgs.ClickedItem;
 
-            SelectedCategory = category;
+            SelectedGame.SelectedCategory = category;
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = category;
 
             GetCutupsByCategory(category);
         }
 
+
         public void CutupSelected(ItemClickEventArgs eventArgs)
         {
-            Feedback = null;
-            var cutup = (Cutup)eventArgs.ClickedItem;
-
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-            {
-                games = games,
-                categories = categories,
-                cutups = cutups,
-                selectedGame = SelectedGame,
-                selectedCategory = SelectedCategory,
-                selectedCutup = cutup
-            });
+            var cutup = (CutupViewModel)eventArgs.ClickedItem;
+            GetClipsByCutup(cutup);
         }
+
+        public async void GetClipsByCutup(CutupViewModel cutup)
+        {
+            //ColVisibility = "Collapsed";
+            //ProgressRingVisibility = "Visible";
+            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                cutup.Clips = response.clips;
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
+                {
+                    selectedCutup = new Cutup {cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name }
+                });
+            }
+            else
+            {
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+            }
+        }
+        
 
         public void LogOut()
         {
             navigationService.NavigateToViewModel<LoginViewModel>();
+        }
+
+
+        public void GoBack()
+        {
+            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
         }
     }
 }

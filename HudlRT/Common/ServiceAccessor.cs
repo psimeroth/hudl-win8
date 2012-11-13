@@ -11,6 +11,7 @@ using Windows.Storage;
 using HudlRT.Models;
 using Caliburn.Micro;
 using Windows.Networking.Connectivity;
+using HudlRT.ViewModels;
 
 namespace HudlRT.Common
 {
@@ -249,7 +250,7 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<ClipResponse> GetCutupClips(Cutup cutup)
+        public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
 
             ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
@@ -259,14 +260,14 @@ namespace HudlRT.Common
                 return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION, clips = null };
             }
 
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()));
             if (!string.IsNullOrEmpty(clips))
             {
                 try
                 {
                     var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
                     BindableCollection<Clip> clipCollection = new BindableCollection<Clip>();
-                    cutup.displayColumns = obj.DisplayColumns;
+                    cutup.DisplayColumns = obj.DisplayColumns;
                     foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
                     {
                         Clip c = Clip.FromDTO(clipDTO, obj.DisplayColumns);

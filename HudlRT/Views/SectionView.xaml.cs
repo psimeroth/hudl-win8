@@ -48,7 +48,7 @@ namespace HudlRT.Views
             e.Handled = true;
         }
 
-        private void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (rightClicked)
             {

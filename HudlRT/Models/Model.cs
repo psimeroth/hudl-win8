@@ -217,6 +217,10 @@ namespace HudlRT.Models
         {
 
         }
+        public Angle(string fileLocation)
+        {
+            this.fileLocation = fileLocation;
+        }
 
         public static Angle FromDTO(AngleDTO angleDTO)
         {
