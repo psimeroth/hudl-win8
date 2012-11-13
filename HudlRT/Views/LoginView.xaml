@@ -62,7 +62,7 @@
                     <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="109" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="0,-5,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Style="{StaticResource StandardButtonStyle}"/>
                 </Grid>
 
-                <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Height="40" FontSize="18" Foreground="Red"/>
+                <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" FontSize="25"  Foreground="Orange"/>
 
                 <Grid>
                     <Grid Grid.Row="0">
