@@ -13,7 +13,7 @@
 
     <Grid x:Name="RootGrid">
         <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
+            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
         </Grid.Background>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
@@ -34,7 +34,7 @@
                     <ColumnDefinition Width="180"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,0" VerticalAlignment="Center"/>
-                <TextBlock x:Name="CutupName" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28"/>
+                <TextBlock x:Name="CutupName" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
                 <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,10,0" Height="50" Foreground="Black" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
                          caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
             </Grid>
@@ -93,7 +93,7 @@
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"  Grid.Row="1">
                     <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle2}" SelectedItem="{Binding SelectedClip}"
-                          PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True" >
+                          PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True" Foreground="White">
                     </ListView>
                 </ScrollViewer>
             </Grid>
