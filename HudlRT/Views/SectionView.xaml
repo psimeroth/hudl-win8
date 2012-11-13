@@ -70,7 +70,7 @@
             </Grid>
             
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,65,40">
-                <ListView Name="Cutups" SelectedItem="{Binding SelectedCutup}" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
+                <ListView Name="Cutups" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource listView_SectionPageStyle}"></ListView>
             </StackPanel>
         </Grid>
 
