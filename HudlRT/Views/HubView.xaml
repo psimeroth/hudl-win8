@@ -70,6 +70,14 @@
                         <Run Text="&#xE173;" Foreground="{StaticResource HudlOrange}"/> Video Library
                     </TextBlock>
                 </Button>
+                <Grid x:Name="NoGamesGrid" Grid.Row="1" Margin="0,30,0,0" Background="{StaticResource HudlMediumGray}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row ="0" DataContext ="{Binding SelectedSeason}" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="40" Text= "{Binding name}"> </TextBlock>
+                    <TextBlock Grid.Row ="1" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="40">No Scheduled Entries</TextBlock>
+                </Grid>
                 <Grid x:Name="RecentWeeks_Grid" Grid.Row="1" Margin="0,30,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
@@ -120,6 +128,7 @@
                         </ListView>
                     </Grid>
                 </Grid>
+                
             </Grid>
             
             <Grid x:Name="Group2_Grid" Grid.Column="1" Margin="30">
@@ -127,7 +136,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="0"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol">
+                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
                     <TextBlock>
                         <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed
                     </TextBlock>
