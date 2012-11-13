@@ -301,7 +301,7 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
-            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
+            navigationService.NavigateToViewModel<SectionViewModel>();
         }
     }
 }

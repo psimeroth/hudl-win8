@@ -210,47 +210,8 @@ namespace HudlRT.ViewModels
             }
             else
             {
-
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
             }
-            //var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            //if (!string.IsNullOrEmpty(clips))
-            //{
-            //    try
-            //    {
-            //        cutup.clips = new BindableCollection<Clip>();
-            //        var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-            //        cutup.displayColumns = obj.DisplayColumns;
-            //        foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
-            //        {
-            //            Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
-            //            if (c != null)
-            //            {
-            //                cutup.clips.Add(c);
-            //            }
-            //        }
-            //        //ProgressRingVisibility = "Collapsed";
-            //        //ColVisibility = "Visible";
-            //navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-            //{
-            //    teams = teams,
-            //    games = games,
-            //    categories = categories,
-            //    seasons = seasons,
-            //    cutups = cutups,
-            //    selectedTeam = SelectedTeam,
-            //    selectedSeason = SelectedSeason,
-            //    selectedGame = SelectedGame,
-            //    selectedCategory = SelectedCategory,
-            //    selectedCutup = cutup
-            //});
-            //    }
-            //    catch (Exception)
-            //    {
-            //        ProgressRingVisibility = "Collapsed";
-            //        ColVisibility = "Visible";
-            //        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-            //    }
-            //}
         }
         
 
