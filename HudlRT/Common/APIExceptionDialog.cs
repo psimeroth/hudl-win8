@@ -27,6 +27,12 @@ namespace HudlRT.Common
             ShowExceptionDialog(message, sender, e);
         }
 
+        static public void ShowStatusCodeExceptionDialog(object sender, RoutedEventArgs e, string statusCode, string url)
+        {
+            string message = "Server Error.";
+            message += "\nWhen contacting the server, we ran into an error. Please email kyle.deterding@hudl.com with the following URL and Error Code: \nURL: " + url + "\nStatus Code: " + statusCode;
+            ShowExceptionDialog(message, sender, e);
+        }
 
         static private async void ShowExceptionDialog(string text, object sender, RoutedEventArgs e)
         {

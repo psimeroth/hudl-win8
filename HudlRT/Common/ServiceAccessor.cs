@@ -93,6 +93,7 @@ namespace HudlRT.Common
 
         public static async Task<LoginResponse> Login(string loginArgs)
         {
+            //var loginResponse = await ServiceAccessor.MakeApiCallGet("athlete");
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
             if (!string.IsNullOrEmpty(loginResponse))
             {
@@ -267,35 +268,24 @@ namespace HudlRT.Common
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallGet(string url)
         {
-            try
-            {
-                if (!ConnectedToInternet())
-                {
-                    throw new NoInternetConnectionException();
-                }
-                var httpClient = new HttpClient();
-                Uri uri = new Uri(URL_BASE + url);
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-                httpRequestMessage.Headers.Add("hudl-authtoken", ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"].ToString());
-                httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
-                var response = await httpClient.SendAsync(httpRequestMessage);
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    throw new GeneralInternetException();
-                }
-
-                return await response.Content.ReadAsStringAsync();
-            }
-            catch (NoInternetConnectionException e)
+            if (!ConnectedToInternet())
             {
                 APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
-                return "";
+                return null;
             }
-            catch (Exception)
+            var httpClient = new HttpClient();
+            Uri uri = new Uri(URL_BASE + url);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+            httpRequestMessage.Headers.Add("hudl-authtoken", ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"].ToString());
+            httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
+            var response = await httpClient.SendAsync(httpRequestMessage);
+            if (!response.IsSuccessStatusCode)
             {
-                APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
-                return "";//how to handle exceptions?
+                APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
+                return null;
             }
+
+            return await response.Content.ReadAsStringAsync();
         }
 
         /// <summary>
@@ -306,37 +296,26 @@ namespace HudlRT.Common
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallPost(string url, string jsonString)
         {
-            try
+            if (!ConnectedToInternet())
             {
-                if (!ConnectedToInternet())
-                {
-                    throw new NoInternetConnectionException();
-                }
+            APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            return null;
+            }
 
-                var httpClient = new HttpClient();
-                Uri uri = new Uri(URL_BASE_SECURE + url);
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
-                httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
-                httpRequestMessage.Content = new StringContent(jsonString);
-                httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var response = await httpClient.SendAsync(httpRequestMessage);
-                //response.StatusCode 404 500 401
-                if(response.StatusCode !=HttpStatusCode.OK)
-                {
-                    throw new GeneralInternetException();
-                }
-                return await response.Content.ReadAsStringAsync();
-            }
-            catch (NoInternetConnectionException e)
+            var httpClient = new HttpClient();
+            Uri uri = new Uri(URL_BASE_SECURE + url);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+            httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
+            httpRequestMessage.Content = new StringContent(jsonString);
+            httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            var response = await httpClient.SendAsync(httpRequestMessage);
+            //response.StatusCode 404 500 401
+            if(!response.IsSuccessStatusCode)
             {
-                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
-                return "";
+                APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
+                return null;
             }
-            catch (Exception)
-            {
-                APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
-                return "";
-            }
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }
