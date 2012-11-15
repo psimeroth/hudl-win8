@@ -78,62 +78,71 @@ namespace HudlRT.ViewModels
                 seasonID = 0;
             }
 
-            // Check if a specific cutup was passed to the page
-            /*if (Parameter != null)
-            {
-                LoadPageFromParamter(seasonID, teamID, Parameter.gameId, Parameter.categoryId);
-            } else {
-                LoadPageFromDefault(seasonID, teamID);
-            }*/
-
             // Load data for the drop down
             PopulateDropDown();
         }
 
         private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID)
         {
+            Cutups = null;
             await GetGames(teamID, seasonID);
 
-            // Find the passed in game
-            SelectedGame = null;
-            foreach (GameViewModel game in Schedule)
+            // Make sure there are game entries for the season.
+            if (Schedule.Count == 0)
             {
-                if (game.GameId == gameID)
+                Schedule = null;
+            }
+            else
+            {
+                // Find the passed in game
+                SelectedGame = null;
+                foreach (GameViewModel game in Schedule)
                 {
-                    SelectedGame = game;
-                    break;
+                    if (game.GameId == gameID)
+                    {
+                        SelectedGame = game;
+                        break;
+                    }
+                }
+
+                // If the game isn't found set the first one as the default
+                if (SelectedGame == null)
+                {
+                    SelectedGame = Schedule.FirstOrDefault();
+                }
+
+                await GetGameCategories(SelectedGame);
+
+                // Make sure there are categories for the selected game
+                if (SelectedGame.Categories.Count == 0)
+                {
+                    SelectedGame.Categories = null;
+                }
+                else
+                {
+                    // Find the selected category
+                    SelectedGame.SelectedCategory = null;
+                    foreach (CategoryViewModel cat in SelectedGame.Categories)
+                    {
+                        if (cat.CategoryId == categoryID)
+                        {
+                            SelectedGame.SelectedCategory = cat;
+                        }
+                    }
+
+                    // If the category isn't found set the first as the default
+                    if (SelectedGame.SelectedCategory == null)
+                    {
+                        SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                    }
+                    GetCutupsByCategory(SelectedGame.SelectedCategory);
                 }
             }
-
-            // If the game isn't found set the first one as the default
-            if (SelectedGame == null)
-            {
-                SelectedGame = Schedule.FirstOrDefault();
-            }
-
-            await GetGameCategories(SelectedGame);
-
-            // Find the selected category
-            SelectedGame.SelectedCategory = null;
-            foreach (CategoryViewModel cat in SelectedGame.Categories)
-            {
-                if (cat.CategoryId == categoryID)
-                {
-                    SelectedGame.SelectedCategory = cat;
-                }
-            }
-
-            // If the category isn't found set the first as the default
-            if (SelectedGame.SelectedCategory == null)
-            {
-                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-            }
-
-            GetCutupsByCategory(SelectedGame.SelectedCategory);
         }
 
         private async void LoadPageFromDefault(long seasonID, long teamID)
         {
+            Cutups = null;
             await GetGames(teamID, seasonID);
             if (Schedule.Count == 0)
             {
@@ -143,8 +152,15 @@ namespace HudlRT.ViewModels
             {
                 SelectedGame = Schedule.FirstOrDefault();
                 await GetGameCategories(SelectedGame);
-                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-                GetCutupsByCategory(SelectedGame.SelectedCategory);
+                if (SelectedGame.Categories.Count == 0)
+                {
+                    SelectedGame.Categories = null;
+                }
+                else
+                {
+                    SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                    GetCutupsByCategory(SelectedGame.SelectedCategory);
+                }
             }
         }
 
@@ -222,8 +238,16 @@ namespace HudlRT.ViewModels
             Cutups = null;
 
             await GetGameCategories(game);
-            SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-            GetCutupsByCategory(SelectedGame.SelectedCategory);
+
+            if (SelectedGame.Categories.Count == 0)
+            {
+                SelectedGame.Categories = null;
+            }
+            else
+            {
+                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                GetCutupsByCategory(SelectedGame.SelectedCategory);
+            }
         }
 
         public void CategorySelected(ItemClickEventArgs eventArgs)
@@ -246,8 +270,6 @@ namespace HudlRT.ViewModels
 
         public async void GetClipsByCutup(CutupViewModel cutup)
         {
-            //ColVisibility = "Collapsed";
-            //ProgressRingVisibility = "Visible";
             ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
@@ -361,7 +383,6 @@ namespace HudlRT.ViewModels
                 {
                     SelectedSeason = SeasonsDropDown[0];
                 }
-                //populate this/next game
                 NotifyOfPropertyChange(() => SelectedSeason);
             }
             else//could better handle exceptions
