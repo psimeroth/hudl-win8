@@ -16,7 +16,7 @@ namespace HudlRT.ViewModels
         private Model model;
         private readonly INavigationService navigationService;
         public PagePassParameter Parameter { get; set; }
-        private long lastViewedCutupId = -1;
+        private long? lastViewedId = null;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -271,7 +271,7 @@ namespace HudlRT.ViewModels
                 {
                     LastViewedName = (string)lastViewedCutupName;
                     LastViewedTimeStamp = "Viewed: " + (string)lastViewedCutupTimestamp;
-                    lastViewedCutupId = (long)lastViewedCutupId;
+                    lastViewedId = (long)lastViewedCutupId;
                 }
                 else
                 {
@@ -455,10 +455,10 @@ namespace HudlRT.ViewModels
 
         public async void LastViewedSelected()
         {
-            if (lastViewedCutupId != -1)
+            if (lastViewedId.HasValue)
             {
                 ProgressRingVisibility = "Visible";
-                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedCutupId, Name = LastViewedName };
+                CutupViewModel cutup = new CutupViewModel { CutupId = (long)lastViewedId, Name = LastViewedName };
                 ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
