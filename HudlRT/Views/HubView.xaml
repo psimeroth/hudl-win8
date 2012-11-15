@@ -44,7 +44,7 @@
             </Grid>
             
             <Grid Grid.Column="1" MinWidth ="700" Margin="0,0,60,0" HorizontalAlignment="Right">
-                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375"  Opacity="1" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]" ItemContainerStyle="{StaticResource HubViewComboBoxItemStyle}" BorderBrush="#00000000" Background="#00000000" Foreground="White">
+                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]" ItemContainerStyle="{StaticResource HubViewComboBoxItemStyle}" BorderBrush="#00000000" Background="#00000000" Foreground="White">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
@@ -134,14 +134,24 @@
             <Grid x:Name="Group2_Grid" Grid.Column="1" Margin="30">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
-                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="0*"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
-                    <TextBlock>
-                        <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed
-                    </TextBlock>
+                <Button x:Name="LastViewed_Button" Margin="0,0,0,10" Grid.Row="0" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
+                    <Button.Content>
+                        <Grid Grid.Column="1" Height="575">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="7*"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock VerticalAlignment="Center" Margin="0,100,0,0" Grid.Row="0"> <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed</TextBlock>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
+                            <TextBlock Grid.Row="2" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
+                        </Grid>
+                    </Button.Content>
+
                 </Button>
-                <Button x:Name="Downloads_Button" Visibility="Collapsed" Grid.Row="1" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol">
+                <Button x:Name="Downloads_Button"  Visibility="Collapsed" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource HubViewButtonStyle}" FontFamily="Segoe UI Symbol">
                     <TextBlock>
                         <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads
                     </TextBlock>

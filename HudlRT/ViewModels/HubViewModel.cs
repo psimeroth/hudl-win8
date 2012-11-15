@@ -28,6 +28,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => NoGamesGrid);
             }
         }
+        private string lastViewedVisibility;
+        public string LastViewedVisibility
+        {
+            get { return lastViewedVisibility; }
+            set
+            {
+                lastViewedVisibility = value;
+                NotifyOfPropertyChange(() => LastViewedVisibility);
+            }
+        }
 
         private string lastViewedName;
         public string LastViewedName
@@ -257,8 +267,13 @@ namespace HudlRT.ViewModels
                 if (roamingSettings.Values["hudl-lastViewedCutupName"] != null && roamingSettings.Values["hudl-lastViewedCutupTimestamp"] != null && roamingSettings.Values["hudl-lastViewedCutupId"] != null)
                 {
                     LastViewedName = (string)roamingSettings.Values["hudl-lastViewedCutupName"];
-                    LastViewedTimeStamp = (string)roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
+                    LastViewedTimeStamp = "Viewed: " + (string)roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
                     lastViewedCutupId = (long)roamingSettings.Values["hudl-lastViewedCutupId"];
+                }
+                else
+                {
+                    LastViewedName = "Hey Rookie!";
+                    LastViewedTimeStamp = "You haven't watched anything yet!";
                 }
                 PopulateDropDown();
             }
@@ -438,6 +453,7 @@ namespace HudlRT.ViewModels
 
         public async void LastViewedSelected()
         {
+            lastViewedCutupId = -1;   
             if (lastViewedCutupId != -1)
             {
                 CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedCutupId, Name = LastViewedName };
@@ -454,6 +470,10 @@ namespace HudlRT.ViewModels
                 {
 
                 }
+            }
+            else
+            {
+                navigationService.NavigateToViewModel<SectionViewModel>();
             }
         }
 
