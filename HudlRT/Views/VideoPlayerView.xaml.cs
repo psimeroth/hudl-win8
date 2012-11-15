@@ -90,7 +90,6 @@ namespace HudlRT.Views
 
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            
             gridHeaderScroll.ScrollToHorizontalOffset(gridScroll.HorizontalOffset);
         }
 
