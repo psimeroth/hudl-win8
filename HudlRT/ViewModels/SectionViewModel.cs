@@ -29,6 +29,7 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Schedule);
             }
         }
+
         
         private BindableCollection<CutupViewModel> _cutups { get; set; }
         public BindableCollection<CutupViewModel> Cutups
@@ -262,13 +263,15 @@ namespace HudlRT.ViewModels
         }
 
 
-        public void CutupSelected(ItemClickEventArgs eventArgs)
+        public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            GetClipsByCutup(cutup);
+            cutup.ClipLoading = true;
+            await GetClipsByCutup(cutup);
+            cutup.ClipLoading = true;
         }
 
-        public async void GetClipsByCutup(CutupViewModel cutup)
+        public async Task GetClipsByCutup(CutupViewModel cutup)
         {
             ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
             if (response.status == SERVICE_RESPONSE.SUCCESS)

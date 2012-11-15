@@ -18,6 +18,7 @@ namespace HudlRT.ViewModels
         private long _cutupId { get; set; }
         private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
+        private bool _clipLoading { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
@@ -34,6 +35,7 @@ namespace HudlRT.ViewModels
             }
             cutup._clipCount = cutupDTO.ClipCount.ToString() + clips; 
             cutup._name = cutupDTO.Name;
+            cutup._clipLoading = false;
             return cutup;
         }
 
@@ -41,8 +43,9 @@ namespace HudlRT.ViewModels
         {
             CutupViewModel cutup = new CutupViewModel();
             cutup._cutupId = cutupDTO.cutupId;
-            cutup._clipCount = cutupDTO.clipCount;
+            cutup._clipCount = cutupDTO.clipCount.ToString();
             cutup._name = cutupDTO.name;
+            cutup._clipLoading = false;
             return cutup;
         }
 
@@ -54,6 +57,17 @@ namespace HudlRT.ViewModels
                 if (value == _name) return;
                 _name = value;
                 NotifyOfPropertyChange(() => Name);
+            }
+        }
+
+        public bool ClipLoading
+        {
+            get { return _clipLoading; }
+            set
+            {
+                if (value == _clipLoading) return;
+                _clipLoading = value;
+                NotifyOfPropertyChange(() => ClipLoading);
             }
         }
 

@@ -462,7 +462,7 @@ namespace HudlRT.ViewModels
                     cutup.Clips = response.clips;
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
                     {
-                        selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name }
+                        selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name }
                     });
                 }
                 else
