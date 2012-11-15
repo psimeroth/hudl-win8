@@ -264,11 +264,14 @@ namespace HudlRT.ViewModels
                 model = new Model();
                 //GetTeams();
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-                if (roamingSettings.Values["hudl-lastViewedCutupName"] != null && roamingSettings.Values["hudl-lastViewedCutupTimestamp"] != null && roamingSettings.Values["hudl-lastViewedCutupId"] != null)
+                var lastViewedCutupName = roamingSettings.Values["hudl-lastViewedCutupName"];
+                var lastViewedCutupTimestamp = roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
+                var lastViewedCutupId = roamingSettings.Values["hudl-lastViewedCutupId"];
+                if (lastViewedCutupName != null && lastViewedCutupTimestamp != null && lastViewedCutupId != null)
                 {
-                    LastViewedName = (string)roamingSettings.Values["hudl-lastViewedCutupName"];
-                    LastViewedTimeStamp = "Viewed: " + (string)roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
-                    lastViewedCutupId = (long)roamingSettings.Values["hudl-lastViewedCutupId"];
+                    LastViewedName = (string)lastViewedCutupName;
+                    LastViewedTimeStamp = "Viewed: " + (string)lastViewedCutupTimestamp;
+                    lastViewedCutupId = (long)lastViewedCutupId;
                 }
                 else
                 {
