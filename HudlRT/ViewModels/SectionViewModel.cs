@@ -53,18 +53,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        // Maps to the selected item in the cutup list
-        private CutupViewModel _selectedCutup;
-        public CutupViewModel SelectedCutup
-        {
-            get { return _selectedCutup; }
-            set
-            {
-                _selectedCutup = value;
-                NotifyOfPropertyChange(() => SelectedCutup);
-            }
-        }
-
         public SectionViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
@@ -91,12 +79,15 @@ namespace HudlRT.ViewModels
             }
 
             // Check if a specific cutup was passed to the page
-            if (Parameter != null)
+            /*if (Parameter != null)
             {
                 LoadPageFromParamter(seasonID, teamID, Parameter.gameId, Parameter.categoryId);
             } else {
                 LoadPageFromDefault(seasonID, teamID);
-            }
+            }*/
+
+            // Load data for the drop down
+            PopulateDropDown();
         }
 
         private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID)
@@ -144,10 +135,17 @@ namespace HudlRT.ViewModels
         private async void LoadPageFromDefault(long seasonID, long teamID)
         {
             await GetGames(teamID, seasonID);
-            SelectedGame = Schedule.FirstOrDefault();
-            await GetGameCategories(SelectedGame);
-            SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-            GetCutupsByCategory(SelectedGame.SelectedCategory);
+            if (Schedule.Count == 0)
+            {
+                Schedule = null;
+            }
+            else
+            {
+                SelectedGame = Schedule.FirstOrDefault();
+                await GetGameCategories(SelectedGame);
+                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                GetCutupsByCategory(SelectedGame.SelectedCategory);
+            }
         }
 
         public async Task GetGames(long teamID, long seasonID)
@@ -275,6 +273,102 @@ namespace HudlRT.ViewModels
         public void GoBack()
         {
             navigationService.NavigateToViewModel<HubViewModel>(Parameter);
+        }
+
+        // Used for the season/team dropdown
+        private Season selectedSeason;
+        public Season SelectedSeason
+        {
+            get { return selectedSeason; }
+            set
+            {
+                selectedSeason = value;
+                NotifyOfPropertyChange(() => SelectedSeason);
+            }
+        }
+        
+        private BindableCollection<Season> seasonsForDropDown;
+        public BindableCollection<Season> SeasonsDropDown
+        {
+            get { return seasonsForDropDown; }
+            set
+            {
+                seasonsForDropDown = value;
+                NotifyOfPropertyChange(() => SeasonsDropDown);
+            }
+        }
+        
+        private BindableCollection<Team> teams;
+        public BindableCollection<Team> Teams
+        {
+            get { return teams; }
+            set
+            {
+                teams = value;
+                NotifyOfPropertyChange(() => Teams);
+            }
+        }
+
+        public void SeasonSelected(SelectionChangedEventArgs eventArgs)
+        {
+            if (eventArgs != null)
+            {
+                var selectedSeason = (Season)eventArgs.AddedItems[0];
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
+                roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+
+                if (Parameter != null)
+                {
+                    LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+                }
+                else
+                {
+                    LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+                }
+            }
+        }
+        
+        public async void PopulateDropDown()
+        {
+            TeamResponse response = await ServiceAccessor.GetTeams();
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                Teams = response.teams;
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                long teamID = -1;
+                long seasonID = -1;
+                bool foundSavedSeason = false;
+                if (roamingSettings.Values["hudl-teamID"] != null && roamingSettings.Values["hudl-seasonID"] != null)
+                {
+                    teamID = (long)roamingSettings.Values["hudl-teamID"];
+                    seasonID = (long)roamingSettings.Values["hudl-seasonID"];
+                }
+                SeasonsDropDown = new BindableCollection<Season>();
+                foreach (Team team in Teams)
+                {
+                    foreach (Season season in team.seasons)
+                    {
+                        if (teamID == season.owningTeam.teamID && seasonID == season.seasonID)
+                        {
+                            SelectedSeason = season;
+                            foundSavedSeason = true;
+                        }
+                        SeasonsDropDown.Add(season);
+                    }
+                }
+                if (!foundSavedSeason && SeasonsDropDown.Count > 0)
+                {
+                    SelectedSeason = SeasonsDropDown[0];
+                }
+                //populate this/next game
+                NotifyOfPropertyChange(() => SelectedSeason);
+            }
+            else//could better handle exceptions
+            {
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                Teams = null;
+            }
         }
     }
 }

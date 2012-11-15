@@ -24,7 +24,7 @@
             </Storyboard>
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="75"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -44,10 +44,20 @@
                 <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,0" />
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
+
+            <Grid Grid.Column="1" MinWidth ="700" Margin="0,0,60,0" HorizontalAlignment="Right">
+                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]" ItemContainerStyle="{StaticResource HubViewComboBoxItemStyle}" BorderBrush="#00000000" Background="#00000000" Foreground="White">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
         </Grid>
 
 
-        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,0,0,0" Visibility="{Binding ColVisibility}" >
+        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,20,0,0" Visibility="{Binding ColVisibility}" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
