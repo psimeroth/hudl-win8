@@ -267,6 +267,7 @@ namespace HudlRT.ViewModels
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
             cutup.ClipLoading = true;
+            cutup.Opacity = 0.5;
             await GetClipsByCutup(cutup);
             cutup.ClipLoading = true;
         }
