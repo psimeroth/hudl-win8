@@ -14,7 +14,7 @@ namespace HudlRT.ViewModels
     public class CutupViewModel : PropertyChangedBase
     {
         private string _name { get; set; }
-        private int _clipCount { get; set; }
+        private string _clipCount { get; set; }
         private long _cutupId { get; set; }
         //private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
@@ -23,7 +23,16 @@ namespace HudlRT.ViewModels
         {
             CutupViewModel cutup = new CutupViewModel();
             cutup._cutupId = cutupDTO.CutupID;
-            cutup._clipCount = cutupDTO.ClipCount;
+            string clips;
+            if (cutupDTO.ClipCount == 1)
+            {
+                clips = " Clip";
+            }
+            else
+            {
+                clips = " Clips";
+            }
+            cutup._clipCount = cutupDTO.ClipCount.ToString() + clips; 
             cutup._name = cutupDTO.Name;
             return cutup;
         }
@@ -39,12 +48,12 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public int ClipCount
+        public string ClipCount
         {
             get { return _clipCount; }
             set
             {
-                if (value == _clipCount) return;
+                if (value.Equals(_clipCount)) return;
                 _clipCount = value;
                 NotifyOfPropertyChange(() => ClipCount);
             }
