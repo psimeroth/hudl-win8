@@ -453,7 +453,6 @@ namespace HudlRT.ViewModels
 
         public async void LastViewedSelected()
         {
-            lastViewedCutupId = -1;   
             if (lastViewedCutupId != -1)
             {
                 CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedCutupId, Name = LastViewedName };
