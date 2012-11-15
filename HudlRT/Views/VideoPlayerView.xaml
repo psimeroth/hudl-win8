@@ -93,7 +93,7 @@
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"  Grid.Row="1">
                     <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyle2}" SelectedItem="{Binding SelectedClip}"
-                          PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True" >
+                           ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True" >
                     </ListView>
                 </ScrollViewer>
             </Grid>
@@ -227,4 +227,24 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
+    <common:LayoutAwarePage.TopAppBar>
+        <AppBar>
+            <Grid>
+                <ItemsControl ItemsSource="{Binding AngleTypes}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </AppBar>
+    </common:LayoutAwarePage.TopAppBar>
 </common:LayoutAwarePage>
