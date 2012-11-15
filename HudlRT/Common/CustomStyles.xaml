@@ -1098,6 +1098,8 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="40"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="10,0"/>
     </Style>
     <Style TargetType="ListViewItem" x:Key="VideoListViewItemStyle" BasedOn="{StaticResource StandardListViewItemStyle}">
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -1109,7 +1111,17 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="25"/>
     </Style>
-    <Style TargetType="ListView" x:Key="HubViewListViewStyle" BasedOn="{StaticResource HubViewButtonStyle}">
-        
+    <Style TargetType="ListView" x:Key="HubViewListViewStyle" >
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="FontSize" Value="40"/>
+        <Setter Property="Padding" Value="0,10,0,0"/>
+        <Setter Property="IsSwipeEnabled" Value="false"/>
+        <Setter Property="IsItemClickEnabled" Value="True"/>
+        <Setter Property="IsDoubleTapEnabled" Value="False"/>
+        <Setter Property="IsHoldingEnabled" Value="False"/>
+        <Setter Property="IsRightTapEnabled" Value="False"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
     </Style>
+
 </ResourceDictionary>
