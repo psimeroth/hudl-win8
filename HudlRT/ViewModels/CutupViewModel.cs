@@ -16,7 +16,7 @@ namespace HudlRT.ViewModels
         private string _name { get; set; }
         private string _clipCount { get; set; }
         private long _cutupId { get; set; }
-        //private BindableCollection<Clip> _clips { get; set; }
+        private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
@@ -48,8 +48,17 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public string ClipCount
+
         {
+            get { return _clips; }
+            set
+            {
+                if (value == _clips) return;
+                _clips = value;
+                NotifyOfPropertyChange(() => Clips);
+            }
+        }
+        public string ClipCount        {
             get { return _clipCount; }
             set
             {

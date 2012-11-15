@@ -19,6 +19,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        private int playbackType;
         public PagePassParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
@@ -30,14 +31,14 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Clips);
             }
         }
-        private Angle video;
-        public Angle Video
+        private Angle selectedAngle;
+        public Angle SelectedAngle
         {
-            get { return video; }
+            get { return selectedAngle; }
             set
             {
-                video = value;
-                NotifyOfPropertyChange(() => Video);
+                selectedAngle = value;
+                NotifyOfPropertyChange(() => SelectedAngle);
             }
         }
 
@@ -71,6 +72,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => SelectedClip);
             }
         }
+        private string toggleButtonContent;
+        public string ToggleButtonContent
+        {
+            get { return toggleButtonContent; }
+            set
+            {
+                toggleButtonContent = value;
+                NotifyOfPropertyChange(() => ToggleButtonContent);
+            }
+        }
 
         private int index = 0;
         Point initialPoint = new Point();
@@ -85,54 +96,127 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            //GetClipsByCutup(Parameter.selectedCutup);
             Clips = Parameter.selectedCutup.clips;
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
-                SelectedClip = Clips.First();
-                Video = SelectedClip.angles.ElementAt(0);
+                if (Clips.First().angles.Count() > 0)
+                {
+                    SelectedClip = Clips.First();
+                    SelectedAngle = SelectedClip.angles.ElementAt(0);
+                }
             }
             CutupName = Parameter.selectedCutup.name;
+            
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            if (roamingSettings.Values["hudl-playbackType"] == null)	
+            {
+                roamingSettings.Values["hudl-playbackType"] = 0;	
+            }
+            playbackType = (int)roamingSettings.Values["hudl-playbackType"];
+            setToggleButtonContent();
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
-            var clip = (Clip)eventArgs.ClickedItem;
-            SelectedClip = clip;
-            Video = clip.angles.ElementAt(0);
-            index = (int)clip.order;
+                var clip = (Clip)eventArgs.ClickedItem;
+                if (clip.angles.Count > 0)
+                {
+                    SelectedClip = clip;
+                    SelectedAngle = clip.angles.ElementAt(0);
+                    index = (int)clip.order;
+                }
         }
 
-        public void NextClip(ItemClickEventArgs eventArgs)
+        public void NextClip(int eventArgs)
         {
-            if (Clips.Count > 1)
+            int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
+            if (angleIndex < 0)
             {
-                if (index == (Clips.Count - 1))
+                angleIndex = 0;
+            }
+            if (angleIndex < SelectedClip.angles.Count() - 1)
+            {
+                SelectedAngle = SelectedClip.angles.ElementAt(angleIndex + 1);
+            }
+            else
+            {
+                if (eventArgs == 1 && playbackType == 0)
                 {
-                    SelectedClip = Clips.First();
-                    Video = SelectedClip.angles.ElementAt(0);
-                    index = 0;
+                    //Do nothing
                 }
-                else
-                    SelectedClip = Clips.ElementAt(++index);
-                    Video = SelectedClip.angles.ElementAt(0);
+                else if (eventArgs == 1 && playbackType == 1)
+                {
+                    SelectedAngle = new Angle(SelectedClip.angles.ElementAt(0).fileLocation);
+                }
+                else if (Clips.Count > 1)
+                {
+                    if (index == (Clips.Count - 1) && Clips.First().angles.Count() > 0)
+                    {
+                        SelectedClip = Clips.First();
+                        index = 0;
+                    }
+                    else if (Clips.ElementAt(index + 1).angles.Count() > 0)
+                    {
+                        SelectedClip = Clips.ElementAt(++index);
+                    }
+                    
+                    SelectedAngle = SelectedClip.angles.ElementAt(0);
+                }
             }
         }
 
         public void PreviousClip(ItemClickEventArgs eventArgs)
         {
-            if (Clips.Count > 1)
+            int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
+            if (angleIndex > 0)
             {
-                if (index == 0)
+                SelectedAngle = SelectedClip.angles.ElementAt(angleIndex - 1);
+            }
+            else
+            {
+                if (Clips.Count > 1)
                 {
-                    SelectedClip = Clips.Last();
-                    Video = SelectedClip.angles.ElementAt(0);
-                    index = Clips.Count - 1;
+                    if (index == 0 && Clips.Last().angles.Count() > 0)
+                    {
+                        SelectedClip = Clips.Last();
+                        index = Clips.Count - 1;
+                    }
+                    else if (Clips.ElementAt(index - 1).angles.Count() > 0)
+                    {
+                        SelectedClip = Clips.ElementAt(--index);
+                    }
+                    
+                    SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
-                else
-                    SelectedClip = Clips.ElementAt(--index);
-                    Video = SelectedClip.angles.ElementAt(0);
+            }
+        }
+
+        public void playbackToggle()
+        {
+            playbackType++;
+            if (playbackType == 3)
+            {
+                playbackType = 0;
+            }
+            setToggleButtonContent();
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            roamingSettings.Values["hudl-playbackType"] = playbackType;
+        }
+
+        public void setToggleButtonContent()
+        {
+            if (playbackType == 0)
+            {
+                ToggleButtonContent = "Playback: Once";
+            }
+            else if (playbackType == 1)
+            {
+                ToggleButtonContent = "Playback: Loop";
+            }
+            else
+            {
+                ToggleButtonContent = "Playback: Next";
             }
         }
 
@@ -156,7 +240,7 @@ namespace HudlRT.ViewModels
         {
             if (initialPoint.X - currentPoint.X >= 50 && !isFullScreenGesture)
             {
-                NextClip(null);
+                NextClip(0);
             }
 
             else if (initialPoint.X - currentPoint.X <= -50 && !isFullScreenGesture)
@@ -217,7 +301,7 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
-            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
+            navigationService.NavigateToViewModel<SectionViewModel>();
         }
     }
 }
