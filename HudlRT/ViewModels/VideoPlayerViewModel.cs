@@ -127,35 +127,7 @@ namespace HudlRT.ViewModels
             }
             playbackType = (PlaybackType)roamingSettings.Values["hudl-playbackType"];
             setToggleButtonContent();
-
-            //GetAngleNames();
         }
-
-        //private async void GetAngleNames()
-        //{
-        //    long teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
-        //    var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-        //    var names = await ServiceAccessor.MakeApiCallGet("teams/#/angleNames".Replace("#", teamID.ToString()));
-        //    if (!string.IsNullOrEmpty(names))
-        //    {
-        //        List<string> returnedNames = JsonConvert.DeserializeObject<List<string>>(names);
-        //        BindableCollection<AngleType> nameObjects = new BindableCollection<AngleType>();
-        //        foreach (string s in returnedNames)
-        //        {
-        //            nameObjects.Add(new AngleType(s, this));
-        //        }
-        //        AngleTypes = nameObjects;
-        //        foreach (Clip clip in Clips)
-        //        {
-        //            foreach (Angle angle in clip.angles)
-        //            {
-        //                angle.angleType = AngleTypes.Where(angleType => angleType.Name.Equals(angle.angleName)).FirstOrDefault();
-        //            }
-        //        }
-        //    }
-
-        //    getAnglePreferences();
-        //}
 
         private void GetAngleNames()
         {
