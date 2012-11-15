@@ -48,7 +48,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-
+        public BindableCollection<Clip> Clips
         {
             get { return _clips; }
             set

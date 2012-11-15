@@ -203,9 +203,10 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 cutup.Clips = response.clips;
+                string[] clipCount = cutup.ClipCount.ToString().Split(' ');
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
                 {
-                    selectedCutup = new Cutup {cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name }
+                    selectedCutup = new Cutup {cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name }
                 });
             }
             else
