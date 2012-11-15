@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -55,6 +56,12 @@ namespace HudlRT.Views
                 l.SelectedIndex = selectedIndex;
                 rightClicked = false;
             }
+        }
+
+        private void ResetComboBoxColor(object sender, RoutedEventArgs e)
+        {
+            SeasonsDropDown.Background = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
+            SeasonsDropDown.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
         }
     }
 }

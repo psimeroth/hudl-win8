@@ -321,7 +321,6 @@ namespace HudlRT.ViewModels
                 }
                 //populate this/next game
                 NotifyOfPropertyChange(() => SelectedSeason);
-                FindNextGame(SelectedSeason);
             }
             else//could better handle exceptions
             {

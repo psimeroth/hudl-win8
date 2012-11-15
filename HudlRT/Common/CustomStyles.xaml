@@ -1481,6 +1481,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
     <Style x:Key="StandardComboBoxStyle" TargetType="ComboBoxItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="Black"/>
@@ -1515,7 +1516,12 @@
                                         <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="1"/>
                                     </Storyboard>
                                 </VisualState>
-                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="Unfocused" >
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="0"/>
+                                    </Storyboard>
+                                </VisualState>
+                                             
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
@@ -1523,7 +1529,7 @@
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
-                                        <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">
+                                        <SolidColorBrush Color="Black">
                                         </SolidColorBrush>
                                     </Rectangle.Fill>
                                 </Rectangle>
