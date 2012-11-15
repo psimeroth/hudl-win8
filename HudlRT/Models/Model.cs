@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using HudlRT.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -212,6 +213,7 @@ namespace HudlRT.Models
         public string fileLocation { get; set; }
         public string thumbnailLocation { get; set; }
         public long duration { get; set; }
+        public AngleType angleType { get; set; }
 
         public Angle()
         {
@@ -253,5 +255,47 @@ namespace HudlRT.Models
         public float dist { get; set; }
         public long play { get; set; }//needs to be changed
         public long qtr { get; set; }
+    }
+
+    public class AngleType : PropertyChangedBase
+    {
+        public VideoPlayerViewModel viewModel { get; set; }
+        public string Name { get; set; }
+        private bool isChecked;
+        public bool IsChecked
+        {
+            get { return isChecked; }
+            set
+            {
+                isChecked = value;
+                NotifyOfPropertyChange(() => IsChecked);
+            }
+        }
+
+        public AngleType(string name, VideoPlayerViewModel vm)
+        {
+            Name = name;
+            IsChecked = true;
+            viewModel = vm;
+        }
+
+        public void checkBox(bool isChecked, Windows.UI.Xaml.RoutedEventArgs eventArgs)
+        {
+            IsChecked = isChecked;
+            viewModel.angleFilter();
+        }
+    }
+
+    public enum PlaybackType
+    {
+        once,
+        loop,
+        next
+    }
+
+    public enum NextAngleEvent
+    {
+        buttonClick,
+        mediaEnded
     }
 }

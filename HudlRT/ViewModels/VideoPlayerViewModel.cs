@@ -19,7 +19,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        private int playbackType;
+        private PlaybackType playbackType;
         public PagePassParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
@@ -82,6 +82,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => ToggleButtonContent);
             }
         }
+        private BindableCollection<AngleType> angleNames;
+        public BindableCollection<AngleType> AngleTypes
+        {
+            get { return angleNames; }
+            set
+            {
+                angleNames = value;
+                NotifyOfPropertyChange(() => AngleTypes);
+            }
+        }
 
         private int index = 0;
         Point initialPoint = new Point();
@@ -104,116 +114,228 @@ namespace HudlRT.ViewModels
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
-                if (Clips.First().angles.Count() > 0)
-                {
-                    SelectedClip = Clips.First();
-                    SelectedAngle = SelectedClip.angles.ElementAt(0);
-                }
+                GetAngleNames();
+                SelectedClip = Clips.First();
+                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
             }
             CutupName = Parameter.selectedCutup.name;
            
             if (roamingSettings.Values["hudl-playbackType"] == null)	
             {
-                roamingSettings.Values["hudl-playbackType"] = 0;	
+                roamingSettings.Values["hudl-playbackType"] = (int)PlaybackType.once;	
             }
-            playbackType = (int)roamingSettings.Values["hudl-playbackType"];
+            playbackType = (PlaybackType)roamingSettings.Values["hudl-playbackType"];
             setToggleButtonContent();
+
+            //GetAngleNames();
+        }
+
+        //private async void GetAngleNames()
+        //{
+        //    long teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
+        //    var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+        //    var names = await ServiceAccessor.MakeApiCallGet("teams/#/angleNames".Replace("#", teamID.ToString()));
+        //    if (!string.IsNullOrEmpty(names))
+        //    {
+        //        List<string> returnedNames = JsonConvert.DeserializeObject<List<string>>(names);
+        //        BindableCollection<AngleType> nameObjects = new BindableCollection<AngleType>();
+        //        foreach (string s in returnedNames)
+        //        {
+        //            nameObjects.Add(new AngleType(s, this));
+        //        }
+        //        AngleTypes = nameObjects;
+        //        foreach (Clip clip in Clips)
+        //        {
+        //            foreach (Angle angle in clip.angles)
+        //            {
+        //                angle.angleType = AngleTypes.Where(angleType => angleType.Name.Equals(angle.angleName)).FirstOrDefault();
+        //            }
+        //        }
+        //    }
+
+        //    getAnglePreferences();
+        //}
+
+        private void GetAngleNames()
+        {
+            List<string> types = new List<string>();
+            foreach (Clip clip in Clips)
+            {
+                foreach (Angle angle in clip.angles)
+                {
+                    if(!types.Contains(angle.angleName))
+                    {
+                        types.Add(angle.angleName);
+                    }
+                }
+            }
+
+            BindableCollection<AngleType> typeObjects = new BindableCollection<AngleType>();
+            foreach (string s in types)
+            {
+                typeObjects.Add(new AngleType(s, this));
+            }
+
+            AngleTypes = typeObjects;
+            foreach (Clip clip in Clips)
+            {
+                foreach (Angle angle in clip.angles)
+                {
+                    angle.angleType = AngleTypes.Where(angleType => angleType.Name.Equals(angle.angleName)).FirstOrDefault();
+                }
+            }
+ 
+            getAnglePreferences();
+        }
+
+        private void getAnglePreferences()
+        {
+            long teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            foreach (AngleType angleName in AngleTypes)
+            {
+                if (roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] == null)
+                {
+                    angleName.IsChecked = true;
+                }
+                else
+                {
+                    angleName.IsChecked = (bool)roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)];
+                }
+            }
+        }
+
+        private void saveAnglePreferences()
+        {
+            long teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            foreach (AngleType angleName in AngleTypes)
+            {
+                roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] = angleName.IsChecked;
+            }
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
-                var clip = (Clip)eventArgs.ClickedItem;
-                if (clip.angles.Count > 0)
-                {
-                    SelectedClip = clip;
-                    SelectedAngle = clip.angles.ElementAt(0);
-                    index = (int)clip.order;
-                }
+            var clip = (Clip)eventArgs.ClickedItem;
+            SelectedClip = clip;
+            index = (int)clip.order;
+
+            List<Angle> filteredAngles = clip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+            SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
         }
 
-        public void NextClip(int eventArgs)
+        public void NextClip(NextAngleEvent eventType)
         {
-            int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
-            if (angleIndex < 0)
+            if (SelectedAngle == null)
             {
-                angleIndex = 0;
-            }
-            if (angleIndex < SelectedClip.angles.Count() - 1)
-            {
-                SelectedAngle = SelectedClip.angles.ElementAt(angleIndex + 1);
+                goToNextClip();
             }
             else
             {
-                if (eventArgs == 1 && playbackType == 0)
+                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+                Angle currentAngle = SelectedClip.angles.Where(a => a.fileLocation.Equals(SelectedAngle.fileLocation)).FirstOrDefault();
+
+                int angleIndex = filteredAngles.IndexOf(currentAngle);
+                if (angleIndex < filteredAngles.Count - 1)
                 {
-                    //Do nothing
+                    SelectedAngle = filteredAngles[angleIndex + 1];
                 }
-                else if (eventArgs == 1 && playbackType == 1)
+                else
                 {
-                    SelectedAngle = new Angle(SelectedClip.angles.ElementAt(0).fileLocation);
-                }
-                else if (Clips.Count > 1)
-                {
-                    if (index == (Clips.Count - 1) && Clips.First().angles.Count() > 0)
+                    if (eventType == NextAngleEvent.mediaEnded && playbackType == PlaybackType.loop)
                     {
-                        SelectedClip = Clips.First();
-                        index = 0;
+                        SelectedAngle = filteredAngles.Any() ? new Angle(filteredAngles[0].fileLocation) : null;
                     }
-                    else if (Clips.ElementAt(index + 1).angles.Count() > 0)
+                    else if(eventType == NextAngleEvent.buttonClick || playbackType == PlaybackType.next)
                     {
-                        SelectedClip = Clips.ElementAt(++index);
+                        goToNextClip();
                     }
-                    
-                    SelectedAngle = SelectedClip.angles.ElementAt(0);
                 }
+            }
+        }
+
+        private void goToNextClip()
+        {
+            if (Clips.Count > 1)
+            {
+                index = (index + 1) % Clips.Count;
+
+                SelectedClip = Clips[index];
+                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
             }
         }
 
         public void PreviousClip(ItemClickEventArgs eventArgs)
         {
-            int angleIndex = SelectedClip.angles.IndexOf(selectedAngle);
-            if (angleIndex > 0)
+            if (SelectedAngle == null)
             {
-                SelectedAngle = SelectedClip.angles.ElementAt(angleIndex - 1);
+                goToPreviousClip();
             }
             else
             {
-                if (Clips.Count > 1)
+                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+                Angle currentAngle = SelectedClip.angles.Where(a => a.fileLocation.Equals(SelectedAngle.fileLocation)).FirstOrDefault();
+
+                int angleIndex = filteredAngles.IndexOf(currentAngle);
+                if (angleIndex > 0)
                 {
-                    if (index == 0 && Clips.Last().angles.Count() > 0)
-                    {
-                        SelectedClip = Clips.Last();
-                        index = Clips.Count - 1;
-                    }
-                    else if (Clips.ElementAt(index - 1).angles.Count() > 0)
-                    {
-                        SelectedClip = Clips.ElementAt(--index);
-                    }
-                    
-                    SelectedAngle = SelectedClip.angles.ElementAt(0);
+                    SelectedAngle = filteredAngles[angleIndex - 1];
                 }
+                else
+                {
+                    goToPreviousClip();
+                }
+            }
+        }
+
+        private void goToPreviousClip()
+        {
+            if (Clips.Count > 1)
+            {
+                index = (index == 0) ? Clips.Count - 1 : index - 1;
+
+                SelectedClip = Clips[index];
+                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+            }
+        }
+
+        public void angleFilter()
+        {
+            List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+            //If the current angle has been filtered out, reset the clip to the first unfiltered angle, or null
+            if (SelectedAngle != null)
+            {
+                if (filteredAngles.Where(angle => angle.fileLocation.Equals(SelectedAngle.fileLocation)).FirstOrDefault() == null)
+                {
+                    SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+                }
+            }
+            else
+            {
+                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
             }
         }
 
         public void playbackToggle()
         {
-            playbackType++;
-            if (playbackType == 3)
-            {
-                playbackType = 0;
-            }
+            playbackType = (PlaybackType)(((int)playbackType + 1) % 3);
+            
             setToggleButtonContent();
             Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-playbackType"] = playbackType;
+            roamingSettings.Values["hudl-playbackType"] = (int)playbackType;
         }
 
         public void setToggleButtonContent()
         {
-            if (playbackType == 0)
+            if (playbackType == PlaybackType.once)
             {
                 ToggleButtonContent = "Playback: Once";
             }
-            else if (playbackType == 1)
+            else if (playbackType == PlaybackType.loop)
             {
                 ToggleButtonContent = "Playback: Loop";
             }
@@ -304,6 +426,7 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
+            saveAnglePreferences();
             navigationService.NavigateToViewModel<SectionViewModel>();
         }
     }
