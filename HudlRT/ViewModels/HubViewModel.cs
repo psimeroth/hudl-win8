@@ -458,7 +458,7 @@ namespace HudlRT.ViewModels
             if (lastViewedId.HasValue)
             {
                 ProgressRingVisibility = "Visible";
-                CutupViewModel cutup = new CutupViewModel { CutupId = (long)lastViewedId, Name = LastViewedName };
+                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
                 ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
