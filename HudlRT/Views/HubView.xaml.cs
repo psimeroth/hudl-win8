@@ -58,7 +58,7 @@ namespace HudlRT.Views
             }
         }
 
-        private void ResetComboBoxColor(object sender, RoutedEventArgs e)
+        private void ResetComboBoxColor(object sender, object e)
         {
             SeasonsDropDown.Background = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
             SeasonsDropDown.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
