@@ -28,6 +28,18 @@ namespace HudlRT.ViewModels
             game._isHome = gameDTO.Ishome;
             game._opponent = gameDTO.Opponent;
             game._date = gameDTO.Date.ToString("d");
+            game._categories = new BindableCollection<CategoryViewModel>();
+            return game;
+        }
+
+        public static GameViewModel FromGame(Game gameModel)
+        {
+            GameViewModel game = new GameViewModel();
+            game._gameId = gameModel.gameId;
+            game._isHome = gameModel.isHome;
+            game._opponent = gameModel.opponent;
+            game._date = gameModel.date.ToString("d");
+            game._categories = new BindableCollection<CategoryViewModel>();
             return game;
         }
 

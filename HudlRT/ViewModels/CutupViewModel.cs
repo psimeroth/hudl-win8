@@ -37,6 +37,15 @@ namespace HudlRT.ViewModels
             return cutup;
         }
 
+        public static CutupViewModel FromCutup(Cutup cutupDTO)
+        {
+            CutupViewModel cutup = new CutupViewModel();
+            cutup._cutupId = cutupDTO.cutupId;
+            cutup._clipCount = cutupDTO.clipCount;
+            cutup._name = cutupDTO.name;
+            return cutup;
+        }
+
         public string Name
         {
             get { return _name; }
