@@ -16,7 +16,6 @@ namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
     {
-        private SectionModel model;
         private readonly INavigationService navigationService;
         public HubSectionParameter Parameter { get; set; }
 
@@ -71,8 +70,6 @@ namespace HudlRT.ViewModels
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
-
-            model = new SectionModel();
         }
 
         protected override void OnActivate()
@@ -92,79 +89,131 @@ namespace HudlRT.ViewModels
                 teamID = 0;
                 seasonID = 0;
             }
-            
-            GetGames(teamID, seasonID);
 
             // Check if a specific cutup was passed to the page
             if (Parameter != null)
             {
-                // not sure the format right now
+                LoadPageFromParamter(seasonID, teamID, Parameter.gameId, Parameter.categoryId);
+            } else {
+                LoadPageFromDefault(seasonID, teamID);
             }
         }
 
-        public async void GetGames(long teamID, long seasonID)
+        private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID)
         {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamID.ToString()).Replace("%", seasonID.ToString()));
-            if (!string.IsNullOrEmpty(games))
+            await GetGames(teamID, seasonID);
+
+            // Find the passed in game
+            SelectedGame = null;
+            foreach (GameViewModel game in Schedule)
+            {
+                if (game.GameId == gameID)
+                {
+                    SelectedGame = game;
+                    break;
+                }
+            }
+
+            // If the game isn't found set the first one as the default
+            if (SelectedGame == null)
+            {
+                SelectedGame = Schedule.FirstOrDefault();
+            }
+
+            await GetGameCategories(SelectedGame);
+
+            // Find the selected category
+            SelectedGame.SelectedCategory = null;
+            foreach (CategoryViewModel cat in SelectedGame.Categories)
+            {
+                if (cat.CategoryId == categoryID)
+                {
+                    SelectedGame.SelectedCategory = cat;
+                }
+            }
+
+            // If the category isn't found set the first as the default
+            if (SelectedGame.SelectedCategory == null)
+            {
+                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+            }
+
+            GetCutupsByCategory(SelectedGame.SelectedCategory);
+        }
+
+        private async void LoadPageFromDefault(long seasonID, long teamID)
+        {
+            await GetGames(teamID, seasonID);
+            SelectedGame = Schedule.FirstOrDefault();
+            await GetGameCategories(SelectedGame);
+            SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+            GetCutupsByCategory(SelectedGame.SelectedCategory);
+        }
+
+        public async Task GetGames(long teamID, long seasonID)
+        {
+            GameResponse response = await ServiceAccessor.GetGames(teamID.ToString(), seasonID.ToString());
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 var schedule = new BindableCollection<GameViewModel>();
-                var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
-                foreach (GameDTO gameDTO in obj)
+                foreach (Game game in response.games)
                 {
-                    schedule.Add(GameViewModel.FromDTO(gameDTO));
+                    schedule.Add(GameViewModel.FromGame(game));
                 }
                 Schedule = schedule;
-                SelectedGame = Schedule.FirstOrDefault();
-                GetGameCategories(SelectedGame);
             }
+            /*else if (games.status == SERVICE_RESPONSE.NULL_RESPONSE)
+            {
+            }*/
             else
             {
                 Schedule = null;
             }
         }
 
-        public async void GetGameCategories(GameViewModel game)
+        public async Task GetGameCategories(GameViewModel game)
         {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.GameId.ToString()));
-            if (!string.IsNullOrEmpty(categories))
+            CategoryResponse response = await ServiceAccessor.GetGameCategories(game.GameId.ToString());
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 var cats = new BindableCollection<CategoryViewModel>();
-                var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
-                foreach (CategoryDTO categoryDTO in obj)
+                foreach (Category category in response.categories)
                 {
-                    cats.Add(CategoryViewModel.FromDTO(categoryDTO));
+                    cats.Add(CategoryViewModel.FromCategory(category));
                 }
                 SelectedGame.Categories = cats;
-                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-
-                GetCutupsByCategory(SelectedGame.SelectedCategory);
             }
+            /*else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
+            {
+            }*/
             else
             {
                 SelectedGame.Categories = null;
             }
         }
 
-        public async void GetCutupsByCategory(CategoryViewModel category)
+        public async Task GetCutupsByCategory(CategoryViewModel category)
         {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.CategoryId.ToString()));
-            if (!string.IsNullOrEmpty(cutups))
+            CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 var cuts = new BindableCollection<CutupViewModel>();
-                var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
-                foreach (CutupDTO cutupDTO in obj)
+                foreach (Cutup cutup in response.cutups)
                 {
-                    cuts.Add(CutupViewModel.FromDTO(cutupDTO));
+                    cuts.Add(CutupViewModel.FromCutup(cutup));
                 }
                 Cutups = cuts;
             }
+            /*else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
+            {
+            }*/
             else
             {
                 Cutups = null;
             }
         }
 
-        public void GameSelected(ItemClickEventArgs eventArgs)
+        public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             var game = (GameViewModel)eventArgs.ClickedItem;
 
@@ -172,9 +221,11 @@ namespace HudlRT.ViewModels
             SelectedGame = game;
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = game;
-
-            GetGameCategories(game);
             Cutups = null;
+
+            await GetGameCategories(game);
+            SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+            GetCutupsByCategory(SelectedGame.SelectedCategory);
         }
 
         public void CategorySelected(ItemClickEventArgs eventArgs)

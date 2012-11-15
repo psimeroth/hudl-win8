@@ -25,6 +25,14 @@ namespace HudlRT.ViewModels
             return cat;
         }
 
+        public static CategoryViewModel FromCategory(Category catModel)
+        {
+            CategoryViewModel cat = new CategoryViewModel();
+            cat._name = catModel.name;
+            cat._categoryId = catModel.categoryId;
+            return cat;
+        }
+
         public string Name
         {
             get { return _name; }
