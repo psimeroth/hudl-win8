@@ -239,58 +239,32 @@ namespace HudlRT.ViewModels
             GetCutupsByCategory(category);
         }
 
-        /*
+
         public void CutupSelected(ItemClickEventArgs eventArgs)
         {
-            var cutup = (Cutup)eventArgs.ClickedItem;
+            var cutup = (CutupViewModel)eventArgs.ClickedItem;
             GetClipsByCutup(cutup);
         }
 
-        public async void GetClipsByCutup(Cutup cutup)
+        public async void GetClipsByCutup(CutupViewModel cutup)
         {
-            ColVisibility = "Collapsed";
-            ProgressRingVisibility = "Visible";
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            if (!string.IsNullOrEmpty(clips))
+            //ColVisibility = "Collapsed";
+            //ProgressRingVisibility = "Visible";
+            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                try
+                cutup.Clips = response.clips;
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
                 {
-                    cutup.clips = new BindableCollection<Clip>();
-                    var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-                    cutup.displayColumns = obj.DisplayColumns;
-                    foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
-                    {
-                        Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
-                        if (c != null)
-                        {
-                            cutup.clips.Add(c);
-                        }
-                    }
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-                    {
-                        teams = teams,
-                        games = games,
-                        categories = categories,
-                        seasons = seasons,
-                        cutups = cutups,
-                        selectedTeam = SelectedTeam,
-                        selectedSeason = SelectedSeason,
-                        selectedGame = SelectedGame,
-                        selectedCategory = SelectedCategory,
-                        selectedCutup = cutup
-                    });
-                }
-                catch (Exception)
-                {
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
+                    selectedCutup = new Cutup {cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name }
+                });
+            }
+            else
+            {
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
             }
         }
-        */
+        
 
         public void LogOut()
         {
