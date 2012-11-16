@@ -175,7 +175,11 @@ namespace HudlRT.ViewModels
                 {
                     schedule.Add(GameViewModel.FromGame(game));
                 }
-                Schedule = schedule;
+                Schedule = new BindableCollection<GameViewModel>();
+                for (int i = schedule.Count() - 1; i >= 0; i--)
+                {
+                    Schedule.Add(schedule[i]);
+                }
             }
             /*else if (games.status == SERVICE_RESPONSE.NULL_RESPONSE)
             {

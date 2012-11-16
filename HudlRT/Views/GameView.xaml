@@ -15,6 +15,6 @@
             <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Opponent" />
         </StackPanel>
             <ListView  IsItemClickEnabled="True" Background="Transparent" Foreground="White" Name="Categories" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]"
-                   Margin="35,0,0,0" ItemContainerStyle="{StaticResource ListViewItemStyle_Cutups}" Width="444"  IsHoldingEnabled="False" IsSwipeEnabled="False"></ListView>
+                   Margin="35,0,0,0" ItemContainerStyle="{StaticResource ListViewItemStyle_Cutups}" Width="444"  IsHoldingEnabled="False" IsSwipeEnabled="False" SelectionChanged="ListViewSelectionChanged"></ListView>
     </StackPanel>
 </UserControl>

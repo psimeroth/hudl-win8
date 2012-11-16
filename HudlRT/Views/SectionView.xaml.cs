@@ -58,6 +58,7 @@ namespace HudlRT.Views
                 l.SelectedIndex = selectedIndex;
                 rightClicked = false;
             }
+            Schedule.ScrollIntoView(Schedule.SelectedItem);
         }
 
         private void ResetComboBoxColor(object sender, object e)
