@@ -100,6 +100,8 @@
                                         <PointerDownThemeAnimation TargetName="ContentContainer"/>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PointerOverBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectionBackground">
+
+
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Stroke" Storyboard.TargetName="SelectedBorder">
@@ -317,7 +319,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Name="ListViewItemStyle_Cutups" TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
         <Setter Property="FontSize" Value="{StaticResource ControlContentThemeFontSize}"/>
@@ -591,6 +593,7 @@
     <Style TargetType="TextBlock" x:Key="videoPlayerGridHeaderStyle" BasedOn="{StaticResource columnHeaderStyle}">
         <Setter Property="FontSize" Value="24"/>
     </Style>
+
     <Style x:Key="ListViewGridItem" TargetType="ListViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
@@ -612,6 +615,16 @@
         <Setter Property="Padding" Value="0,10"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
+    <Style TargetType="TextBlock" x:Key="listViewItem_TextBlockStyle_Title">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="0,10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
     <Style x:Key="StandardButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="5"/>
@@ -647,7 +660,7 @@
                                 <VisualState x:Name="Unfocused" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        
+
                         <Grid Margin="2">
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
@@ -672,6 +685,66 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="StandardButtonStyle_SectionPage" TargetType="Button">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlBlackButtonHoverColor}"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="DisabledVisualElement" Storyboard.TargetProperty="Opacity" To=".5"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Focused">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="1"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unfocused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid>
+                            <Border BorderThickness="1" BorderBrush="Black">
+                                <Rectangle x:Name="BackgroundColor" >
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">
+                                        </SolidColorBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Border>
+                        </Grid>
+                        <ContentPresenter
+                              x:Name="contentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              Margin="{TemplateBinding Padding}"/>
+                        <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
+                        <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ListViewItemStyleVideoPage" TargetType="ListViewItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="5"/>
@@ -740,12 +813,12 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-
                         <Grid Margin="2">
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
                                         <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}"/>
+
                                     </Rectangle.Fill>
                                 </Rectangle>
                             </Border>
@@ -765,9 +838,10 @@
     <Style x:Key="StandardListViewItemStyle" TargetType="ListViewItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="5"/>
+        <Setter Property="Height" Value ="100"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="Button">
+                <ControlTemplate TargetType="ListViewItem">
                     <Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -797,8 +871,7 @@
                                 <VisualState x:Name="Unfocused" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-
-                        <Grid>
+                        <Grid Margin="2">
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
@@ -817,67 +890,6 @@
                               Margin="{TemplateBinding Padding}"/>
                         <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
                         <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <Style x:Key="StandardListViewStyle" TargetType="ListViewItem">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="5"/>
-        <Setter Property="Height" Value ="100"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListViewItem">
-                    <Grid>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="PointerOver">
-                                    <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlBlackButtonHoverColor}"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Pressed">
-                                    <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" Storyboard.TargetName="DisabledVisualElement" Storyboard.TargetProperty="Opacity" To=".5"/>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="1"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unfocused" />
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-
-                        <Grid Margin="2">
-                            <Border BorderThickness="1" BorderBrush="Black">
-                                <Rectangle x:Name="BackgroundColor" >
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">
-                                        </SolidColorBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </Border>
-                        </Grid>
-                            <ContentPresenter
-                                  x:Name="contentPresenter"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  Margin="{TemplateBinding Padding}" />
-                            <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
-                            <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -923,6 +935,8 @@
 
                         <Grid>
                             <Border BorderThickness="0" BorderBrush="{StaticResource HudlMediumGray}" Opacity="1">
+
+
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
                                         <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">
@@ -940,6 +954,7 @@
                                   Margin="{TemplateBinding Margin}"/>
                         <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
                         <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
+
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -964,7 +979,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueTransparentColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -984,15 +999,14 @@
                                         <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="0"/>
                                     </Storyboard>
                                 </VisualState>
-                                             
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-
                         <Grid Margin="2">
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
                                         <SolidColorBrush Color="Black">
+
                                         </SolidColorBrush>
                                     </Rectangle.Fill>
                                 </Rectangle>
@@ -1209,7 +1223,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!-- Hub Page -->
     <Style TargetType="TextBlock" x:Key="HubViewWeekHeaderStyle">
         <Setter Property="FontSize" Value="30"/>
@@ -1253,6 +1267,8 @@
         <Setter Property="IsHoldingEnabled" Value="False"/>
         <Setter Property="IsRightTapEnabled" Value="False"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
     </Style>
+
 
 </ResourceDictionary>

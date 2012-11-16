@@ -716,15 +716,9 @@
                 <ControlTemplate TargetType="Button">
                     <Grid x:Name="RootGrid">
                         <Grid Margin="-1,-16,0,0">
-<<<<<<< HEAD
-                            <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" Foreground="{StaticResource BackButtonBackgroundThemeBrush}"/>
-                            <TextBlock x:Name="NormalGlyph" Text="{StaticResource BackButtonGlyph}" Foreground="White"/>
-                            <TextBlock x:Name="ArrowGlyph" Text="&#xE0A6;" Foreground="White" Opacity="0"/>
-=======
                             <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" Foreground="{StaticResource HudlGrayButton}"/>
                             <TextBlock x:Name="NormalGlyph" Text="{StaticResource BackButtonGlyph}" Foreground="{StaticResource BackButtonForegroundThemeBrush}"/>
                             <TextBlock x:Name="ArrowGlyph" Text="&#xE0A6;" Foreground="{StaticResource BackButtonPressedForegroundThemeBrush}" Opacity="0"/>
->>>>>>> Updated video page style and general styling across pages. Also, disabled zooming for the video player grid.
                         </Grid>
                         <Rectangle
                             x:Name="FocusVisualWhite"
