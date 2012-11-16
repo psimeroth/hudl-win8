@@ -18,9 +18,21 @@ namespace HudlRT.Views
 {
     public sealed partial class CategoryView : UserControl
     {
+        private SolidColorBrush textColor = null;
+
         public CategoryView()
         {
             this.InitializeComponent();
         }
+
+        private void Name_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            Name.Opacity = .5;
+        }
+
+        private void Name_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            Name.Opacity = 1;
+        }    
     }
 }

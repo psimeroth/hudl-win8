@@ -209,6 +209,7 @@ namespace HudlRT.ViewModels
 
         public async Task GetCutupsByCategory(CategoryViewModel category)
         {
+            SelectedGame.SelectedCategory.TextColor = "#0099FF";
             CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
@@ -254,6 +255,12 @@ namespace HudlRT.ViewModels
         public void CategorySelected(ItemClickEventArgs eventArgs)
         {
             var category = (CategoryViewModel)eventArgs.ClickedItem;
+
+            List<CategoryViewModel> categories = SelectedGame.Categories.ToList();
+            foreach (var cat in categories)
+            {
+                cat.TextColor = "#E0E0E0";
+            }
 
             SelectedGame.SelectedCategory = category;
             ListView x = (ListView)eventArgs.OriginalSource;
