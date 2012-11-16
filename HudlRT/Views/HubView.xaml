@@ -24,7 +24,7 @@
             </Storyboard>
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="65"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -34,12 +34,13 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
-        <Grid x:Name="TopTitleGrid" >
-            <Grid Grid.Column="1" Height="50" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
+        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
+            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
             <Grid Margin="65,0,0,0" Background="{StaticResource HudlBlackButton}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <Border BorderBrush="Black" BorderThickness="1"/>
+                <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
             </Grid>
-            <Grid Grid.Column="1" Height="50" VerticalAlignment="Top">
+            <Grid Grid.Column="1" Height="50" VerticalAlignment="Center">
                 <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
             
