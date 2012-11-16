@@ -371,15 +371,19 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
-                if (Parameter != null)
+                if (foundSavedSeason)
                 {
-                    LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+                    if (Parameter != null)
+                    {
+                        LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+                    }
+                    else
+                    {
+                        LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+                    }
+                    NotifyOfPropertyChange(() => SelectedSeason);
                 }
-                else
-                {
-                    LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-                }
-                NotifyOfPropertyChange(() => SelectedSeason);
+                
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
                     SelectedSeason = SeasonsDropDown[0];
