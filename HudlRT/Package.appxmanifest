@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="Hudl.Hudl" Publisher="CN=43D3FB9D-D60C-4D35-8801-085774C462FD" Version="0.4.3.2" />
+  <Identity Name="Hudl.Hudl" Publisher="CN=43D3FB9D-D60C-4D35-8801-085774C462FD" Version="0.4.4.2" />
   <Properties>
     <DisplayName>Hudl</DisplayName>
     <PublisherDisplayName>Hudl</PublisherDisplayName>

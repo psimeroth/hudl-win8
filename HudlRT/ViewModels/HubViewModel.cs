@@ -318,8 +318,11 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
-                NotifyOfPropertyChange(() => SelectedSeason);
-                FindNextGame(SelectedSeason);
+                if (foundSavedSeason)
+                {
+                    FindNextGame(SelectedSeason);
+                    NotifyOfPropertyChange(() => SelectedSeason);
+                }
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
                     SelectedSeason = SeasonsDropDown[0];
@@ -400,7 +403,7 @@ namespace HudlRT.ViewModels
                 }
                 if (PreviousGame != null)
                 {
-                    CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
+                    CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(PreviousGame.gameId.ToString());
                     if (catResponse.status == SERVICE_RESPONSE.SUCCESS)
                     {
                         PreviousGameCategories = catResponse.categories;
