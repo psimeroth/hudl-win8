@@ -113,21 +113,38 @@
     <Compile Include="Common\APIExceptionDialog.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
+    <Compile Include="Parameters\HubSectionParameter.cs" />
     <Compile Include="Parameters\PagePassParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\CutupViewModel.cs" />
     <Compile Include="ViewModels\FeatureDisabledViewModel.cs" />
+    <Compile Include="ViewModels\GameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\HubViewModel.cs" />
+    <Compile Include="ViewModels\SectionViewModel.cs" />
     <Compile Include="ViewModels\VideoPlayerViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\CategoryView.xaml.cs">
+      <DependentUpon>CategoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CutupView.xaml.cs">
+      <DependentUpon>CutupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FeatureDisabledView.xaml.cs">
       <DependentUpon>FeatureDisabledView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GameView.xaml.cs">
+      <DependentUpon>GameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HubView.xaml.cs">
       <DependentUpon>HubView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SectionView.xaml.cs">
+      <DependentUpon>SectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VideoPlayerView.xaml.cs">
       <DependentUpon>VideoPlayerView.xaml</DependentUpon>
@@ -151,6 +168,8 @@
     <Content Include="Assets\agile-hudl-text-dark.png" />
     <Content Include="Assets\Beta.png" />
     <Content Include="Assets\dark_BG_Tiled.png" />
+    <Content Include="Assets\hudl-hi-res-white-medium.png" />
+    <Content Include="Assets\hudl-hi-res-white-small.png" />
     <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
@@ -159,6 +178,7 @@
     <Content Include="Assets\Hudl_Partial30.png" />
     <Content Include="Assets\light_BG_Tiled.png" />
     <Content Include="Assets\medium_BG_Tiled.png" />
+    <Content Include="Assets\selectArrow.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="VideoPlayer\Microsoft Player Framework\extension.vsixmanifest" />
@@ -190,7 +210,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\CategoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CutupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FeatureDisabledView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GameView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,6 +231,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

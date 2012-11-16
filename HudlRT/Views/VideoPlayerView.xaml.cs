@@ -28,6 +28,7 @@ namespace HudlRT.Views
     {
         private int selectedIndex { get; set; }
         private bool rightClicked { get; set; }
+        private bool itemClicked { get; set; }
         private bool _isFullscreenToggle = false;
         public bool IsFullscreen
         {
@@ -89,7 +90,6 @@ namespace HudlRT.Views
 
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            
             gridHeaderScroll.ScrollToHorizontalOffset(gridScroll.HorizontalOffset);
         }
 
@@ -218,6 +218,10 @@ namespace HudlRT.Views
                 ListView l = (ListView)sender;
                 l.SelectedIndex = selectedIndex;
                 rightClicked = false;
+            }
+            else if (itemClicked)
+            {
+                itemClicked = false;
             }
             else
             {
@@ -388,7 +392,7 @@ namespace HudlRT.Views
             setPrevVisible();
 
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.NextClip(1);
+            vm.NextClip(NextAngleEvent.mediaEnded);
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -498,6 +502,10 @@ namespace HudlRT.Views
             selectedIndex = l.SelectedIndex;
             rightClicked = true;
             e.Handled = true;
+        }
+        private void ListViewItemClicked(object sender, ItemClickEventArgs e)
+        {
+            itemClicked = true;
         }
     }
 }

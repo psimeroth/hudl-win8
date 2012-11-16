@@ -91,6 +91,8 @@ namespace HudlRT.Views
             loginStackPanel.Margin = new Thickness(0, -10, 0, 0);
             FadeInForm.BeginTime = new TimeSpan(0, 0, 1);
             FadeInForm.Begin();
+            FadeInBackground.BeginTime = new TimeSpan(0, 0, 1);
+            FadeInBackground.Begin();
         }
 
         /// <summary>

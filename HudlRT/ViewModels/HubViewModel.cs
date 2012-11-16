@@ -49,6 +49,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Season> seasonsForDropDown;
+        public BindableCollection<Season> SeasonsDropDown
+        {
+            get { return seasonsForDropDown; }
+            set
+            {
+                seasonsForDropDown = value;
+                NotifyOfPropertyChange(() => SeasonsDropDown);
+            }
+        }
+
         private BindableCollection<Game> games;
         public BindableCollection<Game> Games
         {
@@ -60,14 +71,58 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private BindableCollection<Category> categories;
-        public BindableCollection<Category> Categories
+        private Game nextGame;
+        public Game NextGame
         {
-            get { return categories; }
+            get { return nextGame; }
             set
             {
-                categories = value;
-                NotifyOfPropertyChange(() => Categories);
+                nextGame = value;
+                NotifyOfPropertyChange(() => NextGame);
+            }
+        }
+
+        private Game previousGame;
+        public Game PreviousGame
+        {
+            get { return previousGame; }
+            set
+            {
+                previousGame = value;
+                NotifyOfPropertyChange(() => PreviousGame);
+            }
+        }
+
+        private Game otherRecentGameFootage;
+        public Game OtherRecentGameFootage
+        {
+            get { return otherRecentGameFootage; }
+            set
+            {
+                otherRecentGameFootage = value;
+                NotifyOfPropertyChange(() => OtherRecentGameFootage);
+            }
+        }
+
+        private BindableCollection<Category> nextGameCategories;
+        public BindableCollection<Category> NextGameCategories
+        {
+            get { return nextGameCategories; }
+            set
+            {
+                nextGameCategories = value;
+                NotifyOfPropertyChange(() => NextGameCategories);
+            }
+        }
+
+        private BindableCollection<Category> previousGameCategories;
+        public BindableCollection<Category> PreviousGameCategories
+        {
+            get { return previousGameCategories; }
+            set
+            {
+                previousGameCategories = value;
+                NotifyOfPropertyChange(() => PreviousGameCategories);
             }
         }
 
@@ -164,7 +219,6 @@ namespace HudlRT.ViewModels
                 Teams = Parameter.teams;
                 Games = Parameter.games;
                 Seasons = Parameter.seasons;
-                Categories = Parameter.categories;
                 Cutups = Parameter.cutups;
                 SelectedTeam = Parameter.selectedTeam;
                 SelectedSeason = Parameter.selectedSeason;
@@ -174,231 +228,176 @@ namespace HudlRT.ViewModels
             else
             {
                 model = new Model();
-                GetTeams();
+                //GetTeams();
+                PopulateDropDown();
             }
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
 
-        public async void GetTeams()
+        public async void NavigateToSectionPage()
         {
-            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
-            if (!string.IsNullOrEmpty(teams))
+            navigationService.NavigateToViewModel<SectionViewModel>();
+        }
+
+        public async void PopulateDropDown()
+        {
+            TeamResponse response = await ServiceAccessor.GetTeams();
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                try
+                Teams = response.teams;
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                long teamID = -1;
+                long seasonID = -1;
+                bool foundSavedSeason = false;
+                if (roamingSettings.Values["hudl-teamID"] != null && roamingSettings.Values["hudl-seasonID"] != null)
                 {
-                    var obj = JsonConvert.DeserializeObject<List<TeamDTO>>(teams);
-                    model.teams = new BindableCollection<Team>();
-                    foreach (TeamDTO teamDTO in obj)
+                    teamID = (long)roamingSettings.Values["hudl-teamID"];
+                    seasonID = (long)roamingSettings.Values["hudl-seasonID"];
+                }
+                SeasonsDropDown = new BindableCollection<Season>();
+                foreach (Team team in Teams)
+                {
+                    foreach (Season season in team.seasons)
                     {
-                        model.teams.Add(Team.FromDTO(teamDTO));
+                        if (teamID == season.owningTeam.teamID && seasonID == season.seasonID)
+                        {
+                            SelectedSeason = season;
+                            foundSavedSeason = true;
+                        }
+                        SeasonsDropDown.Add(season);
                     }
                 }
-                catch (Exception)
+                if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                    SelectedSeason = SeasonsDropDown[0];
                 }
-                
-                Teams = model.teams;
+                //populate this/next game
+                NotifyOfPropertyChange(() => SelectedSeason);
+                FindNextGame(SelectedSeason);
             }
-            else
+            else//could better handle exceptions
             {
-                Feedback = "Error processing GetTeams request.";
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Teams = null;
             }
         }
 
-        public async void GetGames(Season s)
+        public async void FindNextGame(Season s)//sets gameThisWeek and gameNextWeek
         {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", s.owningTeam.teamID.ToString()).Replace("%", s.seasonID.ToString()));
-            if (!string.IsNullOrEmpty(games))
-            {
-                try
-                {
-                    s.games = new BindableCollection<Game>();
-                    var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
-                    foreach (GameDTO gameDTO in obj)
-                    {
-                        s.games.Add(Game.FromDTO(gameDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                Games = s.games;
-            }
-            else
-            {
-                Feedback = "Error processing GetGames request.";
-                Games = null;
-            }
-        }
-
-        public async void GetGameCategories(Game game)
-        {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", game.gameId.ToString()));
-            if (!string.IsNullOrEmpty(categories))
-            {
-                try
-                {
-                    game.categories = new BindableCollection<Category>();
-                    var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
-                    foreach (CategoryDTO categoryDTO in obj)
-                    {
-                        game.categories.Add(Category.FromDTO(categoryDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                Categories = game.categories;
-            }
-            else
-            {
-                Feedback = "Error processing GetGameCategories request.";
-                Categories = null;
-            }
-        }
-
-        public async void GetCutupsByCategory(Category category)
-        {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", category.categoryId.ToString()));
-            if (!string.IsNullOrEmpty(cutups))
-            {
-                try
-                {
-                    category.cutups = new BindableCollection<Cutup>();
-                    var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
-                    foreach (CutupDTO cutupDTO in obj)
-                    {
-                        category.cutups.Add(Cutup.FromDTO(cutupDTO));
-                    }
-                }
-                catch (Exception)
-                {
-                    //show error message
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
-                Cutups = category.cutups;
-            }
-            else
-            {
-                Feedback = "Error processing GetCutupsByCategory request.";
-                Cutups = null;
-            }
-        }
-
-        public void TeamSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var team = (Team)eventArgs.ClickedItem;
+            GameResponse response = await ServiceAccessor.GetGames(s.owningTeam.teamID.ToString(), s.seasonID.ToString());
             
-            SelectedTeam = team;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = team;
-
-            Seasons = team.seasons;
-            SelectedSeason = null;
-            Games = null;
-            Categories = null;
-            Cutups = null;
-        }
-
-        public void SeasonSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var season = (Season)eventArgs.ClickedItem;
-
-            SelectedSeason = season;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = season;
-
-            GetGames(season);
-            Categories = null;
-            Cutups = null;
-        }
-
-        public void GameSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var game = (Game)eventArgs.ClickedItem;
-
-            SelectedGame = game;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = game;
-
-            GetGameCategories(game);
-            Cutups = null;
-        }
-
-        public void CategorySelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var category = (Category)eventArgs.ClickedItem;
-
-            SelectedCategory = category;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = category;
-
-            GetCutupsByCategory(category);
-        }
-
-        public void CutupSelected(ItemClickEventArgs eventArgs)
-        {
-            Feedback = null;
-            var cutup = (Cutup)eventArgs.ClickedItem;
-            GetClipsByCutup(cutup);
-        }
-
-        public async void GetClipsByCutup(Cutup cutup)
-        {
-            ColVisibility = "Collapsed";
-            ProgressRingVisibility = "Visible";
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.cutupId.ToString()));
-            if (!string.IsNullOrEmpty(clips))
+            NextGame = null;
+            PreviousGame = null;
+            NextGameCategories = null;
+            PreviousGameCategories = null;
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                try
+                if (response.games.Count > 0)
                 {
-                    cutup.clips = new BindableCollection<Clip>();
-                    var obj = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-                    cutup.displayColumns = obj.DisplayColumns;
-                    foreach (ClipDTO clipDTO in obj.ClipsList.Clips)
+                    List<Game> sortedGames = new List<Game>();
+                    foreach (Game game in response.games)
                     {
-                        Clip c = Clip.FromDTO(clipDTO, cutup.displayColumns);
-                        if (c != null)
+                        sortedGames.Add(game);
+                    }
+                    sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
+                    DateTime lastGameDate = sortedGames[0].date;
+
+                    if (DateTime.Compare(DateTime.Now, lastGameDate) >= 0)
+                    {
+                        NextGame = sortedGames[0];
+                        if (sortedGames.Count >= 2)
                         {
-                            cutup.clips.Add(c);
+                            PreviousGame = sortedGames[1];
                         }
                     }
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
+                    else
                     {
-                        teams = teams,
-                        games = games,
-                        categories = categories,
-                        seasons = seasons,
-                        cutups = cutups,
-                        selectedTeam = SelectedTeam,
-                        selectedSeason = SelectedSeason,
-                        selectedGame = SelectedGame,
-                        selectedCategory = SelectedCategory,
-                        selectedCutup = cutup
-                    });
+                        for (int i = 0; i < sortedGames.Count; i++)
+                        {
+                            if (DateTime.Compare(sortedGames[i].date, DateTime.Now) < 0)
+                            {
+                                if (i == 0)
+                                {
+                                    NextGame = sortedGames[i];
+                                }
+                                else
+                                {
+                                    NextGame = sortedGames[i - 1];
+                                    PreviousGame = sortedGames[i];
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
-                catch (Exception)
+                if (NextGame != null)
                 {
-                    ProgressRingVisibility = "Collapsed";
-                    ColVisibility = "Visible";
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                    CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
+                    if (catResponse.status == SERVICE_RESPONSE.SUCCESS)
+                    {
+                        NextGameCategories = catResponse.categories;
+                        NextGame.categories = NextGameCategories;
+                    }
+                    else//could better handle exceptions
+                    {
+                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                        NextGameCategories = null;
+                    }
+                }
+                if (PreviousGame != null)
+                {
+                    CategoryResponse catResponse = await ServiceAccessor.GetGameCategories(NextGame.gameId.ToString());
+                    if (catResponse.status == SERVICE_RESPONSE.SUCCESS)
+                    {
+                        PreviousGameCategories = catResponse.categories;
+                        PreviousGame.categories = PreviousGameCategories;
+                    }
+                    else//could better handle exceptions
+                    {
+                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                        PreviousGameCategories = null;
+                    }
                 }
             }
+            else//could better handle exceptions
+            {
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                NextGame = null;
+            }
+        }
+
+        public void SeasonSelected(SelectionChangedEventArgs eventArgs)
+        {
+            if (eventArgs != null)
+            {
+
+                var selectedSeason = (Season)eventArgs.AddedItems[0];
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
+                roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+
+                FindNextGame(selectedSeason);
+            }
+        }
+
+        public void NextCategorySelected(ItemClickEventArgs eventArgs)
+        {
+            
+            var category = (Category)eventArgs.ClickedItem;
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId};
+            navigationService.NavigateToViewModel<SectionViewModel>(param);
+
+        }
+
+        public void PreviousCategorySelected(ItemClickEventArgs eventArgs)
+        {
+
+            var category = (Category)eventArgs.ClickedItem;
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId };
+            navigationService.NavigateToViewModel<SectionViewModel>(param);
+
         }
 
         public void LogOut()

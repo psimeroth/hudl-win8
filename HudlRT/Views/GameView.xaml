@@ -1,0 +1,20 @@
+﻿<UserControl
+    x:Class="HudlRT.Views.GameView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HudlRT.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:caliburn="using:Caliburn.Micro"
+    mc:Ignorable="d">
+
+    <StackPanel Orientation="Vertical" Width="345">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Date" />
+            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Text="-" />
+            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Opponent" />
+        </StackPanel>
+        <ListView  IsItemClickEnabled="True" Name="Categories" SelectedItem="{Binding SelectedCategory}" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]"
+                   Margin="50,0,0,5" Background="{StaticResource HudlMediumGray}" ItemContainerStyle="{StaticResource ListViewItemStyle_Cutups}"></ListView>
+    </StackPanel>
+</UserControl>
