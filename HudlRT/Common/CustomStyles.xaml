@@ -7,6 +7,7 @@
     <Color x:Key="HudlOrangeColor_Highlight">#FFAF7A</Color>
     <Color x:Key="HudlLightBlueColor">#0099FF</Color>
     <Color x:Key="HudlLightBlueColor_Highlight">#00FFE6</Color>
+    <Color x:Key="HudlLightBlueColor_Transparent">#AA0099FF</Color>
     <Color x:Key="HudlLightGrayColor">#E0E0E0</Color>
     <Color x:Key="HudlMediumGrayColor">#AFAFAF</Color>
     <Color x:Key="HudlDarkGrayColor">#333333</Color>
@@ -19,6 +20,7 @@
     <!--Solid-->
     <SolidColorBrush x:Key="HudlOrange" Color="{StaticResource HudlOrangeColor}" />
     <SolidColorBrush x:Key="HudlLightBlue" Color="{StaticResource HudlLightBlueColor}" />
+    <SolidColorBrush x:Key="HudlLightBlue_Transparent" Color="{StaticResource HudlLightBlueColor_Transparent}" />
     <SolidColorBrush x:Key="HudlLightGray" Color="{StaticResource HudlLightGrayColor}" />
     <SolidColorBrush x:Key="HudlMediumGray" Color="{StaticResource HudlMediumGrayColor}" />
     <SolidColorBrush x:Key="HudlDarkGray" Color="{StaticResource HudlDarkGrayColor}" />
@@ -590,7 +592,7 @@
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PointerOverBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="SelectionBackground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlLightBlueColor_Highlight}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Stroke" Storyboard.TargetName="SelectedBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedPointerOverBorderThemeBrush}"/>
@@ -610,7 +612,7 @@
                                         <PointerDownThemeAnimation TargetName="ContentContainer"/>
                                         <DoubleAnimation Duration="0" To=".75" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PointerOverBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="SelectionBackground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlLightBlue}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Stroke" Storyboard.TargetName="SelectedBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedPointerOverBorderThemeBrush}"/>
@@ -803,9 +805,9 @@
                             </Border>
                             <Border x:Name="ContentContainer">
                                 <Grid x:Name="InnerDragContent">
-                                    <Rectangle x:Name="PointerOverBorder" Fill="{StaticResource HudlMediumGray}" IsHitTestVisible="False" Margin="0"/>
+                                    <Rectangle x:Name="PointerOverBorder" Fill="Transparent" IsHitTestVisible="False" Margin="0"/>
                                     <Rectangle x:Name="FocusVisual" IsHitTestVisible="False" Opacity="0" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="2"/>
-                                    <Rectangle x:Name="SelectionBackground" Fill="{StaticResource HudlLightBlue}" Margin="0" Opacity="0"/>
+                                    <Rectangle x:Name="SelectionBackground" Fill="Transparent" Margin="0" Opacity="0"/>
                                     <Border x:Name="ContentBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="0">
                                         <Grid>
                                             <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
