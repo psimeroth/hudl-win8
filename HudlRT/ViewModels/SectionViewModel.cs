@@ -17,7 +17,6 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        private bool firstLoad = true;
         public HubSectionParameter Parameter { get; set; }
 
         private BindableCollection<GameViewModel> _schedule { get; set; }
@@ -336,27 +335,6 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Teams);
             }
         }
-
-        public void SeasonSelected(SelectionChangedEventArgs eventArgs)
-        {
-            if (eventArgs != null && !firstLoad)
-            {
-                firstLoad = false;
-                var selectedSeason = (Season)eventArgs.AddedItems[0];
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
-                roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
-
-                if (Parameter != null)
-                {
-                    LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
-                }
-                else
-                {
-                    LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-                }
-            }
-        }
         
         public async void PopulateDropDown()
         {
@@ -413,6 +391,23 @@ namespace HudlRT.ViewModels
             {
                 Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Teams = null;
+            }
+        }
+
+        internal void SeasonSelected(object p)
+        {
+            var selectedSeason = (Season)p;
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
+            roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+
+            if (Parameter != null)
+            {
+                LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+            }
+            else
+            {
+                LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
             }
         }
     }

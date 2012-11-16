@@ -63,6 +63,8 @@ namespace HudlRT.Views
         {
             SeasonsDropDown.Background = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
             SeasonsDropDown.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
+            HubViewModel vm = (HubViewModel)this.DataContext;
+            vm.SeasonSelected(SeasonsDropDown.SelectedItem);
         }
     }
 }

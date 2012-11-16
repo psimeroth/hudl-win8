@@ -17,7 +17,6 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         public PagePassParameter Parameter { get; set; }
         private long? lastViewedId = null;
-        private bool firstLoad = true;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -426,20 +425,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void SeasonSelected(SelectionChangedEventArgs eventArgs)
-        {
-            if (eventArgs != null && !firstLoad)
-            {
-
-                var selectedSeason = (Season)eventArgs.AddedItems[0];
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
-                roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
-                firstLoad = false;
-                FindNextGame(selectedSeason);
-            }
-        }
-
         public void NextCategorySelected(ItemClickEventArgs eventArgs)
         {
             
@@ -488,6 +473,15 @@ namespace HudlRT.ViewModels
         public void LogOut()
         {
             navigationService.NavigateToViewModel<LoginViewModel>();
+        }
+
+        internal void SeasonSelected(object p)
+        {
+            var selectedSeason = (Season)p;
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
+            roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+            FindNextGame(selectedSeason);
         }
     }
 }
