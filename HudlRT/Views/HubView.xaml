@@ -44,7 +44,7 @@
             </Grid>
             
             <Grid Grid.Column="1" MinWidth ="700" Margin="0,0,60,0" HorizontalAlignment="Right">
-                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]" ItemContainerStyle="{StaticResource HubViewComboBoxItemStyle}" BorderBrush="#00000000" Background="#00000000" Foreground="White">
+                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" caliburn:Message.Attach="[Event SelectionChanged] = [SeasonSelected($eventArgs)]" ItemContainerStyle="{StaticResource HubViewComboBoxItemStyle}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
@@ -147,6 +147,7 @@
                             <TextBlock VerticalAlignment="Center" Margin="0,100,0,0" Grid.Row="0"> <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed</TextBlock>
                             <TextBlock Grid.Row="1" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
                             <TextBlock Grid.Row="2" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
+                            <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" />
                         </Grid>
                     </Button.Content>
 
@@ -160,9 +161,7 @@
         </Grid>            
 
         <Grid>
-            <Canvas Canvas.ZIndex="50" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <ProgressRing x:Name="LoginProgressRing" Margin="-75,250,0,0" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" />
-            </Canvas>
+            <Canvas Canvas.ZIndex="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>
@@ -194,9 +193,6 @@
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopTitleGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MiddleCategoryGrid" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">

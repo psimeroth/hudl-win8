@@ -17,6 +17,7 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        private bool firstLoad = true;
         public HubSectionParameter Parameter { get; set; }
 
         private BindableCollection<GameViewModel> _schedule { get; set; }
@@ -338,8 +339,9 @@ namespace HudlRT.ViewModels
 
         public void SeasonSelected(SelectionChangedEventArgs eventArgs)
         {
-            if (eventArgs != null)
+            if (eventArgs != null && !firstLoad)
             {
+                firstLoad = false;
                 var selectedSeason = (Season)eventArgs.AddedItems[0];
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
@@ -384,11 +386,28 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                if (Parameter != null)
+                {
+                    LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+                }
+                else
+                {
+                    LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+                }
+                NotifyOfPropertyChange(() => SelectedSeason);
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
                     SelectedSeason = SeasonsDropDown[0];
+                    if (Parameter != null)
+                    {
+                        LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+                    }
+                    else
+                    {
+                        LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+                    }
+                    NotifyOfPropertyChange(() => SelectedSeason);
                 }
-                NotifyOfPropertyChange(() => SelectedSeason);
             }
             else//could better handle exceptions
             {

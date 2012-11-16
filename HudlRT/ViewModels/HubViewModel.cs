@@ -16,7 +16,8 @@ namespace HudlRT.ViewModels
         private Model model;
         private readonly INavigationService navigationService;
         public PagePassParameter Parameter { get; set; }
-        private long lastViewedCutupId = -1;
+        private long? lastViewedId = null;
+        private bool firstLoad = true;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -264,11 +265,14 @@ namespace HudlRT.ViewModels
                 model = new Model();
                 //GetTeams();
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-                if (roamingSettings.Values["hudl-lastViewedCutupName"] != null && roamingSettings.Values["hudl-lastViewedCutupTimestamp"] != null && roamingSettings.Values["hudl-lastViewedCutupId"] != null)
+                var lastViewedCutupName = roamingSettings.Values["hudl-lastViewedCutupName"];
+                var lastViewedCutupTimestamp = roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
+                var lastViewedCutupId = roamingSettings.Values["hudl-lastViewedCutupId"];
+                if (lastViewedCutupName != null && lastViewedCutupTimestamp != null && lastViewedCutupId != null)
                 {
-                    LastViewedName = (string)roamingSettings.Values["hudl-lastViewedCutupName"];
-                    LastViewedTimeStamp = "Viewed: " + (string)roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
-                    lastViewedCutupId = (long)roamingSettings.Values["hudl-lastViewedCutupId"];
+                    LastViewedName = (string)lastViewedCutupName;
+                    LastViewedTimeStamp = "Viewed: " + (string)lastViewedCutupTimestamp;
+                    lastViewedId = (long)lastViewedCutupId;
                 }
                 else
                 {
@@ -315,13 +319,16 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                NotifyOfPropertyChange(() => SelectedSeason);
+                FindNextGame(SelectedSeason);
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
                     SelectedSeason = SeasonsDropDown[0];
+                    FindNextGame(SelectedSeason);
+                    NotifyOfPropertyChange(() => SelectedSeason);
                 }
                 //populate this/next game
-                NotifyOfPropertyChange(() => SelectedSeason);
-                FindNextGame(SelectedSeason);
+                
             }
             else//could better handle exceptions
             {
@@ -421,14 +428,14 @@ namespace HudlRT.ViewModels
 
         public void SeasonSelected(SelectionChangedEventArgs eventArgs)
         {
-            if (eventArgs != null)
+            if (eventArgs != null && !firstLoad)
             {
 
                 var selectedSeason = (Season)eventArgs.AddedItems[0];
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
                 roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
-
+                firstLoad = false;
                 FindNextGame(selectedSeason);
             }
         }
@@ -453,9 +460,10 @@ namespace HudlRT.ViewModels
 
         public async void LastViewedSelected()
         {
-            if (lastViewedCutupId != -1)
+            if (lastViewedId.HasValue)
             {
-                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedCutupId, Name = LastViewedName };
+                ProgressRingVisibility = "Visible";
+                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
                 ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
@@ -469,6 +477,7 @@ namespace HudlRT.ViewModels
                 {
 
                 }
+                ProgressRingVisibility = "Collapsed";
             }
             else
             {
