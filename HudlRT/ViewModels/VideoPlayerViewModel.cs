@@ -93,7 +93,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private int index = 0;
+        private int SelectedClipIndex = 0;
         Point initialPoint = new Point();
         Point currentPoint;
         bool isFullScreenGesture = false;
@@ -106,21 +106,17 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-lastViewedCutupName"] = Parameter.selectedCutup.name;
-            roamingSettings.Values["hudl-lastViewedCutupId"] = Parameter.selectedCutup.cutupId;
-            roamingSettings.Values["hudl-lastViewedCutupTimestamp"] = DateTime.Now.ToString();
             Clips = Parameter.selectedCutup.clips;
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
                 GetAngleNames();
                 SelectedClip = Clips.First();
-                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+                SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
             }
             CutupName = Parameter.selectedCutup.name;
-           
+            
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
             if (roamingSettings.Values["hudl-playbackType"] == null)	
             {
                 roamingSettings.Values["hudl-playbackType"] = (int)PlaybackType.once;	
@@ -131,15 +127,12 @@ namespace HudlRT.ViewModels
 
         private void GetAngleNames()
         {
-            List<string> types = new List<string>();
+            HashSet<string> types = new HashSet<string>();
             foreach (Clip clip in Clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
-                    if(!types.Contains(angle.angleName))
-                    {
-                        types.Add(angle.angleName);
-                    }
+                    types.Add(angle.angleName);
                 }
             }
 
@@ -163,25 +156,26 @@ namespace HudlRT.ViewModels
 
         private void getAnglePreferences()
         {
-            long teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
             var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                if (roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] == null)
+                string angleNameKey = String.Concat(teamID.ToString(), "-", angleName.Name);
+                if (roamingSettings.Values[angleNameKey] == null)
                 {
                     angleName.IsChecked = true;
                 }
                 else
                 {
-                    angleName.IsChecked = (bool)roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)];
+                    angleName.IsChecked = (bool)roamingSettings.Values[angleNameKey];
                 }
             }
         }
 
         private void saveAnglePreferences()
         {
-            long teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
             var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
                 roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] = angleName.IsChecked;
@@ -192,10 +186,9 @@ namespace HudlRT.ViewModels
         {
             var clip = (Clip)eventArgs.ClickedItem;
             SelectedClip = clip;
-            index = (int)clip.order;
-
-            List<Angle> filteredAngles = clip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-            SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+            SelectedClipIndex = (int)clip.order;
+            
+            SelectedAngle = clip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
         }
 
         public void NextClip(NextAngleEvent eventType)
@@ -232,11 +225,10 @@ namespace HudlRT.ViewModels
         {
             if (Clips.Count > 1)
             {
-                index = (index + 1) % Clips.Count;
+                SelectedClipIndex = (SelectedClipIndex + 1) % Clips.Count;
 
-                SelectedClip = Clips[index];
-                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+                SelectedClip = Clips[SelectedClipIndex];
+                SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
             }
         }
 
@@ -267,11 +259,10 @@ namespace HudlRT.ViewModels
         {
             if (Clips.Count > 1)
             {
-                index = (index == 0) ? Clips.Count - 1 : index - 1;
+                SelectedClipIndex = (SelectedClipIndex == 0) ? Clips.Count - 1 : SelectedClipIndex - 1;
 
-                SelectedClip = Clips[index];
-                List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+                SelectedClip = Clips[SelectedClipIndex];
+                SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
             }
         }
 
@@ -283,21 +274,21 @@ namespace HudlRT.ViewModels
             {
                 if (filteredAngles.Where(angle => angle.fileLocation.Equals(SelectedAngle.fileLocation)).FirstOrDefault() == null)
                 {
-                    SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+                    SelectedAngle = filteredAngles.FirstOrDefault();
                 }
             }
             else
             {
-                SelectedAngle = filteredAngles.Any() ? filteredAngles[0] : null;
+                SelectedAngle = filteredAngles.FirstOrDefault();
             }
         }
 
         public void playbackToggle()
         {
-            playbackType = (PlaybackType)(((int)playbackType + 1) % 3);
+            playbackType = (PlaybackType)(((int)playbackType + 1) % Enum.GetNames(typeof(PlaybackType)).Length);
             
             setToggleButtonContent();
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
             roamingSettings.Values["hudl-playbackType"] = (int)playbackType;
         }
 

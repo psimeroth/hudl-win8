@@ -288,14 +288,14 @@ namespace HudlRT.Models
 
     public enum PlaybackType
     {
-        once,
-        loop,
-        next
+        once = 0,
+        loop = 1,
+        next = 2
     }
 
     public enum NextAngleEvent
     {
-        buttonClick,
-        mediaEnded
+        buttonClick = 0,
+        mediaEnded = 1
     }
 }
