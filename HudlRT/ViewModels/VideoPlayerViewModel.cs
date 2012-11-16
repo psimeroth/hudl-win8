@@ -106,6 +106,11 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+             	
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            roamingSettings.Values["hudl-lastViewedCutupName"] = Parameter.selectedCutup.name;	  	
+            roamingSettings.Values["hudl-lastViewedCutupId"] = Parameter.selectedCutup.cutupId;
+            roamingSettings.Values["hudl-lastViewedCutupTimestamp"] = DateTime.Now.ToString();
             Clips = Parameter.selectedCutup.clips;
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
@@ -116,7 +121,6 @@ namespace HudlRT.ViewModels
             }
             CutupName = Parameter.selectedCutup.name;
             
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
             if (roamingSettings.Values["hudl-playbackType"] == null)	
             {
                 roamingSettings.Values["hudl-playbackType"] = (int)PlaybackType.once;	
