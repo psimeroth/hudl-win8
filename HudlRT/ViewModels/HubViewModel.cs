@@ -16,14 +16,49 @@ namespace HudlRT.ViewModels
         private Model model;
         private readonly INavigationService navigationService;
         public PagePassParameter Parameter { get; set; }
-        private string feedback;
-        public string Feedback
+        private long? lastViewedId = null;
+        private bool firstLoad = true;
+
+        private bool noGamesGrid;
+        public bool NoGamesGrid
         {
-            get { return feedback; }
+            get { return noGamesGrid; }
             set
             {
-                feedback = value;
-                NotifyOfPropertyChange(() => Feedback);
+                noGamesGrid = value;
+                NotifyOfPropertyChange(() => NoGamesGrid);
+            }
+        }
+        private string lastViewedVisibility;
+        public string LastViewedVisibility
+        {
+            get { return lastViewedVisibility; }
+            set
+            {
+                lastViewedVisibility = value;
+                NotifyOfPropertyChange(() => LastViewedVisibility);
+            }
+        }
+
+        private string lastViewedName;
+        public string LastViewedName
+        {
+            get { return lastViewedName; }
+            set
+            {
+                lastViewedName = value;
+                NotifyOfPropertyChange(() => LastViewedName);
+            }
+        }
+
+        private string lastViewedTimeStamp;
+        public string LastViewedTimeStamp
+        {
+            get { return lastViewedTimeStamp; }
+            set
+            {
+                lastViewedTimeStamp = value;
+                NotifyOfPropertyChange(() => LastViewedTimeStamp);
             }
         }
 
@@ -229,6 +264,21 @@ namespace HudlRT.ViewModels
             {
                 model = new Model();
                 //GetTeams();
+                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                var lastViewedCutupName = roamingSettings.Values["hudl-lastViewedCutupName"];
+                var lastViewedCutupTimestamp = roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
+                var lastViewedCutupId = roamingSettings.Values["hudl-lastViewedCutupId"];
+                if (lastViewedCutupName != null && lastViewedCutupTimestamp != null && lastViewedCutupId != null)
+                {
+                    LastViewedName = (string)lastViewedCutupName;
+                    LastViewedTimeStamp = "Viewed: " + (string)lastViewedCutupTimestamp;
+                    lastViewedId = (long)lastViewedCutupId;
+                }
+                else
+                {
+                    LastViewedName = "Hey Rookie!";
+                    LastViewedTimeStamp = "You haven't watched anything yet!";
+                }
                 PopulateDropDown();
             }
 
@@ -269,13 +319,16 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                NotifyOfPropertyChange(() => SelectedSeason);
+                FindNextGame(SelectedSeason);
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
                     SelectedSeason = SeasonsDropDown[0];
+                    FindNextGame(SelectedSeason);
+                    NotifyOfPropertyChange(() => SelectedSeason);
                 }
                 //populate this/next game
-                NotifyOfPropertyChange(() => SelectedSeason);
-                FindNextGame(SelectedSeason);
+                
             }
             else//could better handle exceptions
             {
@@ -287,7 +340,7 @@ namespace HudlRT.ViewModels
         public async void FindNextGame(Season s)//sets gameThisWeek and gameNextWeek
         {
             GameResponse response = await ServiceAccessor.GetGames(s.owningTeam.teamID.ToString(), s.seasonID.ToString());
-            
+            NoGamesGrid = false;
             NextGame = null;
             PreviousGame = null;
             NextGameCategories = null;
@@ -360,6 +413,11 @@ namespace HudlRT.ViewModels
                         PreviousGameCategories = null;
                     }
                 }
+                if (PreviousGame == null && NextGame == null)
+                {
+                    NoGamesGrid = true;
+                }
+
             }
             else//could better handle exceptions
             {
@@ -370,14 +428,14 @@ namespace HudlRT.ViewModels
 
         public void SeasonSelected(SelectionChangedEventArgs eventArgs)
         {
-            if (eventArgs != null)
+            if (eventArgs != null && !firstLoad)
             {
 
                 var selectedSeason = (Season)eventArgs.AddedItems[0];
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
                 roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
-
+                firstLoad = false;
                 FindNextGame(selectedSeason);
             }
         }
@@ -398,6 +456,33 @@ namespace HudlRT.ViewModels
             HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
 
+        }
+
+        public async void LastViewedSelected()
+        {
+            if (lastViewedId.HasValue)
+            {
+                ProgressRingVisibility = "Visible";
+                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
+                ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                {
+                    cutup.Clips = response.clips;
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
+                    {
+                        selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name }
+                    });
+                }
+                else
+                {
+
+                }
+                ProgressRingVisibility = "Collapsed";
+            }
+            else
+            {
+                navigationService.NavigateToViewModel<SectionViewModel>();
+            }
         }
 
         public void LogOut()
