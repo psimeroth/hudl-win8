@@ -746,7 +746,7 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlGrayButtonHover}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalGlyph" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource BackButtonPointerOverForegroundThemeBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="#AAFFFFFF"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>

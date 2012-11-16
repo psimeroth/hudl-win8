@@ -14,6 +14,7 @@ namespace HudlRT.ViewModels
     public class CategoryViewModel : PropertyChangedBase
     {
         private string _name { get; set; }
+        private string _textColor { get; set; }
         //private BindableCollection<Category> _cutups { get; set; }
         private long _categoryId { get; set; }
 
@@ -22,6 +23,16 @@ namespace HudlRT.ViewModels
             CategoryViewModel cat = new CategoryViewModel();
             cat._name = catDTO.Name;
             cat._categoryId = catDTO.CategoryId;
+            cat._textColor = "#E0E0E0";
+            return cat;
+        }
+
+        public static CategoryViewModel FromCategory(Category catModel)
+        {
+            CategoryViewModel cat = new CategoryViewModel();
+            cat._name = catModel.name;
+            cat._categoryId = catModel.categoryId;
+            cat._textColor = "#E0E0E0";
             return cat;
         }
 
@@ -44,6 +55,17 @@ namespace HudlRT.ViewModels
                 if (value == _categoryId) return;
                 _categoryId = value;
                 NotifyOfPropertyChange(() => CategoryId);
+            }
+        }
+
+        public string TextColor
+        {
+            get { return _textColor; }
+            set
+            {
+                if (value == _textColor) return;
+                _textColor = value;
+                NotifyOfPropertyChange(() => TextColor);
             }
         }
     }
