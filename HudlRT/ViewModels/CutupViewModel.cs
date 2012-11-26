@@ -14,17 +14,41 @@ namespace HudlRT.ViewModels
     public class CutupViewModel : PropertyChangedBase
     {
         private string _name { get; set; }
-        private int _clipCount { get; set; }
+        private string _clipCount { get; set; }
         private long _cutupId { get; set; }
         private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
+        private bool _clipLoading { get; set; }
+        private double _opacity { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
             CutupViewModel cutup = new CutupViewModel();
             cutup._cutupId = cutupDTO.CutupID;
-            cutup._clipCount = cutupDTO.ClipCount;
+            string clips;
+            if (cutupDTO.ClipCount == 1)
+            {
+                clips = " Clip";
+            }
+            else
+            {
+                clips = " Clips";
+            }
+            cutup._clipCount = cutupDTO.ClipCount.ToString() + clips; 
             cutup._name = cutupDTO.Name;
+            cutup._clipLoading = false;
+            cutup._opacity = 1.0;
+            return cutup;
+        }
+
+        public static CutupViewModel FromCutup(Cutup cutupDTO)
+        {
+            CutupViewModel cutup = new CutupViewModel();
+            cutup._cutupId = cutupDTO.cutupId;
+            cutup._clipCount = cutupDTO.clipCount.ToString();
+            cutup._name = cutupDTO.name;
+            cutup._clipLoading = false;
+            cutup._opacity = 1.0;
             return cutup;
         }
 
@@ -39,6 +63,28 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public bool ClipLoading
+        {
+            get { return _clipLoading; }
+            set
+            {
+                if (value == _clipLoading) return;
+                _clipLoading = value;
+                NotifyOfPropertyChange(() => ClipLoading);
+            }
+        }
+
+        public double Opacity
+        {
+            get { return _opacity; }
+            set
+            {
+                if (value == _opacity) return;
+                _opacity = value;
+                NotifyOfPropertyChange(() => Opacity);
+            }
+        }
+
         public BindableCollection<Clip> Clips
         {
             get { return _clips; }
@@ -49,13 +95,11 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Clips);
             }
         }
-
-        public int ClipCount
-        {
+        public string ClipCount        {
             get { return _clipCount; }
             set
             {
-                if (value == _clipCount) return;
+                if (value.Equals(_clipCount)) return;
                 _clipCount = value;
                 NotifyOfPropertyChange(() => ClipCount);
             }

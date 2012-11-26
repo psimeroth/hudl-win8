@@ -82,11 +82,15 @@ namespace HudlRT.ViewModels
         {
             // Get the username and password from the view
 #if DEBUG
-            if ((UserName == null || UserName == "" || UserName == "windows8") && (Password == null || Password == ""))
+            if (Password == null || Password == "")
             {
-                UserName = "windows8";
                 Password = "rightmeow!";
             }
+            if (UserName == null || UserName == "")
+            {
+                UserName = "windows8";
+            }
+
 #endif
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
 

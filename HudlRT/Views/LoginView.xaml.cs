@@ -57,7 +57,8 @@ namespace HudlRT.Views
             else
             {
                 loginStackPanel.Margin = new Thickness(0, 0, 0, 0);
-                loginFormStackPanel.Opacity = 1;
+                FadeInForm.Begin();
+                FadeInBackground.Begin();
             }
 
             // Set the login image here

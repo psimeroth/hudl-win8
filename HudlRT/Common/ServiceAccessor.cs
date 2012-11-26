@@ -98,7 +98,9 @@ namespace HudlRT.Common
                 var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension);
                 if (!string.IsNullOrEmpty(privilegesResponse))
                 {
-                    //Needs to be improved in the future if we want to 
+#if DEBUG
+                    return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
+#else
                     if (privilegesResponse.Contains("Win8App"))
                     {
                         return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
@@ -107,6 +109,10 @@ namespace HudlRT.Common
                     {
                         return new LoginResponse { status = SERVICE_RESPONSE.PRIVILEGE};
                     }
+
+#endif
+                    //Needs to be improved in the future if we want to 
+
                 }
                 else
                 {

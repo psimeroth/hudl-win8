@@ -1,10 +1,12 @@
 ﻿using HudlRT.Common;
+using HudlRT.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -56,6 +58,15 @@ namespace HudlRT.Views
                 l.SelectedIndex = selectedIndex;
                 rightClicked = false;
             }
+            Schedule.ScrollIntoView(Schedule.SelectedItem);
+        }
+
+        private void ResetComboBoxColor(object sender, object e)
+        {
+            SeasonsDropDown.Background = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
+            SeasonsDropDown.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
+            SectionViewModel vm = (SectionViewModel)this.DataContext;
+            vm.SeasonSelected(SeasonsDropDown.SelectedItem);
         }
     }
 }
