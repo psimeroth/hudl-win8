@@ -114,14 +114,7 @@ namespace HudlRT.ViewModels
                 if (SelectedGame.Categories.Any())
                 {
                     // Find the selected category
-                    SelectedGame.SelectedCategory = null;
-                    foreach (CategoryViewModel cat in SelectedGame.Categories)
-                    {
-                        if (cat.CategoryId == categoryID)
-                        {
-                            SelectedGame.SelectedCategory = cat;
-                        }
-                    }
+                    SelectedGame.SelectedCategory = SelectedGame.Categories.First(cat => cat.CategoryId == categoryID);
 
                     // If the category isn't found set the first as the default
                     if (SelectedGame.SelectedCategory == null)
