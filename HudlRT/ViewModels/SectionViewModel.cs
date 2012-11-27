@@ -105,7 +105,7 @@ namespace HudlRT.ViewModels
                 // If the game isn't found set the first one as the default
                 if (SelectedGame == null)
                 {
-                    SelectedGame = Schedule.FirstOrDefault();
+                    SelectedGame = Schedule.First();
                 }
 
                 await GetGameCategories(SelectedGame);
@@ -126,7 +126,7 @@ namespace HudlRT.ViewModels
                     // If the category isn't found set the first as the default
                     if (SelectedGame.SelectedCategory == null)
                     {
-                        SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                        SelectedGame.SelectedCategory = SelectedGame.Categories.First();
                     }
                     GetCutupsByCategory(SelectedGame.SelectedCategory);
                 }
@@ -147,11 +147,11 @@ namespace HudlRT.ViewModels
             await GetGames(teamID, seasonID);
             if (Schedule.Any())
             {
-                SelectedGame = Schedule.FirstOrDefault();
+                SelectedGame = Schedule.First();
                 await GetGameCategories(SelectedGame);
                 if (SelectedGame.Categories.Any())
                 {
-                    SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                    SelectedGame.SelectedCategory = SelectedGame.Categories.First();
                     GetCutupsByCategory(SelectedGame.SelectedCategory);
                 }
                 else
@@ -247,7 +247,7 @@ namespace HudlRT.ViewModels
 
             if (SelectedGame.Categories.Any())
             {
-                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                SelectedGame.SelectedCategory = SelectedGame.Categories.First();
                 GetCutupsByCategory(SelectedGame.SelectedCategory);
             }
             else
