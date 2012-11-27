@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml.Controls;
-using System.Linq;
 
 namespace HudlRT.ViewModels
 {
