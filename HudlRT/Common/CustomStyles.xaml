@@ -164,7 +164,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="ComboBoxStyle_Standard" TargetType="ComboBoxItem">
+    <Style x:Key="ComboBoxItemStyle_Standard" TargetType="ComboBoxItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="Black"/>
         <Setter Property="Padding" Value="5"/>
