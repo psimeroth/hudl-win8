@@ -277,10 +277,7 @@ namespace HudlRT.ViewModels
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            cutup.ClipLoading = true;
-            cutup.Opacity = 0.5;
             await GetClipsByCutup(cutup);
-            cutup.ClipLoading = true;
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)

@@ -23,6 +23,7 @@
                 <DoubleAnimation Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="0" />
             </Storyboard>
         </Grid.Resources>
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="65"/>
             <RowDefinition Height="*"/>
@@ -57,7 +58,7 @@
             </Grid>
         </Grid>
 
-        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,20,0,0" Visibility="{Binding ColVisibility}" >
+        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,20,0,0" Visibility="{Binding ColVisibility}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
@@ -85,12 +86,13 @@
 
             <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,18,18" Background="#55000000" />
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,0,40,40">
-                <ListView Name="Cutups" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle_SectionView}" Style="{StaticResource listView_SectionPageStyle}">
+                <ListView Name="Cutups" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle_SectionView}" Style="{StaticResource listView_SectionPageStyle}" ItemClick="Cutup_Selected"
+                          >
                 </ListView>
             </StackPanel>
         </Grid>
 
-        <VisualStateManager.VisualStateGroups>
+            <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="FullScreenLandscape">
                     <Storyboard>
@@ -131,5 +133,7 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+    </Grid>
+    <ProgressRing x:Name="ProgressRing" Visibility="Collapsed" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" />
     </Grid>
 </common:LayoutAwarePage>
