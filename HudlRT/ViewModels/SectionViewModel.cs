@@ -70,8 +70,8 @@ namespace HudlRT.ViewModels
             long seasonID;
             try
             {
-                teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
-                seasonID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-seasonID"];
+                teamID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.TEAM_ID);
+                seasonID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.SEASON_ID);
             }
             catch (Exception ex)
             {
@@ -353,14 +353,13 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 long teamID = -1;
                 long seasonID = -1;
                 bool foundSavedSeason = false;
-                if (roamingSettings.Values["hudl-teamID"] != null && roamingSettings.Values["hudl-seasonID"] != null)
+                if (AppDataAccessor.RoamingSettingExists(AppDataAccessor.SEASON_ID) && AppDataAccessor.RoamingSettingExists(AppDataAccessor.TEAM_ID))
                 {
-                    teamID = (long)roamingSettings.Values["hudl-teamID"];
-                    seasonID = (long)roamingSettings.Values["hudl-seasonID"];
+                    teamID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.TEAM_ID);
+                    seasonID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.SEASON_ID);
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -412,9 +411,9 @@ namespace HudlRT.ViewModels
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
-            roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+
+            AppDataAccessor.SetRoamingSetting<long>(AppDataAccessor.SEASON_ID, selectedSeason.seasonID);
+            AppDataAccessor.SetRoamingSetting<long>(AppDataAccessor.TEAM_ID, selectedSeason.owningTeam.teamID);
 
             if (Parameter != null)
             {

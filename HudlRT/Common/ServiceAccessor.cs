@@ -92,8 +92,8 @@ namespace HudlRT.Common
             if (!string.IsNullOrEmpty(loginResponse))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
-                ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"] = obj.Token;
-                ApplicationData.Current.RoamingSettings.Values["hudl-userId"] = obj.UserId;
+                AppDataAccessor.SetRoamingSetting<string>(AppDataAccessor.AUTH_TOKEN, obj.Token);
+                AppDataAccessor.SetRoamingSetting<string>(AppDataAccessor.USER_ID, obj.UserId);
                 string urlExtension = "privileges/" + obj.UserId.ToString();
                 var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension);
                 if (!string.IsNullOrEmpty(privilegesResponse))
@@ -308,7 +308,7 @@ namespace HudlRT.Common
                 var httpClient = new HttpClient();
                 Uri uri = new Uri(URL_BASE + url);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-                httpRequestMessage.Headers.Add("hudl-authtoken", ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"].ToString());
+                httpRequestMessage.Headers.Add("hudl-authtoken", AppDataAccessor.GetRoamingSetting<string>(AppDataAccessor.AUTH_TOKEN));
                 httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
                 var response = await httpClient.SendAsync(httpRequestMessage);
                 return await response.Content.ReadAsStringAsync();

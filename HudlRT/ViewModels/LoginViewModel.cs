@@ -102,8 +102,7 @@ namespace HudlRT.ViewModels
             LoginResponse response = await ServiceAccessor.Login(loginArgs);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-                roamingSettings.Values["UserName"] = UserName;
+                AppDataAccessor.SetRoamingSetting<string>(AppDataAccessor.USERNAME, UserName);
                 navigationService.NavigateToViewModel<HubViewModel>();
             }
             else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
