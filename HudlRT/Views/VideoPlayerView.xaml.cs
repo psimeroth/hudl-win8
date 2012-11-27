@@ -191,7 +191,7 @@ namespace HudlRT.Views
                    t.Text = displayColumns[i];
                    b.SetValue(Grid.RowProperty, 0);
                    b.SetValue(Grid.ColumnProperty, i);
-                   t.Style = (Style)Application.Current.Resources["videoPlayerGridHeaderStyle"];
+                   t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
                    t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                    b.Child = t;
                    gridHeaders.Children.Add(b);
