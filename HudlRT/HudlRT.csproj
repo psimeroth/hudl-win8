@@ -157,10 +157,6 @@
     <None Include="Caliburn.Micro.WinRT.Sample_TemporaryKey.pfx" />
     <None Include="HudlRT_StoreKey.pfx" />
     <None Include="packages.config" />
-    <None Include="VideoPlayer\Microsoft Player Framework\extension.packcomponent" />
-    <None Include="VideoPlayer\Microsoft Player Framework\License.rtf" />
-    <None Include="VideoPlayer\Microsoft Player Framework\Readme.rtf" />
-    <None Include="VideoPlayer\Microsoft Player Framework\Redist\CommonConfiguration\neutral\Microsoft.PlayerFramework\Microsoft.PlayerFramework.pri" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\agile-hudl-logo-dark.png" />
@@ -181,11 +177,6 @@
     <Content Include="Assets\selectArrow.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
-    <Content Include="VideoPlayer\Microsoft Player Framework\extension.vsixmanifest" />
-    <Content Include="VideoPlayer\Microsoft Player Framework\MMPPF.ico" />
-    <Content Include="VideoPlayer\Microsoft Player Framework\References\CommonConfiguration\neutral\Microsoft.PlayerFramework.dll" />
-    <Content Include="VideoPlayer\Microsoft Player Framework\References\CommonConfiguration\neutral\Microsoft.PlayerFramework.xml" />
-    <Content Include="VideoPlayer\Microsoft Player Framework\SDKManifest.xml" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -203,10 +194,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Common\StandardStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="VideoPlayer\Microsoft Player Framework\Redist\CommonConfiguration\neutral\Microsoft.PlayerFramework\Themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -267,14 +254,17 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.5.0">
-      <Name>Microsoft Media Platform: Player Framework</Name>
+    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.7.0.0">
+      <Name>Microsoft Player Framework</Name>
     </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <PropertyGroup>
+    <SDKReferenceDirectoryRoot>$(SolutionDir)\libs;$(SDKReferenceDirectoryRoot)</SDKReferenceDirectoryRoot>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
