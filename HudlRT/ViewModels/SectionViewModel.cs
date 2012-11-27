@@ -92,15 +92,7 @@ namespace HudlRT.ViewModels
             if (Schedule.Any())
             {
                 // Find the passed in game
-                SelectedGame = null;
-                foreach (GameViewModel game in Schedule)
-                {
-                    if (game.GameId == gameID)
-                    {
-                        SelectedGame = game;
-                        break;
-                    }
-                }
+                SelectedGame = Schedule.First(game => game.GameId == gameID);
 
                 // If the game isn't found set the first one as the default
                 if (SelectedGame == null)
