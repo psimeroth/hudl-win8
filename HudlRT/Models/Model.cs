@@ -54,7 +54,7 @@ namespace HudlRT.Models
         }
     }
 
-    public class Season
+    public class Season : IComparable
     {
         public string name { get; set; }
         public string FullName 
@@ -69,6 +69,15 @@ namespace HudlRT.Models
         public int year { get; set; }
         public BindableCollection<Game> games { get; set; }
         public Team owningTeam { get; set; }
+        public int CompareTo(object obj)
+        {
+            Season season = obj as Season;
+            if (season == null)
+            {
+                throw new ArgumentException("Object is not a Season");
+            }
+            return this.year.CompareTo(season.year);
+        }
 
         public Season()
         {
@@ -226,11 +235,7 @@ namespace HudlRT.Models
 
         public static Angle FromDTO(AngleDTO angleDTO)
         {
-            if (angleDTO.Files.Count == 0)
-            {
-                return null;
-            }
-            else
+            if (angleDTO.Files.Any())
             {
                 Angle angle = new Angle();
                 angle.angleName = angleDTO.AngleName;
@@ -246,6 +251,10 @@ namespace HudlRT.Models
                 }
                 angle.thumbnailLocation = angleDTO.LargeThumbnailFileName;
                 return angle;
+            }
+            else
+            {
+                return null;
             }
         }
     }
