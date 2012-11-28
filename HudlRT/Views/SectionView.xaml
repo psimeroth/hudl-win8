@@ -85,7 +85,7 @@
             </Grid>
 
             <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,18,18" Background="#55000000" />
-                <ListView Name="Cutups" Grid.Column="1" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource ListViewItemStyle_SectionView}" Style="{StaticResource listView_SectionPageStyle}" ItemClick="Cutup_Selected"
+                <ListView Name="Cutups" Grid.Column="1" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected"
                           Margin="20,0,20,20"
                           >
                 </ListView>
