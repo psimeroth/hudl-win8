@@ -9,13 +9,15 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
                 <!-- 
                     Styles that define common aspects of the platform look and feel
                     Required by Visual Studio project and item templates
                  -->
-                <ResourceDictionary Source="Common/StandardStyles.xaml"/>
-                <ResourceDictionary Source="Common/CustomStyles.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Common/StandardStyles.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Common/CustomStyles.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Common/HubStyles.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Common/SectionStyles.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Common/VideoPlayerStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>

@@ -35,7 +35,7 @@
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                 <TextBlock x:Name="CutupName" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
-                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,10,0" Height="50" Style="{StaticResource StandardButtonStyle}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
+                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,10,0" Height="50" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
                          caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
             </Grid>
             <Grid Background="Black" Grid.Row="1" x:Name="Container1">
@@ -94,7 +94,7 @@
                     </Border>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollBarVisibility="Hidden" ZoomMode="Disabled" Grid.Row="1" Margin="0">
-                    <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource ListViewItemStyleVideoPage}" SelectedItem="{Binding SelectedClip}"
+                    <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
                           ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True">
                     </ListView>
                 </ScrollViewer>

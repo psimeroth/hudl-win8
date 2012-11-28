@@ -12,7 +12,7 @@
 
     <Grid x:Name="RootGrid">
         <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/light_BG_Tiled.png" />
+            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -26,19 +26,18 @@
         </StackPanel>
 
 
-        <Grid x:Name="TopTitleGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="GoBack" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,6" />
-            <Image x:Name="Logo" Grid.Column="1" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
-            <Image x:Name="BetaTag" Grid.Column="3" Source="ms-appx:///Assets/Beta.png" HorizontalAlignment="Right" Margin="10,0"/>
-
+        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
+            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
+            <Grid Margin="65,0,0,0" Background="{StaticResource HudlBlackButton}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
+            </Grid>
+            <Grid Grid.Column="1" Height="50" VerticalAlignment="Center">
+                <Button x:Name="GoBack" Grid.Column="0" Foreground="White" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,0" />
+                <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+            </Grid>
         </Grid>
-        <Grid x:Name="MainBaseGrid" Grid.Row="2" Background="{StaticResource BlackToWhiteGradient}">
+        <Grid x:Name="MainBaseGrid" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="600"/>
@@ -53,18 +52,18 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="WelcomeHeader" Grid.Row="0" FontSize="36" FontWeight="ExtraBlack" Margin="20,60,0,0">
+                <TextBlock x:Name="WelcomeHeader" Grid.Row="0" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,60,0,0">
                     Welcome to Hudl for Windows 8!
                 </TextBlock>
-                <TextBlock x:Name="WelcomeText" Grid.Row="2" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
+                <TextBlock x:Name="WelcomeText" Grid.Row="2" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
                     The application is currently a closed beta,
                     but thanks for stopping by! Check back soon
                     to see the whole app in action.
                 </TextBlock>
-                <TextBlock x:Name="ParticipateHeader" Grid.Row="3" FontSize="36" FontWeight="ExtraBlack" Margin="20,40,0,0">
+                <TextBlock x:Name="ParticipateHeader" Grid.Row="3" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,40,0,0">
                     Want to Participate?
                 </TextBlock>
-                <TextBlock x:Name="ParticipateText" Grid.Row="4" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
+                <TextBlock x:Name="ParticipateText" Grid.Row="4" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
                     If you’d like to try out the beta, we’d
                     love to get your feedback! Please contact
                     Kyle Deterding for more details:
@@ -76,7 +75,7 @@
                 </HyperlinkButton>
             </Grid>
             <Grid x:Name="SideImageGrid" Grid.Column="1">
-                <Image x:Name="SideImage" Grid.Column="1" Source="ms-appx:///Assets/hudl-hi-res-logo.png" Width="300" Margin="20,-200,20,0"/>
+                <Image x:Name="SideImage" Grid.Column="1" Source="ms-appx:///Assets/hudl-hi-res-logo.png" Width="300" Margin="20,-275,20,0"/>
             </Grid>
         </Grid>
 

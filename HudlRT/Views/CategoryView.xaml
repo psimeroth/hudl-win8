@@ -9,6 +9,6 @@
     mc:Ignorable="d">
     
     <StackPanel>
-        <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Name="Name" Foreground="{Binding TextColor}" PointerEntered="Name_PointerEntered" PointerExited="Name_PointerExited"/>
+        <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" Name="Name" Foreground="{Binding TextColor}" PointerEntered="Name_PointerEntered" PointerExited="Name_PointerExited"/>
     </StackPanel>
 </UserControl>
