@@ -8,6 +8,7 @@ using HudlRT.Parameters;
 using Newtonsoft.Json;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
+using System.Linq;
 
 namespace HudlRT.ViewModels
 {
@@ -318,6 +319,8 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                BindableCollection<Season> SeasonsDropDownSort = new BindableCollection<Season>(SeasonsDropDown.OrderByDescending(season => season.year));
+                SeasonsDropDown = SeasonsDropDownSort;
                 if (foundSavedSeason)
                 {
                     FindNextGame(SelectedSeason);

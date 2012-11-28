@@ -360,6 +360,8 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                BindableCollection<Season> SeasonsDropDownSort = new BindableCollection<Season>(SeasonsDropDown.OrderByDescending(season => season.year));
+                SeasonsDropDown = SeasonsDropDownSort;
                 if (foundSavedSeason)
                 {
                     if (Parameter != null)
