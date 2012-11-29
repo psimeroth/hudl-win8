@@ -279,7 +279,6 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="TabNavigation" Value="Local"/>
         <Setter Property="IsHoldingEnabled" Value="True"/>
-        <Setter Property="Margin" Value="0,0,0,4"/>
         <Setter Property="MinHeight" Value="50" />
         <Setter Property="Template">
             <Setter.Value>
@@ -623,7 +622,7 @@
         <Setter Property="Height" Value="150"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Margin" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListViewItem">
@@ -657,8 +656,8 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                        <Grid Margin="0,0,0,4">
-                            <Border BorderThickness="0" BorderBrush="{StaticResource HudlMediumGray}" Opacity="1">
+                        <Grid Margin="0">
+                            <Border BorderThickness="1" BorderBrush="Black" Opacity="1">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
                                         <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">

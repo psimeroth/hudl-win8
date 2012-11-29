@@ -36,16 +36,16 @@
 
         <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
-            <Grid Margin="65,0,0,0" Background="{StaticResource HudlBlackButton}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
+            <Grid Margin="18,0,0,0" Background="{StaticResource HudlBlackButton}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
             </Grid>
-            <Grid Grid.Column="1" Height="50" VerticalAlignment="Center">
-                <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+            <Grid Height="55">
+                <Image x:Name="Logo" VerticalAlignment="Center" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="58,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
-            
-            <Grid Grid.Column="1" MinWidth ="700" Margin="0,0,60,0" HorizontalAlignment="Right">
-                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
+
+            <Grid MinWidth ="700" Margin="0,0,14,0" HorizontalAlignment="Right">
+                <ComboBox x:Name="SeasonsDropDown" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
@@ -55,13 +55,14 @@
             </Grid>
         </Grid>
        
-        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="30">
+        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="18">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             
-            <Grid x:Name="Group1_Grid" Grid.Column="0" Margin="30">
+            <Grid x:Name="Group1_Grid" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="3*"/>
@@ -71,34 +72,40 @@
                         <Run Text="&#xE173;" Foreground="{StaticResource HudlOrange}"/> Video Library
                     </TextBlock>
                 </Button>
-                <Grid x:Name="NoGamesGrid" Grid.Row="1" Margin="0,30,0,0" Background="{StaticResource HudlMediumGray}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row ="0" DataContext ="{Binding SelectedSeason}" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="40" Text= "{Binding name}"> </TextBlock>
-                    <TextBlock Grid.Row ="1" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="40">No Scheduled Entries</TextBlock>
-                </Grid>
-                <Grid x:Name="RecentWeeks_Grid" Grid.Row="1" Margin="0,30,0,0">
+                <Border x:Name="NoGamesGrid" Grid.Row="1" Margin="0,30,0,0" BorderBrush="Black" BorderThickness="2">
+                    <Grid Background="{StaticResource HudlDarkGray}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row ="0" Foreground="White" DataContext ="{Binding SelectedSeason}" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="40" Text= "{Binding name}"/>
+                        <TextBlock Grid.Row ="1" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="40">No Scheduled Entries</TextBlock>
+                    </Grid>
+                </Border>
+                <Grid x:Name="RecentWeeks_Grid" Grid.Row="1" Margin="0,30,0,0" Visibility="{Binding RecentWeeks_GridVisibility}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="30"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid x:Name="Next_Grid" Grid.Column="0" Margin="0,0,15,0">
+                    <Grid x:Name="Next_Grid" Grid.Column="0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                             <RowDefinition Height="15*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
+                        <Border BorderBrush="{StaticResource HudlLightBlue}" BorderThickness="0,0,0,2">
+                            <TextBlock Grid.Row="0" DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
+                        </Border>
                         <TextBlock Grid.Row="1" DataContext ="{Binding NextGame}" Text="{Binding date}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                        <ListView Grid.Row="2" x:Name="NextGameCategories" 
+                        <ListView Grid.Row="2" x:Name="NextGameCategories"
                                     caliburn:Message.Attach="[Event ItemClick] = [NextCategorySelected($eventArgs)]"
                                     Style="{StaticResource Hub_ListViewStyle_Standard}"
                                     ItemContainerStyle="{StaticResource Hub_ListViewItemStyle_Standard}" 
                                     SelectedItem="{Binding SelectedCategory}" 
                                     SelectionChanged="ItemListView_SelectionChanged" 
-                                    PointerPressed="ListViewItemPointerPressed">
+                                    PointerPressed="ListViewItemPointerPressed"
+                                  Margin="0">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock x:Name="NextWeekCategory_Button" Text="{Binding name}"/>
@@ -106,15 +113,17 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </Grid>
-                    <Grid x:Name="Prev_Grid" Grid.Column="1" Margin="15,0,0,0">
+                    <Grid x:Name="Prev_Grid" Grid.Column="2">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                             <RowDefinition Height="15*"/>
                         </Grid.RowDefinitions>
+                        <Border BorderBrush="{StaticResource HudlLightBlue}" BorderThickness="0,0,0,2">
                             <TextBlock Grid.Row="0" DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
+                        </Border>
                         <TextBlock Grid.Row="1" DataContext ="{Binding PreviousGame}" Text="{Binding date}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                        <ListView Grid.Row="2" x:Name="PreviousGameCategories" 
+                        <ListView Grid.Row="2" x:Name="PreviousGameCategories"
                                   SelectionChanged="ItemListView_SelectionChanged" 
                                   PointerPressed="ListViewItemPointerPressed" 
                                   caliburn:Message.Attach="[Event ItemClick] = [PreviousCategorySelected($eventArgs)]"
@@ -132,12 +141,12 @@
                 
             </Grid>
             
-            <Grid x:Name="Group2_Grid" Grid.Column="1" Margin="30">
+            <Grid x:Name="Group2_Grid" Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="0*"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="LastViewed_Button" Margin="0,0,0,10" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
+                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
                     <Button.Content>
                         <Grid Grid.Column="1" Height="575">
                             <Grid.RowDefinitions>
@@ -148,7 +157,7 @@
                             <TextBlock VerticalAlignment="Center" Margin="0,100,0,0" Grid.Row="0"> <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed</TextBlock>
                             <TextBlock Grid.Row="1" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
                             <TextBlock Grid.Row="2" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
-                            <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" />
+                            <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" Canvas.ZIndex="1" />
                         </Grid>
                     </Button.Content>
 

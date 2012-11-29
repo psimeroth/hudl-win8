@@ -28,6 +28,17 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => NoGamesGrid);
             }
         }
+        private string recentWeeks_GridVisibility;
+        public string RecentWeeks_GridVisibility
+        {
+            get { return recentWeeks_GridVisibility; }
+            set
+            {
+                recentWeeks_GridVisibility = value;
+                NotifyOfPropertyChange(() => RecentWeeks_GridVisibility);
+            }
+        }
+
         private string lastViewedVisibility;
         public string LastViewedVisibility
         {
@@ -418,6 +429,10 @@ namespace HudlRT.ViewModels
                 if (PreviousGame == null && NextGame == null)
                 {
                     NoGamesGrid = true;
+                    RecentWeeks_GridVisibility = "Collapsed";
+                }
+                else {
+                    RecentWeeks_GridVisibility = "Visible";
                 }
 
             }
