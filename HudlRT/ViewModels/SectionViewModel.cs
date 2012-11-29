@@ -89,55 +89,40 @@ namespace HudlRT.ViewModels
             await GetGames(teamID, seasonID);
 
             // Make sure there are game entries for the season.
-            if (Schedule.Count == 0)
-            {
-                Schedule = null;
-            }
-            else
+            if (Schedule.Any())
             {
                 // Find the passed in game
-                SelectedGame = null;
-                foreach (GameViewModel game in Schedule)
-                {
-                    if (game.GameId == gameID)
-                    {
-                        SelectedGame = game;
-                        break;
-                    }
-                }
+                SelectedGame = Schedule.First(game => game.GameId == gameID);
 
                 // If the game isn't found set the first one as the default
                 if (SelectedGame == null)
                 {
-                    SelectedGame = Schedule.FirstOrDefault();
+                    SelectedGame = Schedule.First();
                 }
 
                 await GetGameCategories(SelectedGame);
 
                 // Make sure there are categories for the selected game
-                if (SelectedGame.Categories.Count == 0)
-                {
-                    SelectedGame.Categories = null;
-                }
-                else
+                if (SelectedGame.Categories.Any())
                 {
                     // Find the selected category
-                    SelectedGame.SelectedCategory = null;
-                    foreach (CategoryViewModel cat in SelectedGame.Categories)
-                    {
-                        if (cat.CategoryId == categoryID)
-                        {
-                            SelectedGame.SelectedCategory = cat;
-                        }
-                    }
+                    SelectedGame.SelectedCategory = SelectedGame.Categories.First(cat => cat.CategoryId == categoryID);
 
                     // If the category isn't found set the first as the default
                     if (SelectedGame.SelectedCategory == null)
                     {
-                        SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                        SelectedGame.SelectedCategory = SelectedGame.Categories.First();
                     }
                     GetCutupsByCategory(SelectedGame.SelectedCategory);
                 }
+                else
+                {
+                    SelectedGame.Categories = null;
+                }
+            }
+            else
+            {
+                Schedule = null;
             }
         }
 
@@ -145,23 +130,23 @@ namespace HudlRT.ViewModels
         {
             Cutups = null;
             await GetGames(teamID, seasonID);
-            if (Schedule.Count == 0)
+            if (Schedule.Any())
             {
-                Schedule = null;
-            }
-            else
-            {
-                SelectedGame = Schedule.FirstOrDefault();
+                SelectedGame = Schedule.First();
                 await GetGameCategories(SelectedGame);
-                if (SelectedGame.Categories.Count == 0)
+                if (SelectedGame.Categories.Any())
                 {
-                    SelectedGame.Categories = null;
+                    SelectedGame.SelectedCategory = SelectedGame.Categories.First();
+                    GetCutupsByCategory(SelectedGame.SelectedCategory);
                 }
                 else
                 {
-                    SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-                    GetCutupsByCategory(SelectedGame.SelectedCategory);
+                    SelectedGame.Categories = null;
                 }
+            }
+            else
+            {
+                Schedule = null;
             }
         }
 
@@ -245,14 +230,14 @@ namespace HudlRT.ViewModels
 
             await GetGameCategories(game);
 
-            if (SelectedGame.Categories.Count == 0)
+            if (SelectedGame.Categories.Any())
             {
-                SelectedGame.Categories = null;
+                SelectedGame.SelectedCategory = SelectedGame.Categories.First();
+                GetCutupsByCategory(SelectedGame.SelectedCategory);
             }
             else
             {
-                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-                GetCutupsByCategory(SelectedGame.SelectedCategory);
+                SelectedGame.Categories = null;
             }
         }
 

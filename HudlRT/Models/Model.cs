@@ -226,11 +226,7 @@ namespace HudlRT.Models
 
         public static Angle FromDTO(AngleDTO angleDTO)
         {
-            if (angleDTO.Files.Count == 0)
-            {
-                return null;
-            }
-            else
+            if (angleDTO.Files.Any())
             {
                 Angle angle = new Angle();
                 angle.angleName = angleDTO.AngleName;
@@ -246,6 +242,10 @@ namespace HudlRT.Models
                 }
                 angle.thumbnailLocation = angleDTO.LargeThumbnailFileName;
                 return angle;
+            }
+            else
+            {
+                return null;
             }
         }
     }
