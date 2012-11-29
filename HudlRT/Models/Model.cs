@@ -223,14 +223,17 @@ namespace HudlRT.Models
         public string thumbnailLocation { get; set; }
         public long duration { get; set; }
         public AngleType angleType { get; set; }
+        public bool isPreloaded { get; set; }
+        public Windows.Storage.StorageFile preloadFile { get; set; }
 
         public Angle()
         {
 
         }
-        public Angle(string fileLocation)
+        public Angle(long clipAngleId, string fileLocation)
         {
             this.fileLocation = fileLocation;
+            this.clipAngleId = clipAngleId;
         }
 
         public static Angle FromDTO(AngleDTO angleDTO)
@@ -250,6 +253,7 @@ namespace HudlRT.Models
                     return null;
                 }
                 angle.thumbnailLocation = angleDTO.LargeThumbnailFileName;
+                angle.isPreloaded = false;
                 return angle;
             }
             else

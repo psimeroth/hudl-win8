@@ -60,7 +60,6 @@ namespace HudlRT.Views
         {
             this.InitializeComponent();
 
-
             dragTranslation = new TranslateTransform();
 
             gridHeaders.ManipulationStarted += gridHeaders_ManipulationStarted;
@@ -202,6 +201,9 @@ namespace HudlRT.Views
            var dt = (DataTemplate)XamlReader.Load(template);
            Clips.ItemTemplate = dt;
            //btnExpandGrid_Click(null, null);
+
+           VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+           vm.listView = Clips;
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -210,13 +212,12 @@ namespace HudlRT.Views
 
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //Clips.ScrollIntoView(((Windows.UI.Xaml.Controls.ListView)sender).SelectedItem);
-
-
             if (rightClicked)
             {
-                ListView l = (ListView)sender;
-                l.SelectedIndex = selectedIndex;
+                ListView listView = (ListView)sender;
+                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                vm.setClip((Clip)listView.SelectedItem);
+                
                 rightClicked = false;
             }
             else if (itemClicked)
