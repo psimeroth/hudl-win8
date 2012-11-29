@@ -119,7 +119,7 @@ namespace HudlRT.ViewModels
             }
             CutupName = Parameter.selectedCutup.name;
             
-            if (AppDataAccessor.PlaybackTypeSet())	
+            if (!AppDataAccessor.PlaybackTypeSet())	
             {
                 AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
             }

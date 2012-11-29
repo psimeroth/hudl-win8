@@ -122,7 +122,7 @@ namespace HudlRT.Common
 
         public static void SetPlaybackType(int type)
         {
-            SetRoamingSetting<int>(PLAYBACK, type);
+            SetRoamingSetting<int?>(PLAYBACK, type);
         }
     }
 }
