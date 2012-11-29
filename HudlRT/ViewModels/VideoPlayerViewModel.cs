@@ -106,11 +106,9 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-             	
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-lastViewedCutupName"] = Parameter.selectedCutup.name;	  	
-            roamingSettings.Values["hudl-lastViewedCutupId"] = Parameter.selectedCutup.cutupId;
-            roamingSettings.Values["hudl-lastViewedCutupTimestamp"] = DateTime.Now.ToString();
+
+            AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString(), Parameter.selectedCutup.cutupId);
+
             Clips = Parameter.selectedCutup.clips;
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
@@ -121,11 +119,11 @@ namespace HudlRT.ViewModels
             }
             CutupName = Parameter.selectedCutup.name;
             
-            if (roamingSettings.Values["hudl-playbackType"] == null)	
+            if (AppDataAccessor.PlaybackTypeSet())	
             {
-                roamingSettings.Values["hudl-playbackType"] = (int)PlaybackType.once;	
+                AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
             }
-            playbackType = (PlaybackType)roamingSettings.Values["hudl-playbackType"];
+            playbackType = (PlaybackType)AppDataAccessor.GetPlaybackType();
             setToggleButtonContent();
         }
 

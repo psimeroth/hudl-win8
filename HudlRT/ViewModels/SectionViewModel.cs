@@ -70,8 +70,9 @@ namespace HudlRT.ViewModels
             long seasonID;
             try
             {
-                teamID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.TEAM_ID);
-                seasonID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.SEASON_ID);
+                TeamContextResponse response = AppDataAccessor.GetTeamContext();
+                teamID = (long)response.teamID;
+                seasonID = (long)response.seasonID;
             }
             catch (Exception ex)
             {
@@ -356,10 +357,11 @@ namespace HudlRT.ViewModels
                 long teamID = -1;
                 long seasonID = -1;
                 bool foundSavedSeason = false;
-                if (AppDataAccessor.RoamingSettingExists(AppDataAccessor.SEASON_ID) && AppDataAccessor.RoamingSettingExists(AppDataAccessor.TEAM_ID))
+                if (AppDataAccessor.TeamContextSet())
                 {
-                    teamID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.TEAM_ID);
-                    seasonID = AppDataAccessor.GetRoamingSetting<long>(AppDataAccessor.SEASON_ID);
+                    TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
+                    teamID = (long)teamContext.teamID;
+                    seasonID = (long)teamContext.seasonID;
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -411,9 +413,7 @@ namespace HudlRT.ViewModels
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;
-
-            AppDataAccessor.SetRoamingSetting<long>(AppDataAccessor.SEASON_ID, selectedSeason.seasonID);
-            AppDataAccessor.SetRoamingSetting<long>(AppDataAccessor.TEAM_ID, selectedSeason.owningTeam.teamID);
+            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
 
             if (Parameter != null)
             {
