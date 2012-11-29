@@ -77,7 +77,7 @@ namespace HudlRT.Common
         public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/#/schedule?season=%";//returns games
         public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/#/categories";//returns categories
         public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
-        public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips";//returns clips
+        public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips?startIndex=%";//returns clips
 
         public static async Task<LoginResponse> Login(string loginArgs)
         {
@@ -92,8 +92,7 @@ namespace HudlRT.Common
             if (!string.IsNullOrEmpty(loginResponse))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
-                AppDataAccessor.SetRoamingSetting<string>(AppDataAccessor.AUTH_TOKEN, obj.Token);
-                AppDataAccessor.SetRoamingSetting<string>(AppDataAccessor.USER_ID, obj.UserId);
+                AppDataAccessor.SetAuthToken(obj.Token);
                 string urlExtension = "privileges/" + obj.UserId.ToString();
                 var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension);
                 if (!string.IsNullOrEmpty(privilegesResponse))
@@ -256,6 +255,43 @@ namespace HudlRT.Common
             }
         }
 
+        public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(CutupViewModel cutup, int startIndex)
+        {
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()));
+            var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
+            BindableCollection<Clip> clipCollection = new BindableCollection<Clip>();
+            if (clipResponseDTO.ClipsList.Clips.Count == 100)
+            {
+                foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
+                {
+                    Clip c = Clip.FromDTO(clipDTO, clipResponseDTO.DisplayColumns);
+                    if (c != null)
+                    {
+                        clipCollection.Add(c);
+                    }
+                }
+                var additionalClips = await GetAdditionalCutupClips(cutup, startIndex+100);
+                foreach (Clip c in additionalClips)
+                {
+                    clipCollection.Add(c);
+                }
+                return clipCollection;
+            }
+            else
+            {
+                foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
+                {
+                    Clip c = Clip.FromDTO(clipDTO, clipResponseDTO.DisplayColumns);
+                    if (c != null)
+                    {
+                        clipCollection.Add(c);
+                    }
+                }
+                return clipCollection;
+            }
+
+        }
+
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
 
@@ -266,7 +302,7 @@ namespace HudlRT.Common
                 return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION, clips = null };
             }
 
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()));
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"));
             if (!string.IsNullOrEmpty(clips))
             {
                 try
@@ -278,6 +314,14 @@ namespace HudlRT.Common
                     {
                         Clip c = Clip.FromDTO(clipDTO, obj.DisplayColumns);
                         if (c != null)
+                        {
+                            clipCollection.Add(c);
+                        }
+                    }
+                    if (clipCollection.Count == 100)
+                    {
+                        var additionalClips = await GetAdditionalCutupClips(cutup, 100);
+                        foreach (Clip c in additionalClips)
                         {
                             clipCollection.Add(c);
                         }
@@ -308,7 +352,7 @@ namespace HudlRT.Common
                 var httpClient = new HttpClient();
                 Uri uri = new Uri(URL_BASE + url);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-                httpRequestMessage.Headers.Add("hudl-authtoken", AppDataAccessor.GetRoamingSetting<string>(AppDataAccessor.AUTH_TOKEN));
+                httpRequestMessage.Headers.Add("hudl-authtoken", AppDataAccessor.GetAuthToken());
                 httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
                 var response = await httpClient.SendAsync(httpRequestMessage);
                 return await response.Content.ReadAsStringAsync();
