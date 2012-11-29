@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using HudlRT.ViewModels;
-using Windows.ApplicationModel.Activation;
 using Caliburn.Micro;
-using Windows.UI.Xaml;
-using Windows.Storage;
-
+using Windows.ApplicationModel.Activation;
+using Windows.UI.Xaml.Controls;
+using HudlRT.Views;
 
 namespace HudlRT
 {
@@ -20,9 +18,7 @@ namespace HudlRT
 
         protected override void Configure()
         {
-            base.Configure();
-
-            container = new WinRTContainer(RootFrame);
+            container = new WinRTContainer();
             container.RegisterWinRTServices();
         }
 
@@ -41,16 +37,14 @@ namespace HudlRT
             container.BuildUp(instance);
         }
 
-        protected override Type GetDefaultViewModel()
+        protected override void PrepareViewFirst(Frame rootFrame)
         {
-            return typeof (LoginViewModel);
+            container.RegisterNavigationService(rootFrame);
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            base.OnLaunched(args);
-            
-            EnsurePage(args);
+            DisplayRootView<LoginView>(args.SplashScreen);
         }
     }
 }
