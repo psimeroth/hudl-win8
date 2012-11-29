@@ -64,17 +64,24 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="450"/>
+                <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Vertical scrolling item list -->
+
+           <Border BorderBrush="Black" BorderThickness="2" Margin="18,-2,-2,18" />
+           <ListView Grid.Column="0" Name="Schedule" Margin="0,0,0,0" SelectedItem="{Binding SelectedGame, Mode=TwoWay}" SelectionChanged="ListViewSelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
+                      PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Collapse}" Style="{StaticResource Section_ListViewStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False">
+            </ListView>
+
             <Border BorderBrush="Black" BorderThickness="2" Margin="18,-2,-2,18" />
-            <Grid Grid.Row="0" Grid.Column="0" Margin="20,0,0,20" Background="#55000000">
+            <Grid Grid.Row="0" Grid.Column="1" Margin="20,0,0,20" Background="#55000000">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="0" />
                 </Grid.RowDefinitions>
-                <ListView Grid.Row="0" Name="Schedule" Margin="0,0,0,0" SelectedItem="{Binding SelectedGame, Mode=TwoWay}" SelectionChanged="ListViewSelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
+                <ListView Grid.Row="0" Name="Categories" Margin="0,0,0,0" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectionChanged="ListViewSelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]"
                           PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Collapse}" Style="{StaticResource Section_ListViewStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False">
                 </ListView>
                 <Button Grid.Row="1" MinHeight="90" Width="430" FontSize="30" FontFamily="Segoe UI Symbol" Style="{StaticResource Section_ButtonStyle_Standard}" Visibility="Collapsed">
@@ -84,11 +91,11 @@
                 </Button>
             </Grid>
 
-            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,18,18" Background="#55000000" />
-                <ListView Name="Cutups" Grid.Column="1" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected"
-                          Margin="20,0,20,20"
-                          >
-                </ListView>
+            <Border Grid.Column="2" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,18,18" Background="#55000000" />
+            <ListView Name="Cutups" Grid.Column="2" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected"
+                      Margin="20,0,20,20"
+                      >
+            </ListView>
         </Grid>
 
             <VisualStateManager.VisualStateGroups>
