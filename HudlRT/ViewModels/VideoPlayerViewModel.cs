@@ -13,12 +13,14 @@ using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.System.Display;
 
 namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
         public PagePassParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
@@ -127,6 +129,9 @@ namespace HudlRT.ViewModels
             }
             playbackType = (PlaybackType)roamingSettings.Values["hudl-playbackType"];
             setToggleButtonContent();
+
+            dispRequest = new DisplayRequest();
+            dispRequest.RequestActive();
         }
 
         private void GetAngleNames()
@@ -393,6 +398,9 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
+            dispRequest.RequestRelease();
+            dispRequest = null;
+            
             saveAnglePreferences();
             navigationService.NavigateToViewModel<SectionViewModel>();
         }
