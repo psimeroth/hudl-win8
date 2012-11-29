@@ -106,7 +106,8 @@
         <Grid x:Name="VideoGrid" VerticalAlignment="Top" Margin="0,70,0,0">
             <ContentControl x:Name="videoContainer"
                             KeyUp="VideoContainer_KeyUp"
-                            HorizontalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Bottom"
                             Height="350"
                             DataContext="{Binding SelectedAngle}">
                 <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
