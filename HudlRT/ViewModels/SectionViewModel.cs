@@ -70,8 +70,9 @@ namespace HudlRT.ViewModels
             long seasonID;
             try
             {
-                teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
-                seasonID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-seasonID"];
+                TeamContextResponse response = AppDataAccessor.GetTeamContext();
+                teamID = (long)response.teamID;
+                seasonID = (long)response.seasonID;
             }
             catch (Exception ex)
             {
@@ -262,10 +263,7 @@ namespace HudlRT.ViewModels
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            cutup.ClipLoading = true;
-            cutup.Opacity = 0.5;
             await GetClipsByCutup(cutup);
-            cutup.ClipLoading = true;
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
@@ -338,14 +336,14 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 long teamID = -1;
                 long seasonID = -1;
                 bool foundSavedSeason = false;
-                if (roamingSettings.Values["hudl-teamID"] != null && roamingSettings.Values["hudl-seasonID"] != null)
+                if (AppDataAccessor.TeamContextSet())
                 {
-                    teamID = (long)roamingSettings.Values["hudl-teamID"];
-                    seasonID = (long)roamingSettings.Values["hudl-seasonID"];
+                    TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
+                    teamID = (long)teamContext.teamID;
+                    seasonID = (long)teamContext.seasonID;
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -360,6 +358,8 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                BindableCollection<Season> SeasonsDropDownSort = new BindableCollection<Season>(SeasonsDropDown.OrderByDescending(season => season.year));
+                SeasonsDropDown = SeasonsDropDownSort;
                 if (foundSavedSeason)
                 {
                     if (Parameter != null)
@@ -397,9 +397,7 @@ namespace HudlRT.ViewModels
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
-            roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
 
             if (Parameter != null)
             {

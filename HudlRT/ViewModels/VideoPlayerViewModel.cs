@@ -13,12 +13,14 @@ using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.System.Display;
 
 namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
         public PagePassParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
@@ -97,6 +99,7 @@ namespace HudlRT.ViewModels
         Point initialPoint = new Point();
         Point currentPoint;
         bool isFullScreenGesture = false;
+        public ListView listView { get; set; }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -106,11 +109,10 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-             	
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-lastViewedCutupName"] = Parameter.selectedCutup.name;	  	
-            roamingSettings.Values["hudl-lastViewedCutupId"] = Parameter.selectedCutup.cutupId;
-            roamingSettings.Values["hudl-lastViewedCutupTimestamp"] = DateTime.Now.ToString();
+
+            AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString(), Parameter.selectedCutup.cutupId);
+
+            
             Clips = Parameter.selectedCutup.clips;
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
@@ -118,15 +120,29 @@ namespace HudlRT.ViewModels
                 GetAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                initialClipPreload();
             }
             CutupName = Parameter.selectedCutup.name;
             
-            if (roamingSettings.Values["hudl-playbackType"] == null)	
+            if (!AppDataAccessor.PlaybackTypeSet())	
             {
-                roamingSettings.Values["hudl-playbackType"] = (int)PlaybackType.once;	
+                AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
             }
-            playbackType = (PlaybackType)roamingSettings.Values["hudl-playbackType"];
+            playbackType = (PlaybackType)AppDataAccessor.GetPlaybackType();
             setToggleButtonContent();
+
+            dispRequest = new DisplayRequest();
+            dispRequest.RequestActive();
+        }
+
+        private async void initialClipPreload()
+        {
+            await DeleteTempData(); //Make sure there are no left over temp files (from app crash, etc)
+            PreloadClips(SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList());
+            if (Clips.Count > 1)
+            {
+                PreloadClips(Clips[1].angles.Where(angle => angle.angleType.IsChecked).ToList());
+            }
         }
 
         private void GetAngleNames()
@@ -189,14 +205,34 @@ namespace HudlRT.ViewModels
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
             var clip = (Clip)eventArgs.ClickedItem;
-            SelectedClip = clip;
-            SelectedClipIndex = (int)clip.order;
-            
-            SelectedAngle = clip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+            setClip(clip);
+        }
+
+        public void setClip(Clip clip)
+        {
+            if (clip != null && SelectedClip.clipId != clip.clipId)
+            {
+                SelectedClip = clip;
+                SelectedClipIndex = (int)clip.order;
+
+                listView.SelectedItem = SelectedClip;
+
+                Angle nextAngle = clip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+
+                int nextClipIndex = (SelectedClipIndex + 1) % Clips.Count;
+                PreloadClips(SelectedClip.angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
+                PreloadClips(Clips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
+            }
+            else 
+            {
+                listView.SelectedItem = SelectedClip;
+            }
         }
 
         public void NextClip(NextAngleEvent eventType)
         {
+            
             if (SelectedAngle == null)
             {
                 goToNextClip();
@@ -204,18 +240,27 @@ namespace HudlRT.ViewModels
             else
             {
                 List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-                Angle currentAngle = SelectedClip.angles.Where(a => a.fileLocation.Equals(SelectedAngle.fileLocation)).FirstOrDefault();
+                Angle currentAngle = SelectedClip.angles.Where(a => a.clipAngleId == SelectedAngle.clipAngleId).FirstOrDefault();
 
                 int angleIndex = filteredAngles.IndexOf(currentAngle);
                 if (angleIndex < filteredAngles.Count - 1)
                 {
-                    SelectedAngle = filteredAngles[angleIndex + 1];
+                    Angle nextAngle = filteredAngles[angleIndex + 1];
+                    SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
                 }
                 else
                 {
                     if (eventType == NextAngleEvent.mediaEnded && playbackType == PlaybackType.loop)
                     {
-                        SelectedAngle = filteredAngles.Any() ? new Angle(filteredAngles[0].fileLocation) : null;
+                        if (filteredAngles.Any())
+                        {
+                            Angle nextAngle = filteredAngles[0];
+                            SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                        }
+                        else
+                        {
+                            SelectedAngle = null;
+                        }
                     }
                     else if(eventType == NextAngleEvent.buttonClick || playbackType == PlaybackType.next)
                     {
@@ -232,7 +277,12 @@ namespace HudlRT.ViewModels
                 SelectedClipIndex = (SelectedClipIndex + 1) % Clips.Count;
 
                 SelectedClip = Clips[SelectedClipIndex];
-                SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                listView.SelectedItem = SelectedClip;
+                Angle nextAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                
+                int nextClipIndex = (SelectedClipIndex + 1) % Clips.Count;
+                PreloadClips(Clips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
             }
         }
 
@@ -245,12 +295,13 @@ namespace HudlRT.ViewModels
             else
             {
                 List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-                Angle currentAngle = SelectedClip.angles.Where(a => a.fileLocation.Equals(SelectedAngle.fileLocation)).FirstOrDefault();
+                Angle currentAngle = SelectedClip.angles.Where(a => a.clipAngleId == SelectedAngle.clipAngleId).FirstOrDefault();
 
                 int angleIndex = filteredAngles.IndexOf(currentAngle);
                 if (angleIndex > 0)
                 {
-                    SelectedAngle = filteredAngles[angleIndex - 1];
+                    Angle nextAngle = filteredAngles[angleIndex - 1];
+                    SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
                 }
                 else
                 {
@@ -266,24 +317,33 @@ namespace HudlRT.ViewModels
                 SelectedClipIndex = (SelectedClipIndex == 0) ? Clips.Count - 1 : SelectedClipIndex - 1;
 
                 SelectedClip = Clips[SelectedClipIndex];
-                SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                listView.SelectedItem = SelectedClip;
+                Angle nextAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
             }
         }
 
         public void angleFilter()
         {
             List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+
+            int nextClipIndex = (SelectedClipIndex + 1) % Clips.Count;
+            PreloadClips(filteredAngles.Where(angle => angle.isPreloaded == false).ToList());
+            PreloadClips(Clips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
+
             //If the current angle has been filtered out, reset the clip to the first unfiltered angle, or null
             if (SelectedAngle != null)
             {
-                if (filteredAngles.Where(angle => angle.fileLocation.Equals(SelectedAngle.fileLocation)).FirstOrDefault() == null)
+                if (filteredAngles.Where(angle => angle.clipAngleId == SelectedAngle.clipAngleId).FirstOrDefault() == null)
                 {
-                    SelectedAngle = filteredAngles.FirstOrDefault();
+                    Angle nextAngle = filteredAngles.FirstOrDefault();
+                    SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
                 }
             }
             else
             {
-                SelectedAngle = filteredAngles.FirstOrDefault();
+                Angle nextAngle = filteredAngles.FirstOrDefault();
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
             }
         }
 
@@ -332,7 +392,7 @@ namespace HudlRT.ViewModels
         {
             if (initialPoint.X - currentPoint.X >= 50 && !isFullScreenGesture)
             {
-                NextClip(0);
+                NextClip(NextAngleEvent.buttonClick);
             }
 
             else if (initialPoint.X - currentPoint.X <= -50 && !isFullScreenGesture)
@@ -341,58 +401,61 @@ namespace HudlRT.ViewModels
             }
         }
 
-        async void save_myFile(string uri)
+        private async Task PreloadClips(List<Angle> angles)
         {
-            var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            try
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            foreach (Angle angle in angles)
             {
-                Uri source = new Uri(uri);
-                string destination = uri.Substring(uri.LastIndexOf('/')+1, uri.IndexOf('?') - uri.LastIndexOf('/')-1);
+                try
+                {
+                    var source = new Uri(angle.fileLocation);
+                    var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
+                    var file = files.FirstOrDefault(x => x.Name.Equals(angle.clipAngleId.ToString()));
 
-                StorageFile destinationFile = await localFolder.CreateFileAsync(destination, CreationCollisionOption.GenerateUniqueName);
+                    if (file == null)
+                    {
+                        var destinationFile = await folder.CreateFileAsync(angle.clipAngleId.ToString(), CreationCollisionOption.GenerateUniqueName);
+                        var downloader = new BackgroundDownloader();
+                        var download = downloader.CreateDownload(source, destinationFile);
 
-                BackgroundDownloader downloader = new BackgroundDownloader();
-                DownloadOperation download = downloader.CreateDownload(source, destinationFile);
+                        var downloadOperation = await download.StartAsync();
+                        
+                        file = (StorageFile)downloadOperation.ResultFile;
+                        angle.preloadFile = file;
+                        angle.isPreloaded = true;
+                    }
+                }
+                catch (Exception e)
+                {
 
-                // Attach progress and completion handlers.
-                HandleDownloadAsync(download, true);
-            }
-            catch (Exception)
-            {
-            }
-
+                }
+            } 
         }
 
-        private async void HandleDownloadAsync(DownloadOperation download, bool start)
+        private async Task<bool> DeleteTempData()
         {
-            try
-            {
-                // Store the download so we can pause/resume.
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
 
-                Progress<DownloadOperation> progressCallback = new Progress<DownloadOperation>();
-                if (start)
+            foreach (StorageFile file in files)
+            {
+                try
                 {
-                    // Start the download and attach a progress handler.
-                    await download.StartAsync().AsTask(progressCallback);
+                    await file.DeleteAsync();
                 }
-                else
+                catch (Exception e)
                 {
-                    // The download was already running when the application started, re-attach the progress handler.
-                    await download.AttachAsync().AsTask(progressCallback);
-                }
 
-                ResponseInformation response = download.GetResponseInformation();
+                }
             }
-            catch (TaskCanceledException)
-            {
-            }
-            catch (Exception)
-            {
-            }
+            return true;
         }
 
         public void GoBack()
         {
+            DeleteTempData();
+            dispRequest.RequestRelease();
+			dispRequest = null;
             saveAnglePreferences();
             navigationService.NavigateToViewModel<SectionViewModel>();
         }
