@@ -38,17 +38,17 @@
 
         <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
-            <Grid Margin="65,0,0,0" Background="{StaticResource HudlBlackButton}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
+            <Grid Margin="70,0,0,0" Background="{StaticResource HudlBlackButton}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
             </Grid>
-            <Grid Grid.Column="1" Height="50" VerticalAlignment="Center">
-                <Button x:Name="GoBack" Grid.Column="0" Foreground="White" Style="{StaticResource BackButtonStyle}" Margin="10,0,0,0" />
-                <Image x:Name="Logo" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="105,0,0,0" HorizontalAlignment="Left"/>
+            <Grid Height="55">
+                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
+                <Image x:Name="Logo" VerticalAlignment="Center" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="110,0,0,0" HorizontalAlignment="Left"/>
             </Grid>
 
-            <Grid Grid.Column="1" MinWidth ="700" Margin="0,0,60,0" HorizontalAlignment="Right">
-                <ComboBox x:Name="SeasonsDropDown" Height="60" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
+            <Grid MinWidth ="700" Margin="0,0,14,0" HorizontalAlignment="Right">
+                <ComboBox x:Name="SeasonsDropDown" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
@@ -69,7 +69,7 @@
 
             <!-- Vertical scrolling item list -->
             <Border BorderBrush="Black" BorderThickness="2" Margin="18,-2,-2,18" />
-            <Grid Grid.Row="0" Grid.Column="0" Margin="20,0,0,20" Background="#55000000">
+            <Grid Grid.Row="0" Grid.Column="0" Margin="20,0,0,20" Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="0" />
@@ -84,7 +84,7 @@
                 </Button>
             </Grid>
 
-            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,18,18" Background="#55000000" />
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,18,18" Background="Transparent" />
                 <ListView Name="Cutups" Grid.Column="1" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected"
                           Margin="20,0,20,20"
                           >

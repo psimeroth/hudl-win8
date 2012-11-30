@@ -110,7 +110,7 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
 
-            AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString(), Parameter.selectedCutup.cutupId);
+            AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString("g"), Parameter.selectedCutup.cutupId);
 
             
             Clips = Parameter.selectedCutup.clips;

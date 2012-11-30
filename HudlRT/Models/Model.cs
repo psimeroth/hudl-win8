@@ -103,6 +103,14 @@ namespace HudlRT.Models
         public BindableCollection<Category> categories { get; set; }
         public long gameId { get; set; }
 
+        public string DisplayDate
+        {
+            get
+            {
+                return date.ToString("g");
+            }
+        }
+
         public Game()
         {
             categories = new BindableCollection<Category>();
