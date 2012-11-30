@@ -82,7 +82,7 @@
                         <TextBlock Grid.Row ="1" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="40">No Scheduled Entries</TextBlock>
                     </Grid>
                 </Border>
-                <Grid x:Name="RecentWeeks_Grid" Grid.Row="1" Margin="0,30,0,0" Visibility="{Binding RecentWeeks_GridVisibility}">
+                <Grid x:Name="RecentWeeks_Grid" Grid.Row="1" Margin="0,40,0,0" Visibility="{Binding RecentWeeks_GridVisibility}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="30"/>
