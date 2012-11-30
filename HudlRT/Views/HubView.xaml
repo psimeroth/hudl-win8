@@ -90,15 +90,16 @@
                     </Grid.ColumnDefinitions>
                     <Grid x:Name="Next_Grid" Grid.Column="0">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="5"/>
                             <RowDefinition Height="15*"/>
                         </Grid.RowDefinitions>
                         <Border BorderBrush="{StaticResource HudlLightBlue}" BorderThickness="0,0,0,2">
                             <TextBlock Grid.Row="0" DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
                         </Border>
                         <TextBlock Grid.Row="1" DataContext ="{Binding NextGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                        <ListView Grid.Row="2" x:Name="NextGameCategories"
+                        <ListView Grid.Row="3" x:Name="NextGameCategories"
                                     caliburn:Message.Attach="[Event ItemClick] = [NextCategorySelected($eventArgs)]"
                                     Style="{StaticResource Hub_ListViewStyle_Standard}"
                                     ItemContainerStyle="{StaticResource Hub_ListViewItemStyle_Standard}" 
@@ -115,15 +116,16 @@
                     </Grid>
                     <Grid x:Name="Prev_Grid" Grid.Column="2">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="5"/>
                             <RowDefinition Height="15*"/>
                         </Grid.RowDefinitions>
                         <Border BorderBrush="{StaticResource HudlLightBlue}" BorderThickness="0,0,0,2">
                             <TextBlock Grid.Row="0" DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
                         </Border>
                         <TextBlock Grid.Row="1" DataContext ="{Binding PreviousGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                        <ListView Grid.Row="2" x:Name="PreviousGameCategories"
+                        <ListView Grid.Row="3" x:Name="PreviousGameCategories"
                                   SelectionChanged="ItemListView_SelectionChanged" 
                                   PointerPressed="ListViewItemPointerPressed" 
                                   caliburn:Message.Attach="[Event ItemClick] = [PreviousCategorySelected($eventArgs)]"

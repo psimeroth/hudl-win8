@@ -90,8 +90,7 @@
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
-                                        <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}"/>
-
+                                        <SolidColorBrush Color="{StaticResource HudlLightBlueTransparentColor}"/>
                                     </Rectangle.Fill>
                                 </Rectangle>
                             </Border>
