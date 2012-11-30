@@ -145,9 +145,9 @@
                 </StackPanel>
             </Grid>
 
-            <Rectangle HorizontalAlignment="Left" Width="130" Margin="-22,194,0,218" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
 
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-22,194,0,218" Orientation="Vertical" Width="150" Background="Transparent">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-25,0,0,-7" Orientation="Vertical" Width="150" Background="Transparent">
                 <Button x:Name="full_btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                         Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"
                         PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click">
@@ -167,9 +167,9 @@
                                     Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <Rectangle HorizontalAlignment="Right" Width="130" Margin="0,194,-22,218" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
 
-            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,194,-22,218" Orientation="Vertical" Width="150">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-25,-7" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                         Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"
                         PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
