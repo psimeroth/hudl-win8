@@ -9,6 +9,6 @@
     mc:Ignorable="d">
     
     <StackPanel>
-        <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" Name="Name" Foreground="{Binding TextColor}" PointerEntered="Name_PointerEntered" PointerExited="Name_PointerExited"/>
+        <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" Name="Name" Foreground="{Binding TextColor}" PointerEntered="Name_PointerEntered" PointerExited="Name_PointerExited" PointerReleased="Name_PointerExited" PointerCanceled="Name_PointerExited" PointerCaptureLost="Name_PointerExited" PointerPressed="Name_PointerEntered"/>
     </StackPanel>
 </UserControl>

@@ -19,7 +19,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,4" />
         <Setter Property="MinHeight" Value="70" />
         <Setter Property="Width" Value="430" />
         <Setter Property="Template">
@@ -45,7 +45,9 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <PointerDownThemeAnimation TargetName="ContentContainer"/>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentBorder">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlLightBlueTransparentColor}"/>
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="PointerOverPressed">
@@ -546,7 +548,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="Padding" Value="0,10"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
     </Style>
     <Style x:Key="Section_TextBlockStyle_Title" TargetType="TextBlock">
         <Setter Property="FontSize" Value="28"/>
@@ -637,7 +639,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueTransparentColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">

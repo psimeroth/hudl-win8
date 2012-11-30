@@ -23,11 +23,6 @@
                 <DoubleAnimation Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="0" />
             </Storyboard>
         </Grid.Resources>
-        <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="65"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
@@ -35,6 +30,11 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
+        <Grid x:Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
         <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
@@ -90,8 +90,9 @@
                           >
                 </ListView>
         </Grid>
-
-            <VisualStateManager.VisualStateGroups>
+    </Grid>
+        <ProgressRing x:Name="ProgressRing" Visibility="Collapsed" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" />
+        <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="FullScreenLandscape">
                     <Storyboard>
@@ -105,6 +106,12 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SeasonsDropDown" Storyboard.TargetProperty="HorizontalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Right"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SeasonsDropDown" Storyboard.TargetProperty="MaxWidth">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="600"/>
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="FullScreenPortrait">
@@ -116,10 +123,7 @@
                 </VisualState>
                 <VisualState x:Name="Snapped">
                     <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopTitleGrid" Storyboard.TargetProperty="Visibility">
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
@@ -132,7 +136,5 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-    </Grid>
-    <ProgressRing x:Name="ProgressRing" Visibility="Collapsed" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" />
     </Grid>
 </common:LayoutAwarePage>
