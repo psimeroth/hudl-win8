@@ -18,6 +18,7 @@ using HudlRT.Models;
 using HudlRT.Parameters;
 using Windows.UI.Xaml.Markup;
 using Windows.UI;
+using Windows.System.Display;
 
 namespace HudlRT.Views
 {
