@@ -399,14 +399,7 @@ namespace HudlRT.ViewModels
             var selectedSeason = (Season)p;
             AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
 
-            if (Parameter != null)
-            {
-                LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
-            }
-            else
-            {
-                LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-            }
+            LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
         }
     }
 }
