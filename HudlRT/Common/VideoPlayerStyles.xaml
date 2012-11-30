@@ -44,17 +44,15 @@
                             <VisualStateGroup x:Name="SelectionStates">
                                 <VisualState x:Name="Unselecting">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlackButtonColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unselected">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlackButtonColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="UnselectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlBlackButtonHoverColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlBlackButtonHoverColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
@@ -68,11 +66,12 @@
                                 </VisualState>
                                 <VisualState x:Name="Selecting">
                                     <Storyboard>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BackgroundColor"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Selected">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueTransparentColor}"/>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BackgroundColor"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedSwiping">
@@ -81,18 +80,26 @@
                                 </VisualState>
                                 <VisualState x:Name="SelectedUnfocused">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueTransparentColor}"/>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BackgroundColor"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
+                            
                         </VisualStateManager.VisualStateGroups>
                         <Grid Margin="0,2,0,2">
                             <Border BorderThickness="1" BorderBrush="Black">
-                                <Rectangle x:Name="BackgroundColor" >
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}"/>
-                                    </Rectangle.Fill>
-                                </Rectangle>
+                                <Grid>
+                                    <Rectangle x:Name="default">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <Rectangle x:Name="BackgroundColor" Opacity="0" >
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{StaticResource HudlLightBlueTransparentColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Grid>
                             </Border>
                         </Grid>
                         <ContentPresenter
