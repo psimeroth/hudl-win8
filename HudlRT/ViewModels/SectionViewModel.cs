@@ -435,7 +435,7 @@ namespace HudlRT.ViewModels
         {
             var selectedSeason = (Season)p;
             AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-
+            Categories = null;
             LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
         }
     }
