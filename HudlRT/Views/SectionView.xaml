@@ -125,8 +125,8 @@
                         <RowDefinition Height="7*" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Grid.Column="1" Margin="20,0,10,20">
-                        <GridView Grid.Row="0" x:Name="Categories" Margin="0,0,0,0" SelectedItem="{Binding SelectedCategory}"  SelectionChanged="ListViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
-                                    PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Collapse}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
+                        <GridView Grid.Row="0" x:Name="Categories" Margin="0,0,0,0" SelectedItem="{Binding SelectedCategory}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
+                                    PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Collapse}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
                     </Grid>
 
                     <ListView x:Name="Cutups" Grid.Row="1" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected"

@@ -61,6 +61,25 @@ namespace HudlRT.Views
             Schedule.ScrollIntoView(Schedule.SelectedItem);
         }
 
+        private void GridViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            GridView l = (GridView)sender;
+            selectedIndex = l.SelectedIndex;
+            rightClicked = true;
+            e.Handled = true;
+        }
+
+        private void GridViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (rightClicked)
+            {
+                GridView l = (GridView)sender;
+                l.SelectedIndex = selectedIndex;
+                rightClicked = false;
+            }
+            Schedule.ScrollIntoView(Schedule.SelectedItem);
+        }
+
         private void ResetComboBoxColor(object sender, object e)
         {
             SectionViewModel vm = (SectionViewModel)this.DataContext;
