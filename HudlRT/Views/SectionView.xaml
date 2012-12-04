@@ -105,7 +105,7 @@
             </Grid>
             <!--End TopTitleGrid-->
 
-            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="0,20,0,0" Visibility="{Binding ColVisibility}">
+            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,20" Visibility="{Binding ColVisibility}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -116,22 +116,27 @@
 
                 <!-- Vertical scrolling item list -->
 
-                <ListView Grid.Column="0" x:Name="Schedule" Margin="0,0,0,0" SelectedItem="{Binding SelectedGame, Mode=TwoWay}" SelectionChanged="ListViewSelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
-                          PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Collapse}" Style="{StaticResource Section_ListViewStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
+                <ListView Grid.Column="0" x:Name="Schedule" Margin="0,0,10,0" 
+                          SelectedItem="{Binding SelectedGame, Mode=TwoWay}" 
+                          SelectionChanged="ListViewSelectionChanged" 
+                          caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
+                          PointerPressed="ListViewItemPointerPressed" 
+                          ItemContainerStyle="{StaticResource Section_ListViewItemStyle_GameList}" 
+                          Style="{StaticResource Section_ListViewStyle_Standard}"/>
 
-                <Grid Grid.Column="1">
+                <Grid Grid.Column="1" Margin="10,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="7*" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Grid.Column="1" Margin="20,0,10,20">
-                        <GridView Grid.Row="0" x:Name="Categories" Margin="0,0,0,0" SelectedItem="{Binding SelectedCategory}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
-                                    PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Collapse}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
+                    <Grid Grid.Row="0" Grid.Column="1">
+                        <Border BorderThickness="0,0,0,2" Margin="0,0,0,3" BorderBrush="{StaticResource HudlLightBlue}"/>
+                            <GridView Grid.Row="0" x:Name="Categories" Margin="0" SelectedItem="{Binding SelectedCategory}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
+                                        PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
                     </Grid>
-
-                    <ListView x:Name="Cutups" Grid.Row="1" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected"
-                                Margin="10,0,20,20"
-                                >
+                    
+                    <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
+                              ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected">
                     </ListView>
                 </Grid>
             </Grid>
