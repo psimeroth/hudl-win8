@@ -30,7 +30,14 @@ namespace HudlRT.ViewModels
             cutup._name = cutupDTO.Name;
             cutup._clipLoading = false;
             cutup._opacity = 1.0;
-            cutup._thumbnail = cutupDTO.Thumbnailpath;
+            if (cutupDTO.Thumbnailpath == null)
+            {
+                cutup._thumbnail = "ms-appx:///Assets/Hudl_Metro150 Centered.png";
+            }
+            else
+            {
+                cutup._thumbnail = cutupDTO.Thumbnailpath;
+            }
             return cutup;
         }
 
@@ -42,7 +49,14 @@ namespace HudlRT.ViewModels
             cutup._name = cutupDTO.name;
             cutup._clipLoading = false;
             cutup._opacity = 1.0;
-            cutup._thumbnail = cutupDTO.thumbnailLocation;
+            if (cutupDTO.thumbnailLocation == null)
+            {
+                cutup._thumbnail = "ms-appx:///Assets/Hudl_Metro150 Centered.png";
+            }
+            else
+            {
+                cutup._thumbnail = cutupDTO.thumbnailLocation;
+            }
             return cutup;
         }
 
