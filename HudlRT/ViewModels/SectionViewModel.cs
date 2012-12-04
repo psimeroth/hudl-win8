@@ -199,6 +199,7 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(GameViewModel game)
         {
+            game.TextColor = "#0099FF";
             CategoryResponse response = await ServiceAccessor.GetGameCategories(game.GameId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
@@ -249,7 +250,10 @@ namespace HudlRT.ViewModels
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = game;
             Cutups = null;
-
+            foreach (var g in Schedule.ToList())
+            {
+                g.TextColor = "#E0E0E0";
+            }
             await GetGameCategories(game);
 
             if (Categories.Any())

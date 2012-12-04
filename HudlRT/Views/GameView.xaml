@@ -8,8 +8,8 @@
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
     <StackPanel Orientation="Horizontal">
-        <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Date" />
-        <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" Text="-" />
-        <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Opponent" />
+        <TextBlock Foreground="{Binding TextColor}" Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Date" />
+        <TextBlock Foreground="{Binding TextColor}" Style="{StaticResource Section_TextBlockStyle_Standard}" Text="-" />
+        <TextBlock Foreground="{Binding TextColor}" Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Opponent" />
     </StackPanel>
 </UserControl>

@@ -18,6 +18,7 @@ namespace HudlRT.ViewModels
         private string _date { get; set; }
         private bool _isHome { get; set; }
         private long _gameId { get; set; }
+        private string _textColor { get; set; }
 
         public static GameViewModel FromDTO(GameDTO gameDTO)
         {
@@ -26,6 +27,7 @@ namespace HudlRT.ViewModels
             game._isHome = gameDTO.Ishome;
             game._opponent = gameDTO.Opponent;
             game._date = gameDTO.Date.ToString("d");
+            game._textColor = "#E0E0E0";
             return game;
         }
 
@@ -36,7 +38,19 @@ namespace HudlRT.ViewModels
             game._isHome = gameModel.isHome;
             game._opponent = gameModel.opponent;
             game._date = gameModel.date.ToString("d");
+            game._textColor = "#E0E0E0";
             return game;
+        }
+
+        public string TextColor
+        {
+            get { return _textColor; }
+            set
+            {
+                if (value == _textColor) return;
+                _textColor = value;
+                NotifyOfPropertyChange(() => TextColor);
+            }
         }
 
         public string Opponent
