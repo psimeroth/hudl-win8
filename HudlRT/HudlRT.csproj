@@ -275,6 +275,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <SDKReference Include="Callisto, Version=1.2.5">
+      <Name>Callisto</Name>
+    </SDKReference>
     <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.7.0.0">
       <Name>Microsoft Player Framework</Name>
     </SDKReference>

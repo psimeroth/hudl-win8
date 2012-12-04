@@ -263,9 +263,26 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void CategorySelected(ItemClickEventArgs eventArgs)
+        public void CategorySelected(SelectionChangedEventArgs eventArgs)
         {
-            var category = (CategoryViewModel)eventArgs.ClickedItem;
+            if (Categories != null)
+            {
+                var category = (CategoryViewModel)eventArgs.AddedItems.FirstOrDefault();
+
+                List<CategoryViewModel> categories = Categories.ToList();
+                foreach (var cat in categories)
+                {
+                    cat.TextColor = "#E0E0E0";
+                }
+
+                SelectedCategory = category;
+
+                GetCutupsByCategory(category);
+            }
+        }
+
+        public void CategorySelected(Object category, GridView view)
+        {
 
             List<CategoryViewModel> categories = Categories.ToList();
             foreach (var cat in categories)
@@ -273,11 +290,10 @@ namespace HudlRT.ViewModels
                 cat.TextColor = "#E0E0E0";
             }
 
-            SelectedCategory = category;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = category;
+            SelectedCategory = (CategoryViewModel)category;
+            view.SelectedItem = category;
 
-            GetCutupsByCategory(category);
+            GetCutupsByCategory(SelectedCategory);
         }
 
 
