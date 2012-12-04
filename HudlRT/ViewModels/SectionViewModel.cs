@@ -339,9 +339,9 @@ namespace HudlRT.ViewModels
                 long teamID = -1;
                 long seasonID = -1;
                 bool foundSavedSeason = false;
-                if (AppDataAccessor.TeamContextSet())
+                TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
+                if (teamContext.seasonID != null && teamContext.teamID != null)
                 {
-                    TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
                     teamID = (long)teamContext.teamID;
                     seasonID = (long)teamContext.seasonID;
                 }

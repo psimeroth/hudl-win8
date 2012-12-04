@@ -123,12 +123,18 @@ namespace HudlRT.ViewModels
                 initialClipPreload();
             }
             CutupName = Parameter.selectedCutup.name;
-            
-            if (!AppDataAccessor.PlaybackTypeSet())	
+
+
+            int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
+            if (playbackTypeResult == null)
             {
                 AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
+                playbackType = PlaybackType.once;
             }
-            playbackType = (PlaybackType)AppDataAccessor.GetPlaybackType();
+            else
+            {
+                playbackType = (PlaybackType)playbackTypeResult;
+            }
             setToggleButtonContent();
 
             dispRequest = new DisplayRequest();
@@ -178,13 +184,15 @@ namespace HudlRT.ViewModels
         {
             foreach (AngleType angleName in AngleTypes)
             {
-                if (!AppDataAccessor.AnglePreferenceSet(angleName.Name))
+                bool? angleChecked = AppDataAccessor.GetAnglePreference(angleName.Name);
+
+                if (angleChecked == null)
                 {
                     angleName.IsChecked = true;
                 }
                 else
                 {
-                    angleName.IsChecked = AppDataAccessor.GetAnglePreference(angleName.Name);
+                    angleName.IsChecked = (bool)angleChecked;
                 }
             }
         }

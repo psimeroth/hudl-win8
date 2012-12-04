@@ -43,11 +43,6 @@ namespace HudlRT.Common
             Windows.Storage.ApplicationData.Current.RoamingSettings.Values[keyName] = value;
         }
 
-        private static bool RoamingSettingExists(string keyName)
-        {
-            return Windows.Storage.ApplicationData.Current.RoamingSettings.Values[keyName] != null;
-        }
-
         public static String GetAuthToken()
         {
             return (String)GetRoamingSetting<String>(AUTH_TOKEN);
@@ -68,19 +63,6 @@ namespace HudlRT.Common
             SetRoamingSetting<String>(USERNAME, username);
         }
 
-        public static bool TeamContextSet()
-        {
-            if (RoamingSettingExists(USERNAME))
-            {
-                string username = GetUsername();
-                return RoamingSettingExists(username + SEASON_ID) && RoamingSettingExists(username + TEAM_ID);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public static TeamContextResponse GetTeamContext() {
             string username = GetUsername();
             TeamContextResponse response = new TeamContextResponse();
@@ -92,21 +74,8 @@ namespace HudlRT.Common
         public static void SetTeamContext(long seasonID, long teamID)
         {
             string username = GetUsername();
-            SetRoamingSetting<long?>(username + SEASON_ID, seasonID);
-            SetRoamingSetting<long?>(username + TEAM_ID, teamID);
-        }
-
-        public static bool LastViewedSet()
-        {
-            if (RoamingSettingExists(USERNAME))
-            {
-                string username = GetUsername();
-                return RoamingSettingExists(username + LAST_VIEWED_NAME) && RoamingSettingExists(username + LAST_VIEWED_TIMESTAMP) && RoamingSettingExists(username + LAST_VIEWED_ID);
-            }
-            else
-            {
-                return false;
-            }
+            SetRoamingSetting<long>(username + SEASON_ID, seasonID);
+            SetRoamingSetting<long>(username + TEAM_ID, teamID);
         }
 
         public static LastViewedResponse GetLastViewed()
@@ -127,36 +96,18 @@ namespace HudlRT.Common
             SetRoamingSetting<long>(username + LAST_VIEWED_ID, ID);
         }
 
-        public static bool AnglePreferenceSet(string key)
-        {
-            if (RoamingSettingExists(USERNAME))
-            {
-                string username = GetUsername();
-                if (RoamingSettingExists(username+TEAM_ID)) {
-                    long teamID = GetRoamingSetting<long>(username+TEAM_ID);
-                    return RoamingSettingExists(username + teamID + "-" + key);
-                } else return false;
-            }
-            else return false;
-        }
-
-        public static void SetAnglePreference(string key, bool value)
+        public static void SetAnglePreference(string angleName, bool value)
         {
             string username = GetUsername();
-            long teamID = (long)GetRoamingSetting<long?>(username+TEAM_ID);
-            SetRoamingSetting<bool>(username + teamID + "-" + key, value);
+            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
+            SetRoamingSetting<bool>(username + teamID + "-" + angleName, value);
         }
 
-        public static bool GetAnglePreference(string key)
+        public static bool? GetAnglePreference(string key)
         {
             string username = GetUsername();
-            long teamID = (long)GetRoamingSetting<long?>(username+TEAM_ID);
-            return GetRoamingSetting<bool>(username + teamID + "-" + key);
-        }
-
-        public static bool PlaybackTypeSet()
-        {
-            return RoamingSettingExists(PLAYBACK);
+            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
+            return GetRoamingSetting<bool?>(username + teamID + "-" + key);
         }
 
         public static int? GetPlaybackType()
@@ -166,7 +117,7 @@ namespace HudlRT.Common
 
         public static void SetPlaybackType(int type)
         {
-            SetRoamingSetting<int?>(PLAYBACK, type);
+            SetRoamingSetting<int>(PLAYBACK, type);
         }
     }
 }
