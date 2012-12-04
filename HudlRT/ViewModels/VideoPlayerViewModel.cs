@@ -176,29 +176,24 @@ namespace HudlRT.ViewModels
 
         private void getAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                string angleNameKey = String.Concat(teamID.ToString(), "-", angleName.Name);
-                if (roamingSettings.Values[angleNameKey] == null)
+                if (!AppDataAccessor.AnglePreferenceSet(angleName.Name))
                 {
                     angleName.IsChecked = true;
                 }
                 else
                 {
-                    angleName.IsChecked = (bool)roamingSettings.Values[angleNameKey];
+                    angleName.IsChecked = AppDataAccessor.GetAnglePreference(angleName.Name);
                 }
             }
         }
 
         private void saveAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] = angleName.IsChecked;
+                AppDataAccessor.SetAnglePreference(angleName.Name, angleName.IsChecked);
             }
         }
 
