@@ -302,8 +302,7 @@ namespace HudlRT.ViewModels
 
         public async void NavigateToSectionPage()
         {
-            
-            
+
             HubSectionParameter param = new HubSectionParameter {seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, nextGame = NextGame, previousGame = PreviousGame, games = gamesFromSection };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
         }
@@ -482,7 +481,9 @@ namespace HudlRT.ViewModels
                     cutup.Clips = response.clips;
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
                     {
-                        selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name }
+                        selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name },
+                        seasons = SeasonsDropDown,
+                        selectedSeason = SelectedSeason
                     });
                 }
                 else

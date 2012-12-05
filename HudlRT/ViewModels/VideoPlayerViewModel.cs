@@ -457,7 +457,15 @@ namespace HudlRT.ViewModels
             dispRequest.RequestRelease();
 			dispRequest = null;
             saveAnglePreferences();
-            HubSectionParameter param = new HubSectionParameter { categoryId = Parameter.selectedCategory.CategoryId, gameId = Parameter.selectedGame.GameId, seasonsDropDown = Parameter.seasons, seasonSelected = Parameter.selectedSeason, games = Parameter.games };
+            HubSectionParameter param;
+            if (Parameter.selectedGame == null)
+            {
+                param = new HubSectionParameter { categoryId = 0, gameId = 0, seasonsDropDown = Parameter.seasons, seasonSelected = Parameter.selectedSeason, games = null };
+            }
+            else
+            {
+                param = new HubSectionParameter { categoryId = Parameter.selectedCategory.CategoryId, gameId = Parameter.selectedGame.GameId, seasonsDropDown = Parameter.seasons, seasonSelected = Parameter.selectedSeason, games = Parameter.games };
+            }
             navigationService.NavigateToViewModel<SectionViewModel>(param);
         }
     }
