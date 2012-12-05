@@ -10,11 +10,11 @@
 
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
-            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Date" />
-            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" Text="-" />
-            <TextBlock Style="{StaticResource listViewItem_TextBlockStyle}" x:Name="Opponent" />
+            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Date" />
+            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Hyphen" Text="-" />
+            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Opponent" />
         </StackPanel>
             <ListView  IsItemClickEnabled="True" Background="Transparent" Foreground="White" Name="Categories" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]"
-                   Margin="35,0,0,0" ItemContainerStyle="{StaticResource ListViewItemStyle_Cutups}" Width="444"  IsHoldingEnabled="False" IsSwipeEnabled="False" SelectionChanged="ListViewSelectionChanged"></ListView>
+                   Margin="35,0,0,0" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Cutups}" IsHoldingEnabled="False" IsSwipeEnabled="False" SelectionChanged="ListViewSelectionChanged"></ListView>
     </StackPanel>
 </UserControl>

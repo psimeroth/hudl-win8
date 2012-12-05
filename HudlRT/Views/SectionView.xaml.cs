@@ -63,10 +63,18 @@ namespace HudlRT.Views
 
         private void ResetComboBoxColor(object sender, object e)
         {
-            SeasonsDropDown.Background = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
-            SeasonsDropDown.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
             SectionViewModel vm = (SectionViewModel)this.DataContext;
             vm.SeasonSelected(SeasonsDropDown.SelectedItem);
+        }
+
+        private void Cutup_Selected(object sender, ItemClickEventArgs e)
+        {
+            Cutups.IsEnabled = false;
+            Schedule.IsEnabled = false;
+            GoBack.IsEnabled = false;
+            SeasonsDropDown.IsEnabled = false;
+            Logo.Opacity = .5;
+            ProgressRing.Visibility = Visibility.Visible;
         }
     }
 }

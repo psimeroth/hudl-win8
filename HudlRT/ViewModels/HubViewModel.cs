@@ -8,6 +8,7 @@ using HudlRT.Parameters;
 using Newtonsoft.Json;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
+using System.Linq;
 
 namespace HudlRT.ViewModels
 {
@@ -28,6 +29,17 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => NoGamesGrid);
             }
         }
+        private string recentWeeks_GridVisibility;
+        public string RecentWeeks_GridVisibility
+        {
+            get { return recentWeeks_GridVisibility; }
+            set
+            {
+                recentWeeks_GridVisibility = value;
+                NotifyOfPropertyChange(() => RecentWeeks_GridVisibility);
+            }
+        }
+
         private string lastViewedVisibility;
         public string LastViewedVisibility
         {
@@ -263,15 +275,13 @@ namespace HudlRT.ViewModels
             {
                 model = new Model();
                 //GetTeams();
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-                var lastViewedCutupName = roamingSettings.Values["hudl-lastViewedCutupName"];
-                var lastViewedCutupTimestamp = roamingSettings.Values["hudl-lastViewedCutupTimestamp"];
-                var lastViewedCutupId = roamingSettings.Values["hudl-lastViewedCutupId"];
-                if (lastViewedCutupName != null && lastViewedCutupTimestamp != null && lastViewedCutupId != null)
+
+                if (AppDataAccessor.LastViewedSet())
                 {
-                    LastViewedName = (string)lastViewedCutupName;
-                    LastViewedTimeStamp = "Viewed: " + (string)lastViewedCutupTimestamp;
-                    lastViewedId = (long)lastViewedCutupId;
+                    LastViewedResponse response = AppDataAccessor.GetLastViewed();
+                    LastViewedName = response.name;
+                    LastViewedTimeStamp = "Viewed: " + response.timeStamp;
+                    lastViewedId = (long)response.ID;
                 }
                 else
                 {
@@ -296,14 +306,14 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 long teamID = -1;
                 long seasonID = -1;
                 bool foundSavedSeason = false;
-                if (roamingSettings.Values["hudl-teamID"] != null && roamingSettings.Values["hudl-seasonID"] != null)
+                if (AppDataAccessor.TeamContextSet())
                 {
-                    teamID = (long)roamingSettings.Values["hudl-teamID"];
-                    seasonID = (long)roamingSettings.Values["hudl-seasonID"];
+                    TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
+                    teamID = (long)teamContext.teamID;
+                    seasonID = (long)teamContext.seasonID;
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -318,6 +328,8 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                BindableCollection<Season> SeasonsDropDownSort = new BindableCollection<Season>(SeasonsDropDown.OrderByDescending(season => season.year));
+                SeasonsDropDown = SeasonsDropDownSort;
                 if (foundSavedSeason)
                 {
                     FindNextGame(SelectedSeason);
@@ -418,6 +430,10 @@ namespace HudlRT.ViewModels
                 if (PreviousGame == null && NextGame == null)
                 {
                     NoGamesGrid = true;
+                    RecentWeeks_GridVisibility = "Collapsed";
+                }
+                else {
+                    RecentWeeks_GridVisibility = "Visible";
                 }
 
             }
@@ -481,9 +497,7 @@ namespace HudlRT.ViewModels
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
-            roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
             FindNextGame(selectedSeason);
         }
     }

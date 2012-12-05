@@ -14,7 +14,7 @@ namespace HudlRT.ViewModels
     public class CutupViewModel : PropertyChangedBase
     {
         private string _name { get; set; }
-        private string _clipCount { get; set; }
+        private int _clipCount { get; set; }
         private long _cutupId { get; set; }
         private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
@@ -25,16 +25,7 @@ namespace HudlRT.ViewModels
         {
             CutupViewModel cutup = new CutupViewModel();
             cutup._cutupId = cutupDTO.CutupID;
-            string clips;
-            if (cutupDTO.ClipCount == 1)
-            {
-                clips = " Clip";
-            }
-            else
-            {
-                clips = " Clips";
-            }
-            cutup._clipCount = cutupDTO.ClipCount.ToString() + clips; 
+            cutup._clipCount = cutupDTO.ClipCount; 
             cutup._name = cutupDTO.Name;
             cutup._clipLoading = false;
             cutup._opacity = 1.0;
@@ -45,7 +36,7 @@ namespace HudlRT.ViewModels
         {
             CutupViewModel cutup = new CutupViewModel();
             cutup._cutupId = cutupDTO.cutupId;
-            cutup._clipCount = cutupDTO.clipCount.ToString();
+            cutup._clipCount = cutupDTO.clipCount;
             cutup._name = cutupDTO.name;
             cutup._clipLoading = false;
             cutup._opacity = 1.0;
@@ -95,13 +86,22 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Clips);
             }
         }
-        public string ClipCount        {
+
+        public int ClipCount        {
             get { return _clipCount; }
             set
             {
                 if (value.Equals(_clipCount)) return;
                 _clipCount = value;
                 NotifyOfPropertyChange(() => ClipCount);
+            }
+        }
+
+        public string ClipCountDisplay
+        {
+            get
+            {
+                return ClipCount + ((ClipCount == 1) ? " Clip" : " Clips");
             }
         }
 

@@ -70,8 +70,9 @@ namespace HudlRT.ViewModels
             long seasonID;
             try
             {
-                teamID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-teamID"];
-                seasonID = (long)ApplicationData.Current.RoamingSettings.Values["hudl-seasonID"];
+                TeamContextResponse response = AppDataAccessor.GetTeamContext();
+                teamID = (long)response.teamID;
+                seasonID = (long)response.seasonID;
             }
             catch (Exception ex)
             {
@@ -89,55 +90,40 @@ namespace HudlRT.ViewModels
             await GetGames(teamID, seasonID);
 
             // Make sure there are game entries for the season.
-            if (Schedule.Count == 0)
-            {
-                Schedule = null;
-            }
-            else
+            if (Schedule.Any())
             {
                 // Find the passed in game
-                SelectedGame = null;
-                foreach (GameViewModel game in Schedule)
-                {
-                    if (game.GameId == gameID)
-                    {
-                        SelectedGame = game;
-                        break;
-                    }
-                }
+                SelectedGame = Schedule.First(game => game.GameId == gameID);
 
                 // If the game isn't found set the first one as the default
                 if (SelectedGame == null)
                 {
-                    SelectedGame = Schedule.FirstOrDefault();
+                    SelectedGame = Schedule.First();
                 }
 
                 await GetGameCategories(SelectedGame);
 
                 // Make sure there are categories for the selected game
-                if (SelectedGame.Categories.Count == 0)
-                {
-                    SelectedGame.Categories = null;
-                }
-                else
+                if (SelectedGame.Categories.Any())
                 {
                     // Find the selected category
-                    SelectedGame.SelectedCategory = null;
-                    foreach (CategoryViewModel cat in SelectedGame.Categories)
-                    {
-                        if (cat.CategoryId == categoryID)
-                        {
-                            SelectedGame.SelectedCategory = cat;
-                        }
-                    }
+                    SelectedGame.SelectedCategory = SelectedGame.Categories.First(cat => cat.CategoryId == categoryID);
 
                     // If the category isn't found set the first as the default
                     if (SelectedGame.SelectedCategory == null)
                     {
-                        SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
+                        SelectedGame.SelectedCategory = SelectedGame.Categories.First();
                     }
                     GetCutupsByCategory(SelectedGame.SelectedCategory);
                 }
+                else
+                {
+                    SelectedGame.Categories = null;
+                }
+            }
+            else
+            {
+                Schedule = null;
             }
         }
 
@@ -145,23 +131,23 @@ namespace HudlRT.ViewModels
         {
             Cutups = null;
             await GetGames(teamID, seasonID);
-            if (Schedule.Count == 0)
+            if (Schedule.Any())
             {
-                Schedule = null;
-            }
-            else
-            {
-                SelectedGame = Schedule.FirstOrDefault();
+                SelectedGame = Schedule.First();
                 await GetGameCategories(SelectedGame);
-                if (SelectedGame.Categories.Count == 0)
+                if (SelectedGame.Categories.Any())
                 {
-                    SelectedGame.Categories = null;
+                    SelectedGame.SelectedCategory = SelectedGame.Categories.First();
+                    GetCutupsByCategory(SelectedGame.SelectedCategory);
                 }
                 else
                 {
-                    SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-                    GetCutupsByCategory(SelectedGame.SelectedCategory);
+                    SelectedGame.Categories = null;
                 }
+            }
+            else
+            {
+                Schedule = null;
             }
         }
 
@@ -245,14 +231,14 @@ namespace HudlRT.ViewModels
 
             await GetGameCategories(game);
 
-            if (SelectedGame.Categories.Count == 0)
+            if (SelectedGame.Categories.Any())
             {
-                SelectedGame.Categories = null;
+                SelectedGame.SelectedCategory = SelectedGame.Categories.First();
+                GetCutupsByCategory(SelectedGame.SelectedCategory);
             }
             else
             {
-                SelectedGame.SelectedCategory = SelectedGame.Categories.FirstOrDefault();
-                GetCutupsByCategory(SelectedGame.SelectedCategory);
+                SelectedGame.Categories = null;
             }
         }
 
@@ -277,10 +263,7 @@ namespace HudlRT.ViewModels
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            cutup.ClipLoading = true;
-            cutup.Opacity = 0.5;
             await GetClipsByCutup(cutup);
-            cutup.ClipLoading = true;
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
@@ -353,14 +336,14 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
-                Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
                 long teamID = -1;
                 long seasonID = -1;
                 bool foundSavedSeason = false;
-                if (roamingSettings.Values["hudl-teamID"] != null && roamingSettings.Values["hudl-seasonID"] != null)
+                if (AppDataAccessor.TeamContextSet())
                 {
-                    teamID = (long)roamingSettings.Values["hudl-teamID"];
-                    seasonID = (long)roamingSettings.Values["hudl-seasonID"];
+                    TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
+                    teamID = (long)teamContext.teamID;
+                    seasonID = (long)teamContext.seasonID;
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -375,6 +358,8 @@ namespace HudlRT.ViewModels
                         SeasonsDropDown.Add(season);
                     }
                 }
+                BindableCollection<Season> SeasonsDropDownSort = new BindableCollection<Season>(SeasonsDropDown.OrderByDescending(season => season.year));
+                SeasonsDropDown = SeasonsDropDownSort;
                 if (foundSavedSeason)
                 {
                     if (Parameter != null)
@@ -412,18 +397,9 @@ namespace HudlRT.ViewModels
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-teamID"] = selectedSeason.owningTeam.teamID;
-            roamingSettings.Values["hudl-seasonID"] = selectedSeason.seasonID;
+            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
 
-            if (Parameter != null)
-            {
-                LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
-            }
-            else
-            {
-                LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-            }
+            LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
         }
     }
 }

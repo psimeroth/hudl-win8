@@ -18,7 +18,6 @@ namespace HudlRT.Views
 {
     public sealed partial class CategoryView : UserControl
     {
-        private SolidColorBrush textColor = null;
 
         public CategoryView()
         {
