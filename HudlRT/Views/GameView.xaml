@@ -7,14 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
-
-    <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Date" />
-            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Hyphen" Text="-" />
-            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Opponent" />
-        </StackPanel>
-            <ListView  IsItemClickEnabled="True" Background="Transparent" Foreground="White" Name="Categories" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" caliburn:Message.Attach="[Event ItemClick] = [CategorySelected($eventArgs)]"
-                   Margin="35,0,0,0" ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Cutups}" IsHoldingEnabled="False" IsSwipeEnabled="False" SelectionChanged="ListViewSelectionChanged"></ListView>
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Foreground="{Binding TextColor}" Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Date" />
+        <TextBlock Foreground="{Binding TextColor}" Style="{StaticResource Section_TextBlockStyle_Standard}" Text="-" />
+        <TextBlock Foreground="{Binding TextColor}" Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="Opponent" />
     </StackPanel>
 </UserControl>

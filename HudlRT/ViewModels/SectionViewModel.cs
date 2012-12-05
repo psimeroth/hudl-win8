@@ -30,6 +30,16 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<CategoryViewModel> _categories { get; set; }
+        public BindableCollection<CategoryViewModel> Categories
+        {
+            get { return _categories; }
+            set
+            {
+                _categories = value;
+                NotifyOfPropertyChange(() => Categories);
+            }
+        }
         
         private BindableCollection<CutupViewModel> _cutups { get; set; }
         public BindableCollection<CutupViewModel> Cutups
@@ -51,6 +61,17 @@ namespace HudlRT.ViewModels
             {
                 selectedGame = value;
                 NotifyOfPropertyChange(() => SelectedGame);
+            }
+        }
+
+        private CategoryViewModel selectedCategory;
+        public CategoryViewModel SelectedCategory
+        {
+            get { return selectedCategory; }
+            set
+            {
+                selectedCategory = value;
+                NotifyOfPropertyChange(() => SelectedCategory);
             }
         }
 
@@ -117,21 +138,21 @@ namespace HudlRT.ViewModels
                 await GetGameCategories(SelectedGame);
 
                 // Make sure there are categories for the selected game
-                if (SelectedGame.Categories.Any())
+                if (Categories.Any())
                 {
                     // Find the selected category
-                    SelectedGame.SelectedCategory = SelectedGame.Categories.First(cat => cat.CategoryId == categoryID);
+                    SelectedCategory = Categories.First(cat => cat.CategoryId == categoryID);
 
                     // If the category isn't found set the first as the default
-                    if (SelectedGame.SelectedCategory == null)
+                    if (SelectedCategory == null)
                     {
-                        SelectedGame.SelectedCategory = SelectedGame.Categories.First();
+                        SelectedCategory = Categories.First();
                     }
-                    GetCutupsByCategory(SelectedGame.SelectedCategory);
+                    GetCutupsByCategory(SelectedCategory);
                 }
                 else
                 {
-                    SelectedGame.Categories = null;
+                    Categories = null;
                 }
             }
             else
@@ -148,14 +169,14 @@ namespace HudlRT.ViewModels
             {
                 SelectedGame = Schedule.First();
                 await GetGameCategories(SelectedGame);
-                if (SelectedGame.Categories.Any())
+                if (Categories.Any())
                 {
-                    SelectedGame.SelectedCategory = SelectedGame.Categories.First();
-                    GetCutupsByCategory(SelectedGame.SelectedCategory);
+                    SelectedCategory = Categories.First();
+                    GetCutupsByCategory(SelectedCategory);
                 }
                 else
                 {
-                    SelectedGame.Categories = null;
+                    Categories = null;
                 }
             }
             else
@@ -191,6 +212,7 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(GameViewModel game)
         {
+            game.TextColor = "#0099FF";
             CategoryResponse response = await ServiceAccessor.GetGameCategories(game.GameId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
@@ -199,20 +221,20 @@ namespace HudlRT.ViewModels
                 {
                     cats.Add(CategoryViewModel.FromCategory(category));
                 }
-                SelectedGame.Categories = cats;
+                Categories = cats;
             }
             /*else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
             {
             }*/
             else
             {
-                SelectedGame.Categories = null;
+                Categories = null;
             }
         }
 
         public async Task GetCutupsByCategory(CategoryViewModel category)
         {
-            SelectedGame.SelectedCategory.TextColor = "#0099FF";
+            SelectedCategory.TextColor = "#0099FF";
             CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
@@ -236,40 +258,59 @@ namespace HudlRT.ViewModels
         {
             var game = (GameViewModel)eventArgs.ClickedItem;
 
-            SelectedGame.Categories = null;
+            Categories = null;
             SelectedGame = game;
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = game;
             Cutups = null;
-
+            foreach (var g in Schedule.ToList())
+            {
+                g.TextColor = "#E0E0E0";
+            }
             await GetGameCategories(game);
 
-            if (SelectedGame.Categories.Any())
+            if (Categories.Any())
             {
-                SelectedGame.SelectedCategory = SelectedGame.Categories.First();
-                GetCutupsByCategory(SelectedGame.SelectedCategory);
+                SelectedCategory = Categories.First();
+                GetCutupsByCategory(SelectedCategory);
             }
             else
             {
-                SelectedGame.Categories = null;
+                Categories = null;
             }
         }
 
-        public void CategorySelected(ItemClickEventArgs eventArgs)
+        public void CategorySelected(SelectionChangedEventArgs eventArgs)
         {
-            var category = (CategoryViewModel)eventArgs.ClickedItem;
+            if (Categories != null)
+            {
+                var category = (CategoryViewModel)eventArgs.AddedItems.FirstOrDefault();
 
-            List<CategoryViewModel> categories = SelectedGame.Categories.ToList();
+                List<CategoryViewModel> categories = Categories.ToList();
+                foreach (var cat in categories)
+                {
+                    cat.TextColor = "#E0E0E0";
+                }
+
+                SelectedCategory = category;
+
+                GetCutupsByCategory(category);
+            }
+        }
+
+        public void CategorySelected(Object category, GridView view)
+        {
+
+            List<CategoryViewModel> categories = Categories.ToList();
             foreach (var cat in categories)
             {
                 cat.TextColor = "#E0E0E0";
             }
 
-            SelectedGame.SelectedCategory = category;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = category;
+            SelectedCategory = (CategoryViewModel)category;
+            view.SelectedItem = category;
 
-            GetCutupsByCategory(category);
+            GetCutupsByCategory(SelectedCategory);
         }
 
 
@@ -411,7 +452,7 @@ namespace HudlRT.ViewModels
         {
             var selectedSeason = (Season)p;
             AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-
+            Categories = null;
             LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
         }
     }

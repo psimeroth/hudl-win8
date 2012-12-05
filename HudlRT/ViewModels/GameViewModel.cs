@@ -18,8 +18,7 @@ namespace HudlRT.ViewModels
         private string _date { get; set; }
         private bool _isHome { get; set; }
         private long _gameId { get; set; }
-        private BindableCollection<CategoryViewModel> _categories { get; set; }
-        private CategoryViewModel _selectedCategory { get; set; }
+        private string _textColor { get; set; }
 
         public static GameViewModel FromDTO(GameDTO gameDTO)
         {
@@ -28,7 +27,7 @@ namespace HudlRT.ViewModels
             game._isHome = gameDTO.Ishome;
             game._opponent = gameDTO.Opponent;
             game._date = gameDTO.Date.ToString("d");
-            game._categories = new BindableCollection<CategoryViewModel>();
+            game._textColor = "#E0E0E0";
             return game;
         }
 
@@ -39,8 +38,19 @@ namespace HudlRT.ViewModels
             game._isHome = gameModel.isHome;
             game._opponent = gameModel.opponent;
             game._date = gameModel.date.ToString("d");
-            game._categories = new BindableCollection<CategoryViewModel>();
+            game._textColor = "#E0E0E0";
             return game;
+        }
+
+        public string TextColor
+        {
+            get { return _textColor; }
+            set
+            {
+                if (value == _textColor) return;
+                _textColor = value;
+                NotifyOfPropertyChange(() => TextColor);
+            }
         }
 
         public string Opponent
@@ -84,26 +94,6 @@ namespace HudlRT.ViewModels
                 if (value == _gameId) return;
                 _gameId = value;
                 NotifyOfPropertyChange(() => GameId);
-            }
-        }
-
-        public BindableCollection<CategoryViewModel> Categories
-        {
-            get { return _categories; }
-            set
-            {
-                _categories = value;
-                NotifyOfPropertyChange(() => Categories);
-            }
-        }
-
-        public CategoryViewModel SelectedCategory
-        {
-            get { return _selectedCategory; }
-            set
-            {
-                _selectedCategory = value;
-                NotifyOfPropertyChange(() => SelectedCategory);
             }
         }
     }
