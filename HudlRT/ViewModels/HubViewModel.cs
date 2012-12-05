@@ -297,7 +297,8 @@ namespace HudlRT.ViewModels
 
         public async void NavigateToSectionPage()
         {
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            HubSectionParameter param = new HubSectionParameter {seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason };
+            navigationService.NavigateToViewModel<SectionViewModel>(param);
         }
 
         public async void PopulateDropDown()
@@ -448,7 +449,7 @@ namespace HudlRT.ViewModels
         {
             
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId};
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected=SelectedSeason};
             navigationService.NavigateToViewModel<SectionViewModel>(param);
 
         }
@@ -457,7 +458,7 @@ namespace HudlRT.ViewModels
         {
 
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId };
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
 
         }

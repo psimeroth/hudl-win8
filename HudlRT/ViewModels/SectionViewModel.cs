@@ -81,7 +81,20 @@ namespace HudlRT.ViewModels
             }
 
             // Load data for the drop down
-            PopulateDropDown();
+            //PopulateDropDown();
+            if (Parameter != null)
+            {
+                SeasonsDropDown = Parameter.seasonsDropDown;
+                SelectedSeason = Parameter.seasonSelected;
+                if (Parameter.categoryId != 0 && Parameter.gameId != 0)
+                {
+                    LoadPageFromParamter(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+                }
+                else
+                {
+                    LoadPageFromDefault(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
+                }
+            }
         }
 
         private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID)
