@@ -457,7 +457,8 @@ namespace HudlRT.ViewModels
             dispRequest.RequestRelease();
 			dispRequest = null;
             saveAnglePreferences();
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            HubSectionParameter param = new HubSectionParameter { categoryId = Parameter.selectedCategory.CategoryId, gameId = Parameter.selectedGame.GameId, seasonsDropDown = Parameter.seasons, seasonSelected = Parameter.selectedSeason, games = Parameter.games };
+            navigationService.NavigateToViewModel<SectionViewModel>(param);
         }
     }
 }

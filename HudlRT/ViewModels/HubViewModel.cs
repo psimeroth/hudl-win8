@@ -16,8 +16,9 @@ namespace HudlRT.ViewModels
     {
         private Model model;
         private readonly INavigationService navigationService;
-        public PagePassParameter Parameter { get; set; }
+        public HubSectionParameter Parameter { get; set; }
         private long? lastViewedId = null;
+        public BindableCollection<GameViewModel> gamesFromSection = null;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -262,33 +263,37 @@ namespace HudlRT.ViewModels
             base.OnActivate();
             if (Parameter != null)
             {
-                Teams = Parameter.teams;
-                Games = Parameter.games;
-                Seasons = Parameter.seasons;
-                Cutups = Parameter.cutups;
-                SelectedTeam = Parameter.selectedTeam;
-                SelectedSeason = Parameter.selectedSeason;
-                SelectedGame = Parameter.selectedGame;
-                SelectedCategory = Parameter.selectedCategory;
-            }
-            else
-            {
-                model = new Model();
-                //GetTeams();
-
-                if (AppDataAccessor.LastViewedSet())
+                SeasonsDropDown = Parameter.seasonsDropDown;
+                SelectedSeason = Parameter.seasonSelected;
+                if (Parameter.nextGame != null && Parameter.previousGame != null)
                 {
-                    LastViewedResponse response = AppDataAccessor.GetLastViewed();
-                    LastViewedName = response.name;
-                    LastViewedTimeStamp = "Viewed: " + response.timeStamp;
-                    lastViewedId = (long)response.ID;
+                    NextGame = Parameter.nextGame;
+                    PreviousGame = Parameter.previousGame;
+                    NextGameCategories = NextGame.categories;
+                    PreviousGameCategories = PreviousGame.categories;
+                    gamesFromSection = Parameter.games;
                 }
                 else
                 {
-                    LastViewedName = "Hey Rookie!";
-                    LastViewedTimeStamp = "You haven't watched anything yet!";
+                    FindNextGame(SelectedSeason);
                 }
+            }
+            else
+            {
                 PopulateDropDown();
+            }
+
+            if (AppDataAccessor.LastViewedSet())
+            {
+                LastViewedResponse response = AppDataAccessor.GetLastViewed();
+                LastViewedName = response.name;
+                LastViewedTimeStamp = "Viewed: " + response.timeStamp;
+                lastViewedId = (long)response.ID;
+            }
+            else
+            {
+                LastViewedName = "Hey Rookie!";
+                LastViewedTimeStamp = "You haven't watched anything yet!";
             }
 
             ColVisibility = "Visible";
@@ -297,7 +302,9 @@ namespace HudlRT.ViewModels
 
         public async void NavigateToSectionPage()
         {
-            HubSectionParameter param = new HubSectionParameter {seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason };
+            
+            
+            HubSectionParameter param = new HubSectionParameter {seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, nextGame = NextGame, previousGame = PreviousGame, games = gamesFromSection };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
         }
 
@@ -449,7 +456,7 @@ namespace HudlRT.ViewModels
         {
             
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected=SelectedSeason};
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, nextGame = NextGame, previousGame = PreviousGame, games = gamesFromSection };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
 
         }
@@ -458,7 +465,7 @@ namespace HudlRT.ViewModels
         {
 
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason };
+            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, nextGame = NextGame, previousGame = PreviousGame, games = gamesFromSection };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
 
         }
@@ -498,6 +505,10 @@ namespace HudlRT.ViewModels
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;
+            if (Parameter != null)
+            {
+                gamesFromSection = null;
+            }
             AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
             FindNextGame(selectedSeason);
         }

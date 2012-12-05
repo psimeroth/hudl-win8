@@ -109,19 +109,30 @@ namespace HudlRT.ViewModels
                 SelectedSeason = Parameter.seasonSelected;
                 if (Parameter.categoryId != 0 && Parameter.gameId != 0)
                 {
-                    LoadPageFromParamter(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
+                    LoadPageFromParamter(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId, Parameter.games);
                 }
                 else
                 {
-                    LoadPageFromDefault(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
+                    LoadPageFromDefault(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.games);
                 }
             }
         }
 
-        private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID)
+        private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID, BindableCollection<GameViewModel> games)
         {
             Cutups = null;
-            await GetGames(teamID, seasonID);
+            if (games != null)
+            {
+                Schedule = games;
+                foreach (var g in Schedule.ToList())
+                {
+                    g.TextColor = "#E0E0E0";
+                }
+            }
+            else
+            {
+                await GetGames(teamID, seasonID);
+            }
 
             // Make sure there are game entries for the season.
             if (Schedule.Any())
@@ -161,10 +172,21 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async void LoadPageFromDefault(long seasonID, long teamID)
+        private async void LoadPageFromDefault(long seasonID, long teamID, BindableCollection<GameViewModel> games)
         {
             Cutups = null;
-            await GetGames(teamID, seasonID);
+            if (games != null)
+            {
+                Schedule = games;
+                foreach (var g in Schedule.ToList())
+                {
+                    g.TextColor = "#E0E0E0";
+                }
+            }
+            else
+            {
+                await GetGames(teamID, seasonID);
+            }
             if (Schedule.Any())
             {
                 SelectedGame = Schedule.First();
@@ -200,6 +222,7 @@ namespace HudlRT.ViewModels
                 {
                     Schedule.Add(schedule[i]);
                 }
+                Parameter.games = Schedule;
             }
             /*else if (games.status == SERVICE_RESPONSE.NULL_RESPONSE)
             {
@@ -234,6 +257,7 @@ namespace HudlRT.ViewModels
 
         public async Task GetCutupsByCategory(CategoryViewModel category)
         {
+            Cutups = null;
             SelectedCategory.TextColor = "#0099FF";
             CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
@@ -244,13 +268,6 @@ namespace HudlRT.ViewModels
                     cuts.Add(CutupViewModel.FromCutup(cutup));
                 }
                 Cutups = cuts;
-            }
-            /*else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
-            {
-            }*/
-            else
-            {
-                Cutups = null;
             }
         }
 
@@ -329,7 +346,12 @@ namespace HudlRT.ViewModels
                 string[] clipCount = cutup.ClipCount.ToString().Split(' ');
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
                 {
-                    selectedCutup = new Cutup {cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name }
+                    selectedCutup = new Cutup {cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name },
+                    seasons = SeasonsDropDown,
+                    selectedSeason = SelectedSeason,
+                    selectedGame = SelectedGame,
+                    selectedCategory = SelectedCategory,
+                    games = Schedule
                 });
             }
             else
@@ -383,77 +405,17 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Teams);
             }
         }
-        
-        public async void PopulateDropDown()
-        {
-            TeamResponse response = await ServiceAccessor.GetTeams();
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                Teams = response.teams;
-                long teamID = -1;
-                long seasonID = -1;
-                bool foundSavedSeason = false;
-                if (AppDataAccessor.TeamContextSet())
-                {
-                    TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
-                    teamID = (long)teamContext.teamID;
-                    seasonID = (long)teamContext.seasonID;
-                }
-                SeasonsDropDown = new BindableCollection<Season>();
-                foreach (Team team in Teams)
-                {
-                    foreach (Season season in team.seasons)
-                    {
-                        if (teamID == season.owningTeam.teamID && seasonID == season.seasonID)
-                        {
-                            SelectedSeason = season;
-                            foundSavedSeason = true;
-                        }
-                        SeasonsDropDown.Add(season);
-                    }
-                }
-                BindableCollection<Season> SeasonsDropDownSort = new BindableCollection<Season>(SeasonsDropDown.OrderByDescending(season => season.year));
-                SeasonsDropDown = SeasonsDropDownSort;
-                if (foundSavedSeason)
-                {
-                    if (Parameter != null)
-                    {
-                        LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
-                    }
-                    else
-                    {
-                        LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-                    }
-                    NotifyOfPropertyChange(() => SelectedSeason);
-                }
-                
-                if (!foundSavedSeason && SeasonsDropDown.Count > 0)
-                {
-                    SelectedSeason = SeasonsDropDown[0];
-                    if (Parameter != null)
-                    {
-                        LoadPageFromParamter(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId);
-                    }
-                    else
-                    {
-                        LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-                    }
-                    NotifyOfPropertyChange(() => SelectedSeason);
-                }
-            }
-            else//could better handle exceptions
-            {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                Teams = null;
-            }
-        }
 
         internal void SeasonSelected(object p)
         {
+            Schedule = null;
             var selectedSeason = (Season)p;
             AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+            Parameter.seasonSelected = selectedSeason;
+            Parameter.nextGame = null;
+            Parameter.previousGame = null;
             Categories = null;
-            LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+            LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, null);
         }
     }
 }
