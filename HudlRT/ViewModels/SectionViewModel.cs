@@ -159,7 +159,6 @@ namespace HudlRT.ViewModels
                     {
                         SelectedCategory = Categories.First();
                     }
-                    GetCutupsByCategory(SelectedCategory);
                 }
                 else
                 {
@@ -194,7 +193,6 @@ namespace HudlRT.ViewModels
                 if (Categories.Any())
                 {
                     SelectedCategory = Categories.First();
-                    GetCutupsByCategory(SelectedCategory);
                 }
                 else
                 {
@@ -289,7 +287,7 @@ namespace HudlRT.ViewModels
             if (Categories.Any())
             {
                 SelectedCategory = Categories.First();
-                GetCutupsByCategory(SelectedCategory);
+                //GetCutupsByCategory(SelectedCategory);
             }
             else
             {
@@ -314,22 +312,6 @@ namespace HudlRT.ViewModels
                 GetCutupsByCategory(category);
             }
         }
-
-        public void CategorySelected(Object category, GridView view)
-        {
-
-            List<CategoryViewModel> categories = Categories.ToList();
-            foreach (var cat in categories)
-            {
-                cat.TextColor = "#E0E0E0";
-            }
-
-            SelectedCategory = (CategoryViewModel)category;
-            view.SelectedItem = category;
-
-            GetCutupsByCategory(SelectedCategory);
-        }
-
 
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
