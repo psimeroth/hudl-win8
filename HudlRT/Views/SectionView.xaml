@@ -131,7 +131,7 @@
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Grid.Column="1">
                         <Border BorderThickness="0,0,0,2" Margin="0,0,0,3" BorderBrush="{StaticResource HudlLightBlue}"/>
-                            <GridView Grid.Row="0" x:Name="Categories" Margin="0" SelectedItem="{Binding SelectedCategory}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
+                            <GridView Grid.Row="0" x:Name="Categories" Margin="0" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
                                         PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
                     </Grid>
                     

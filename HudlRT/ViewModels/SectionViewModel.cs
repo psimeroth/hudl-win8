@@ -233,6 +233,7 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(GameViewModel game)
         {
+            Categories = null;
             game.TextColor = "#0099FF";
             CategoryResponse response = await ServiceAccessor.GetGameCategories(game.GameId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
@@ -244,9 +245,6 @@ namespace HudlRT.ViewModels
                 }
                 Categories = cats;
             }
-            /*else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
-            {
-            }*/
             else
             {
                 Categories = null;
@@ -272,8 +270,6 @@ namespace HudlRT.ViewModels
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             var game = (GameViewModel)eventArgs.ClickedItem;
-            SelectedCategory = null;
-            Categories = null;
             SelectedGame = game;
             ListView x = (ListView)eventArgs.OriginalSource;
             x.SelectedItem = game;
@@ -287,7 +283,6 @@ namespace HudlRT.ViewModels
             if (Categories.Any())
             {
                 SelectedCategory = Categories.First();
-                //GetCutupsByCategory(SelectedCategory);
             }
             else
             {
@@ -300,7 +295,6 @@ namespace HudlRT.ViewModels
             if (Categories != null)
             {
                 var category = (CategoryViewModel)eventArgs.AddedItems.FirstOrDefault();
-
                 List<CategoryViewModel> categories = Categories.ToList();
                 foreach (var cat in categories)
                 {
@@ -308,7 +302,6 @@ namespace HudlRT.ViewModels
                 }
 
                 SelectedCategory = category;
-
                 GetCutupsByCategory(category);
             }
         }
