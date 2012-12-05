@@ -272,7 +272,7 @@ namespace HudlRT.ViewModels
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             var game = (GameViewModel)eventArgs.ClickedItem;
-
+            SelectedCategory = null;
             Categories = null;
             SelectedGame = game;
             ListView x = (ListView)eventArgs.OriginalSource;
