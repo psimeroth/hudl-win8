@@ -509,5 +509,14 @@ namespace HudlRT.Views
         {
             itemClicked = true;
         }
+
+        private void ScreenSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (IsFullscreen)
+            {
+                VideoGrid.Height = Window.Current.Bounds.Height;
+                VideoGrid.Width = Window.Current.Bounds.Width;
+            }
+        }
     }
 }
