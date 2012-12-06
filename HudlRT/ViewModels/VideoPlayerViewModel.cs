@@ -111,16 +111,13 @@ namespace HudlRT.ViewModels
             base.OnActivate();
 
             AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString("g"), Parameter.selectedCutup.cutupId);
-
-            
-            Clips = Parameter.selectedCutup.clips;
+            Clips = new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order < 10).ToList());
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
                 GetAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-                initialClipPreload();
             }
             CutupName = Parameter.selectedCutup.name;
             
@@ -145,10 +142,27 @@ namespace HudlRT.ViewModels
             }
         }
 
+        protected override void OnViewLoaded(object view)
+        {
+            initialClipPreload();
+        }
+
+        private async void AddClipsToGrid(int count)
+        {
+            int currentCount = Clips.Count;
+            Clips.AddRange(Parameter.selectedCutup.clips.Where(u => u.order <= (currentCount + count)).Where(u => u.order > currentCount));
+            //await loopThroughClipsAndAdd();
+        }
+
+        private async void loopThroughClipsAndAdd()
+        {
+            
+        }
+
         private void GetAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -163,7 +177,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
