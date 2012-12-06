@@ -127,13 +127,21 @@ namespace HudlRT.Common
             SetRoamingSetting<int?>(PLAYBACK, type);
         }
 
-        public static IReadOnlyList<PasswordCredential> GetPassword()
+        public static PasswordCredential GetPassword()
         {
             String username = GetUsername();
             if (username != null)
             {
-                PasswordVault vault = new PasswordVault();
-                return vault.FindAllByUserName(username);
+                try
+                {
+                    PasswordVault vault = new PasswordVault();
+                    IReadOnlyList<PasswordCredential> credentials = vault.FindAllByResource(PASSWORD);
+                    return vault.Retrieve(PASSWORD, credentials[0].UserName);
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
             return null;
         }
@@ -142,6 +150,24 @@ namespace HudlRT.Common
         {
             String username = GetUsername();
             PasswordCredential cred = new PasswordCredential(PASSWORD, username, password);
+            PasswordVault vault = new PasswordVault();
+            vault.Add(cred);
+        }
+
+        public static void RemovePasswords()
+        {
+            PasswordVault vault = new PasswordVault();
+            try
+            {
+                IReadOnlyList<PasswordCredential> credentials = vault.FindAllByResource(PASSWORD);
+                foreach (PasswordCredential cred in credentials)
+                {
+                    vault.Remove(cred);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 }

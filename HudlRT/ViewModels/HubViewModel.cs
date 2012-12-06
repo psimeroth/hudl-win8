@@ -489,11 +489,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void LogOut()
-        {
-            navigationService.NavigateToViewModel<LoginViewModel>();
-        }
-
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;

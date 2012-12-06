@@ -107,21 +107,12 @@ namespace HudlRT.ViewModels
             {
                 UserName = username;
 
-                try
+                // Check to see if a password has been saved
+                PasswordCredential cred = AppDataAccessor.GetPassword();
+                if (cred != null)
                 {
-                    PasswordVault vault = new PasswordVault();
-                    IReadOnlyList<PasswordCredential> passwords = vault.FindAllByUserName(username);
-
-                    // If a sinlge password match is found automatically log in
-                    if (passwords.Count == 1)
-                    {
-                        RememberMe = true;
-                        Password = passwords[0].Password;
-                        LoginAttempt();
-                    }
-                }
-                catch (Exception ex)
-                {
+                    Password = cred.Password;
+                    LoginAttempt();
                 }
             }
         }
@@ -151,7 +142,10 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 AppDataAccessor.SetUsername(UserName);
-                
+                if (RememberMe)
+                {
+                    AppDataAccessor.SetPassword(Password);
+                }
                 navigationService.NavigateToViewModel<HubViewModel>();
             }
             else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
