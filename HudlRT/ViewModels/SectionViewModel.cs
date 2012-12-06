@@ -355,6 +355,8 @@ namespace HudlRT.ViewModels
             Parameter.sectionViewCategories = Categories;
             Parameter.sectionViewGames = Schedule;
             Parameter.sectionViewGameSelected = SelectedGame;
+            Parameter.gameId = 0;
+            Parameter.categoryId = 0;
         }
 
 
@@ -398,14 +400,21 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public void UpdateParameterOnSeasonChange()
+        {
+            if (Parameter != null)
+            {
+                Parameter.hubViewNextGame = null;
+                Parameter.hubViewPreviousGame = null;
+            }
+        }
+
         internal void SeasonSelected(object p)
         {
             Schedule = null;
             var selectedSeason = (Season)p;
             AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-            Parameter.seasonSelected = selectedSeason;
-            Parameter.hubViewNextGame = null;
-            Parameter.hubViewPreviousGame = null;
+            UpdateParameterOnSeasonChange();
             Categories = null;
             LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, null);
         }

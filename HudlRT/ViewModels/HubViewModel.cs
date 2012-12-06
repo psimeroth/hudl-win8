@@ -14,7 +14,6 @@ namespace HudlRT.ViewModels
 {
     public class HubViewModel : ViewModelBase
     {
-        private Model model;
         private readonly INavigationService navigationService;
         public CachedParameter Parameter { get; set; }
         private long? lastViewedId = null;
@@ -492,14 +491,9 @@ namespace HudlRT.ViewModels
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
                     cutup.Clips = response.clips;
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new CachedParameter
-                    {
-                        selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name },
-                        seasonsDropDown = SeasonsDropDown,
-                        seasonSelected = SelectedSeason,
-                        hubViewNextGame = NextGame,
-                        hubViewPreviousGame = PreviousGame
-                    });
+                    UpdateCachedParameter();
+                    Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
                 }
                 else
                 {
@@ -518,13 +512,23 @@ namespace HudlRT.ViewModels
             navigationService.NavigateToViewModel<LoginViewModel>();
         }
 
+        public void UpdateParameterOnSeasonChange()
+        {
+            if (Parameter != null)
+            {
+                Parameter.sectionViewCategories = null;
+                Parameter.sectionViewCategorySelected = null;
+                Parameter.sectionViewCutups = null;
+                Parameter.sectionViewGames = null;
+                Parameter.sectionViewGameSelected = null;
+                Parameter.selectedCutup = null;
+            }
+        }
+
         internal void SeasonSelected(object p)
         {
             var selectedSeason = (Season)p;
-            if (Parameter != null)
-            {
-                gamesFromSection = null;
-            }
+            UpdateParameterOnSeasonChange();
             AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
             FindNextGame(selectedSeason);
         }
