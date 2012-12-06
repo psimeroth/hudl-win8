@@ -75,6 +75,28 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Season selectedSeason;
+        public Season SelectedSeason
+        {
+            get { return selectedSeason; }
+            set
+            {
+                selectedSeason = value;
+                NotifyOfPropertyChange(() => SelectedSeason);
+            }
+        }
+
+        private BindableCollection<Season> seasonsForDropDown;
+        public BindableCollection<Season> SeasonsDropDown
+        {
+            get { return seasonsForDropDown; }
+            set
+            {
+                seasonsForDropDown = value;
+                NotifyOfPropertyChange(() => SeasonsDropDown);
+            }
+        }
+
         public SectionViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
@@ -101,8 +123,6 @@ namespace HudlRT.ViewModels
                 seasonID = 0;
             }
 
-            // Load data for the drop down
-            //PopulateDropDown();
             if (Parameter != null)
             {
                 SeasonsDropDown = Parameter.seasonsDropDown;
@@ -278,6 +298,23 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public async Task GetClipsByCutup(CutupViewModel cutup)
+        {
+            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                cutup.Clips = response.clips;
+                string[] clipCount = cutup.ClipCount.ToString().Split(' ');
+                UpdateCachedParameter();
+                Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
+            }
+            else
+            {
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+            }
+        }
+
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             var game = (GameViewModel)eventArgs.ClickedItem;
@@ -323,23 +360,21 @@ namespace HudlRT.ViewModels
             await GetClipsByCutup(cutup);
         }
 
-        public async Task GetClipsByCutup(CutupViewModel cutup)
+        internal void SeasonSelected(object p)
         {
-            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                cutup.Clips = response.clips;
-                string[] clipCount = cutup.ClipCount.ToString().Split(' ');
-                UpdateCachedParameter();
-                Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
-            }
-            else
-            {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-            }
+            Schedule = null;
+            var selectedSeason = (Season)p;
+            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+            UpdateParameterOnSeasonChange();
+            Categories = null;
+            LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, null);
         }
-        
+
+        public void GoBack()
+        {
+            UpdateCachedParameter();
+            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
+        }
 
         public void LogOut()
         {
@@ -359,47 +394,6 @@ namespace HudlRT.ViewModels
             Parameter.categoryId = 0;
         }
 
-
-        public void GoBack()
-        {
-            UpdateCachedParameter();
-            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
-        }
-
-        // Used for the season/team dropdown
-        private Season selectedSeason;
-        public Season SelectedSeason
-        {
-            get { return selectedSeason; }
-            set
-            {
-                selectedSeason = value;
-                NotifyOfPropertyChange(() => SelectedSeason);
-            }
-        }
-        
-        private BindableCollection<Season> seasonsForDropDown;
-        public BindableCollection<Season> SeasonsDropDown
-        {
-            get { return seasonsForDropDown; }
-            set
-            {
-                seasonsForDropDown = value;
-                NotifyOfPropertyChange(() => SeasonsDropDown);
-            }
-        }
-        
-        private BindableCollection<Team> teams;
-        public BindableCollection<Team> Teams
-        {
-            get { return teams; }
-            set
-            {
-                teams = value;
-                NotifyOfPropertyChange(() => Teams);
-            }
-        }
-
         public void UpdateParameterOnSeasonChange()
         {
             if (Parameter != null)
@@ -409,14 +403,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        internal void SeasonSelected(object p)
-        {
-            Schedule = null;
-            var selectedSeason = (Season)p;
-            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-            UpdateParameterOnSeasonChange();
-            Categories = null;
-            LoadPageFromDefault(selectedSeason.seasonID, selectedSeason.owningTeam.teamID, null);
-        }
+
     }
 }
