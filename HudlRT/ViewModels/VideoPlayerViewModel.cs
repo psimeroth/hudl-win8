@@ -158,13 +158,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async Task loopThroughClipsAndAdd(Clip clip)
-        {
-
-            //return new Task();
-        }
-
-
         private void GetAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
