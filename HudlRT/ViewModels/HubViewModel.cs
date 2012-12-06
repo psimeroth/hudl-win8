@@ -16,7 +16,7 @@ namespace HudlRT.ViewModels
     {
         private Model model;
         private readonly INavigationService navigationService;
-        public HubSectionParameter Parameter { get; set; }
+        public CachedParameter Parameter { get; set; }
         private long? lastViewedId = null;
         public BindableCollection<GameViewModel> gamesFromSection = null;
 
@@ -265,13 +265,13 @@ namespace HudlRT.ViewModels
             {
                 SeasonsDropDown = Parameter.seasonsDropDown;
                 SelectedSeason = Parameter.seasonSelected;
-                if (Parameter.nextGame != null && Parameter.previousGame != null)
+                if (Parameter.hubViewNextGame != null && Parameter.hubViewPreviousGame != null)
                 {
-                    NextGame = Parameter.nextGame;
-                    PreviousGame = Parameter.previousGame;
+                    NextGame = Parameter.hubViewNextGame;
+                    PreviousGame = Parameter.hubViewPreviousGame;
                     NextGameCategories = NextGame.categories;
                     PreviousGameCategories = PreviousGame.categories;
-                    gamesFromSection = Parameter.games;
+                    gamesFromSection = Parameter.sectionViewGames;
                 }
                 else
                 {
@@ -300,11 +300,24 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = "Collapsed";
         }
 
+        public void UpdateCachedParameter()
+        {
+            if (Parameter == null)
+            {
+                Parameter = new CachedParameter();
+            }
+            Parameter.seasonsDropDown = SeasonsDropDown;
+            Parameter.seasonSelected = SelectedSeason;
+            Parameter.hubViewNextGame = NextGame;
+            Parameter.hubViewPreviousGame = PreviousGame;
+        }
+
         public async void NavigateToSectionPage()
         {
 
-            HubSectionParameter param = new HubSectionParameter {seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, nextGame = NextGame, previousGame = PreviousGame, games = gamesFromSection };
-            navigationService.NavigateToViewModel<SectionViewModel>(param);
+            //CachedParameter param = new CachedParameter {seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, hubViewNextGame = NextGame, hubViewPreviousGame = PreviousGame, sectionViewGames = gamesFromSection };
+            UpdateCachedParameter();
+            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
         }
 
         public async void PopulateDropDown()
@@ -455,7 +468,7 @@ namespace HudlRT.ViewModels
         {
             
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, nextGame = NextGame, previousGame = PreviousGame, games = gamesFromSection };
+            CachedParameter param = new CachedParameter { categoryId = category.categoryId, gameId = NextGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, hubViewNextGame = NextGame, hubViewPreviousGame = PreviousGame, sectionViewGames = gamesFromSection };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
 
         }
@@ -464,7 +477,7 @@ namespace HudlRT.ViewModels
         {
 
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, nextGame = NextGame, previousGame = PreviousGame, games = gamesFromSection };
+            CachedParameter param = new CachedParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId, seasonsDropDown = SeasonsDropDown, seasonSelected = SelectedSeason, hubViewNextGame = NextGame, hubViewPreviousGame = PreviousGame, sectionViewGames = gamesFromSection };
             navigationService.NavigateToViewModel<SectionViewModel>(param);
 
         }
@@ -479,11 +492,13 @@ namespace HudlRT.ViewModels
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
                     cutup.Clips = response.clips;
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new CachedParameter
                     {
                         selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name },
-                        seasons = SeasonsDropDown,
-                        selectedSeason = SelectedSeason
+                        seasonsDropDown = SeasonsDropDown,
+                        seasonSelected = SelectedSeason,
+                        hubViewNextGame = NextGame,
+                        hubViewPreviousGame = PreviousGame
                     });
                 }
                 else

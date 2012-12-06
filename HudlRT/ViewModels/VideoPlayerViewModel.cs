@@ -22,7 +22,7 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
-        public PagePassParameter Parameter { get; set; }
+        public CachedParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
         {
@@ -457,16 +457,16 @@ namespace HudlRT.ViewModels
             dispRequest.RequestRelease();
 			dispRequest = null;
             saveAnglePreferences();
-            HubSectionParameter param;
-            if (Parameter.selectedGame == null)
-            {
-                param = new HubSectionParameter { categoryId = 0, gameId = 0, seasonsDropDown = Parameter.seasons, seasonSelected = Parameter.selectedSeason, games = null };
-            }
-            else
-            {
-                param = new HubSectionParameter { categoryId = Parameter.selectedCategory.CategoryId, gameId = Parameter.selectedGame.GameId, seasonsDropDown = Parameter.seasons, seasonSelected = Parameter.selectedSeason, games = Parameter.games };
-            }
-            navigationService.NavigateToViewModel<SectionViewModel>(param);
+            //CachedParameter param;
+            //if (Parameter.sectionViewGameSelected == null)
+            //{
+            //    param = new CachedParameter { categoryId = 0, gameId = 0, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = null };
+            //}
+            //else
+            //{
+            //    param = new CachedParameter { categoryId = Parameter.sectionViewCategorySelected.CategoryId, gameId = Parameter.sectionViewGameSelected.GameId, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = Parameter.sectionViewGames };
+            //}
+            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
         }
     }
 }
