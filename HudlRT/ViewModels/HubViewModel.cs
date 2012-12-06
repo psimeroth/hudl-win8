@@ -291,7 +291,9 @@ namespace HudlRT.ViewModels
                 }
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
-                    SelectedSeason = SeasonsDropDown[0];
+                    int year = DateTime.Now.Year;
+                    SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= year) ?? SeasonsDropDown[0];
+
                     FindNextPreviousGames(SelectedSeason);
                     NotifyOfPropertyChange(() => SelectedSeason);
                 }
