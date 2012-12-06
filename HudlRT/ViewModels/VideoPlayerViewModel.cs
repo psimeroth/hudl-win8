@@ -355,8 +355,8 @@ namespace HudlRT.ViewModels
             playbackType = (PlaybackType)(((int)playbackType + 1) % Enum.GetNames(typeof(PlaybackType)).Length);
             
             setToggleButtonContent();
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-playbackType"] = (int)playbackType;
+
+            AppDataAccessor.SetPlaybackType((int)playbackType);
         }
 
         public void setToggleButtonContent()
