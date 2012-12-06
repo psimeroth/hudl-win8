@@ -19,6 +19,8 @@ namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
+        private static const int INITIAL_LOAD_COUNT = 10;
+
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
@@ -111,7 +113,7 @@ namespace HudlRT.ViewModels
             base.OnActivate();
 
             AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString("g"), Parameter.selectedCutup.cutupId);
-            Clips = new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order < 10).ToList());
+            Clips = new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order < INITIAL_LOAD_COUNT).ToList());
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
@@ -145,19 +147,26 @@ namespace HudlRT.ViewModels
         protected override void OnViewLoaded(object view)
         {
             initialClipPreload();
+            AddClipsToGrid(Parameter.selectedCutup.clips.Count);
         }
 
-        private async void AddClipsToGrid(int count)
+        private async Task AddClipsToGrid(int count)
         {
-            int currentCount = Clips.Count;
-            Clips.AddRange(Parameter.selectedCutup.clips.Where(u => u.order <= (currentCount + count)).Where(u => u.order > currentCount));
-            //await loopThroughClipsAndAdd();
+            foreach (Clip clip in Parameter.selectedCutup.clips)
+            {
+                if (clip.order > INITIAL_LOAD_COUNT)
+                {
+                    await Task.Run(() => Clips.Add(clip));
+                }
+            }
         }
 
-        private async void loopThroughClipsAndAdd()
+        private async Task loopThroughClipsAndAdd(Clip clip)
         {
-            
+
+            //return new Task();
         }
+
 
         private void GetAngleNames()
         {
