@@ -19,6 +19,8 @@ namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
+        private const int INITIAL_LOAD_COUNT = 1;
+
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
@@ -111,16 +113,13 @@ namespace HudlRT.ViewModels
             base.OnActivate();
 
             AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString("g"), Parameter.selectedCutup.cutupId);
-
-            
-            Clips = Parameter.selectedCutup.clips;
+            Clips = new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order < INITIAL_LOAD_COUNT).ToList());
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
                 GetAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-                initialClipPreload();
             }
             CutupName = Parameter.selectedCutup.name;
             
@@ -145,10 +144,31 @@ namespace HudlRT.ViewModels
             }
         }
 
+        protected override async void OnViewLoaded(object view)
+        {
+            AddClipsToGrid(Parameter.selectedCutup.clips.Count);
+            initialClipPreload();
+        }
+
+        private async Task AddClipsToGrid(int count)
+        {
+            foreach (Clip clip in new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order >= INITIAL_LOAD_COUNT).ToList()))
+            {
+                await Task.Run(() => Clips.Add(clip));
+            }
+        }
+
+        private async Task loopThroughClipsAndAdd(Clip clip)
+        {
+
+            //return new Task();
+        }
+
+
         private void GetAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -163,7 +183,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
