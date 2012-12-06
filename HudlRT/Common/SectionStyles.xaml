@@ -275,7 +275,7 @@
         </Setter>
     </Style>
     <Style x:Key="Section_ListViewItemStyle_Standard" TargetType="ListViewItem">
-        <Setter Property="Height" Value="150"/>
+        <Setter Property="Height" Value="144"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Margin" Value="0,0,0,4" />

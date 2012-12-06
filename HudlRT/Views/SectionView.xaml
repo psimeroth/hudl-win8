@@ -105,7 +105,7 @@
             </Grid>
             <!--End TopTitleGrid-->
 
-            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,20" Visibility="{Binding ColVisibility}">
+            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,0" Visibility="{Binding ColVisibility}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
