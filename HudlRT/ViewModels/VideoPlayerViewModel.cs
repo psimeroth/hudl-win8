@@ -19,7 +19,7 @@ namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
-        private static const int INITIAL_LOAD_COUNT = 10;
+        private const int INITIAL_LOAD_COUNT = 1;
 
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
@@ -144,20 +144,17 @@ namespace HudlRT.ViewModels
             }
         }
 
-        protected override void OnViewLoaded(object view)
+        protected override async void OnViewLoaded(object view)
         {
-            initialClipPreload();
             AddClipsToGrid(Parameter.selectedCutup.clips.Count);
+            initialClipPreload();
         }
 
         private async Task AddClipsToGrid(int count)
         {
-            foreach (Clip clip in Parameter.selectedCutup.clips)
+            foreach (Clip clip in new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order >= INITIAL_LOAD_COUNT).ToList()))
             {
-                if (clip.order > INITIAL_LOAD_COUNT)
-                {
-                    await Task.Run(() => Clips.Add(clip));
-                }
+                await Task.Run(() => Clips.Add(clip));
             }
         }
 

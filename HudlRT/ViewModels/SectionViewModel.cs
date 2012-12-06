@@ -300,27 +300,20 @@ namespace HudlRT.ViewModels
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
         {
-            if (Parameter.sectionViewCutupSelected == cutup)
+            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
+                cutup.Clips = response.clips;
+                string[] clipCount = cutup.ClipCount.ToString().Split(' ');
+                UpdateCachedParameter();
+                Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
+                Parameter.sectionViewCutupSelected = cutup;
+                //Parameter.videoPageClips = Parameter.selectedCutup.clips;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
             }
             else
             {
-                ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
-                if (response.status == SERVICE_RESPONSE.SUCCESS)
-                {
-                    cutup.Clips = response.clips;
-                    string[] clipCount = cutup.ClipCount.ToString().Split(' ');
-                    UpdateCachedParameter();
-                    Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
-                    Parameter.sectionViewCutupSelected = cutup;
-                    //Parameter.videoPageClips = Parameter.selectedCutup.clips;
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
-                }
-                else
-                {
-                    Common.APIExceptionDialog.ShowExceptionDialog(null, null);
-                }
+                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
             }
         }
 
