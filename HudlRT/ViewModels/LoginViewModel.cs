@@ -7,12 +7,24 @@ using Windows.Storage;
 using HudlRT.Models;
 using Windows.UI.Xaml.Input;
 using Windows.UI.ApplicationSettings;
+using Windows.Security.Credentials;
+using System.Collections.Generic;
 
 namespace HudlRT.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        public string UserName { get; set; }
+        private string userName;
+        public string UserName
+        {
+            get { return userName; }
+            set
+            {
+                userName = value;
+                NotifyOfPropertyChange(() => UserName);
+            }
+        }
+
         public string Password { get; set; }
         private string loginFeedback;
         public string LoginFeedback
@@ -60,6 +72,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private bool rememberMe;
+        public bool RememberMe
+        {
+            get { return rememberMe; }
+            set
+            {
+                rememberMe = value;
+                NotifyOfPropertyChange(() => RememberMe);
+            }
+        }
+
         private readonly INavigationService navigationService;
         public LoginViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -76,6 +99,31 @@ namespace HudlRT.ViewModels
             ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
+            RememberMe = false;
+
+            //If Username exists in roaming settings, enter it for user
+            String username = AppDataAccessor.GetUsername();
+            if (username != null)
+            {
+                UserName = username;
+
+                try
+                {
+                    PasswordVault vault = new PasswordVault();
+                    IReadOnlyList<PasswordCredential> passwords = vault.FindAllByUserName(username);
+
+                    // If a sinlge password match is found automatically log in
+                    if (passwords.Count == 1)
+                    {
+                        RememberMe = true;
+                        Password = passwords[0].Password;
+                        LoginAttempt();
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
         }
 
         public async void LoginAttempt()
@@ -103,6 +151,7 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 AppDataAccessor.SetUsername(UserName);
+                
                 navigationService.NavigateToViewModel<HubViewModel>();
             }
             else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
