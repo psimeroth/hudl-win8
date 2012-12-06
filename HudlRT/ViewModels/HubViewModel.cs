@@ -14,9 +14,8 @@ namespace HudlRT.ViewModels
 {
     public class HubViewModel : ViewModelBase
     {
-        private Model model;
         private readonly INavigationService navigationService;
-        public PagePassParameter Parameter { get; set; }
+        public CachedParameter Parameter { get; set; }
         private long? lastViewedId = null;
 
         private bool noGamesGrid;
@@ -84,16 +83,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private BindableCollection<Season> seasons;
-        public BindableCollection<Season> Seasons
-        {
-            get { return seasons; }
-            set
-            {
-                seasons = value;
-                NotifyOfPropertyChange(() => Seasons);
-            }
-        }
 
         private BindableCollection<Season> seasonsForDropDown;
         public BindableCollection<Season> SeasonsDropDown
@@ -103,17 +92,6 @@ namespace HudlRT.ViewModels
             {
                 seasonsForDropDown = value;
                 NotifyOfPropertyChange(() => SeasonsDropDown);
-            }
-        }
-
-        private BindableCollection<Game> games;
-        public BindableCollection<Game> Games
-        {
-            get { return games; }
-            set
-            {
-                games = value;
-                NotifyOfPropertyChange(() => Games);
             }
         }
 
@@ -139,16 +117,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private Game otherRecentGameFootage;
-        public Game OtherRecentGameFootage
-        {
-            get { return otherRecentGameFootage; }
-            set
-            {
-                otherRecentGameFootage = value;
-                NotifyOfPropertyChange(() => OtherRecentGameFootage);
-            }
-        }
 
         private BindableCollection<Category> nextGameCategories;
         public BindableCollection<Category> NextGameCategories
@@ -172,26 +140,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private BindableCollection<Cutup> cutups;
-        public BindableCollection<Cutup> Cutups
-        {
-            get { return cutups; }
-            set
-            {
-                cutups = value;
-                NotifyOfPropertyChange(() => Cutups);
-            }
-        }
-        private Team selectedTeam;
-        public Team SelectedTeam
-        {
-            get { return selectedTeam; }
-            set
-            {
-                selectedTeam = value;
-                NotifyOfPropertyChange(() => SelectedTeam);
-            }
-        }
         private Season selectedSeason;
         public Season SelectedSeason
         {
@@ -202,29 +150,6 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => SelectedSeason);
             }
         }
-        private Game selectedGame;
-        public Game SelectedGame
-        {
-            get { return selectedGame; }
-            set
-            {
-                selectedGame = value;
-                NotifyOfPropertyChange(() => SelectedGame);
-            }
-        }
-        private Category selectedCategory;
-        public Category SelectedCategory
-        {
-            get { return selectedCategory; }
-            set
-            {
-                selectedCategory = value;
-                NotifyOfPropertyChange(() => SelectedCategory);
-            }
-        }
-
-        private BindableCollection<Clip> Clips = new BindableCollection<Clip>();
-
 
         // Bound to the visibility of the progress ring. Swaps with 
         private string progressRingVisibility;
@@ -257,47 +182,76 @@ namespace HudlRT.ViewModels
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
 
+        public async void NavigateToSectionPage()
+        {
+            UpdateCachedParameter();
+            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+        }
+
         protected override void OnActivate()
         {
             base.OnActivate();
             if (Parameter != null)
             {
-                Teams = Parameter.teams;
-                Games = Parameter.games;
-                Seasons = Parameter.seasons;
-                Cutups = Parameter.cutups;
-                SelectedTeam = Parameter.selectedTeam;
-                SelectedSeason = Parameter.selectedSeason;
-                SelectedGame = Parameter.selectedGame;
-                SelectedCategory = Parameter.selectedCategory;
-            }
-            else
-            {
-                model = new Model();
-                //GetTeams();
-
-                if (AppDataAccessor.LastViewedSet())
+                SeasonsDropDown = Parameter.seasonsDropDown;
+                SelectedSeason = Parameter.seasonSelected;
+                if (Parameter.hubViewNextGame != null && Parameter.hubViewPreviousGame != null)
                 {
-                    LastViewedResponse response = AppDataAccessor.GetLastViewed();
-                    LastViewedName = response.name;
-                    LastViewedTimeStamp = "Viewed: " + response.timeStamp;
-                    lastViewedId = (long)response.ID;
+                    NextGame = Parameter.hubViewNextGame;
+                    PreviousGame = Parameter.hubViewPreviousGame;
+                    NextGameCategories = NextGame.categories;
+                    PreviousGameCategories = PreviousGame.categories;
                 }
                 else
                 {
-                    LastViewedName = "Hey Rookie!";
-                    LastViewedTimeStamp = "You haven't watched anything yet!";
+                    FindNextPreviousGames(SelectedSeason);
                 }
+            }
+            else
+            {
                 PopulateDropDown();
+            }
+
+            if (AppDataAccessor.LastViewedSet())
+            {
+                LastViewedResponse response = AppDataAccessor.GetLastViewed();
+                LastViewedName = response.name;
+                LastViewedTimeStamp = "Viewed: " + response.timeStamp;
+                lastViewedId = (long)response.ID;
+            }
+            else
+            {
+                LastViewedName = "Hey Rookie!";
+                LastViewedTimeStamp = "You haven't watched anything yet!";
             }
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
 
-        public async void NavigateToSectionPage()
+        public void UpdateCachedParameter()
         {
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            if (Parameter == null)
+            {
+                Parameter = new CachedParameter();
+            }
+            Parameter.seasonsDropDown = SeasonsDropDown;
+            Parameter.seasonSelected = SelectedSeason;
+            Parameter.hubViewNextGame = NextGame;
+            Parameter.hubViewPreviousGame = PreviousGame;
+        }
+
+        public void UpdateParameterOnSeasonChange()
+        {
+            if (Parameter != null)
+            {
+                Parameter.sectionViewCategories = null;
+                Parameter.sectionViewCategorySelected = null;
+                Parameter.sectionViewCutups = null;
+                Parameter.sectionViewGames = null;
+                Parameter.sectionViewGameSelected = null;
+                Parameter.selectedCutup = null;
+            }
         }
 
         public async void PopulateDropDown()
@@ -332,13 +286,13 @@ namespace HudlRT.ViewModels
                 SeasonsDropDown = SeasonsDropDownSort;
                 if (foundSavedSeason)
                 {
-                    FindNextGame(SelectedSeason);
+                    FindNextPreviousGames(SelectedSeason);
                     NotifyOfPropertyChange(() => SelectedSeason);
                 }
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
                     SelectedSeason = SeasonsDropDown[0];
-                    FindNextGame(SelectedSeason);
+                    FindNextPreviousGames(SelectedSeason);
                     NotifyOfPropertyChange(() => SelectedSeason);
                 }
                 //populate this/next game
@@ -351,7 +305,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async void FindNextGame(Season s)//sets gameThisWeek and gameNextWeek
+        public async void FindNextPreviousGames(Season s)//sets gameThisWeek and gameNextWeek
         {
             GameResponse response = await ServiceAccessor.GetGames(s.owningTeam.teamID.ToString(), s.seasonID.ToString());
             NoGamesGrid = false;
@@ -444,12 +398,22 @@ namespace HudlRT.ViewModels
             }
         }
 
+        internal void SeasonSelected(object p)
+        {
+            var selectedSeason = (Season)p;
+            UpdateParameterOnSeasonChange();
+            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+            FindNextPreviousGames(selectedSeason);
+        }
+
         public void NextCategorySelected(ItemClickEventArgs eventArgs)
         {
             
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = NextGame.gameId};
-            navigationService.NavigateToViewModel<SectionViewModel>(param);
+            UpdateCachedParameter();
+            Parameter.categoryId = category.categoryId;
+            Parameter.gameId = NextGame.gameId;
+            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
 
         }
 
@@ -457,8 +421,10 @@ namespace HudlRT.ViewModels
         {
 
             var category = (Category)eventArgs.ClickedItem;
-            HubSectionParameter param = new HubSectionParameter { categoryId = category.categoryId, gameId = PreviousGame.gameId };
-            navigationService.NavigateToViewModel<SectionViewModel>(param);
+            UpdateCachedParameter();
+            Parameter.categoryId = category.categoryId;
+            Parameter.gameId = PreviousGame.gameId;
+            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
 
         }
 
@@ -472,14 +438,9 @@ namespace HudlRT.ViewModels
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
                     cutup.Clips = response.clips;
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PagePassParameter
-                    {
-                        selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name }
-                    });
-                }
-                else
-                {
-
+                    UpdateCachedParameter();
+                    Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
                 }
                 ProgressRingVisibility = "Collapsed";
             }
@@ -494,11 +455,6 @@ namespace HudlRT.ViewModels
             navigationService.NavigateToViewModel<LoginViewModel>();
         }
 
-        internal void SeasonSelected(object p)
-        {
-            var selectedSeason = (Season)p;
-            AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
-            FindNextGame(selectedSeason);
-        }
+        
     }
 }
