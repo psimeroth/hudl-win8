@@ -452,11 +452,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void LogOut()
-        {
-            navigationService.NavigateToViewModel<LoginViewModel>();
-        }
-
         
     }
 }

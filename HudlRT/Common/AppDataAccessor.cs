@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Security.Credentials;
 
 namespace HudlRT.Common
 {
@@ -32,6 +33,7 @@ namespace HudlRT.Common
         public static string SEASON_ID = "hudl-seasonID";
         public static string USERNAME = "UserName";
         public static string PLAYBACK = "hudl-playbackType";
+        public static string PASSWORD = "hudl-password";
 
         private static T GetRoamingSetting<T>(string keyName)
         {
@@ -118,6 +120,49 @@ namespace HudlRT.Common
         public static void SetPlaybackType(int type)
         {
             SetRoamingSetting<int>(PLAYBACK, type);
+        }
+
+        public static PasswordCredential GetPassword()
+        {
+            String username = GetUsername();
+            if (username != null)
+            {
+                try
+                {
+                    PasswordVault vault = new PasswordVault();
+                    IReadOnlyList<PasswordCredential> credentials = vault.FindAllByResource(PASSWORD);
+                    return vault.Retrieve(PASSWORD, credentials[0].UserName);
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public static void SetPassword(string password)
+        {
+            String username = GetUsername();
+            PasswordCredential cred = new PasswordCredential(PASSWORD, username, password);
+            PasswordVault vault = new PasswordVault();
+            vault.Add(cred);
+        }
+
+        public static void RemovePasswords()
+        {
+            PasswordVault vault = new PasswordVault();
+            try
+            {
+                IReadOnlyList<PasswordCredential> credentials = vault.FindAllByResource(PASSWORD);
+                foreach (PasswordCredential cred in credentials)
+                {
+                    vault.Remove(cred);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 }
