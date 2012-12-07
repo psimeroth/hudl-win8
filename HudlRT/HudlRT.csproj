@@ -167,6 +167,7 @@
     <Content Include="Assets\dark_BG_Tiled.png" />
     <Content Include="Assets\hudl-hi-res-white-medium.png" />
     <Content Include="Assets\hudl-hi-res-white-small.png" />
+    <Content Include="Assets\hudl-logo-big-tile.png" />
     <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
