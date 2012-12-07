@@ -77,10 +77,10 @@ namespace HudlRT.Views
             loginImage.Width = Width;
 
             //If Username exists in roaming settings, enter it for user
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            if (roamingSettings.Values["UserName"] != null)
+            String username = AppDataAccessor.GetUsername();
+            if (username != null)
             {
-                UserName.Text = roamingSettings.Values["UserName"].ToString();
+                //UserName.Text = username;
                 UserName.SelectionStart = UserName.Text.ToCharArray().Length;
                 UserName.SelectionLength = 0;
             }

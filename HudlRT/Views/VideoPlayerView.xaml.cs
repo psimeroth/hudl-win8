@@ -103,7 +103,17 @@ namespace HudlRT.Views
             if (initialPoint.Y - currentPoint.Y >= 50 && isGridCollapsed)
                 btnExpandGrid_Click(null, null);
             else if (initialPoint.Y - currentPoint.Y <= -50 && !isGridCollapsed)
-                btnCollapseGrid_Click(null, null);
+            {
+                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled)
+                {
+                    FullscreenToggle();
+                }
+                else
+                {
+                    btnCollapseGrid_Click(null, null);
+                }
+            }
             else if (initialPoint.Y - currentPoint.Y <= -50 && isGridCollapsed)
                 FullscreenToggle();
 
@@ -163,7 +173,7 @@ namespace HudlRT.Views
 
             var dataSource = fif.GetVirtualizedFilesVector();
 
-           PagePassParameter pass = (PagePassParameter)e.Parameter;
+            CachedParameter pass = (CachedParameter)e.Parameter;
            string[] displayColumns = pass.selectedCutup.displayColumns;
            var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
            string columnDefinitions = "";
@@ -283,6 +293,12 @@ namespace HudlRT.Views
                 videoContainer.Height = _previousVideoContainerSize.Height;
                 videoMediaElement.Width = _previousVideoSize.Width;
                 videoMediaElement.Height = _previousVideoSize.Height;
+
+                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled && isGridCollapsed)
+                {
+                    btnExpandGrid_Click(null, null);
+                }
                 
                 VideoGrid.Margin = new Thickness(0, 70, 0, 0);
                 
@@ -495,6 +511,7 @@ namespace HudlRT.Views
             videoContainer.Height = 500;
             videoMediaElement.Height = 500;
             videoMediaElement.Width = expandedVideoSizeWidth;
+
             isGridCollapsed = true;
         }
 
@@ -508,6 +525,37 @@ namespace HudlRT.Views
         private void ListViewItemClicked(object sender, ItemClickEventArgs e)
         {
             itemClicked = true;
+        }
+
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+            if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled)
+            {
+                if (IsFullscreen)
+                {
+                    videoContainer.Width = Window.Current.Bounds.Width;
+                    videoContainer.Height = Window.Current.Bounds.Height;
+                    videoMediaElement.Width = Window.Current.Bounds.Width;
+                    videoMediaElement.Height = Window.Current.Bounds.Height;
+                    VideoGrid.Margin = new Thickness(0, 0, 0, 0);
+                }
+                else if (isGridCollapsed)
+                {
+                    btnExpandGrid_Click(null, null);
+                }
+            }
+            else if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.FullScreenLandscape)
+            {
+                if (IsFullscreen)
+                {
+                    videoContainer.Width = Window.Current.Bounds.Width;
+                    videoContainer.Height = Window.Current.Bounds.Height;
+                    videoMediaElement.Width = Window.Current.Bounds.Width;
+                    videoMediaElement.Height = Window.Current.Bounds.Height;
+                    VideoGrid.Margin = new Thickness(0, 0, 0, 0);
+                }
+            }
         }
     }
 }
