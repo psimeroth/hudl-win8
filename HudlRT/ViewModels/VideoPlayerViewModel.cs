@@ -19,7 +19,7 @@ namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
-        private const int INITIAL_LOAD_COUNT = 1;
+        private const int INITIAL_LOAD_COUNT = 2;
 
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
@@ -122,12 +122,18 @@ namespace HudlRT.ViewModels
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
             }
             CutupName = Parameter.selectedCutup.name;
-            
-            if (!AppDataAccessor.PlaybackTypeSet())	
+
+
+            int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
+            if (playbackTypeResult == null)
             {
                 AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
+                playbackType = PlaybackType.once;
             }
-            playbackType = (PlaybackType)AppDataAccessor.GetPlaybackType();
+            else
+            {
+                playbackType = (PlaybackType)playbackTypeResult;
+            }
             setToggleButtonContent();
 
             dispRequest = new DisplayRequest();
@@ -189,29 +195,26 @@ namespace HudlRT.ViewModels
 
         private void getAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                string angleNameKey = String.Concat(teamID.ToString(), "-", angleName.Name);
-                if (roamingSettings.Values[angleNameKey] == null)
+                bool? angleChecked = AppDataAccessor.GetAnglePreference(angleName.Name);
+
+                if (angleChecked == null)
                 {
                     angleName.IsChecked = true;
                 }
                 else
                 {
-                    angleName.IsChecked = (bool)roamingSettings.Values[angleNameKey];
+                    angleName.IsChecked = (bool)angleChecked;
                 }
             }
         }
 
         private void saveAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] = angleName.IsChecked;
+                AppDataAccessor.SetAnglePreference(angleName.Name, angleName.IsChecked);
             }
         }
 
