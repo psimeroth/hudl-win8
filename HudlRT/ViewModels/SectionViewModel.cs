@@ -172,7 +172,7 @@ namespace HudlRT.ViewModels
                 if (Categories.Any())
                 {
                     // Find the selected category
-                    SelectedCategory = Categories.First(cat => cat.CategoryId == categoryID);
+                    SelectedCategory = Categories.FirstOrDefault(cat => cat.CategoryId == categoryID);
 
                     // If the category isn't found set the first as the default
                     if (SelectedCategory == null)
