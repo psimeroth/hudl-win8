@@ -11,6 +11,14 @@
     xmlns:mmppf="using:Microsoft.PlayerFramework"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Common/VIdeoPlayerTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
     <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged">
         <Grid.Background>
             <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
@@ -94,9 +102,10 @@
                     </Border>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollBarVisibility="Hidden" ZoomMode="Disabled" Grid.Row="1" Margin="0">
-                    <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
+                    <common:VideoPlayerListView x:Name="Clips" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
                             ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True">
-                    </ListView>
+
+                    </common:VideoPlayerListView>
                 </ScrollViewer>
             </Grid>
 
@@ -105,18 +114,17 @@
 
         <Grid x:Name="VideoGrid" VerticalAlignment="Top" Margin="0,70,0,0">
             <ContentControl x:Name="videoContainer"
-                            KeyUp="VideoContainer_KeyUp"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Bottom"
                             Height="350"
                             DataContext="{Binding SelectedAngle}">
-                <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
+                <mmppf:MediaPlayer x:Name="videoMediaElement" Width="1100" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
                                    AutoPlay="True"
                                    MediaOpened="videoElement_MediaOpened"
                                    MediaEnded="videoMediaElement_MediaEnded"
                                    MediaFailed="videoMediaElement_MediaFailed"
                                    IsFullScreen="True"
-                                   AutoHide="False"
+                                   AutoHide="False" 
                                    Tapped="videoMediaElement_Tapped"
                                    IsSkipAheadEnabled="False"
                                    IsSkipBackEnabled="False"

@@ -307,6 +307,8 @@ namespace HudlRT.ViewModels
                 string[] clipCount = cutup.ClipCount.ToString().Split(' ');
                 UpdateCachedParameter();
                 Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
+                Parameter.sectionViewCutupSelected = cutup;
+                //Parameter.videoPageClips = Parameter.selectedCutup.clips;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
             }
             else

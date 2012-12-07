@@ -26,6 +26,10 @@ namespace HudlRT.Parameters
 
         public BindableCollection<CutupViewModel> sectionViewCutups { get; set; }
 
+        public CutupViewModel sectionViewCutupSelected { get; set; }
+
+        public BindableCollection<Clip> videoPageClips { get; set; }
+
         public Cutup selectedCutup { get; set; }
     }
 }

@@ -212,17 +212,17 @@ namespace HudlRT.ViewModels
                 PopulateDropDown();
             }
 
-            if (AppDataAccessor.LastViewedSet())
-            {
-                LastViewedResponse response = AppDataAccessor.GetLastViewed();
-                LastViewedName = response.name;
-                LastViewedTimeStamp = "Viewed: " + response.timeStamp;
-                lastViewedId = (long)response.ID;
-            }
-            else
+            LastViewedResponse response = AppDataAccessor.GetLastViewed();
+            if (response.ID == null)
             {
                 LastViewedName = "Hey Rookie!";
                 LastViewedTimeStamp = "You haven't watched anything yet!";
+            }
+            else
+            {
+                LastViewedName = response.name;
+                LastViewedTimeStamp = "Viewed: " + response.timeStamp;
+                lastViewedId = (long)response.ID;
             }
 
             ColVisibility = "Visible";
@@ -263,9 +263,9 @@ namespace HudlRT.ViewModels
                 long teamID = -1;
                 long seasonID = -1;
                 bool foundSavedSeason = false;
-                if (AppDataAccessor.TeamContextSet())
+                TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
+                if (teamContext.seasonID != null && teamContext.teamID != null)
                 {
-                    TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
                     teamID = (long)teamContext.teamID;
                     seasonID = (long)teamContext.seasonID;
                 }
@@ -291,7 +291,9 @@ namespace HudlRT.ViewModels
                 }
                 if (!foundSavedSeason && SeasonsDropDown.Count > 0)
                 {
-                    SelectedSeason = SeasonsDropDown[0];
+                    int year = DateTime.Now.Year;
+                    SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= year) ?? SeasonsDropDown[0];
+
                     FindNextPreviousGames(SelectedSeason);
                     NotifyOfPropertyChange(() => SelectedSeason);
                 }
@@ -448,11 +450,6 @@ namespace HudlRT.ViewModels
             {
                 navigationService.NavigateToViewModel<SectionViewModel>();
             }
-        }
-
-        public void LogOut()
-        {
-            navigationService.NavigateToViewModel<LoginViewModel>();
         }
 
         

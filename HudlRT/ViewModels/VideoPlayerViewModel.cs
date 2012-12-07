@@ -19,6 +19,8 @@ namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
+        private const int INITIAL_LOAD_COUNT = 2;
+
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
@@ -111,24 +113,27 @@ namespace HudlRT.ViewModels
             base.OnActivate();
 
             AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString("g"), Parameter.selectedCutup.cutupId);
-
-            
-            Clips = Parameter.selectedCutup.clips;
+            Clips = new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order < INITIAL_LOAD_COUNT).ToList());
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
                 GetAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-                initialClipPreload();
             }
             CutupName = Parameter.selectedCutup.name;
-            
-            if (!AppDataAccessor.PlaybackTypeSet())	
+
+
+            int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
+            if (playbackTypeResult == null)
             {
                 AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
+                playbackType = PlaybackType.once;
             }
-            playbackType = (PlaybackType)AppDataAccessor.GetPlaybackType();
+            else
+            {
+                playbackType = (PlaybackType)playbackTypeResult;
+            }
             setToggleButtonContent();
 
             dispRequest = new DisplayRequest();
@@ -145,10 +150,24 @@ namespace HudlRT.ViewModels
             }
         }
 
+        protected override async void OnViewLoaded(object view)
+        {
+            AddClipsToGrid(Parameter.selectedCutup.clips.Count);
+            initialClipPreload();
+        }
+
+        private async Task AddClipsToGrid(int count)
+        {
+            foreach (Clip clip in new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order >= INITIAL_LOAD_COUNT).ToList()))
+            {
+                await Task.Run(() => Clips.Add(clip));
+            }
+        }
+
         private void GetAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -163,7 +182,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -176,39 +195,36 @@ namespace HudlRT.ViewModels
 
         private void getAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                string angleNameKey = String.Concat(teamID.ToString(), "-", angleName.Name);
-                if (roamingSettings.Values[angleNameKey] == null)
+                bool? angleChecked = AppDataAccessor.GetAnglePreference(angleName.Name);
+
+                if (angleChecked == null)
                 {
                     angleName.IsChecked = true;
                 }
                 else
                 {
-                    angleName.IsChecked = (bool)roamingSettings.Values[angleNameKey];
+                    angleName.IsChecked = (bool)angleChecked;
                 }
             }
         }
 
         private void saveAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] = angleName.IsChecked;
+                AppDataAccessor.SetAnglePreference(angleName.Name, angleName.IsChecked);
             }
         }
 
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
             var clip = (Clip)eventArgs.ClickedItem;
-            setClip(clip);
+            SetClip(clip);
         }
 
-        public void setClip(Clip clip)
+        public void SetClip(Clip clip)
         {
             if (clip != null && SelectedClip.clipId != clip.clipId)
             {
@@ -235,7 +251,7 @@ namespace HudlRT.ViewModels
             
             if (SelectedAngle == null)
             {
-                goToNextClip();
+                GoToNextClip();
             }
             else
             {
@@ -255,7 +271,7 @@ namespace HudlRT.ViewModels
                         if (filteredAngles.Any())
                         {
                             Angle nextAngle = filteredAngles[0];
-                            SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                            SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : new Angle(nextAngle.clipAngleId, nextAngle.fileLocation);
                         }
                         else
                         {
@@ -264,13 +280,13 @@ namespace HudlRT.ViewModels
                     }
                     else if(eventType == NextAngleEvent.buttonClick || playbackType == PlaybackType.next)
                     {
-                        goToNextClip();
+                        GoToNextClip();
                     }
                 }
             }
         }
 
-        private void goToNextClip()
+        public void GoToNextClip()
         {
             if (Clips.Count > 1)
             {
@@ -290,7 +306,7 @@ namespace HudlRT.ViewModels
         {
             if (SelectedAngle == null)
             {
-                goToPreviousClip();
+                GoToPreviousClip();
             }
             else
             {
@@ -305,12 +321,12 @@ namespace HudlRT.ViewModels
                 }
                 else
                 {
-                    goToPreviousClip();
+                    GoToPreviousClip();
                 }
             }
         }
 
-        private void goToPreviousClip()
+        public void GoToPreviousClip()
         {
             if (Clips.Count > 1)
             {
@@ -323,7 +339,13 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void angleFilter()
+        public void ResetClip()
+        {
+            Angle firstAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+            SelectedAngle = (firstAngle != null && firstAngle.isPreloaded) ? new Angle(firstAngle.clipAngleId, firstAngle.preloadFile.Path) : new Angle(firstAngle.clipAngleId, firstAngle.fileLocation);
+        }
+
+        public void AngleFilter()
         {
             List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
 
@@ -347,16 +369,16 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void playbackToggle()
+        private void playbackToggle()
         {
             playbackType = (PlaybackType)(((int)playbackType + 1) % Enum.GetNames(typeof(PlaybackType)).Length);
             
             setToggleButtonContent();
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            roamingSettings.Values["hudl-playbackType"] = (int)playbackType;
+
+            AppDataAccessor.SetPlaybackType((int)playbackType);
         }
 
-        public void setToggleButtonContent()
+        private void setToggleButtonContent()
         {
             if (playbackType == PlaybackType.once)
             {
@@ -427,7 +449,6 @@ namespace HudlRT.ViewModels
                 }
                 catch (Exception e)
                 {
-
                 }
             } 
         }

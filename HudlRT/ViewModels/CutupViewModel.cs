@@ -20,6 +20,7 @@ namespace HudlRT.ViewModels
         private string[] _displayColumns { get; set; }
         private bool _clipLoading { get; set; }
         private double _opacity { get; set; }
+        private string _thumbnail { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
@@ -29,6 +30,7 @@ namespace HudlRT.ViewModels
             cutup._name = cutupDTO.Name;
             cutup._clipLoading = false;
             cutup._opacity = 1.0;
+            cutup._thumbnail = cutupDTO.Thumbnailpath ?? "ms-appx:///Assets/Hudl_Metro150 thumbCentered.png";
             return cutup;
         }
 
@@ -40,6 +42,8 @@ namespace HudlRT.ViewModels
             cutup._name = cutupDTO.name;
             cutup._clipLoading = false;
             cutup._opacity = 1.0;
+            cutup._thumbnail = cutupDTO.thumbnailLocation ?? "ms-appx:///Assets/Hudl_Metro150 thumbCentered.png";
+
             return cutup;
         }
 
@@ -51,6 +55,17 @@ namespace HudlRT.ViewModels
                 if (value == _name) return;
                 _name = value;
                 NotifyOfPropertyChange(() => Name);
+            }
+        }
+
+        public string Thumbnail
+        {
+            get { return _thumbnail; }
+            set
+            {
+                if (value == _thumbnail) return;
+                _thumbnail = value;
+                NotifyOfPropertyChange(() => Thumbnail);
             }
         }
 

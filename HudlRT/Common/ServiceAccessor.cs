@@ -383,7 +383,7 @@ namespace HudlRT.Common
                 //response.StatusCode 404 500 401
                 return await response.Content.ReadAsStringAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return "";
             }
