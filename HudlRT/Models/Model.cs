@@ -154,6 +154,7 @@ namespace HudlRT.Models
         public long cutupId { get; set; }
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
+        public string thumbnailLocation { get; set; }
         public Cutup()
         {
             clips = new BindableCollection<Clip>();
@@ -165,6 +166,7 @@ namespace HudlRT.Models
             cutup.cutupId = cutupDTO.CutupID;
             cutup.clipCount = cutupDTO.ClipCount;
             cutup.name = cutupDTO.Name;
+            cutup.thumbnailLocation = cutupDTO.Thumbnailpath;
             return cutup;
         }
     }

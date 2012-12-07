@@ -22,10 +22,5 @@ namespace HudlRT.Views
         {
             this.InitializeComponent();
         }
-
-        private void ListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Categories.ScrollIntoView(Categories.SelectedItem);
-        }
     }
 }

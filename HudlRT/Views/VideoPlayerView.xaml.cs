@@ -106,7 +106,17 @@ namespace HudlRT.Views
             if (initialPoint.Y - currentPoint.Y >= 50 && isGridCollapsed)
                 btnExpandGrid_Click(null, null);
             else if (initialPoint.Y - currentPoint.Y <= -50 && !isGridCollapsed)
-                btnCollapseGrid_Click(null, null);
+            {
+                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled)
+                {
+                    FullscreenToggle();
+                }
+                else
+                {
+                    btnCollapseGrid_Click(null, null);
+                }
+            }
             else if (initialPoint.Y - currentPoint.Y <= -50 && isGridCollapsed)
                 FullscreenToggle();
 
@@ -165,49 +175,49 @@ namespace HudlRT.Views
                 Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale, false);
 
             var dataSource = fif.GetVirtualizedFilesVector();
-            
-            PagePassParameter pass = (PagePassParameter)e.Parameter;
-            string[] displayColumns = pass.selectedCutup.displayColumns;
-            var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
-            string columnDefinitions = "";
-            string rowText = "";
-            if (displayColumns != null)
-            {
-                for (int i = 0; i < displayColumns.Length; i++)
-                {
-                    ColumnDefinition col = new ColumnDefinition();
-                    col.Width = new GridLength(130);
-                    gridHeaders.ColumnDefinitions.Add(col);
-                    if (i != displayColumns.Length - 1)
-                    {
-                        columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
-                    }
-                    else
-                    {
-                        columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
-                    }
-                    rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
-                    Border b = new Border();
-                    b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
-                    b.BorderThickness = new Thickness(1, 0, 1, 0);
-                    TextBlock t = new TextBlock();
-                    t.Text = displayColumns[i];
-                    b.SetValue(Grid.RowProperty, 0);
-                    b.SetValue(Grid.ColumnProperty, i);
-                    t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
-                    t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-                    b.Child = t;
-                    gridHeaders.Children.Add(b);
-                }
-            }
-            template = template.Replace("@", columnDefinitions).Replace("%", rowText);
-           
-            var dt = (DataTemplate)XamlReader.Load(template);
-            Clips.ItemTemplate = dt;
-            //btnExpandGrid_Click(null, null);
 
-            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.listView = Clips;
+           CachedParameter pass = (CachedParameter)e.Parameter;
+           string[] displayColumns = pass.selectedCutup.displayColumns;
+           var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
+           string columnDefinitions = "";
+           string rowText = "";
+           if (displayColumns != null)
+           {
+               for (int i = 0; i < displayColumns.Length; i++)
+               {
+                   ColumnDefinition col = new ColumnDefinition();
+                   col.Width = new GridLength(130);
+                   gridHeaders.ColumnDefinitions.Add(col);
+                   if (i != displayColumns.Length - 1)
+                   {
+                       columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
+                   }
+                   else
+                   {
+                       columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
+                   }
+                   rowText = rowText + @"<TextBlock  Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
+                   Border b = new Border();
+                   b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
+                   b.BorderThickness = new Thickness(1,0,1,0);
+                   TextBlock t = new TextBlock();
+                   t.Text = displayColumns[i];
+                   b.SetValue(Grid.RowProperty, 0);
+                   b.SetValue(Grid.ColumnProperty, i);
+                   t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
+                   t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                   b.Child = t;
+                   gridHeaders.Children.Add(b);
+               }
+           }
+           template = template.Replace("@", columnDefinitions).Replace("%", rowText);
+
+           var dt = (DataTemplate)XamlReader.Load(template);
+           Clips.ItemTemplate = dt;
+           //btnExpandGrid_Click(null, null);
+
+           VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+           vm.listView = Clips;
         }
 
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -282,6 +292,12 @@ namespace HudlRT.Views
                 videoContainer.Height = _previousVideoContainerSize.Height;
                 videoMediaElement.Width = _previousVideoSize.Width;
                 videoMediaElement.Height = _previousVideoSize.Height;
+
+                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled && isGridCollapsed)
+                {
+                    btnExpandGrid_Click(null, null);
+                }
                 
                 VideoGrid.Margin = new Thickness(0, 70, 0, 0);
                 
@@ -455,11 +471,11 @@ namespace HudlRT.Views
             if (!isGridCollapsed && !IsFullscreen)
             {
                 smallVideoSizeWidth = videoMediaElement.ActualWidth;
-                expandedVideoSizeWidth = smallVideoSizeWidth * (1 / .7); ;
+                expandedVideoSizeWidth = smallVideoSizeWidth; ;
             }
             if (isGridCollapsed && !IsFullscreen)
             {
-                smallVideoSizeWidth = videoMediaElement.ActualWidth * .7;
+                smallVideoSizeWidth = videoMediaElement.ActualWidth;
                 expandedVideoSizeWidth = videoMediaElement.ActualWidth;
             }
         }
@@ -580,6 +596,7 @@ namespace HudlRT.Views
             videoContainer.Height = 500;
             videoMediaElement.Height = 500;
             videoMediaElement.Width = expandedVideoSizeWidth;
+
             isGridCollapsed = true;
         }
 
@@ -591,6 +608,37 @@ namespace HudlRT.Views
         private void ListViewItemClicked(object sender, ItemClickEventArgs e)
         {
             itemClicked = true;
+        }
+
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+            if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled)
+            {
+                if (IsFullscreen)
+                {
+                    videoContainer.Width = Window.Current.Bounds.Width;
+                    videoContainer.Height = Window.Current.Bounds.Height;
+                    videoMediaElement.Width = Window.Current.Bounds.Width;
+                    videoMediaElement.Height = Window.Current.Bounds.Height;
+                    VideoGrid.Margin = new Thickness(0, 0, 0, 0);
+                }
+                else if (isGridCollapsed)
+                {
+                    btnExpandGrid_Click(null, null);
+                }
+            }
+            else if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.FullScreenLandscape)
+            {
+                if (IsFullscreen)
+                {
+                    videoContainer.Width = Window.Current.Bounds.Width;
+                    videoContainer.Height = Window.Current.Bounds.Height;
+                    videoMediaElement.Width = Window.Current.Bounds.Width;
+                    videoMediaElement.Height = Window.Current.Bounds.Height;
+                    VideoGrid.Margin = new Thickness(0, 0, 0, 0);
+                }
+            }
         }
     }
 }
