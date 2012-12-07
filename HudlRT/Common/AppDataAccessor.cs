@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Security.Credentials;
+using Windows.ApplicationModel.Activation;using Windows.Security.Credentials;
 
 namespace HudlRT.Common
 {
@@ -22,6 +22,14 @@ namespace HudlRT.Common
         public long? ID { get; set; }
     }
 
+    public struct SplashScreenResponse
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Height { get; set; }
+        public double Width { get; set; }
+    }
+
     class AppDataAccessor
     {
         public static string AUTH_TOKEN = "hudl-authtoken";
@@ -34,6 +42,11 @@ namespace HudlRT.Common
         public static string USERNAME = "UserName";
         public static string PLAYBACK = "hudl-playbackType";
         public static string PASSWORD = "hudl-password";
+
+        public static string SPLASH_X = "hudl-app-splash-x";
+        public static string SPLASH_Y = "hudl-app-splash-y";
+        public static string SPLASH_HEIGHT = "hudl-app-splash-height";
+        public static string SPLASH_WIDTH = "hudl-app-splash-width";
 
         private static T GetRoamingSetting<T>(string keyName)
         {
@@ -162,6 +175,31 @@ namespace HudlRT.Common
             }
             catch (Exception ex)
             {
+            }
+        }
+
+public static void SetSplashScreen(SplashScreen splash)
+        {
+            SetRoamingSetting<double>(SPLASH_X, splash.ImageLocation.Left);
+            SetRoamingSetting<double>(SPLASH_Y, splash.ImageLocation.Top);
+            SetRoamingSetting<double>(SPLASH_HEIGHT, splash.ImageLocation.Height);
+            SetRoamingSetting<double>(SPLASH_WIDTH, splash.ImageLocation.Width);
+        }
+
+        public static Nullable<SplashScreenResponse> GetSplashScreen()
+        {
+            try
+            {
+                SplashScreenResponse response = new SplashScreenResponse();
+                response.X = GetRoamingSetting<double>(SPLASH_X);
+                response.Y = GetRoamingSetting<double>(SPLASH_Y);
+                response.Height = GetRoamingSetting<double>(SPLASH_HEIGHT);
+                response.Width = GetRoamingSetting<double>(SPLASH_WIDTH);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
     }
