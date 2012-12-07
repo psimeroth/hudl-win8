@@ -19,10 +19,12 @@ namespace HudlRT.ViewModels
 {
     public class VideoPlayerViewModel : ViewModelBase
     {
+        private const int INITIAL_LOAD_COUNT = 2;
+
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
-        public PagePassParameter Parameter { get; set; }
+        public CachedParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
         {
@@ -111,24 +113,27 @@ namespace HudlRT.ViewModels
             base.OnActivate();
 
             AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString("g"), Parameter.selectedCutup.cutupId);
-
-            
-            Clips = Parameter.selectedCutup.clips;
+            Clips = new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order < INITIAL_LOAD_COUNT).ToList());
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
                 GetAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-                initialClipPreload();
             }
             CutupName = Parameter.selectedCutup.name;
-            
-            if (!AppDataAccessor.PlaybackTypeSet())	
+
+
+            int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
+            if (playbackTypeResult == null)
             {
                 AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
+                playbackType = PlaybackType.once;
             }
-            playbackType = (PlaybackType)AppDataAccessor.GetPlaybackType();
+            else
+            {
+                playbackType = (PlaybackType)playbackTypeResult;
+            }
             setToggleButtonContent();
 
             dispRequest = new DisplayRequest();
@@ -145,10 +150,24 @@ namespace HudlRT.ViewModels
             }
         }
 
+        protected override async void OnViewLoaded(object view)
+        {
+            AddClipsToGrid(Parameter.selectedCutup.clips.Count);
+            initialClipPreload();
+        }
+
+        private async Task AddClipsToGrid(int count)
+        {
+            foreach (Clip clip in new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order >= INITIAL_LOAD_COUNT).ToList()))
+            {
+                await Task.Run(() => Clips.Add(clip));
+            }
+        }
+
         private void GetAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -163,7 +182,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in Clips)
+            foreach (Clip clip in Parameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -176,29 +195,26 @@ namespace HudlRT.ViewModels
 
         private void getAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                string angleNameKey = String.Concat(teamID.ToString(), "-", angleName.Name);
-                if (roamingSettings.Values[angleNameKey] == null)
+                bool? angleChecked = AppDataAccessor.GetAnglePreference(angleName.Name);
+
+                if (angleChecked == null)
                 {
                     angleName.IsChecked = true;
                 }
                 else
                 {
-                    angleName.IsChecked = (bool)roamingSettings.Values[angleNameKey];
+                    angleName.IsChecked = (bool)angleChecked;
                 }
             }
         }
 
         private void saveAnglePreferences()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            long teamID = (long)roamingSettings.Values["hudl-teamID"];
             foreach (AngleType angleName in AngleTypes)
             {
-                roamingSettings.Values[String.Concat(teamID.ToString(), "-", angleName.Name)] = angleName.IsChecked;
+                AppDataAccessor.SetAnglePreference(angleName.Name, angleName.IsChecked);
             }
         }
 
@@ -457,7 +473,16 @@ namespace HudlRT.ViewModels
             dispRequest.RequestRelease();
 			dispRequest = null;
             saveAnglePreferences();
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            //CachedParameter param;
+            //if (Parameter.sectionViewGameSelected == null)
+            //{
+            //    param = new CachedParameter { categoryId = 0, gameId = 0, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = null };
+            //}
+            //else
+            //{
+            //    param = new CachedParameter { categoryId = Parameter.sectionViewCategorySelected.CategoryId, gameId = Parameter.sectionViewGameSelected.GameId, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = Parameter.sectionViewGames };
+            //}
+            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
         }
     }
 }
