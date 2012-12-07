@@ -296,7 +296,10 @@ namespace HudlRT.ViewModels
 
                     FindNextPreviousGames(SelectedSeason);
                     NotifyOfPropertyChange(() => SelectedSeason);
+
+                    AppDataAccessor.SetTeamContext(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
                 }
+
                 //populate this/next game
                 
             }
