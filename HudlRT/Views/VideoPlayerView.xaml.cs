@@ -18,16 +18,14 @@ using HudlRT.Models;
 using HudlRT.Parameters;
 using Windows.UI.Xaml.Markup;
 using Windows.UI;
-using Windows.System.Display;
 
 namespace HudlRT.Views
-{
+{   
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
-        private int selectedIndex { get; set; }
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
         private bool _isFullscreenToggle = false;
@@ -56,6 +54,10 @@ namespace HudlRT.Views
         private  TranslateTransform dragTranslation;
         private double smallVideoSizeWidth;
         private double expandedVideoSizeWidth;
+        private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
+        private bool isPaused { get; set; }
+        private bool isStopped { get; set; }
+        private long keyPressLength = 150;
 
         public VideoPlayerView()
         {
@@ -75,7 +77,6 @@ namespace HudlRT.Views
             Clips.RenderTransform = this.dragTranslation;
             gridScroll.ViewChanged += scrollHeaders;
             //gridHeaderScroll.ViewChanged += scrollGrid;
-            Loaded += new RoutedEventHandler(MainPage_Loaded);
 
             btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
             full_btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
@@ -85,7 +86,9 @@ namespace HudlRT.Views
             full_btnFastReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastReverse_Click), true);
             btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
             full_btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
-
+            
+            Windows.UI.Xaml.Window.Current.CoreWindow.KeyDown += VideoPage_KeyDown;
+            Windows.UI.Xaml.Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
         }
 
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
@@ -173,7 +176,7 @@ namespace HudlRT.Views
 
             var dataSource = fif.GetVirtualizedFilesVector();
 
-            CachedParameter pass = (CachedParameter)e.Parameter;
+           CachedParameter pass = (CachedParameter)e.Parameter;
            string[] displayColumns = pass.selectedCutup.displayColumns;
            var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
            string columnDefinitions = "";
@@ -217,17 +220,13 @@ namespace HudlRT.Views
            vm.listView = Clips;
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (rightClicked)
             {
                 ListView listView = (ListView)sender;
                 VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                vm.setClip((Clip)listView.SelectedItem);
+                vm.SetClip((Clip)listView.SelectedItem);
                 
                 rightClicked = false;
             }
@@ -310,14 +309,91 @@ namespace HudlRT.Views
             FullscreenToggle();
         }
 
-        private void VideoContainer_KeyUp(object sender, KeyRoutedEventArgs e)
+        private void VideoPage_KeyUp(object sender, Windows.UI.Core.KeyEventArgs e)
         {
-            if (IsFullscreen && e.Key == Windows.System.VirtualKey.Escape)
+            if (IsFullscreen && e.VirtualKey == Windows.System.VirtualKey.Escape)
             {
                 FullscreenToggle();
             }
+            else
+            {
+                keyPressTimer.Stop();
+                if (keyPressTimer.ElapsedMilliseconds < keyPressLength)
+                {
+                    if (e.VirtualKey == Windows.System.VirtualKey.Down)
+                    {
+                        if (isPaused)
+                        {
+                            btnPlay_Click(null, null);
+                        }
+                        else
+                        {
+                            btnPause_Click(null, null);
+                        }
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+                    {
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.ResetClip();
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+                    {
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.GoToNextClip();
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
+                    {
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.GoToPreviousClip();
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    if (isStopped)
+                    {
+                        setPlayVisible();
+                        isStopped = false;
+                    }
+                    else
+                    {
+                        btnPlay_Click(null, null);
+                    }
+                }
+                keyPressTimer.Reset();
+            }
+        }
 
-            e.Handled = true;
+        private void VideoPage_KeyDown(object sender, Windows.UI.Core.KeyEventArgs e)
+        {
+            if (e.VirtualKey == Windows.System.VirtualKey.Down)
+            {
+                isPaused = btnPause.Visibility == Windows.UI.Xaml.Visibility.Visible ? false : true;
+                btnSlowForward_Click(null, null);
+                keyPressTimer.Start();
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+            {
+                btnSlowReverse_Click(null, null);
+                keyPressTimer.Start();
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+            {
+                btnFastForward_Click(null, null);
+                keyPressTimer.Start();
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
+            {
+                btnFastReverse_Click(null, null);
+                keyPressTimer.Start();
+                e.Handled = true;
+            }
         }
 
         private void btnPlay_Click(object sender, RoutedEventArgs e)
@@ -406,11 +482,20 @@ namespace HudlRT.Views
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
-            setPlayVisible();
-            setPrevVisible();
+            if (videoMediaElement.Position.Seconds < 3)
+            {
+                videoMediaElement.Stop();
+                isStopped = true;
+            }
+            else
+            {
+                setPlayVisible();
+                setPrevVisible();
 
-            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.NextClip(NextAngleEvent.mediaEnded);
+                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                vm.NextClip(NextAngleEvent.mediaEnded);
+            }
+            
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -517,8 +602,6 @@ namespace HudlRT.Views
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            ListView l = (ListView)sender;
-            selectedIndex = l.SelectedIndex;
             rightClicked = true;
             e.Handled = true;
         }

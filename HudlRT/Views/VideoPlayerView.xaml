@@ -102,9 +102,10 @@
                     </Border>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollBarVisibility="Hidden" ZoomMode="Disabled" Grid.Row="1" Margin="0">
-                    <ListView x:Name="Clips" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
+                    <common:VideoPlayerListView x:Name="Clips" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
                             ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True">
-                    </ListView>
+
+                    </common:VideoPlayerListView>
                 </ScrollViewer>
             </Grid>
 
@@ -113,7 +114,6 @@
 
         <Grid x:Name="VideoGrid" VerticalAlignment="Top" Margin="0,70,0,0">
             <ContentControl x:Name="videoContainer"
-                            KeyUp="VideoContainer_KeyUp"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Bottom"
                             Height="350"
@@ -124,7 +124,7 @@
                                    MediaEnded="videoMediaElement_MediaEnded"
                                    MediaFailed="videoMediaElement_MediaFailed"
                                    IsFullScreen="True"
-                                   AutoHide="False"
+                                   AutoHide="False" 
                                    Tapped="videoMediaElement_Tapped"
                                    IsSkipAheadEnabled="False"
                                    IsSkipBackEnabled="False"
