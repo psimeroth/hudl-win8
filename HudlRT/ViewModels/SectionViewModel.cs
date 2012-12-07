@@ -159,7 +159,7 @@ namespace HudlRT.ViewModels
             if (Schedule.Any())
             {
                 // Find the passed in game
-                SelectedGame = Schedule.First(game => game.GameId == gameID);
+                SelectedGame = Schedule.FirstOrDefault(game => game.GameId == gameID);
 
                 // If the game isn't found set the first one as the default
                 if (SelectedGame == null)
@@ -319,24 +319,27 @@ namespace HudlRT.ViewModels
 
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
-            var game = (GameViewModel)eventArgs.ClickedItem;
-            SelectedGame = game;
-            ListView x = (ListView)eventArgs.OriginalSource;
-            x.SelectedItem = game;
-            Cutups = null;
-            foreach (var g in Schedule.ToList())
+            if (Schedule != null)
             {
-                g.TextColor = "#E0E0E0";
-            }
-            await GetGameCategories(game);
+                var game = (GameViewModel)eventArgs.ClickedItem;
+                SelectedGame = game;
+                ListView x = (ListView)eventArgs.OriginalSource;
+                x.SelectedItem = game;
+                Cutups = null;
+                foreach (var g in Schedule.ToList())
+                {
+                    g.TextColor = "#E0E0E0";
+                }
+                await GetGameCategories(game);
 
-            if (Categories.Any())
-            {
-                SelectedCategory = Categories.First();
-            }
-            else
-            {
-                Categories = null;
+                if (Categories.Any())
+                {
+                    SelectedCategory = Categories.First();
+                }
+                else
+                {
+                    Categories = null;
+                }
             }
         }
 

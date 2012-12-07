@@ -120,9 +120,16 @@ namespace HudlRT.Common
 
         public static bool? GetAnglePreference(string key)
         {
-            string username = GetUsername();
-            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
-            return GetRoamingSetting<bool?>(username + teamID + "-" + key);
+            try
+            {
+                string username = GetUsername();
+                long teamID = GetRoamingSetting<long>(username + TEAM_ID);
+                return GetRoamingSetting<bool?>(username + teamID + "-" + key);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static int? GetPlaybackType()

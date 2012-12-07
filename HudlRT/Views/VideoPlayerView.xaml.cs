@@ -57,7 +57,7 @@ namespace HudlRT.Views
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
         private bool isPaused { get; set; }
         private bool isStopped { get; set; }
-        private long keyPressLength = 150;
+        private long keyPressLength = 225;
 
         public VideoPlayerView()
         {
