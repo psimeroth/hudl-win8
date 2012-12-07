@@ -395,11 +395,11 @@ namespace HudlRT.Views
             if (!isGridCollapsed && !IsFullscreen)
             {
                 smallVideoSizeWidth = videoMediaElement.ActualWidth;
-                expandedVideoSizeWidth = smallVideoSizeWidth * (1 / .7); ;
+                expandedVideoSizeWidth = smallVideoSizeWidth; ;
             }
             if (isGridCollapsed && !IsFullscreen)
             {
-                smallVideoSizeWidth = videoMediaElement.ActualWidth * .7;
+                smallVideoSizeWidth = videoMediaElement.ActualWidth;
                 expandedVideoSizeWidth = videoMediaElement.ActualWidth;
             }
         }
