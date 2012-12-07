@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using HudlRT.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Activation;using Windows.Security.Credentials;
 
 namespace HudlRT.Common
 {
@@ -19,6 +22,14 @@ namespace HudlRT.Common
         public long? ID { get; set; }
     }
 
+    public struct SplashScreenResponse
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Height { get; set; }
+        public double Width { get; set; }
+    }
+
     class AppDataAccessor
     {
         public static string AUTH_TOKEN = "hudl-authtoken";
@@ -30,6 +41,12 @@ namespace HudlRT.Common
         public static string SEASON_ID = "hudl-seasonID";
         public static string USERNAME = "UserName";
         public static string PLAYBACK = "hudl-playbackType";
+        public static string PASSWORD = "hudl-password";
+
+        public static string SPLASH_X = "hudl-app-splash-x";
+        public static string SPLASH_Y = "hudl-app-splash-y";
+        public static string SPLASH_HEIGHT = "hudl-app-splash-height";
+        public static string SPLASH_WIDTH = "hudl-app-splash-width";
 
         private static T GetRoamingSetting<T>(string keyName)
         {
@@ -39,11 +56,6 @@ namespace HudlRT.Common
         private static void SetRoamingSetting<T>(string keyName, T value)
         {
             Windows.Storage.ApplicationData.Current.RoamingSettings.Values[keyName] = value;
-        }
-
-        private static bool RoamingSettingExists(string keyName)
-        {
-            return Windows.Storage.ApplicationData.Current.RoamingSettings.Values[keyName] != null;
         }
 
         public static String GetAuthToken()
@@ -66,30 +78,19 @@ namespace HudlRT.Common
             SetRoamingSetting<String>(USERNAME, username);
         }
 
-        public static bool TeamContextSet()
-        {
-            return RoamingSettingExists(SEASON_ID) && RoamingSettingExists(TEAM_ID);
-        }
-
         public static TeamContextResponse GetTeamContext() {
+            string username = GetUsername();
             TeamContextResponse response = new TeamContextResponse();
-            response.seasonID = GetRoamingSetting<long?>(SEASON_ID);
-            response.teamID = GetRoamingSetting<long?>(TEAM_ID);
+            response.seasonID = GetRoamingSetting<long?>(username + SEASON_ID);
+            response.teamID = GetRoamingSetting<long?>(username + TEAM_ID);
             return response;
         }
 
         public static void SetTeamContext(long seasonID, long teamID)
         {
-            SetRoamingSetting<long?>(SEASON_ID, seasonID);
-            SetRoamingSetting<long?>(TEAM_ID, teamID);
-        }
-
-        public static bool LastViewedSet()
-        {
-            bool response = true;
-            response = RoamingSettingExists(USERNAME);
             string username = GetUsername();
-            return RoamingSettingExists(username+LAST_VIEWED_NAME) && RoamingSettingExists(username+LAST_VIEWED_TIMESTAMP) && RoamingSettingExists(username+LAST_VIEWED_ID);
+            SetRoamingSetting<long>(username + SEASON_ID, seasonID);
+            SetRoamingSetting<long>(username + TEAM_ID, teamID);
         }
 
         public static LastViewedResponse GetLastViewed()
@@ -110,9 +111,18 @@ namespace HudlRT.Common
             SetRoamingSetting<long>(username + LAST_VIEWED_ID, ID);
         }
 
-        public static bool PlaybackTypeSet()
+        public static void SetAnglePreference(string angleName, bool value)
         {
-            return RoamingSettingExists(PLAYBACK);
+            string username = GetUsername();
+            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
+            SetRoamingSetting<bool>(username + teamID + "-" + angleName, value);
+        }
+
+        public static bool? GetAnglePreference(string key)
+        {
+            string username = GetUsername();
+            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
+            return GetRoamingSetting<bool?>(username + teamID + "-" + key);
         }
 
         public static int? GetPlaybackType()
@@ -122,7 +132,75 @@ namespace HudlRT.Common
 
         public static void SetPlaybackType(int type)
         {
-            SetRoamingSetting<int?>(PLAYBACK, type);
+            SetRoamingSetting<int>(PLAYBACK, type);
+        }
+
+        public static PasswordCredential GetPassword()
+        {
+            String username = GetUsername();
+            if (username != null)
+            {
+                try
+                {
+                    PasswordVault vault = new PasswordVault();
+                    IReadOnlyList<PasswordCredential> credentials = vault.FindAllByResource(PASSWORD);
+                    return vault.Retrieve(PASSWORD, credentials[0].UserName);
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public static void SetPassword(string password)
+        {
+            String username = GetUsername();
+            PasswordCredential cred = new PasswordCredential(PASSWORD, username, password);
+            PasswordVault vault = new PasswordVault();
+            vault.Add(cred);
+        }
+
+        public static void RemovePasswords()
+        {
+            PasswordVault vault = new PasswordVault();
+            try
+            {
+                IReadOnlyList<PasswordCredential> credentials = vault.FindAllByResource(PASSWORD);
+                foreach (PasswordCredential cred in credentials)
+                {
+                    vault.Remove(cred);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+public static void SetSplashScreen(SplashScreen splash)
+        {
+            SetRoamingSetting<double>(SPLASH_X, splash.ImageLocation.Left);
+            SetRoamingSetting<double>(SPLASH_Y, splash.ImageLocation.Top);
+            SetRoamingSetting<double>(SPLASH_HEIGHT, splash.ImageLocation.Height);
+            SetRoamingSetting<double>(SPLASH_WIDTH, splash.ImageLocation.Width);
+        }
+
+        public static Nullable<SplashScreenResponse> GetSplashScreen()
+        {
+            try
+            {
+                SplashScreenResponse response = new SplashScreenResponse();
+                response.X = GetRoamingSetting<double>(SPLASH_X);
+                response.Y = GetRoamingSetting<double>(SPLASH_Y);
+                response.Height = GetRoamingSetting<double>(SPLASH_HEIGHT);
+                response.Width = GetRoamingSetting<double>(SPLASH_WIDTH);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

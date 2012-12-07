@@ -114,8 +114,7 @@
     <Compile Include="Common\APIExceptionDialog.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
-    <Compile Include="Parameters\HubSectionParameter.cs" />
-    <Compile Include="Parameters\PagePassParameter.cs" />
+    <Compile Include="Parameters\CachedParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\CutupViewModel.cs" />
@@ -167,9 +166,11 @@
     <Content Include="Assets\dark_BG_Tiled.png" />
     <Content Include="Assets\hudl-hi-res-white-medium.png" />
     <Content Include="Assets\hudl-hi-res-white-small.png" />
+    <Content Include="Assets\hudl-logo-big-tile.png" />
     <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
+    <Content Include="Assets\Hudl_Metro150 thumbCentered.png" />
     <Content Include="Assets\Hudl_Partial150.png" />
     <Content Include="Assets\light_BG_Tiled.png" />
     <Content Include="Assets\medium_BG_Tiled.png" />
@@ -186,7 +187,9 @@
     <Content Include="Assets\scale-80\Hudl_Small_Logo.png" />
     <Content Include="Assets\selectArrow.png" />
     <Content Include="Assets\SplashScreen.png" />
-    <None Include="Package.StoreAssociation.xml" />
+    <None Include="Package.StoreAssociation.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

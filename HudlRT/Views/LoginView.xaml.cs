@@ -48,10 +48,7 @@ namespace HudlRT.Views
                 SplashScreen splash = (SplashScreen)e.Parameter;
                 splash.Dismissed += new TypedEventHandler<SplashScreen, object>(DismissedEventHandler);
 
-                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"] = splash.ImageLocation.Left;
-                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"] = splash.ImageLocation.Top;
-                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"] = splash.ImageLocation.Height;
-                ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"] = splash.ImageLocation.Width;
+                AppDataAccessor.SetSplashScreen(splash);
                 loginStackPanel.Margin = new Thickness(0, splash.ImageLocation.Top, 0, 0);
             }
             else
@@ -62,19 +59,28 @@ namespace HudlRT.Views
             }
 
             // Set the login image here
-            var height = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-height"];
-            var width = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-width"];
-            var x = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-x"];
-            y = (double)ApplicationData.Current.RoamingSettings.Values["hudl-app-splash-y"];
+            double height = 0;
+            double width = 0;
+            double x = 0;
+            y = 0;
+
+            Nullable<SplashScreenResponse> response = AppDataAccessor.GetSplashScreen();
+            if (response != null)
+            {
+                height = response.Value.Height;
+                width = response.Value.Width;
+                x = response.Value.X;
+                y = response.Value.Y;
+            }
 
             loginImage.Height = height;
             loginImage.Width = Width;
 
             //If Username exists in roaming settings, enter it for user
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            if (roamingSettings.Values["UserName"] != null)
+            String username = AppDataAccessor.GetUsername();
+            if (username != null)
             {
-                UserName.Text = roamingSettings.Values["UserName"].ToString();
+                //UserName.Text = username;
                 UserName.SelectionStart = UserName.Text.ToCharArray().Length;
                 UserName.SelectionLength = 0;
             }
