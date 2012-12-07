@@ -117,7 +117,7 @@ namespace HudlRT.ViewModels
             GridHeaders = Parameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
-                GetAngleNames();
+                getAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
                 initialClipPreload();
@@ -145,7 +145,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private void GetAngleNames()
+        private void getAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
             foreach (Clip clip in Clips)
@@ -205,10 +205,10 @@ namespace HudlRT.ViewModels
         public void ClipSelected(ItemClickEventArgs eventArgs)
         {
             var clip = (Clip)eventArgs.ClickedItem;
-            setClip(clip);
+            SetClip(clip);
         }
 
-        public void setClip(Clip clip)
+        public void SetClip(Clip clip)
         {
             if (clip != null && SelectedClip.clipId != clip.clipId)
             {
@@ -235,7 +235,7 @@ namespace HudlRT.ViewModels
             
             if (SelectedAngle == null)
             {
-                goToNextClip();
+                GoToNextClip();
             }
             else
             {
@@ -255,7 +255,7 @@ namespace HudlRT.ViewModels
                         if (filteredAngles.Any())
                         {
                             Angle nextAngle = filteredAngles[0];
-                            SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                            SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : new Angle(nextAngle.clipAngleId, nextAngle.fileLocation);
                         }
                         else
                         {
@@ -264,13 +264,13 @@ namespace HudlRT.ViewModels
                     }
                     else if(eventType == NextAngleEvent.buttonClick || playbackType == PlaybackType.next)
                     {
-                        goToNextClip();
+                        GoToNextClip();
                     }
                 }
             }
         }
 
-        private void goToNextClip()
+        public void GoToNextClip()
         {
             if (Clips.Count > 1)
             {
@@ -290,7 +290,7 @@ namespace HudlRT.ViewModels
         {
             if (SelectedAngle == null)
             {
-                goToPreviousClip();
+                GoToPreviousClip();
             }
             else
             {
@@ -305,12 +305,12 @@ namespace HudlRT.ViewModels
                 }
                 else
                 {
-                    goToPreviousClip();
+                    GoToPreviousClip();
                 }
             }
         }
 
-        private void goToPreviousClip()
+        public void GoToPreviousClip()
         {
             if (Clips.Count > 1)
             {
@@ -323,7 +323,13 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void angleFilter()
+        public void ResetClip()
+        {
+            Angle firstAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+            SelectedAngle = (firstAngle != null && firstAngle.isPreloaded) ? new Angle(firstAngle.clipAngleId, firstAngle.preloadFile.Path) : new Angle(firstAngle.clipAngleId, firstAngle.fileLocation);
+        }
+
+        public void AngleFilter()
         {
             List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
 
@@ -347,7 +353,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void playbackToggle()
+        private void playbackToggle()
         {
             playbackType = (PlaybackType)(((int)playbackType + 1) % Enum.GetNames(typeof(PlaybackType)).Length);
             
@@ -356,7 +362,7 @@ namespace HudlRT.ViewModels
             roamingSettings.Values["hudl-playbackType"] = (int)playbackType;
         }
 
-        public void setToggleButtonContent()
+        private void setToggleButtonContent()
         {
             if (playbackType == PlaybackType.once)
             {
@@ -427,7 +433,6 @@ namespace HudlRT.ViewModels
                 }
                 catch (Exception e)
                 {
-
                 }
             } 
         }

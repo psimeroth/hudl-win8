@@ -303,7 +303,7 @@ namespace HudlRT.Models
         public void checkBox(bool isChecked, Windows.UI.Xaml.RoutedEventArgs eventArgs)
         {
             IsChecked = isChecked;
-            viewModel.angleFilter();
+            viewModel.AngleFilter();
         }
     }
 
