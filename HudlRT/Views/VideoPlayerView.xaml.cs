@@ -168,6 +168,8 @@ namespace HudlRT.Views
             queryOptions.FolderDepth = Windows.Storage.Search.FolderDepth.Deep;
             queryOptions.IndexerOption = Windows.Storage.Search.IndexerOption.UseIndexerWhenAvailable;
 
+            videoMediaElement.Width = Window.Current.Bounds.Width - 300;
+
             var fileQuery = library.CreateFileQueryWithOptions(queryOptions);
 
             var fif = new Windows.Storage.BulkAccess.FileInformationFactory(fileQuery,
@@ -199,7 +201,7 @@ namespace HudlRT.Views
                    rowText = rowText + @"<TextBlock  Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                    Border b = new Border();
                    b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
-                   b.BorderThickness = new Thickness(1,0,1,0);
+                   b.BorderThickness = new Thickness(0,0,1,0);
                    TextBlock t = new TextBlock();
                    t.Text = displayColumns[i];
                    b.SetValue(Grid.RowProperty, 0);
@@ -264,7 +266,7 @@ namespace HudlRT.Views
                 // Save the video containers size
                 _previousVideoContainerSize.Width = videoContainer.ActualWidth;
                 _previousVideoContainerSize.Height = videoContainer.ActualHeight;
-                _previousVideoSize.Width = videoMediaElement.ActualWidth;
+                _previousVideoSize.Width = Window.Current.Bounds.Width - 300;
                 _previousVideoSize.Height = videoMediaElement.ActualHeight;
 
                 // Set the video container to fullscreen
@@ -290,7 +292,7 @@ namespace HudlRT.Views
                 // Reset the video container to it's original height
                 videoContainer.Width = _previousVideoContainerSize.Width;
                 videoContainer.Height = _previousVideoContainerSize.Height;
-                videoMediaElement.Width = _previousVideoSize.Width;
+                videoMediaElement.Width = Window.Current.Bounds.Width - 300;
                 videoMediaElement.Height = _previousVideoSize.Height;
 
                 var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
@@ -626,6 +628,8 @@ namespace HudlRT.Views
                 else if (isGridCollapsed)
                 {
                     btnExpandGrid_Click(null, null);
+                    videoContainer.Width = Window.Current.Bounds.Width;
+                    videoMediaElement.Width = Window.Current.Bounds.Width - 300;
                 }
             }
             else if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.FullScreenLandscape)
