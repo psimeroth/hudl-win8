@@ -448,7 +448,8 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                navigationService.NavigateToViewModel<SectionViewModel>();
+                UpdateCachedParameter();
+                navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
             }
         }
 
