@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using HudlRT.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,11 +43,6 @@ namespace HudlRT.Common
             Windows.Storage.ApplicationData.Current.RoamingSettings.Values[keyName] = value;
         }
 
-        private static bool RoamingSettingExists(string keyName)
-        {
-            return Windows.Storage.ApplicationData.Current.RoamingSettings.Values[keyName] != null;
-        }
-
         public static String GetAuthToken()
         {
             return (String)GetRoamingSetting<String>(AUTH_TOKEN);
@@ -66,30 +63,19 @@ namespace HudlRT.Common
             SetRoamingSetting<String>(USERNAME, username);
         }
 
-        public static bool TeamContextSet()
-        {
-            return RoamingSettingExists(SEASON_ID) && RoamingSettingExists(TEAM_ID);
-        }
-
         public static TeamContextResponse GetTeamContext() {
+            string username = GetUsername();
             TeamContextResponse response = new TeamContextResponse();
-            response.seasonID = GetRoamingSetting<long?>(SEASON_ID);
-            response.teamID = GetRoamingSetting<long?>(TEAM_ID);
+            response.seasonID = GetRoamingSetting<long?>(username + SEASON_ID);
+            response.teamID = GetRoamingSetting<long?>(username + TEAM_ID);
             return response;
         }
 
         public static void SetTeamContext(long seasonID, long teamID)
         {
-            SetRoamingSetting<long?>(SEASON_ID, seasonID);
-            SetRoamingSetting<long?>(TEAM_ID, teamID);
-        }
-
-        public static bool LastViewedSet()
-        {
-            bool response = true;
-            response = RoamingSettingExists(USERNAME);
             string username = GetUsername();
-            return RoamingSettingExists(username+LAST_VIEWED_NAME) && RoamingSettingExists(username+LAST_VIEWED_TIMESTAMP) && RoamingSettingExists(username+LAST_VIEWED_ID);
+            SetRoamingSetting<long>(username + SEASON_ID, seasonID);
+            SetRoamingSetting<long>(username + TEAM_ID, teamID);
         }
 
         public static LastViewedResponse GetLastViewed()
@@ -110,9 +96,18 @@ namespace HudlRT.Common
             SetRoamingSetting<long>(username + LAST_VIEWED_ID, ID);
         }
 
-        public static bool PlaybackTypeSet()
+        public static void SetAnglePreference(string angleName, bool value)
         {
-            return RoamingSettingExists(PLAYBACK);
+            string username = GetUsername();
+            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
+            SetRoamingSetting<bool>(username + teamID + "-" + angleName, value);
+        }
+
+        public static bool? GetAnglePreference(string key)
+        {
+            string username = GetUsername();
+            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
+            return GetRoamingSetting<bool?>(username + teamID + "-" + key);
         }
 
         public static int? GetPlaybackType()
@@ -122,7 +117,7 @@ namespace HudlRT.Common
 
         public static void SetPlaybackType(int type)
         {
-            SetRoamingSetting<int?>(PLAYBACK, type);
+            SetRoamingSetting<int>(PLAYBACK, type);
         }
     }
 }

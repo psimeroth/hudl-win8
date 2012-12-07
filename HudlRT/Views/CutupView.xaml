@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     xmlns:caliburn="using:Caliburn.Micro">
     
-    <Grid Height="150">
+    <Grid Height="144">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="180" />
         <ColumnDefinition Width="*" />

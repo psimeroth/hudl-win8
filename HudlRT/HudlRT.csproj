@@ -114,8 +114,7 @@
     <Compile Include="Common\APIExceptionDialog.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
-    <Compile Include="Parameters\HubSectionParameter.cs" />
-    <Compile Include="Parameters\PagePassParameter.cs" />
+    <Compile Include="Parameters\CachedParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\CutupViewModel.cs" />

@@ -37,7 +37,7 @@
         <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
             <Grid Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
-            <Grid Margin="18,0,0,0" Background="{StaticResource HudlBlackButton}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid x:Name="Logo_BackgroundGrid" Margin="18,0,0,0" Background="{StaticResource HudlBlackButton}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
             </Grid>
             <Grid Height="55">
@@ -188,6 +188,12 @@
                 <VisualState x:Name="Filled">
                     <Storyboard>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo_BackgroundGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
