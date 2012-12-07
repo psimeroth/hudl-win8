@@ -164,7 +164,7 @@ namespace HudlRT.ViewModels
                 // If the game isn't found set the first one as the default
                 if (SelectedGame == null)
                 {
-                    SelectedGame = Schedule.First();
+                    SelectedGame = Schedule.FirstOrDefault();
                 }
                 await GetGameCategories(SelectedGame);
 
@@ -177,7 +177,7 @@ namespace HudlRT.ViewModels
                     // If the category isn't found set the first as the default
                     if (SelectedCategory == null)
                     {
-                        SelectedCategory = Categories.First();
+                        SelectedCategory = Categories.FirstOrDefault();
                     }
                 }
                 else
