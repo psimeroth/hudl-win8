@@ -51,6 +51,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0" Foreground="White">Username</TextBlock>
@@ -58,24 +59,18 @@
 
                     <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" Grid.Column="1" Grid.Row="0" />
                     <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="10,0,0,5" IsPasswordRevealButtonEnabled="True" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="1" Grid.Row="1" />
+                    <CheckBox Name="RememberMe" Grid.Row="2" Grid.Column="1" Content="Remember Me" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Bottom" MinWidth="500" Margin="9,0,0,3"/>
 
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Grid>
+                            <TextBlock Text="New to Hudl?" FontSize="18" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,125,4" Foreground="White"/>
+                            <Button Content="Check it out!" HorizontalAlignment="Right" FontSize="18" Click="RedirectToSignup" Width="120" Margin="0" Style="{StaticResource ButtonStyle_Secondary}"/>
+                        </Grid>
+                    </Grid>
                     <Button x:Name="Login" Content="{Binding ButtonText}" MinHeight="104" MinWidth="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="5,-5,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Style="{StaticResource ButtonStyle_Standard}"/>
                 </Grid>
 
-                <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" FontSize="25"  Foreground="Orange"/>
-
-                <Grid>
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="New to Hudl?" Grid.Column="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="White"/>
-                        <Button Content="Check it out!" Grid.Column="1" FontSize="18" Click="RedirectToSignup" Margin="5,0,0,0" Style="{StaticResource ButtonStyle_Secondary}"/>
-                    </Grid>
-                </Grid>
-
+                <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Bottom" Height="30" FontSize="25"  Foreground="Orange" Margin="0,5,0,0"/>
             </StackPanel>
             <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" HorizontalAlignment="Center" Height="75" Width="75" Foreground="{StaticResource HudlLightBlue}" />
         </StackPanel>
