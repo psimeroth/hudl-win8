@@ -81,8 +81,18 @@ namespace HudlRT.Common
         public static TeamContextResponse GetTeamContext() {
             string username = GetUsername();
             TeamContextResponse response = new TeamContextResponse();
-            response.seasonID = GetRoamingSetting<string>(username + SEASON_ID);
-            response.teamID = GetRoamingSetting<string>(username + TEAM_ID);
+            
+            //needed for api v2 switch
+            try
+            {
+                response.seasonID = GetRoamingSetting<string>(username + SEASON_ID);
+                response.teamID = GetRoamingSetting<string>(username + TEAM_ID);
+            }
+            catch (InvalidCastException e)
+            {
+                response.seasonID = null;
+                response.teamID = null;
+            }
             return response;
         }
 
@@ -99,7 +109,16 @@ namespace HudlRT.Common
             LastViewedResponse response = new LastViewedResponse();
             response.name = GetRoamingSetting<String>(username+LAST_VIEWED_NAME);
             response.timeStamp = GetRoamingSetting<String>(username+LAST_VIEWED_TIMESTAMP);
-            response.ID = GetRoamingSetting<String>(username+LAST_VIEWED_ID);
+
+            //needed for the change to string id's for api_v2
+            try
+            {
+                response.ID = GetRoamingSetting<String>(username + LAST_VIEWED_ID);
+            }
+            catch (InvalidCastException e)
+            {
+                response.ID = null;
+            }
             return response;
         }
 
