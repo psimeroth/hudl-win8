@@ -17,6 +17,7 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         public CachedParameter Parameter { get; set; }
         private long? lastViewedId = null;
+        private bool lastViewedCached = false;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -223,10 +224,23 @@ namespace HudlRT.ViewModels
                 LastViewedName = response.name;
                 LastViewedTimeStamp = "Viewed: " + response.timeStamp;
                 lastViewedId = (long)response.ID;
+
+                LoadLastViewedCutup();
             }
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
+        }
+
+        private async void LoadLastViewedCutup()
+        {
+            try
+            {
+                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
+                await CacheAccessor.CacheCutupClips(cutup);
+                lastViewedCached = true;
+            }
+            catch { }
         }
 
         public void UpdateCachedParameter()
@@ -438,8 +452,19 @@ namespace HudlRT.ViewModels
             if (lastViewedId.HasValue)
             {
                 ProgressRingVisibility = "Visible";
+                
                 CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
-                ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+                ClipResponse response;
+
+                if (lastViewedCached)
+                {
+                    response = await CacheAccessor.GetCachedCutupClips(cutup);
+                }
+                else
+                {
+                    response = await ServiceAccessor.GetCutupClips(cutup);
+                }
+
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
                     cutup.Clips = response.clips;
