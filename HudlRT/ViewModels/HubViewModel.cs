@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HudlRT.ViewModels
 {
@@ -232,15 +233,17 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = "Collapsed";
         }
 
-        private async void LoadLastViewedCutup()
+        private async Task LoadLastViewedCutup()
         {
-            try
+            CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
+            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
-                await CacheAccessor.CacheCutupClips(cutup);
+                cutup.Clips = response.clips;
+                UpdateCachedParameter();
+                Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
                 lastViewedCached = true;
             }
-            catch { }
         }
 
         public void UpdateCachedParameter()
@@ -452,26 +455,14 @@ namespace HudlRT.ViewModels
             if (lastViewedId.HasValue)
             {
                 ProgressRingVisibility = "Visible";
-                
-                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
-                ClipResponse response;
-
-                if (lastViewedCached)
+                /*if (!lastViewedCached)
                 {
-                    response = await CacheAccessor.GetCachedCutupClips(cutup);
-                }
-                else
+                    await LoadLastViewedCutup();
+                }*/
+                while (!lastViewedCached)
                 {
-                    response = await ServiceAccessor.GetCutupClips(cutup);
                 }
-
-                if (response.status == SERVICE_RESPONSE.SUCCESS)
-                {
-                    cutup.Clips = response.clips;
-                    UpdateCachedParameter();
-                    Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
-                }
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
                 ProgressRingVisibility = "Collapsed";
             }
             else
