@@ -328,7 +328,7 @@ namespace HudlRT.Common
                     }
                     return new ClipResponse { status = SERVICE_RESPONSE.SUCCESS, clips = clipCollection };
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION, clips = null };
                 }

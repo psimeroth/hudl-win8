@@ -11,15 +11,15 @@ namespace HudlRT.Common
 {
     public struct TeamContextResponse
     {
-        public String teamID { get; set; }
-        public String seasonID { get; set; }
+        public string teamID { get; set; }
+        public string seasonID { get; set; }
     }
 
     public struct LastViewedResponse
     {
-        public String name { get; set; }
-        public String timeStamp { get; set; }
-        public String ID { get; set; }
+        public string name { get; set; }
+        public string timeStamp { get; set; }
+        public string ID { get; set; }
     }
 
     public struct SplashScreenResponse
@@ -58,24 +58,24 @@ namespace HudlRT.Common
             Windows.Storage.ApplicationData.Current.RoamingSettings.Values[keyName] = value;
         }
 
-        public static String GetAuthToken()
+        public static string GetAuthToken()
         {
-            return (String)GetRoamingSetting<String>(AUTH_TOKEN);
+            return (string)GetRoamingSetting<string>(AUTH_TOKEN);
         }
 
-        public static void SetAuthToken(String token)
+        public static void SetAuthToken(string token)
         {
-            SetRoamingSetting<String>(AUTH_TOKEN, token);
+            SetRoamingSetting<string>(AUTH_TOKEN, token);
         }
 
-        public static String GetUsername()
+        public static string GetUsername()
         {
-            return GetRoamingSetting<String>(USERNAME);
+            return GetRoamingSetting<string>(USERNAME);
         }
 
-        public static void SetUsername(String username)
+        public static void SetUsername(string username)
         {
-            SetRoamingSetting<String>(USERNAME, username);
+            SetRoamingSetting<string>(USERNAME, username);
         }
 
         public static TeamContextResponse GetTeamContext() {
@@ -107,13 +107,13 @@ namespace HudlRT.Common
         {
             string username = GetUsername();
             LastViewedResponse response = new LastViewedResponse();
-            response.name = GetRoamingSetting<String>(username+LAST_VIEWED_NAME);
-            response.timeStamp = GetRoamingSetting<String>(username+LAST_VIEWED_TIMESTAMP);
+            response.name = GetRoamingSetting<string>(username+LAST_VIEWED_NAME);
+            response.timeStamp = GetRoamingSetting<string>(username+LAST_VIEWED_TIMESTAMP);
 
             //needed for the change to string id's for api_v2
             try
             {
-                response.ID = GetRoamingSetting<String>(username + LAST_VIEWED_ID);
+                response.ID = GetRoamingSetting<string>(username + LAST_VIEWED_ID);
             }
             catch (InvalidCastException e)
             {
@@ -122,12 +122,12 @@ namespace HudlRT.Common
             return response;
         }
 
-        public static void SetLastViewed(String name, String time, String ID)
+        public static void SetLastViewed(string name, string time, string ID)
         {
             string username = GetUsername();
-            SetRoamingSetting<String>(username+LAST_VIEWED_NAME, name);
-            SetRoamingSetting<String>(username + LAST_VIEWED_TIMESTAMP, time);
-            SetRoamingSetting<String>(username + LAST_VIEWED_ID, ID);
+            SetRoamingSetting<string>(username+LAST_VIEWED_NAME, name);
+            SetRoamingSetting<string>(username + LAST_VIEWED_TIMESTAMP, time);
+            SetRoamingSetting<string>(username + LAST_VIEWED_ID, ID);
         }
 
         public static void SetAnglePreference(string angleName, bool value)
@@ -163,7 +163,7 @@ namespace HudlRT.Common
 
         public static PasswordCredential GetPassword()
         {
-            String username = GetUsername();
+            string username = GetUsername();
             if (username != null)
             {
                 try
@@ -182,7 +182,7 @@ namespace HudlRT.Common
 
         public static void SetPassword(string password)
         {
-            String username = GetUsername();
+            string username = GetUsername();
             PasswordCredential cred = new PasswordCredential(PASSWORD, username, password);
             PasswordVault vault = new PasswordVault();
             vault.Add(cred);

@@ -163,7 +163,7 @@ namespace HudlRT.Models
         public static Cutup FromDTO(CutupDTO cutupDTO)
         {
             Cutup cutup = new Cutup();
-            cutup.cutupId = cutupDTO.CutupID;
+            cutup.cutupId = cutupDTO.PlaylistId;
             cutup.clipCount = cutupDTO.ClipCount;
             cutup.name = cutupDTO.Name;
             cutup.thumbnailLocation = cutupDTO.Thumbnailpath;
@@ -209,7 +209,7 @@ namespace HudlRT.Models
                 }
             }
             //clip.breakdownData = upperedBDD;
-            foreach (AngleDTO angleDTO in clipDTO.Angles)
+            foreach (AngleDTO angleDTO in clipDTO.ClipAngles)
             {
                 Angle a = Angle.FromDTO(angleDTO);
                 if (a != null)

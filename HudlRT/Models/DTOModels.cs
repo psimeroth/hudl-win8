@@ -63,7 +63,7 @@ namespace HudlRT.Models
 
     public class CutupDTO
     {
-        public string CutupID { get; set; }
+        public string PlaylistId { get; set; }
         public string CategoryID { get; set; }
         public string Name { get; set; }
         public string CreatorName { get; set; }
@@ -89,7 +89,7 @@ namespace HudlRT.Models
         public string ClipID { get; set; }
         public Dictionary<string, string> breakdownData { get; set; }
 
-        public List<AngleDTO> Angles { get; set; }
+        public List<AngleDTO> ClipAngles { get; set; }
         public long OriginalOrder { get; set; }
     }
 

@@ -25,7 +25,7 @@ namespace HudlRT.ViewModels
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
             CutupViewModel cutup = new CutupViewModel();
-            cutup._cutupId = cutupDTO.CutupID;
+            cutup._cutupId = cutupDTO.PlaylistId;
             cutup._clipCount = cutupDTO.ClipCount; 
             cutup._name = cutupDTO.Name;
             cutup._clipLoading = false;
