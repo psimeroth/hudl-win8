@@ -15,7 +15,7 @@ namespace HudlRT.ViewModels
     {
         private string _name { get; set; }
         private int _clipCount { get; set; }
-        private long _cutupId { get; set; }
+        private string _cutupId { get; set; }
         private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
         private bool _clipLoading { get; set; }
@@ -120,7 +120,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public long CutupId
+        public string CutupId
         {
             get { return _cutupId; }
             set

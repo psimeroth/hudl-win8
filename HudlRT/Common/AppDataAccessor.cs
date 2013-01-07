@@ -11,15 +11,15 @@ namespace HudlRT.Common
 {
     public struct TeamContextResponse
     {
-        public long? teamID { get; set; }
-        public long? seasonID { get; set; }
+        public String teamID { get; set; }
+        public String seasonID { get; set; }
     }
 
     public struct LastViewedResponse
     {
         public String name { get; set; }
         public String timeStamp { get; set; }
-        public long? ID { get; set; }
+        public String ID { get; set; }
     }
 
     public struct SplashScreenResponse
@@ -81,16 +81,16 @@ namespace HudlRT.Common
         public static TeamContextResponse GetTeamContext() {
             string username = GetUsername();
             TeamContextResponse response = new TeamContextResponse();
-            response.seasonID = GetRoamingSetting<long?>(username + SEASON_ID);
-            response.teamID = GetRoamingSetting<long?>(username + TEAM_ID);
+            response.seasonID = GetRoamingSetting<string>(username + SEASON_ID);
+            response.teamID = GetRoamingSetting<string>(username + TEAM_ID);
             return response;
         }
 
-        public static void SetTeamContext(long seasonID, long teamID)
+        public static void SetTeamContext(string seasonID, string teamID)
         {
             string username = GetUsername();
-            SetRoamingSetting<long>(username + SEASON_ID, seasonID);
-            SetRoamingSetting<long>(username + TEAM_ID, teamID);
+            SetRoamingSetting<string>(username + SEASON_ID, seasonID);
+            SetRoamingSetting<string>(username + TEAM_ID, teamID);
         }
 
         public static LastViewedResponse GetLastViewed()
@@ -99,22 +99,22 @@ namespace HudlRT.Common
             LastViewedResponse response = new LastViewedResponse();
             response.name = GetRoamingSetting<String>(username+LAST_VIEWED_NAME);
             response.timeStamp = GetRoamingSetting<String>(username+LAST_VIEWED_TIMESTAMP);
-            response.ID = GetRoamingSetting<long?>(username+LAST_VIEWED_ID);
+            response.ID = GetRoamingSetting<String>(username+LAST_VIEWED_ID);
             return response;
         }
 
-        public static void SetLastViewed(String name, String time, long ID)
+        public static void SetLastViewed(String name, String time, String ID)
         {
             string username = GetUsername();
             SetRoamingSetting<String>(username+LAST_VIEWED_NAME, name);
             SetRoamingSetting<String>(username + LAST_VIEWED_TIMESTAMP, time);
-            SetRoamingSetting<long>(username + LAST_VIEWED_ID, ID);
+            SetRoamingSetting<String>(username + LAST_VIEWED_ID, ID);
         }
 
         public static void SetAnglePreference(string angleName, bool value)
         {
             string username = GetUsername();
-            long teamID = GetRoamingSetting<long>(username+TEAM_ID);
+            string teamID = GetRoamingSetting<string>(username+TEAM_ID);
             SetRoamingSetting<bool>(username + teamID + "-" + angleName, value);
         }
 
@@ -123,7 +123,7 @@ namespace HudlRT.Common
             try
             {
                 string username = GetUsername();
-                long teamID = GetRoamingSetting<long>(username + TEAM_ID);
+                string teamID = GetRoamingSetting<string>(username + TEAM_ID);
                 return GetRoamingSetting<bool?>(username + teamID + "-" + key);
             }
             catch (Exception)

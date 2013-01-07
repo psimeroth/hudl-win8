@@ -21,7 +21,7 @@ namespace HudlRT.Models
 
     public class TeamDTO
     {
-        public int TeamId { get; set; }
+        public string TeamId { get; set; }
         public string Name { get; set; }
         public bool IsExchangeOnly { get; set; }
         public SchoolDTO School { get; set; }
@@ -31,14 +31,14 @@ namespace HudlRT.Models
 
     public class SchoolDTO
     {
-        public int SchoolId { get; set; }
+        public string SchoolId { get; set; }
         public string Name { get; set; }
         public string AbbreviatedName { get; set; }
     }
 
     public class SeasonDTO
     {
-        public int SeasonId { get; set; }
+        public string SeasonId { get; set; }
         public string Name { get; set; }
         public bool IsCurrentSeason { get; set; }
         public int Year { get; set; }
@@ -46,25 +46,25 @@ namespace HudlRT.Models
 
     public class GameDTO
     {
-        public int GameId { get; set; }
+        public string GameId { get; set; }
         public DateTime Date { get; set; }
         public string Opponent { get; set; }
         public bool Ishome { get; set; }
         public List<CategoryDTO> Categories { get; set; }
-        public long seasonID { get; set; }//this would be ideal
+        public string seasonID { get; set; }//this would be ideal
     }
 
     public class CategoryDTO
     {
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
         public int Classification { get; set; }
         public string Name { get; set; }
     }
 
     public class CutupDTO
     {
-        public int CutupID { get; set; }
-        public int CategoryID { get; set; }
+        public string CutupID { get; set; }
+        public string CategoryID { get; set; }
         public string Name { get; set; }
         public string CreatorName { get; set; }
         public int ClipCount { get; set; }
@@ -86,7 +86,7 @@ namespace HudlRT.Models
 
     public class ClipDTO
     {
-        public long ClipID { get; set; }
+        public string ClipID { get; set; }
         public Dictionary<string, string> breakdownData { get; set; }
 
         public List<AngleDTO> Angles { get; set; }
@@ -96,7 +96,7 @@ namespace HudlRT.Models
 
     public class AngleDTO
     {
-        public long ClipAngleID { get; set; }
+        public string ClipAngleID { get; set; }
         public string AngleName { get; set; }
         public long Duration { get; set; }
         public string ThumbnailFileName { get; set; }
@@ -113,7 +113,7 @@ namespace HudlRT.Models
 
     public class FeaturePrivilege
     {
-        public long FeaturePrivilegeId { get; set; }
+        public string FeaturePrivilegeId { get; set; }
         public string Name { get; set; }
         public bool IsLabs { get; set; }
     }
