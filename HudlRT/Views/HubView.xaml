@@ -35,10 +35,6 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
-        <Popup x:Name="HubView_DownloadsPopup" HorizontalOffset="50" VerticalOffset="100" IsLightDismissEnabled="True">
-            <local:DownloadsPopup />
-        </Popup>
-
         <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
             <Grid Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
@@ -169,7 +165,7 @@
                     </Button.Content>
 
                 </Button>
-                <Button x:Name="Downloads_Button" Click="ShowDownloadsPopup" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol">
+                <Button x:Name="Downloads_Button" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
                     <Button.Content>
                         <Grid Grid.Column="1" Height="120">
                             <Grid.RowDefinitions>
