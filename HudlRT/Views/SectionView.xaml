@@ -39,6 +39,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="65"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
@@ -64,7 +65,7 @@
             </Grid>
             <!--End TopTitleGrid-->
 
-            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,0" Visibility="{Binding ColVisibility}">
+            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,10" Visibility="{Binding ColVisibility}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -100,6 +101,27 @@
                 </Grid>
             </Grid>
             <!--End BottomContentGrid-->
+            <Grid x:Name="DownloadsGrid" Grid.Row="2" Margin="20,10,20,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="65" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="450"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action ViewDownloads()]">
+                    <TextBlock>
+                        <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads
+                    </TextBlock>
+                </Button>
+                <Button Grid.Column="2">Download Playlists</Button>
+                <Button Grid.Column="3">Confirm</Button>
+                <Button Grid.Column="4">Cancel</Button>
+            </Grid>
+            <!--End DownloadsGrid-->
         </Grid>
         <!--End MainGrid-->
         <ProgressRing x:Name="ProgressRing" Visibility="Collapsed" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" />
