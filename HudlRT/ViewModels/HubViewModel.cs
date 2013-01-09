@@ -18,7 +18,9 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         public CachedParameter Parameter { get; set; }
         private long? lastViewedId = null;
-        private bool lastViewedCached = false;
+
+        private Task<ClipResponse> loadLastViewed;
+        private CutupViewModel lastViewedCutup;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -190,6 +192,11 @@ namespace HudlRT.ViewModels
             navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
         }
 
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+        }
+
         protected override void OnActivate()
         {
             base.OnActivate();
@@ -226,24 +233,17 @@ namespace HudlRT.ViewModels
                 LastViewedTimeStamp = "Viewed: " + response.timeStamp;
                 lastViewedId = (long)response.ID;
 
-                LoadLastViewedCutup();
+                loadLastViewed = LoadLastViewedCutup();
             }
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
 
-        private async Task LoadLastViewedCutup()
+        private async Task<ClipResponse> LoadLastViewedCutup()
         {
-            CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
-            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                cutup.Clips = response.clips;
-                UpdateCachedParameter();
-                Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
-                lastViewedCached = true;
-            }
+            lastViewedCutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
+            return await ServiceAccessor.GetCutupClips(lastViewedCutup);
         }
 
         public void UpdateCachedParameter()
@@ -455,14 +455,16 @@ namespace HudlRT.ViewModels
             if (lastViewedId.HasValue)
             {
                 ProgressRingVisibility = "Visible";
-                /*if (!lastViewedCached)
+                
+                ClipResponse response = await loadLastViewed;
+                if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
-                    await LoadLastViewedCutup();
-                }*/
-                while (!lastViewedCached)
-                {
+                    lastViewedCutup.Clips = response.clips;
+                    UpdateCachedParameter();
+                    Parameter.selectedCutup = new Cutup { cutupId = lastViewedCutup.CutupId, clips = lastViewedCutup.Clips, displayColumns = lastViewedCutup.DisplayColumns, clipCount = Convert.ToInt32(lastViewedCutup.ClipCount), name = lastViewedCutup.Name };
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
                 }
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
+
                 ProgressRingVisibility = "Collapsed";
             }
             else
