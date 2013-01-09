@@ -18,6 +18,7 @@ using HudlRT.Models;
 using HudlRT.Parameters;
 using Windows.UI.Xaml.Markup;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 
 namespace HudlRT.Views
 {   
@@ -90,8 +91,8 @@ namespace HudlRT.Views
             btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
             full_btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
             
-            Windows.UI.Xaml.Window.Current.CoreWindow.KeyDown += VideoPage_KeyDown;
-            Windows.UI.Xaml.Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
+            Window.Current.CoreWindow.KeyDown += VideoPage_KeyDown;
+            Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
         }
 
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
@@ -110,8 +111,8 @@ namespace HudlRT.Views
                 btnExpandGrid_Click(null, null);
             else if (initialPoint.Y - currentPoint.Y <= -50 && !isGridCollapsed)
             {
-                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
-                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled)
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Filled)
                 {
                     FullscreenToggle();
                 }
@@ -211,7 +212,7 @@ namespace HudlRT.Views
                    b.SetValue(Grid.RowProperty, 0);
                    b.SetValue(Grid.ColumnProperty, i);
                    t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
-                   t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                   t.HorizontalAlignment = HorizontalAlignment.Center;
                    b.Child = t;
                    gridHeaders.Children.Add(b);
                }
@@ -299,8 +300,8 @@ namespace HudlRT.Views
                 videoMediaElement.Width = Window.Current.Bounds.Width - 300;
                 videoMediaElement.Height = _previousVideoSize.Height;
 
-                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
-                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled && isGridCollapsed)
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Filled && isGridCollapsed)
                 {
                     btnExpandGrid_Click(null, null);
                 }
@@ -377,7 +378,7 @@ namespace HudlRT.Views
         {
             if (e.VirtualKey == Windows.System.VirtualKey.Down)
             {
-                isPaused = btnPause.Visibility == Windows.UI.Xaml.Visibility.Visible ? false : true;
+                isPaused = btnPause.Visibility == Visibility.Visible ? false : true;
                 btnSlowForward_Click(null, null);
                 keyPressTimer.Start();
                 e.Handled = true;
@@ -632,8 +633,8 @@ namespace HudlRT.Views
         {
             snapped_mainGrid.Visibility = Visibility.Collapsed;
             videoMediaElement.ControlPanel.Visibility = Visibility.Visible;
-            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
-            if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled)
+            var currentViewState = ApplicationView.Value;
+            if (currentViewState == ApplicationViewState.Filled)
             {
                 if (IsFullscreen)
                 {
@@ -663,7 +664,7 @@ namespace HudlRT.Views
                 previousStateIsSnapped = false;
                 previousVideoStateIsFullScreen = false;
             }
-            else if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.FullScreenLandscape)
+            else if (currentViewState == ApplicationViewState.FullScreenLandscape)
             {
                 if (IsFullscreen)
                 {
@@ -686,7 +687,7 @@ namespace HudlRT.Views
                 previousStateIsSnapped = false;
                 previousVideoStateIsFullScreen = false;
             }
-            else if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+            else if (currentViewState == ApplicationViewState.Snapped)
             {
                 if (IsFullscreen)
                 {
