@@ -242,7 +242,7 @@ namespace HudlRT.ViewModels
 
         private async Task<ClipResponse> LoadLastViewedCutup()
         {
-            lastViewedCutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
+            lastViewedCutup = new CutupViewModel { CutupId = lastViewedId, Name = LastViewedName };
             return await ServiceAccessor.GetCutupClips(lastViewedCutup);
         }
 
