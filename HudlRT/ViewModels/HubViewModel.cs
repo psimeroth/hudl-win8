@@ -455,7 +455,7 @@ namespace HudlRT.ViewModels
                 {
                     lastViewedCutup.Clips = response.clips;
                     UpdateCachedParameter();
-                    CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
+                    CachedParameter.selectedCutup = new Cutup { cutupId = lastViewedCutup.CutupId, clips = lastViewedCutup.Clips, displayColumns = lastViewedCutup.DisplayColumns, clipCount = Convert.ToInt32(lastViewedCutup.ClipCount), name = lastViewedCutup.Name };
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>();
                 }
 
