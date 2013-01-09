@@ -147,6 +147,16 @@ namespace HudlRT.Models
         }
     }
 
+    public class Downloads
+    {
+        public BindableCollection<Cutup> cutups { get; set; }
+
+        public Downloads()
+        {
+            cutups = new BindableCollection<Cutup>();
+        }
+    }
+
     public class Cutup
     {
         public string name { get; set; }
@@ -234,7 +244,7 @@ namespace HudlRT.Models
         public long duration { get; set; }
         public AngleType angleType { get; set; }
         public bool isPreloaded { get; set; }
-        public Windows.Storage.StorageFile preloadFile { get; set; }
+        public string preloadFile { get; set; }
 
         public Angle()
         {
