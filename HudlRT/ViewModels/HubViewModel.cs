@@ -458,6 +458,7 @@ namespace HudlRT.ViewModels
 
         public void ViewDownloads()
         {
+            UpdateCachedParameter();
             navigationService.NavigateToViewModel<DownloadsViewModel>(Parameter);
         }
 
