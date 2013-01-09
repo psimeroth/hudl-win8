@@ -11,11 +11,19 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.ViewManagement;
 
 namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
     {
+        private const int SNAPPED_FONT_SIZE = 24;
+        private const int FONT_SIZE = 28;
+
+        private const Visibility SNAPPED_VISIBILITY = Visibility.Collapsed;
+        private const Visibility FULL_VISIBILITY = Visibility.Visible;
+
         private readonly INavigationService navigationService;
         public CachedParameter Parameter { get; set; }
 
@@ -86,6 +94,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility _visibility;
+        public Visibility Visibility
+        {
+            get { return _visibility; }
+            set
+            {
+                _visibility = value;
+                NotifyOfPropertyChange(() => Visibility);
+            }
+        }
+
         private BindableCollection<Season> seasonsForDropDown;
         public BindableCollection<Season> SeasonsDropDown
         {
@@ -139,27 +158,31 @@ namespace HudlRT.ViewModels
             }
             if (Cutups != null)
             {
-                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
-                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Snapped)
                 {
                     foreach (var cutup in Cutups)
                     {
-                        cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        cutup.Width = new Windows.UI.Xaml.GridLength(0);
-                        cutup.FontSize = 24;
+                        cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Width = new GridLength(0);
+                        cutup.FontSize = SNAPPED_FONT_SIZE;
                     }
                 }
                 else
                 {
                     foreach (var cutup in Cutups)
                     {
-                        cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Visible;
-                        cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Visible;
-                        cutup.Width = new Windows.UI.Xaml.GridLength(180);
-                        cutup.FontSize = 28;
+                        cutup.Name_Visibility = FULL_VISIBILITY;
+                        cutup.Thumbnail_Visibility = FULL_VISIBILITY;
+                        cutup.Width = new GridLength(180);
+                        cutup.FontSize = FONT_SIZE;
                     }
                 }
+            }
+            else if (Cutups == null || Cutups.Count == 0)
+            {
+                Visibility = Visibility.Collapsed;
             }
         }
 
@@ -320,16 +343,24 @@ namespace HudlRT.ViewModels
                 }
                 Cutups = cuts;
             }
-            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
-            if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+            var currentViewState = ApplicationView.Value;
+            if (currentViewState == ApplicationViewState.Snapped)
             {
                 foreach (var cutup in Cutups)
                 {
-                    cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    cutup.Width = new Windows.UI.Xaml.GridLength(0);
-                    cutup.FontSize = 24;
+                    cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                    cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                    cutup.Width = new GridLength(0);
+                    cutup.FontSize = SNAPPED_FONT_SIZE;
                 }
+            }
+            if (Cutups == null || Cutups.Count == 0)
+            {
+                Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Visibility = Visibility.Collapsed;
             }
 
         }
@@ -448,25 +479,25 @@ namespace HudlRT.ViewModels
         {
             if (Cutups != null)
             {
-                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
-                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Snapped)
                 {
                     foreach (var cutup in Cutups)
                     {
-                        cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        cutup.Width = new Windows.UI.Xaml.GridLength(0);
-                        cutup.FontSize = 24;
+                        cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Width = new GridLength(0);
+                        cutup.FontSize = SNAPPED_FONT_SIZE;
                     }
                 }
                 else
                 {
                     foreach (var cutup in Cutups)
                     {
-                        cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Visible;
-                        cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Visible;
-                        cutup.Width = new Windows.UI.Xaml.GridLength(180);
-                        cutup.FontSize = 28;
+                        cutup.Name_Visibility = FULL_VISIBILITY;
+                        cutup.Thumbnail_Visibility = FULL_VISIBILITY;
+                        cutup.Width = new GridLength(180);
+                        cutup.FontSize = FONT_SIZE;
                     }
                 }
             }

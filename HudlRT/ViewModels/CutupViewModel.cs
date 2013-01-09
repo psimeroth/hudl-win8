@@ -14,6 +14,11 @@ namespace HudlRT.ViewModels
     /// </summary>
     public class CutupViewModel : PropertyChangedBase
     {
+        private const int FONT_SIZE = 28;
+        private const Visibility FULL_VISIBILITY = Visibility.Visible;
+        private const bool CLIP_LOADING = false;
+        private const double OPACITY = 1.0;
+
         private string _name { get; set; }
         private int _clipCount { get; set; }
         private long _cutupId { get; set; }
@@ -33,13 +38,13 @@ namespace HudlRT.ViewModels
             cutup._cutupId = cutupDTO.CutupID;
             cutup._clipCount = cutupDTO.ClipCount; 
             cutup._name = cutupDTO.Name;
-            cutup._clipLoading = false;
-            cutup._opacity = 1.0;
+            cutup._clipLoading = CLIP_LOADING;
+            cutup._opacity = OPACITY;
             cutup._thumbnail = cutupDTO.Thumbnailpath ?? "ms-appx:///Assets/Hudl_Metro150 thumbCentered.png";
-            cutup._nameVisibility = Visibility.Visible;
-            cutup._thumbnailVisibility = Visibility.Visible;
+            cutup._nameVisibility = FULL_VISIBILITY;
+            cutup._thumbnailVisibility = FULL_VISIBILITY;
             cutup._width = new GridLength(180);
-            cutup._fontSize = 28;
+            cutup._fontSize = FONT_SIZE;
             return cutup;
         }
 
@@ -49,13 +54,13 @@ namespace HudlRT.ViewModels
             cutup._cutupId = cutupDTO.cutupId;
             cutup._clipCount = cutupDTO.clipCount;
             cutup._name = cutupDTO.name;
-            cutup._clipLoading = false;
-            cutup._opacity = 1.0;
+            cutup._clipLoading = CLIP_LOADING;
+            cutup._opacity = OPACITY;
             cutup._thumbnail = cutupDTO.thumbnailLocation ?? "ms-appx:///Assets/Hudl_Metro150 thumbCentered.png";
-            cutup._nameVisibility = Visibility.Visible;
-            cutup._thumbnailVisibility = Visibility.Visible;
+            cutup._nameVisibility = FULL_VISIBILITY;
+            cutup._thumbnailVisibility = FULL_VISIBILITY;
             cutup._width = new GridLength(180);
-            cutup._fontSize = 28;
+            cutup._fontSize = FONT_SIZE;
 
             return cutup;
         }
