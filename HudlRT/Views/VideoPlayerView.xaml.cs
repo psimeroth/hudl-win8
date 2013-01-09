@@ -178,8 +178,7 @@ namespace HudlRT.Views
 
             var dataSource = fif.GetVirtualizedFilesVector();
 
-           CachedParameter pass = (CachedParameter)e.Parameter;
-           string[] displayColumns = pass.selectedCutup.displayColumns;
+           string[] displayColumns = CachedParameter.selectedCutup.displayColumns;
            var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
            string columnDefinitions = "";
            string rowText = "";
