@@ -35,6 +35,9 @@ namespace HudlRT.Views
             set { _isFullscreenToggle = value; }
         }
 
+        private bool previousVideoStateIsFullScreen = false;
+        private bool previousStateIsSnapped = false;
+
         private Size _previousVideoContainerSize = new Size();
         private Size _previousVideoSize = new Size();
 
@@ -168,6 +171,7 @@ namespace HudlRT.Views
             queryOptions.FolderDepth = Windows.Storage.Search.FolderDepth.Deep;
             queryOptions.IndexerOption = Windows.Storage.Search.IndexerOption.UseIndexerWhenAvailable;
 
+            videoContainer.Width = Window.Current.Bounds.Width;
             videoMediaElement.Width = Window.Current.Bounds.Width - 300;
 
             var fileQuery = library.CreateFileQueryWithOptions(queryOptions);
@@ -290,7 +294,7 @@ namespace HudlRT.Views
                 full_mainGrid.Visibility = Visibility.Collapsed;
 
                 // Reset the video container to it's original height
-                videoContainer.Width = _previousVideoContainerSize.Width;
+                videoContainer.Width = Window.Current.Bounds.Width;
                 videoContainer.Height = _previousVideoContainerSize.Height;
                 videoMediaElement.Width = Window.Current.Bounds.Width - 300;
                 videoMediaElement.Height = _previousVideoSize.Height;
@@ -541,6 +545,9 @@ namespace HudlRT.Views
 
             full_btnPause.Visibility = Visibility.Collapsed;
             full_btnPlay.Visibility = Visibility.Visible;
+
+            snapped_btnPause.Visibility = Visibility.Collapsed;
+            snapped_btnPlay.Visibility = Visibility.Visible;
         }
 
         private void setPauseVisible()
@@ -550,6 +557,9 @@ namespace HudlRT.Views
 
             full_btnPlay.Visibility = Visibility.Collapsed;
             full_btnPause.Visibility = Visibility.Visible;
+
+            snapped_btnPlay.Visibility = Visibility.Collapsed;
+            snapped_btnPause.Visibility = Visibility.Visible;
         }
 
         private void setStopVisibile()
@@ -559,6 +569,9 @@ namespace HudlRT.Views
 
             full_btnReverse.Visibility = Visibility.Collapsed;
             full_btnStop.Visibility = Visibility.Visible;
+
+            snapped_btnReverse.Visibility = Visibility.Collapsed;
+            snapped_btnStop.Visibility = Visibility.Visible;
         }
 
         private void setPrevVisible()
@@ -568,6 +581,9 @@ namespace HudlRT.Views
 
             full_btnStop.Visibility = Visibility.Collapsed;
             full_btnReverse.Visibility = Visibility.Visible;
+
+            snapped_btnStop.Visibility = Visibility.Collapsed;
+            snapped_btnReverse.Visibility = Visibility.Visible;
         }
 
         private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
@@ -614,6 +630,8 @@ namespace HudlRT.Views
 
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
+            snapped_mainGrid.Visibility = Visibility.Collapsed;
+            videoMediaElement.ControlPanel.Visibility = Visibility.Visible;
             var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
             if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Filled)
             {
@@ -624,13 +642,26 @@ namespace HudlRT.Views
                     videoMediaElement.Width = Window.Current.Bounds.Width;
                     videoMediaElement.Height = Window.Current.Bounds.Height;
                     VideoGrid.Margin = new Thickness(0, 0, 0, 0);
+                    full_mainGrid.Visibility = Visibility.Visible;
                 }
                 else if (isGridCollapsed)
                 {
                     btnExpandGrid_Click(null, null);
+                    videoContainer.Width = Window.Current.Bounds.Width - 300;
+                    videoMediaElement.Width = Window.Current.Bounds.Width - 300;
+                }
+                else
+                {
                     videoContainer.Width = Window.Current.Bounds.Width;
                     videoMediaElement.Width = Window.Current.Bounds.Width - 300;
                 }
+
+                if (!previousVideoStateIsFullScreen && previousStateIsSnapped)
+                {
+                    FullscreenToggle();
+                }
+                previousStateIsSnapped = false;
+                previousVideoStateIsFullScreen = false;
             }
             else if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.FullScreenLandscape)
             {
@@ -641,7 +672,56 @@ namespace HudlRT.Views
                     videoMediaElement.Width = Window.Current.Bounds.Width;
                     videoMediaElement.Height = Window.Current.Bounds.Height;
                     VideoGrid.Margin = new Thickness(0, 0, 0, 0);
+                    full_mainGrid.Visibility = Visibility.Visible;
                 }
+                else
+                {
+                    videoContainer.Width = Window.Current.Bounds.Width;
+                    videoMediaElement.Width = Window.Current.Bounds.Width - 300;
+                }
+                if (!previousVideoStateIsFullScreen && previousStateIsSnapped)
+                {
+                    FullscreenToggle();
+                }
+                previousStateIsSnapped = false;
+                previousVideoStateIsFullScreen = false;
+            }
+            else if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+            {
+                if (IsFullscreen)
+                {
+                    previousVideoStateIsFullScreen = true;
+                }
+                else
+                {
+                    _previousVideoContainerSize.Width = videoContainer.ActualWidth;
+                    _previousVideoContainerSize.Height = videoContainer.ActualHeight;
+                    _previousVideoSize.Width = Window.Current.Bounds.Width - 300;
+                    _previousVideoSize.Height = videoMediaElement.ActualHeight;
+                    background = RootGrid.Background;
+                }
+
+                previousStateIsSnapped = true;
+                this.IsFullscreen = true;
+
+                RootGrid.Background = new SolidColorBrush();
+                dataPanel.Background = new SolidColorBrush();
+                header.Visibility = Visibility.Collapsed;
+                header.UpdateLayout();
+                gridScroll.Visibility = Visibility.Collapsed;
+                Clips.UpdateLayout();
+                TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
+                TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
+                gridHeaderScroll.Visibility = Visibility.Collapsed;
+                snapped_mainGrid.Visibility = Visibility.Visible;
+                videoMediaElement.ControlPanel.Visibility = Visibility.Collapsed;
+                full_mainGrid.Visibility = Visibility.Collapsed;
+
+                videoContainer.Width = Window.Current.Bounds.Width;
+                videoContainer.Height = Window.Current.Bounds.Height;
+                videoMediaElement.Width = Window.Current.Bounds.Width;
+                videoMediaElement.Height = Window.Current.Bounds.Height;
+                VideoGrid.Margin = new Thickness(0, 0, 0, 0);
             }
         }
     }
