@@ -456,6 +456,11 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public void ViewDownloads()
+        {
+            navigationService.NavigateToViewModel<DownloadsViewModel>(Parameter);
+        }
+
         
     }
 }

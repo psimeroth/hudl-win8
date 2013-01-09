@@ -5,6 +5,7 @@
     xmlns:local="using:HudlRT.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
     <Grid>
@@ -17,14 +18,8 @@
             <TextBlock FontSize="40" VerticalAlignment="Center">Downloads</TextBlock>
             <TextBlock FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Right">3 Playlists | 321 Clips | 320 MB</TextBlock>
         </StackPanel>
-        <ListView Grid.Row="1">
-            <ListViewItem>ITEM</ListViewItem>
-            <ListViewItem>ITEM</ListViewItem>
-            <ListViewItem>ITEM</ListViewItem>
-            <ListViewItem>ITEM</ListViewItem>
-            <ListViewItem>ITEM</ListViewItem>
-            <ListViewItem>ITEM</ListViewItem>
-            <ListViewItem>ITEM</ListViewItem>
+        <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
+                              ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected">
         </ListView>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button>Delete Playlists</Button>

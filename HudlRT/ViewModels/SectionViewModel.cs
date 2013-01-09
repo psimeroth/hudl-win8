@@ -324,7 +324,7 @@ namespace HudlRT.ViewModels
                 //Parameter.videoPageClips = Parameter.selectedCutup.clips;
 
                 //await GetDownloads();
-                //await DownloadCutups(new List<Cutup>{Parameter.selectedCutup});
+                await DownloadCutups(new List<Cutup>{Parameter.selectedCutup});
                 //await RemoveDownload(Parameter.selectedCutup);
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
             }
