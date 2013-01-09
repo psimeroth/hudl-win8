@@ -17,7 +17,7 @@ namespace HudlRT.ViewModels
     {
         private readonly INavigationService navigationService;
         public CachedParameter Parameter { get; set; }
-        private long? lastViewedId = null;
+        private string lastViewedId = null;
 
         private Task<ClipResponse> loadLastViewed;
         private CutupViewModel lastViewedCutup;
@@ -231,7 +231,7 @@ namespace HudlRT.ViewModels
             {
                 LastViewedName = response.name;
                 LastViewedTimeStamp = "Viewed: " + response.timeStamp;
-                lastViewedId = (long)response.ID;
+                lastViewedId = response.ID;
 
                 loadLastViewed = LoadLastViewedCutup();
             }
@@ -277,14 +277,14 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
-                long teamID = -1;
-                long seasonID = -1;
+                string teamID = null;
+                string seasonID = null;
                 bool foundSavedSeason = false;
                 TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
                 if (teamContext.seasonID != null && teamContext.teamID != null)
                 {
-                    teamID = (long)teamContext.teamID;
-                    seasonID = (long)teamContext.seasonID;
+                    teamID = teamContext.teamID;
+                    seasonID = teamContext.seasonID;
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -452,7 +452,7 @@ namespace HudlRT.ViewModels
 
         public async void LastViewedSelected()
         {
-            if (lastViewedId.HasValue)
+            if (lastViewedId != null)
             {
                 ProgressRingVisibility = "Visible";
                 
