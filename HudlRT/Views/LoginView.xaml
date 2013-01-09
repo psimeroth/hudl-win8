@@ -52,16 +52,19 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0" Foreground="White">Username</TextBlock>
-                    <TextBlock Grid.Column="0" Grid.Row="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0" Foreground="White">Password</TextBlock>
+                    <TextBlock x:Name="UserName_Text" Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0" Foreground="White">Username</TextBlock>
+                    <TextBlock x:Name="Password_Text" Grid.Column="0" Grid.Row="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-5,0,0" Foreground="White">Password</TextBlock>
 
                     <TextBox x:Name="UserName" MinHeight="50" FontSize="25" Margin="10,0,0,5" MinWidth="500" Grid.Column="1" Grid.Row="0" />
                     <PasswordBox x:Name="Password" MinHeight="50" FontSize="25" Margin="10,0,0,5" IsPasswordRevealButtonEnabled="True" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="1" Grid.Row="1" />
                     <CheckBox Name="RememberMe" Grid.Row="2" Grid.Column="1" Content="Remember Me" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Bottom" MinWidth="500" Margin="9,0,0,3"/>
 
-                    <Grid Grid.Row="2" Grid.Column="1">
+                    <Grid x:Name="MiscGrid" Grid.Row="2" Grid.Column="1">
                         <Grid>
                             <TextBlock Text="New to Hudl?" FontSize="18" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,125,4" Foreground="White"/>
                             <Button Content="Check it out!" HorizontalAlignment="Right" FontSize="18" Click="RedirectToSignup" Width="120" Margin="0" Style="{StaticResource ButtonStyle_Secondary}"/>
@@ -100,17 +103,77 @@
                 </VisualState>
                 <VisualState x:Name="Snapped">
                     <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="loginStackPanel" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName_Text" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2,0,0,0" />
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName_Text" Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName_Text" Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName_Text" Storyboard.TargetProperty="HorizontalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Left" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName" Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName" Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName" Storyboard.TargetProperty="MinWidth">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="300" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName" Storyboard.TargetProperty="MaxWidth">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="300" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UserName" Storyboard.TargetProperty="HorizontalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Left" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password_Text" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2,10,0,0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password_Text" Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password_Text" Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password_Text" Storyboard.TargetProperty="HorizontalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Left" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password" Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="3" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password" Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password" Storyboard.TargetProperty="MinWidth">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="300" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password" Storyboard.TargetProperty="MaxWidth">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="300" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Password" Storyboard.TargetProperty="HorizontalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Left" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RememberMe" Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="4" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RememberMe" Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MiscGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Login" Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="5" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Login" Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Login" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2,10,0,0" />
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
