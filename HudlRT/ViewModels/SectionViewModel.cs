@@ -313,7 +313,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                Common.APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
             }
         }
 
