@@ -408,6 +408,31 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public void OnWindowSizeChanged()
+        {
+            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+            if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+            {
+                foreach (var cutup in Cutups)
+                {
+                    cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    cutup.Width = new Windows.UI.Xaml.GridLength(0);
+                    cutup.FontSize = 24;
+                }
+            }
+            else
+            {
+                foreach (var cutup in Cutups)
+                {
+                    cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    cutup.Width = new Windows.UI.Xaml.GridLength(180);
+                    cutup.FontSize = 28;
+                }
+            }
+        }
+
 
     }
 }
