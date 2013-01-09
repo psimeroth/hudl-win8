@@ -137,6 +137,17 @@ namespace HudlRT.ViewModels
                     LoadPageFromDefault(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.sectionViewGames);
                 }
             }
+            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+            if (Cutups != null && currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+            {
+                foreach (var cutup in Cutups)
+                {
+                    cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    cutup.Width = new Windows.UI.Xaml.GridLength(0);
+                    cutup.FontSize = 24;
+                }
+            }
         }
 
         private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID, BindableCollection<GameViewModel> games)
@@ -296,6 +307,18 @@ namespace HudlRT.ViewModels
                 }
                 Cutups = cuts;
             }
+            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+            if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+            {
+                foreach (var cutup in Cutups)
+                {
+                    cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    cutup.Width = new Windows.UI.Xaml.GridLength(0);
+                    cutup.FontSize = 24;
+                }
+            }
+
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
@@ -410,25 +433,28 @@ namespace HudlRT.ViewModels
 
         public void OnWindowSizeChanged()
         {
-            var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
-            if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
+            if (Cutups != null)
             {
-                foreach (var cutup in Cutups)
+                var currentViewState = Windows.UI.ViewManagement.ApplicationView.Value;
+                if (currentViewState == Windows.UI.ViewManagement.ApplicationViewState.Snapped)
                 {
-                    cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    cutup.Width = new Windows.UI.Xaml.GridLength(0);
-                    cutup.FontSize = 24;
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        cutup.Width = new Windows.UI.Xaml.GridLength(0);
+                        cutup.FontSize = 24;
+                    }
                 }
-            }
-            else
-            {
-                foreach (var cutup in Cutups)
+                else
                 {
-                    cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    cutup.Width = new Windows.UI.Xaml.GridLength(180);
-                    cutup.FontSize = 28;
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        cutup.Thumbnail_Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        cutup.Width = new Windows.UI.Xaml.GridLength(180);
+                        cutup.FontSize = 28;
+                    }
                 }
             }
         }

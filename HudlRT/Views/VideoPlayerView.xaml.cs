@@ -694,10 +694,10 @@ namespace HudlRT.Views
                 }
                 else
                 {
-                    _previousVideoContainerSize.Width = videoContainer.ActualWidth;
-                    _previousVideoContainerSize.Height = videoContainer.ActualHeight;
+                    _previousVideoContainerSize.Width = Window.Current.Bounds.Width;
+                    _previousVideoContainerSize.Height = 350;
                     _previousVideoSize.Width = Window.Current.Bounds.Width - 300;
-                    _previousVideoSize.Height = videoMediaElement.ActualHeight;
+                    _previousVideoSize.Height = 350;
                     background = RootGrid.Background;
                 }
 

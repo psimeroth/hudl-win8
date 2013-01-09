@@ -489,5 +489,23 @@ namespace HudlRT.ViewModels
             //}
             navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
         }
+
+        public void snapped_GoBack()
+        {
+            DeleteTempData();
+            dispRequest.RequestRelease();
+            dispRequest = null;
+            saveAnglePreferences();
+            //CachedParameter param;
+            //if (Parameter.sectionViewGameSelected == null)
+            //{
+            //    param = new CachedParameter { categoryId = 0, gameId = 0, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = null };
+            //}
+            //else
+            //{
+            //    param = new CachedParameter { categoryId = Parameter.sectionViewCategorySelected.CategoryId, gameId = Parameter.sectionViewGameSelected.GameId, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = Parameter.sectionViewGames };
+            //}
+            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+        }
     }
 }
