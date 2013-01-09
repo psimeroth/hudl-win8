@@ -16,7 +16,6 @@ namespace HudlRT.ViewModels
     public class HubViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        public CachedParameter Parameter { get; set; }
         private string lastViewedId = null;
 
         private Task<ClipResponse> loadLastViewed;
@@ -189,7 +188,7 @@ namespace HudlRT.ViewModels
         public async void NavigateToSectionPage()
         {
             UpdateCachedParameter();
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            navigationService.NavigateToViewModel<SectionViewModel>();
         }
 
         protected override void OnDeactivate(bool close)
@@ -200,20 +199,21 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            if (Parameter != null)
+            if (CachedParameter.isInitialized)
             {
-                SeasonsDropDown = Parameter.seasonsDropDown;
-                SelectedSeason = Parameter.seasonSelected;
-                if (Parameter.hubViewNextGame != null && Parameter.hubViewPreviousGame != null)
+                SeasonsDropDown = CachedParameter.seasonsDropDown;
+                SelectedSeason = CachedParameter.seasonSelected;
+                if (CachedParameter.hubViewNextGame != null && CachedParameter.hubViewPreviousGame != null)
                 {
-                    NextGame = Parameter.hubViewNextGame;
-                    PreviousGame = Parameter.hubViewPreviousGame;
+                    NextGame = CachedParameter.hubViewNextGame;
+                    PreviousGame = CachedParameter.hubViewPreviousGame;
                     NextGameCategories = NextGame.categories;
                     PreviousGameCategories = PreviousGame.categories;
                 }
                 else
                 {
                     FindNextPreviousGames(SelectedSeason);
+                    CachedParameter.isInitialized = true;
                 }
             }
             else
@@ -248,27 +248,21 @@ namespace HudlRT.ViewModels
 
         public void UpdateCachedParameter()
         {
-            if (Parameter == null)
-            {
-                Parameter = new CachedParameter();
-            }
-            Parameter.seasonsDropDown = SeasonsDropDown;
-            Parameter.seasonSelected = SelectedSeason;
-            Parameter.hubViewNextGame = NextGame;
-            Parameter.hubViewPreviousGame = PreviousGame;
+            CachedParameter.seasonsDropDown = SeasonsDropDown;
+            CachedParameter.seasonSelected = SelectedSeason;
+            CachedParameter.hubViewNextGame = NextGame;
+            CachedParameter.hubViewPreviousGame = PreviousGame;
+            CachedParameter.isInitialized = true;
         }
 
         public void UpdateParameterOnSeasonChange()
         {
-            if (Parameter != null)
-            {
-                Parameter.sectionViewCategories = null;
-                Parameter.sectionViewCategorySelected = null;
-                Parameter.sectionViewCutups = null;
-                Parameter.sectionViewGames = null;
-                Parameter.sectionViewGameSelected = null;
-                Parameter.selectedCutup = null;
-            }
+                CachedParameter.sectionViewCategories = null;
+                CachedParameter.sectionViewCategorySelected = null;
+                CachedParameter.sectionViewCutups = null;
+                CachedParameter.sectionViewGames = null;
+                CachedParameter.sectionViewGameSelected = null;
+                CachedParameter.selectedCutup = null;
         }
 
         public async void PopulateDropDown()
@@ -433,9 +427,9 @@ namespace HudlRT.ViewModels
             
             var category = (Category)eventArgs.ClickedItem;
             UpdateCachedParameter();
-            Parameter.categoryId = category.categoryId;
-            Parameter.gameId = NextGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            CachedParameter.categoryId = category.categoryId;
+            CachedParameter.gameId = NextGame.gameId;
+            navigationService.NavigateToViewModel<SectionViewModel>();
 
         }
 
@@ -444,9 +438,9 @@ namespace HudlRT.ViewModels
 
             var category = (Category)eventArgs.ClickedItem;
             UpdateCachedParameter();
-            Parameter.categoryId = category.categoryId;
-            Parameter.gameId = PreviousGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            CachedParameter.categoryId = category.categoryId;
+            CachedParameter.gameId = PreviousGame.gameId;
+            navigationService.NavigateToViewModel<SectionViewModel>();
 
         }
 
@@ -461,8 +455,8 @@ namespace HudlRT.ViewModels
                 {
                     lastViewedCutup.Clips = response.clips;
                     UpdateCachedParameter();
-                    Parameter.selectedCutup = new Cutup { cutupId = lastViewedCutup.CutupId, clips = lastViewedCutup.Clips, displayColumns = lastViewedCutup.DisplayColumns, clipCount = Convert.ToInt32(lastViewedCutup.ClipCount), name = lastViewedCutup.Name };
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
+                    CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>();
                 }
 
                 ProgressRingVisibility = "Collapsed";
@@ -470,7 +464,7 @@ namespace HudlRT.ViewModels
             else
             {
                 UpdateCachedParameter();
-                navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+                navigationService.NavigateToViewModel<SectionViewModel>();
             }
         }
 
