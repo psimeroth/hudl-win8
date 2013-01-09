@@ -66,5 +66,11 @@ namespace HudlRT.Views
             HubViewModel vm = (HubViewModel)this.DataContext;
             vm.SeasonSelected(SeasonsDropDown.SelectedItem);
         }
+
+        private void ShowDownloadsPopup(object sender, RoutedEventArgs e)
+        {
+            if (!HubView_DownloadsPopup.IsOpen) { HubView_DownloadsPopup.IsOpen = true; }
+        }
+
     }
 }

@@ -118,7 +118,7 @@
                             VerticalContentAlignment="Bottom"
                             Height="350"
                             DataContext="{Binding SelectedAngle}">
-                <mmppf:MediaPlayer x:Name="videoMediaElement" Width="1100" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
+                <mmppf:MediaPlayer x:Name="videoMediaElement" Width="" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
                                    AutoPlay="True"
                                    MediaOpened="videoElement_MediaOpened"
                                    MediaEnded="videoMediaElement_MediaEnded"
