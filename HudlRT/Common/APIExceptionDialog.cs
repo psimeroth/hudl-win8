@@ -29,8 +29,19 @@ namespace HudlRT.Common
 
         static public void ShowStatusCodeExceptionDialog(object sender, RoutedEventArgs e, string statusCode, string url)
         {
-            string message = "Server Error.";
-            message += "\nWhen contacting the server, we ran into an error. Please email kyle.deterding@hudl.com with the following URL and Error Code: \nURL: " + url + "\nStatus Code: " + statusCode;
+            string message;
+            if (statusCode == "Unauthorized")
+            {
+                message = "Unauthorized Access.";
+                message += "\nYou cannot access this content - if you think you should have access, please email support@hudl.com.";
+            }
+
+            else
+            {
+                message = "Server Error.";
+                message += "\nWhen contacting the server, we ran into an error. Please email kyle.deterding@hudl.com with the following URL and Error Code: \nURL: " + url + "\nStatus Code: " + statusCode;
+            }
+
             ShowExceptionDialog(message, sender, e);
         }
 
