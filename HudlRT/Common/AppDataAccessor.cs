@@ -60,7 +60,7 @@ namespace HudlRT.Common
 
         public static string GetAuthToken()
         {
-            return (string)GetRoamingSetting<string>(AUTH_TOKEN);
+            return GetRoamingSetting<string>(AUTH_TOKEN);
         }
 
         public static void SetAuthToken(string token)
