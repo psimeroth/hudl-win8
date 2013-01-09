@@ -4,6 +4,7 @@ using HudlRT.Models;
 using HudlRT.Parameters;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,9 @@ namespace HudlRT.ViewModels
     {
         private readonly INavigationService navigationService;
         public CachedParameter Parameter { get; set; }
+
+        private ConcurrentDictionary<string, Task<ClipResponse>> CachedCutupCalls;
+        private List<CutupViewModel> CachedCutups;
 
         private BindableCollection<GameViewModel> _schedule { get; set; }
         public BindableCollection<GameViewModel> Schedule
@@ -122,6 +126,9 @@ namespace HudlRT.ViewModels
                 teamID = null;
                 seasonID = null;
             }
+
+            CachedCutups = new List<CutupViewModel>();
+            CachedCutupCalls = new ConcurrentDictionary<string, Task<ClipResponse>>();
 
             if (Parameter != null)
             {
@@ -236,6 +243,12 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private async Task<ClipResponse> LoadCutup(CutupViewModel cutup)
+        {
+            CachedCutups.Add(cutup);
+            return await ServiceAccessor.GetCutupClips(cutup);
+        }
+
         public async Task GetGames(string teamID, string seasonID)
         {
             GameResponse response = await ServiceAccessor.GetGames(teamID.ToString(), seasonID.ToString());
@@ -289,18 +302,35 @@ namespace HudlRT.ViewModels
             CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                var cuts = new BindableCollection<CutupViewModel>();
+                //var cuts = new BindableCollection<CutupViewModel>();
+                Cutups = new BindableCollection<CutupViewModel>();
                 foreach (Cutup cutup in response.cutups)
                 {
-                    cuts.Add(CutupViewModel.FromCutup(cutup));
+                    Cutups.Add(CutupViewModel.FromCutup(cutup));
+                    Task<ClipResponse> tempResponse = LoadCutup(CutupViewModel.FromCutup(cutup));
+                    CachedCutupCalls.TryAdd(cutup.cutupId, tempResponse);
                 }
-                Cutups = cuts;
+                //Cutups = cuts;
             }
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
         {
-            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            ClipResponse response;
+            if (CachedCutupCalls.ContainsKey(cutup.CutupId))
+            {
+                // Don't need to check if it exists b/c the addition to cached cutups is in the same place as cached cutup calls
+                int cutCacheIndex = CachedCutups.FindIndex(cut => cut.CutupId == cutup.CutupId);
+                cutup = CachedCutups[cutCacheIndex];
+                response = await CachedCutupCalls[cutup.CutupId];
+            }
+            else
+            {
+                response = await ServiceAccessor.GetCutupClips(cutup);
+            }
+
+
+
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 cutup.Clips = response.clips;
