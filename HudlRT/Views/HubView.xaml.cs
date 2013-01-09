@@ -66,5 +66,6 @@ namespace HudlRT.Views
             HubViewModel vm = (HubViewModel)this.DataContext;
             vm.SeasonSelected(SeasonsDropDown.SelectedItem);
         }
+
     }
 }
