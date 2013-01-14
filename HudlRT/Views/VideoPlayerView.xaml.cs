@@ -116,9 +116,7 @@ namespace HudlRT.Views
                 Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale, false);
 
             var dataSource = fif.GetVirtualizedFilesVector();
-
-            CachedParameter pass = (CachedParameter)e.Parameter;
-            string[] displayColumns = pass.selectedCutup.displayColumns;
+            string[] displayColumns = CachedParameter.selectedCutup.displayColumns;
             var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
             string columnDefinitions = "";
             string rowText = "";
@@ -227,6 +225,26 @@ namespace HudlRT.Views
             if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
             {
                 FullscreenToggle();
+            }
+        }
+
+        private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (rightClicked)
+            {
+                ListView listView = (ListView)sender;
+                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                vm.SetClip((Clip)listView.SelectedItem);
+                
+                rightClicked = false;
+            }
+            else if (itemClicked)
+            {
+                itemClicked = false;
+            }
+            else
+            {
+                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 39);
             }
         }
 
@@ -529,29 +547,6 @@ namespace HudlRT.Views
             {
                 btnPlay_Click(null, null);
             }
-        }
-
-        private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (rightClicked)
-            {
-                ListView listView = (ListView)sender;
-                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                vm.SetClip((Clip)listView.SelectedItem);
-
-                rightClicked = false;
-            }
-            else if (itemClicked)
-            {
-                itemClicked = false;
-            }
-            else
-            {
-                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 39);
-            }
-
-            snapped_btnPause.Visibility = Visibility.Collapsed;
-            snapped_btnPlay.Visibility = Visibility.Visible;
         }
 
         private void setPauseVisible()
