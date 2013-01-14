@@ -48,8 +48,6 @@ namespace HudlRT.Views
         Point currentPoint = new Point();
         bool isGridCollapsed = false;
         private  TranslateTransform dragTranslation;
-        private double smallVideoSizeWidth;
-        private double expandedVideoSizeWidth;
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
         private bool isPaused { get; set; }
         private bool isStopped { get; set; }
@@ -487,16 +485,6 @@ namespace HudlRT.Views
             videoMediaElement.PlaybackRate = 1.0;
             setPauseVisible();
             setStopVisibile();
-            if (!isGridCollapsed && !IsFullscreen)
-            {
-                smallVideoSizeWidth = videoMediaElement.ActualWidth;
-                expandedVideoSizeWidth = smallVideoSizeWidth; ;
-            }
-            if (isGridCollapsed && !IsFullscreen)
-            {
-                smallVideoSizeWidth = videoMediaElement.ActualWidth;
-                expandedVideoSizeWidth = videoMediaElement.ActualWidth;
-            }
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
@@ -597,7 +585,7 @@ namespace HudlRT.Views
 
             videoContainer.Height = 350;
             videoMediaElement.Height = 350;
-            videoMediaElement.Width = smallVideoSizeWidth;
+            videoMediaElement.Width = Window.Current.Bounds.Width - 300;
             isGridCollapsed = false;
        
         }
@@ -612,7 +600,7 @@ namespace HudlRT.Views
 
             videoContainer.Height = 500;
             videoMediaElement.Height = 500;
-            videoMediaElement.Width = expandedVideoSizeWidth;
+            videoMediaElement.Width = Window.Current.Bounds.Width - 300;
 
             isGridCollapsed = true;
         }
