@@ -12,10 +12,9 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml.Controls;
-using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
-using Windows.Storage;
-using Windows.Networking.BackgroundTransfer;
+using Windows.UI.Xaml;
+using Windows.UI.ViewManagement;
 
 namespace HudlRT.ViewModels
 {
@@ -417,7 +416,9 @@ namespace HudlRT.ViewModels
                 UpdateCachedParameter();
                 CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
                 CachedParameter.sectionViewCutupSelected = cutup;
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+                await DownloadCutups(new List<Cutup> { CachedParameter.selectedCutup });
+                
+                //navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }
             else
             {
@@ -639,7 +640,7 @@ namespace HudlRT.ViewModels
                 string updatedModel = JsonConvert.SerializeObject(cut);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
             }
-            
+
         }
 
     }
