@@ -195,9 +195,9 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            ScheduleProgressRing_Visibility = Visibility.Visible;
-            HeaderProgressRing_Visibility = Visibility.Visible;
-            CutupsProgressRing_Visibility = Visibility.Visible;
+            ScheduleProgressRing_Visibility = Visibility.Collapsed;
+            HeaderProgressRing_Visibility = Visibility.Collapsed;
+            CutupsProgressRing_Visibility = Visibility.Collapsed;
             Visibility = Visibility.Collapsed;
 
             // Get the team and season ID
