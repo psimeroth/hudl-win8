@@ -101,6 +101,7 @@ namespace HudlRT.ViewModels
         Point currentPoint;
         bool isFullScreenGesture = false;
         public ListView listView { get; set; }
+        private volatile bool endAsyncTask = false;
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -118,6 +119,7 @@ namespace HudlRT.ViewModels
             {
                 GetAngleNames();
                 SelectedClip = Clips.First();
+                SelectedClipIndex = 0;
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
             }
             CutupName = CachedParameter.selectedCutup.name;
@@ -137,6 +139,10 @@ namespace HudlRT.ViewModels
 
             dispRequest = new DisplayRequest();
             dispRequest.RequestActive();
+
+            endAsyncTask = false;
+            AddClipsToGrid(CachedParameter.selectedCutup.clips.Where(clip => clip.order >= INITIAL_LOAD_COUNT).ToList());
+            initialClipPreload();
         }
 
         private async void initialClipPreload()
@@ -149,17 +155,14 @@ namespace HudlRT.ViewModels
             }
         }
 
-        protected override async void OnViewLoaded(object view)
+        private async Task AddClipsToGrid(List<Clip> clips)
         {
-            AddClipsToGrid(CachedParameter.selectedCutup.clips.Count);
-            initialClipPreload();
-        }
-
-        private async Task AddClipsToGrid(int count)
-        {
-            foreach (Clip clip in new BindableCollection<Clip>(CachedParameter.selectedCutup.clips.Where(u => u.order >= INITIAL_LOAD_COUNT).ToList()))
+            foreach (Clip clip in clips)
             {
-                await Task.Run(() => Clips.Add(clip));
+                if (!endAsyncTask)
+                    await Task.Run(() => Clips.Add(clip));
+                else
+                    return;
             }
         }
 
@@ -427,27 +430,28 @@ namespace HudlRT.ViewModels
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             foreach (Angle angle in angles)
             {
-                try
+                if (!endAsyncTask)
                 {
-                    var source = new Uri(angle.fileLocation);
-                    var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
-                    var file = files.FirstOrDefault(x => x.Name.Equals(angle.clipAngleId.ToString()));
-
-                    if (file == null)
+                    try
                     {
-                        var destinationFile = await folder.CreateFileAsync(angle.clipAngleId.ToString(), CreationCollisionOption.GenerateUniqueName);
-                        var downloader = new BackgroundDownloader();
-                        var download = downloader.CreateDownload(source, destinationFile);
+                        var source = new Uri(angle.fileLocation);
+                        var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
+                        var file = files.FirstOrDefault(x => x.Name.Equals(angle.clipAngleId.ToString()));
 
-                        var downloadOperation = await download.StartAsync();
-                        
-                        file = (StorageFile)downloadOperation.ResultFile;
-                        angle.preloadFile = file;
-                        angle.isPreloaded = true;
+                        if (file == null)
+                        {
+                            var destinationFile = await folder.CreateFileAsync(angle.clipAngleId.ToString(), CreationCollisionOption.GenerateUniqueName);
+                            var downloader = new BackgroundDownloader();
+                            var download = downloader.CreateDownload(source, destinationFile);
+
+                            var downloadOperation = await download.StartAsync();
+
+                            file = (StorageFile)downloadOperation.ResultFile;
+                            angle.preloadFile = file;
+                            angle.isPreloaded = true;
+                        }
                     }
-                }
-                catch (Exception e)
-                {
+                    catch (Exception e) { }
                 }
             } 
         }
@@ -473,18 +477,10 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
+            endAsyncTask = true;
             DeleteTempData();
             dispRequest.RequestRelease();
 			dispRequest = null;
-            saveAnglePreferences();
-            navigationService.GoBack();
-        }
-
-        public void snapped_GoBack()
-        {
-            DeleteTempData();
-            dispRequest.RequestRelease();
-            dispRequest = null;
             saveAnglePreferences();
             navigationService.GoBack();
         }

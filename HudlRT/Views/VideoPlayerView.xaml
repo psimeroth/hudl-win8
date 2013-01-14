@@ -9,7 +9,8 @@
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
     xmlns:mmppf="using:Microsoft.PlayerFramework"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -195,7 +196,7 @@
 
         <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
 
-            <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,-396,0,0" />
+            <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,-396,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                 <Button x:Name="snapped_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
                         caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" />
