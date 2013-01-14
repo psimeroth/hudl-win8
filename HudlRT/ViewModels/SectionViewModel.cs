@@ -16,6 +16,7 @@ using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
