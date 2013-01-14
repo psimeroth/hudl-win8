@@ -40,6 +40,13 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            Cutups.IsEnabled = true;
+            Schedule.IsEnabled = true;
+            Categories.IsEnabled = true;
+            GoBack.IsEnabled = true;
+            SeasonsDropDown.IsEnabled = true;
+            Logo.Opacity = 1;
+            ProgressRing.Visibility = Visibility.Collapsed;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
