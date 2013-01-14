@@ -94,7 +94,7 @@ namespace HudlRT.Common
         public static async Task<LoginResponse> Login(string loginArgs)
         {
             //var loginResponse = await ServiceAccessor.MakeApiCallGet("athlete");
-            var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs);
+            var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
             if (!string.IsNullOrEmpty(loginResponse))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
@@ -344,7 +344,7 @@ namespace HudlRT.Common
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
         /// <returns>The string response returned from the API call.</returns>
-        public static async Task<string> MakeApiCallPost(string url, string jsonString)
+        public static async Task<string> MakeApiCallPost(string url, string jsonString, bool showDialog)
         {
             if (!ConnectedToInternet())
             {
