@@ -100,29 +100,26 @@ namespace HudlRT.Common
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
                 AppDataAccessor.SetAuthToken(obj.Token);
                 string urlExtension = "privileges/" + obj.UserId.ToString();
-                var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension);
+#if DEBUG
+#else
+                var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension, false);
                 if (!string.IsNullOrEmpty(privilegesResponse))
                 {
-#if DEBUG
-                    return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
-#else
                     if (privilegesResponse.Contains("Win8App"))
                     {
                         return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
                     }
                     else
                     {
-                        return new LoginResponse { status = SERVICE_RESPONSE.PRIVILEGE};
+                        return new LoginResponse { status = SERVICE_RESPONSE.PRIVILEGE };
                     }
-
-#endif
-                    //Needs to be improved in the future if we want to 
-
                 }
                 else
                 {
-                    return new LoginResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
+                    return new LoginResponse { status = SERVICE_RESPONSE.PRIVILEGE };
                 }
+#endif
+                return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
             }
             else
             {
@@ -132,7 +129,7 @@ namespace HudlRT.Common
 
         public static async Task<TeamResponse> GetTeams()
         {
-            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS);
+            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
             if (!string.IsNullOrEmpty(teams))
             {
                 try
@@ -158,7 +155,7 @@ namespace HudlRT.Common
 
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId));
+            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId), true);
             if (!string.IsNullOrEmpty(games))
             {
                 try
@@ -184,7 +181,7 @@ namespace HudlRT.Common
 
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId));
+            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId), true);
             if (!string.IsNullOrEmpty(categories))
             {
                 try
@@ -210,7 +207,7 @@ namespace HudlRT.Common
 
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId));
+            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId), true);
             if (!string.IsNullOrEmpty(cutups))
             {
                 try
@@ -236,7 +233,7 @@ namespace HudlRT.Common
 
         public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(CutupViewModel cutup, int startIndex)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()));
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()), true);
             var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
             BindableCollection<Clip> clipCollection = new BindableCollection<Clip>();
             if (clipResponseDTO.ClipsList.Clips.Count == 100)
@@ -273,7 +270,7 @@ namespace HudlRT.Common
 
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"));
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"), true);
             if (!string.IsNullOrEmpty(clips))
             {
                 try
@@ -316,7 +313,7 @@ namespace HudlRT.Common
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
         /// <returns>The string response returned from the API call.</returns>
-        public static async Task<string> MakeApiCallGet(string url)
+        public static async Task<string> MakeApiCallGet(string url, bool showDialog)
         {
             if (!ConnectedToInternet())
             {
@@ -329,10 +326,13 @@ namespace HudlRT.Common
             httpRequestMessage.Headers.Add("hudl-authtoken", ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"].ToString());
             httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
             var response = await httpClient.SendAsync(httpRequestMessage);
-            if (!response.IsSuccessStatusCode)
+            if (showDialog)
             {
-                APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
-                return null;
+                if (!response.IsSuccessStatusCode)
+                {
+                    APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
+                    return null;
+                }
             }
 
             return await response.Content.ReadAsStringAsync();
