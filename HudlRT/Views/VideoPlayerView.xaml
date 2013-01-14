@@ -102,7 +102,7 @@
                     </Border>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollBarVisibility="Hidden" ZoomMode="Disabled" Grid.Row="1" Margin="0">
-                    <common:VideoPlayerListView x:Name="Clips" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
+                    <common:VideoPlayerListView x:Name="Clips"  HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
                             ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True">
 
                     </common:VideoPlayerListView>
