@@ -16,7 +16,7 @@ namespace HudlRT.ViewModels
         private string _name { get; set; }
         private string _textColor { get; set; }
         //private BindableCollection<Category> _cutups { get; set; }
-        private long _categoryId { get; set; }
+        private string _categoryId { get; set; }
 
         public static CategoryViewModel FromDTO(CategoryDTO catDTO)
         {
@@ -47,7 +47,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public long CategoryId
+        public string CategoryId
         {
             get { return _categoryId; }
             set

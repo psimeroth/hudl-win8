@@ -5,6 +5,7 @@ using HudlRT.Common;
 using Newtonsoft.Json;
 using Windows.Storage;
 using HudlRT.Models;
+using HudlRT.Parameters;
 using Windows.UI.Xaml.Input;
 using Windows.UI.ApplicationSettings;
 using Windows.Security.Credentials;
@@ -93,6 +94,8 @@ namespace HudlRT.ViewModels
 
         protected override void OnInitialize()
         {
+            CachedParameter.resetCache();
+
             base.OnInitialize();
 
             //Login = new LoginModel();
@@ -166,7 +169,7 @@ namespace HudlRT.ViewModels
             }
 
             // Dismiss the loading indicator
-            ButtonText = "login";
+            ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
