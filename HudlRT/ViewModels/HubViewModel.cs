@@ -316,7 +316,6 @@ namespace HudlRT.ViewModels
             }
             else//could better handle exceptions
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Teams = null;
             }
         }
@@ -379,7 +378,7 @@ namespace HudlRT.ViewModels
                     }
                     else//could better handle exceptions
                     {
-                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                        //Common.APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
                         NextGameCategories = null;
                     }
                 }
@@ -393,7 +392,6 @@ namespace HudlRT.ViewModels
                     }
                     else//could better handle exceptions
                     {
-                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                         PreviousGameCategories = null;
                     }
                 }
@@ -409,7 +407,6 @@ namespace HudlRT.ViewModels
             }
             else//could better handle exceptions
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 NextGame = null;
             }
         }
