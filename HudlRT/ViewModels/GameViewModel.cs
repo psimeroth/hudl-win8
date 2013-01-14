@@ -17,7 +17,7 @@ namespace HudlRT.ViewModels
         private string _opponent { get; set; }
         private string _date { get; set; }
         private bool _isHome { get; set; }
-        private long _gameId { get; set; }
+        private string _gameId { get; set; }
         private string _textColor { get; set; }
 
         public static GameViewModel FromDTO(GameDTO gameDTO)
@@ -86,7 +86,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public long GameId
+        public string GameId
         {
             get { return _gameId; }
             set

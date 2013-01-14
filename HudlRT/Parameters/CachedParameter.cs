@@ -11,8 +11,8 @@ namespace HudlRT.Parameters
 {
     public class CachedParameter
     {
-        public long categoryId { get; set; }
-        public long gameId { get; set; }
+        public string categoryId { get; set; }
+        public string gameId { get; set; }
         public BindableCollection<Season> seasonsDropDown { get; set; }
         public Season seasonSelected { get; set; }
         public Game hubViewNextGame { get; set; }

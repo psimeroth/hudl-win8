@@ -16,7 +16,7 @@ namespace HudlRT.ViewModels
     {
         private readonly INavigationService navigationService;
         public CachedParameter Parameter { get; set; }
-        private long? lastViewedId = null;
+        private string lastViewedId = null;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -222,7 +222,7 @@ namespace HudlRT.ViewModels
             {
                 LastViewedName = response.name;
                 LastViewedTimeStamp = "Viewed: " + response.timeStamp;
-                lastViewedId = (long)response.ID;
+                lastViewedId = response.ID;
             }
 
             ColVisibility = "Visible";
@@ -260,14 +260,14 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
-                long teamID = -1;
-                long seasonID = -1;
+                string teamID = null;
+                string seasonID = null;
                 bool foundSavedSeason = false;
                 TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
                 if (teamContext.seasonID != null && teamContext.teamID != null)
                 {
-                    teamID = (long)teamContext.teamID;
-                    seasonID = (long)teamContext.seasonID;
+                    teamID = teamContext.teamID;
+                    seasonID = teamContext.seasonID;
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -305,7 +305,6 @@ namespace HudlRT.ViewModels
             }
             else//could better handle exceptions
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Teams = null;
             }
         }
@@ -368,7 +367,7 @@ namespace HudlRT.ViewModels
                     }
                     else//could better handle exceptions
                     {
-                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                        //Common.APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
                         NextGameCategories = null;
                     }
                 }
@@ -382,7 +381,6 @@ namespace HudlRT.ViewModels
                     }
                     else//could better handle exceptions
                     {
-                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                         PreviousGameCategories = null;
                     }
                 }
@@ -398,7 +396,6 @@ namespace HudlRT.ViewModels
             }
             else//could better handle exceptions
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 NextGame = null;
             }
         }
@@ -435,10 +432,10 @@ namespace HudlRT.ViewModels
 
         public async void LastViewedSelected()
         {
-            if (lastViewedId.HasValue)
+            if (lastViewedId != null)
             {
                 ProgressRingVisibility = "Visible";
-                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
+                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId, Name = LastViewedName };
                 ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {

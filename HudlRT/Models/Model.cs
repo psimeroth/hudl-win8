@@ -32,7 +32,7 @@ namespace HudlRT.Models
     {
         public string school { get; set; }
         public string name { get; set; }
-        public long teamID { get; set; }
+        public string teamID { get; set; }
         public BindableCollection<Season> seasons { get; set; }
 
         public Team ()
@@ -65,7 +65,7 @@ namespace HudlRT.Models
             }  
         }
 
-        public long seasonID { get; set; }
+        public string seasonID { get; set; }
         public int year { get; set; }
         public BindableCollection<Game> games { get; set; }
         public Team owningTeam { get; set; }
@@ -101,7 +101,7 @@ namespace HudlRT.Models
         public DateTime date { get; set; }
         public bool isHome { get; set; }
         public BindableCollection<Category> categories { get; set; }
-        public long gameId { get; set; }
+        public string gameId { get; set; }
 
         public string DisplayDate
         {
@@ -131,7 +131,7 @@ namespace HudlRT.Models
     {
         public string name { get; set; }
         public BindableCollection<Cutup> cutups { get; set; }
-        public long categoryId { get; set; }
+        public string categoryId { get; set; }
 
         public Category()
         {
@@ -151,7 +151,7 @@ namespace HudlRT.Models
     {
         public string name { get; set; }
         public int clipCount { get; set; }
-        public long cutupId { get; set; }
+        public string cutupId { get; set; }
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
         public string thumbnailLocation { get; set; }
@@ -163,7 +163,7 @@ namespace HudlRT.Models
         public static Cutup FromDTO(CutupDTO cutupDTO)
         {
             Cutup cutup = new Cutup();
-            cutup.cutupId = cutupDTO.CutupID;
+            cutup.cutupId = cutupDTO.PlaylistId;
             cutup.clipCount = cutupDTO.ClipCount;
             cutup.name = cutupDTO.Name;
             cutup.thumbnailLocation = cutupDTO.Thumbnailpath;
@@ -173,7 +173,7 @@ namespace HudlRT.Models
 
     public class Clip
     {
-        public long clipId { get; set; }
+        public string clipId { get; set; }
         public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
         //public Dictionary<string, string> breakdownData { get; set; }
@@ -209,7 +209,7 @@ namespace HudlRT.Models
                 }
             }
             //clip.breakdownData = upperedBDD;
-            foreach (AngleDTO angleDTO in clipDTO.Angles)
+            foreach (AngleDTO angleDTO in clipDTO.ClipAngles)
             {
                 Angle a = Angle.FromDTO(angleDTO);
                 if (a != null)
@@ -227,7 +227,7 @@ namespace HudlRT.Models
 
     public class Angle
     {
-        public long clipAngleId { get; set; }
+        public string clipAngleId { get; set; }
         public string angleName { get; set; }
         public string fileLocation { get; set; }
         public string thumbnailLocation { get; set; }
@@ -240,7 +240,7 @@ namespace HudlRT.Models
         {
 
         }
-        public Angle(long clipAngleId, string fileLocation)
+        public Angle(string clipAngleId, string fileLocation)
         {
             this.fileLocation = fileLocation;
             this.clipAngleId = clipAngleId;

@@ -128,18 +128,18 @@ namespace HudlRT.ViewModels
             base.OnActivate();
 
             // Get the team and season ID
-            long teamID;
-            long seasonID;
+            string teamID;
+            string seasonID;
             try
             {
                 TeamContextResponse response = AppDataAccessor.GetTeamContext();
-                teamID = (long)response.teamID;
-                seasonID = (long)response.seasonID;
+                teamID = response.teamID;
+                seasonID = response.seasonID;
             }
             catch (Exception ex)
             {
-                teamID = 0;
-                seasonID = 0;
+                teamID = null;
+                seasonID = null;
             }
 
             if (Parameter != null)
@@ -147,9 +147,9 @@ namespace HudlRT.ViewModels
                 SeasonsDropDown = Parameter.seasonsDropDown;
                 SelectedSeason = Parameter.seasonSelected;
                 Cutups = Parameter.sectionViewCutups;
-                if (Parameter.categoryId != 0 && Parameter.gameId != 0)
+                if (Parameter.categoryId != null && Parameter.gameId != null)
                 {
-                    LoadPageFromParamter(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId, Parameter.sectionViewGames);
+                    LoadPageFromParameter(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId, Parameter.sectionViewGames);
                 }
                 else
                 {
@@ -186,7 +186,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async void LoadPageFromParamter(long seasonID, long teamID, long gameID, long categoryID, BindableCollection<GameViewModel> games)
+        private async void LoadPageFromParameter(string seasonID, string teamID, string gameID, string categoryID, BindableCollection<GameViewModel> games)
         {
             Cutups = null;
             if (games != null)
@@ -238,7 +238,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async void LoadPageFromDefault(long seasonID, long teamID, BindableCollection<GameViewModel> games)
+        private async void LoadPageFromDefault(string seasonID, string teamID, BindableCollection<GameViewModel> games)
         {
             Cutups = null;
             if (games != null)
@@ -283,7 +283,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async Task GetGames(long teamID, long seasonID)
+        public async Task GetGames(string teamID, string seasonID)
         {
             GameResponse response = await ServiceAccessor.GetGames(teamID.ToString(), seasonID.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
@@ -380,7 +380,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                Common.APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
             }
         }
 
@@ -462,8 +462,8 @@ namespace HudlRT.ViewModels
             Parameter.sectionViewCategories = Categories;
             Parameter.sectionViewGames = Schedule;
             Parameter.sectionViewGameSelected = SelectedGame;
-            Parameter.gameId = 0;
-            Parameter.categoryId = 0;
+            Parameter.gameId = null;
+            Parameter.categoryId = null;
         }
 
         public void UpdateParameterOnSeasonChange()
