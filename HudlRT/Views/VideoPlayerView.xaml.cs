@@ -157,7 +157,14 @@ namespace HudlRT.Views
             vm.listView = Clips;
             Clips.SelectedIndex = 0;
         }
-        
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            for (int i = gridHeaders.Children.Count() - 1; i >= 0; i--)
+                gridHeaders.Children.RemoveAt(i);
+        }
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
         {
             gridHeaderScroll.ScrollToHorizontalOffset(gridScroll.HorizontalOffset);
