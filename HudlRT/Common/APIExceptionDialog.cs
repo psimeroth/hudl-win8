@@ -45,7 +45,7 @@ namespace HudlRT.Common
             ShowExceptionDialog(message, sender, e);
         }
 
-        static private async void ShowExceptionDialog(string text, object sender, RoutedEventArgs e)
+        static public async void ShowExceptionDialog(string text, object sender, RoutedEventArgs e)
         {
             string message = text;
             // Create the message dialog and set its content

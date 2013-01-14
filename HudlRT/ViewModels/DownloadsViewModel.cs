@@ -11,13 +11,13 @@ using Windows.UI.ApplicationSettings;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Input;
+using Windows.Networking.BackgroundTransfer;
 
 namespace HudlRT.ViewModels
 {
     public class DownloadsViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        public CachedParameter Parameter { get; set; }
        
 
         private BindableCollection<CutupViewModel> _cutups { get; set; }
@@ -28,6 +28,17 @@ namespace HudlRT.ViewModels
             {
                 _cutups = value;
                 NotifyOfPropertyChange(() => Cutups);
+            }
+        }
+
+        private double downloadProgress;
+        public double DownloadProgress
+        {
+            get { return downloadProgress; }
+            set
+            {
+                downloadProgress = value;
+                NotifyOfPropertyChange(() => DownloadProgress);
             }
         }
 
@@ -56,18 +67,18 @@ namespace HudlRT.ViewModels
                 cutup.Clips = response.clips;
                 string[] clipCount = cutup.ClipCount.ToString().Split(' ');
                 //UpdateCachedParameter();
-                Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
-                Parameter.sectionViewCutupSelected = cutup;
+                CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
+                CachedParameter.sectionViewCutupSelected = cutup;
                 //Parameter.videoPageClips = Parameter.selectedCutup.clips;
 
                 //await GetDownloads();
                 //await DownloadCutups(new List<Cutup>{Parameter.selectedCutup});
                 //await RemoveDownload(Parameter.selectedCutup);
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }
             else
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                //Common.APIExceptionDialog.ShowExceptionDialog(null, null);
             }
         }
 
