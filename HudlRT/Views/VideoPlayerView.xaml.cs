@@ -362,37 +362,6 @@ namespace HudlRT.Views
             setStopVisibile();
         }
 
-        private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
-        {
-            TransportControlsPanel_Left.Margin = new Thickness(0, 18, 45, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(45, 18, 0, 0);
-
-            double width = videoMediaElement.ActualWidth * .7;
-
-            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(375);
-            Container1.RowDefinitions.First().Height = new GridLength(375);
-
-            videoContainer.Height = 350;
-            videoMediaElement.Height = 350;
-            videoMediaElement.Width = smallVideoSizeWidth;
-            isGridCollapsed = false;
-        }
-
-        private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
-        {
-            TransportControlsPanel_Left.Margin = new Thickness(0, 110, 45, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(45, 110, 0, 0);
-
-            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
-            Container1.RowDefinitions.First().Height = new GridLength(525);
-
-            videoContainer.Height = 500;
-            videoMediaElement.Height = 500;
-            videoMediaElement.Width = expandedVideoSizeWidth;
-
-            isGridCollapsed = true;
-        }
-
         private void setPlayVisible()
         {
             btnPause.Visibility = Visibility.Collapsed;
@@ -400,33 +369,9 @@ namespace HudlRT.Views
 
             full_btnPause.Visibility = Visibility.Collapsed;
             full_btnPlay.Visibility = Visibility.Visible;
-        }
 
-        private void setPauseVisible()
-        {
-            btnPlay.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Visible;
-
-            full_btnPlay.Visibility = Visibility.Collapsed;
-            full_btnPause.Visibility = Visibility.Visible;
-        }
-
-        private void setStopVisibile()
-        {
-            btnReverse.Visibility = Visibility.Collapsed;
-            btnStop.Visibility = Visibility.Visible;
-
-            full_btnReverse.Visibility = Visibility.Collapsed;
-            full_btnStop.Visibility = Visibility.Visible;
-        }
-
-        private void setPrevVisible()
-        {
-            btnStop.Visibility = Visibility.Collapsed;
-            btnReverse.Visibility = Visibility.Visible;
-
-            full_btnStop.Visibility = Visibility.Collapsed;
-            full_btnReverse.Visibility = Visibility.Visible;
+            snapped_btnPause.Visibility = Visibility.Collapsed;
+            snapped_btnPlay.Visibility = Visibility.Visible;
         }
 
         private void VideoPage_KeyUp(object sender, Windows.UI.Core.KeyEventArgs e)

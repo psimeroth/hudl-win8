@@ -179,10 +179,14 @@ namespace HudlRT.ViewModels
                         cutup.FontSize = FONT_SIZE;
                     }
                 }
+                if (Cutups.Count != 0)
+                {
+                    Visibility = Visibility.Collapsed;
+                }
             }
-            else if (Cutups == null || Cutups.Count == 0)
+            else
             {
-                Visibility = Visibility.Collapsed;
+                Visibility = Visibility.Visible;
             }
         }
 
@@ -499,6 +503,15 @@ namespace HudlRT.ViewModels
                         cutup.Width = new GridLength(180);
                         cutup.FontSize = FONT_SIZE;
                     }
+                }
+
+                if (Cutups == null || Cutups.Count == 0)
+                {
+                    Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Visibility = Visibility.Collapsed;
                 }
             }
         }
