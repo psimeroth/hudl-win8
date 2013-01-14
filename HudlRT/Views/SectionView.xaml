@@ -18,7 +18,7 @@
     </common:LayoutAwarePage.Resources>
 
     <!--Actual Layout-->
-    <Grid x:Name="RootGrid">
+    <Grid x:Name="RootGrid" caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]">
         <Grid.Resources>
             <Storyboard x:Name="FadeOutCol">
                 <DoubleAnimation Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="0" />
@@ -52,7 +52,7 @@
                     <Image x:Name="Logo" VerticalAlignment="Center" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="110,0,0,0" HorizontalAlignment="Left"/>
                 </Grid>
 
-                <Grid MinWidth ="700" Margin="0,0,14,0" HorizontalAlignment="Right">
+                <Grid x:Name="ComboBoxGrid" MinWidth ="700" Margin="0,0,14,0" HorizontalAlignment="Right">
                     <ComboBox x:Name="SeasonsDropDown" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -64,12 +64,12 @@
             </Grid>
             <!--End TopTitleGrid-->
 
-            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,0" Visibility="{Binding ColVisibility}">
+            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,20" Visibility="{Binding ColVisibility}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="450"/>
+                    <ColumnDefinition x:Name="ScheduleColumn" Width="450"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -83,12 +83,12 @@
                           ItemContainerStyle="{StaticResource Section_ListViewItemStyle_GameList}" 
                           Style="{StaticResource Section_ListViewStyle_Standard}"/>
 
-                <Grid Grid.Column="1" Margin="10,0,0,0">
+                <Grid x:Name="rightGrid" Grid.Column="1" Margin="10,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="70" />
+                        <RowDefinition x:Name="HeaderRow" Height="70" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Grid.Column="1">
+                    <Grid x:Name="Header" Grid.Row="0" Grid.Column="1">
                         <Border BorderThickness="0,0,0,2" Margin="0,0,0,3" BorderBrush="{StaticResource HudlLightBlue}"/>
                             <GridView Grid.Row="0" x:Name="Categories" Margin="0" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
                                         PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
@@ -97,6 +97,7 @@
                     <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
                               ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected">
                     </ListView>
+                    <TextBlock Text="No entries for this week" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Section_TextBlockStyle_Title}" Visibility="{Binding Visibility}" TextWrapping="Wrap" FontSize="40" TextAlignment="Center" ></TextBlock>
                 </Grid>
             </Grid>
             <!--End BottomContentGrid-->
@@ -114,9 +115,6 @@
                 </VisualState>
                 <VisualState x:Name="Filled">
                     <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
@@ -134,14 +132,20 @@
                 </VisualState>
                 <VisualState x:Name="Snapped">
                     <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid" Storyboard.TargetProperty="Visibility">
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Schedule" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleColumn" Storyboard.TargetProperty="Width">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderRow" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Header" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ComboBoxGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

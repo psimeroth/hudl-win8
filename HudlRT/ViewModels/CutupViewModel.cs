@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
@@ -13,6 +14,11 @@ namespace HudlRT.ViewModels
     /// </summary>
     public class CutupViewModel : PropertyChangedBase
     {
+        private const int FONT_SIZE = 28;
+        private const Visibility FULL_VISIBILITY = Visibility.Visible;
+        private const bool CLIP_LOADING = false;
+        private const double OPACITY = 1.0;
+
         private string _name { get; set; }
         private int _clipCount { get; set; }
         private string _cutupId { get; set; }
@@ -21,6 +27,10 @@ namespace HudlRT.ViewModels
         private bool _clipLoading { get; set; }
         private double _opacity { get; set; }
         private string _thumbnail { get; set; }
+        private Visibility _thumbnailVisibility { get; set; }
+        private Visibility _nameVisibility { get; set; }
+        private GridLength _width { get; set; }
+        private double _fontSize { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
@@ -28,9 +38,13 @@ namespace HudlRT.ViewModels
             cutup._cutupId = cutupDTO.PlaylistId;
             cutup._clipCount = cutupDTO.ClipCount; 
             cutup._name = cutupDTO.Name;
-            cutup._clipLoading = false;
-            cutup._opacity = 1.0;
+            cutup._clipLoading = CLIP_LOADING;
+            cutup._opacity = OPACITY;
             cutup._thumbnail = cutupDTO.Thumbnailpath ?? "ms-appx:///Assets/Hudl_Metro150 thumbCentered.png";
+            cutup._nameVisibility = FULL_VISIBILITY;
+            cutup._thumbnailVisibility = FULL_VISIBILITY;
+            cutup._width = new GridLength(180);
+            cutup._fontSize = FONT_SIZE;
             return cutup;
         }
 
@@ -40,9 +54,13 @@ namespace HudlRT.ViewModels
             cutup._cutupId = cutupDTO.cutupId;
             cutup._clipCount = cutupDTO.clipCount;
             cutup._name = cutupDTO.name;
-            cutup._clipLoading = false;
-            cutup._opacity = 1.0;
+            cutup._clipLoading = CLIP_LOADING;
+            cutup._opacity = OPACITY;
             cutup._thumbnail = cutupDTO.thumbnailLocation ?? "ms-appx:///Assets/Hudl_Metro150 thumbCentered.png";
+            cutup._nameVisibility = FULL_VISIBILITY;
+            cutup._thumbnailVisibility = FULL_VISIBILITY;
+            cutup._width = new GridLength(180);
+            cutup._fontSize = FONT_SIZE;
 
             return cutup;
         }
@@ -139,6 +157,50 @@ namespace HudlRT.ViewModels
                 if (value == _displayColumns) return;
                 _displayColumns = value;
                 NotifyOfPropertyChange(() => DisplayColumns);
+            }
+        }
+
+        public Visibility Name_Visibility
+        {
+            get { return _nameVisibility; }
+            set
+            {
+                if (value == _nameVisibility) return;
+                _nameVisibility = value;
+                NotifyOfPropertyChange(() => Name_Visibility);
+            }
+        }
+
+        public Visibility Thumbnail_Visibility
+        {
+            get { return _thumbnailVisibility; }
+            set
+            {
+                if (value == _thumbnailVisibility) return;
+                _thumbnailVisibility = value;
+                NotifyOfPropertyChange(() => Thumbnail_Visibility);
+            }
+        }
+
+        public GridLength Width
+        {
+            get { return _width; }
+            set
+            {
+                if (value == _width) return;
+                _width = value;
+                NotifyOfPropertyChange(() => Width);
+            }
+        }
+
+        public double FontSize
+        {
+            get { return _fontSize; }
+            set
+            {
+                if (value == _fontSize) return;
+                _fontSize = value;
+                NotifyOfPropertyChange(() => FontSize);
             }
         }
     }

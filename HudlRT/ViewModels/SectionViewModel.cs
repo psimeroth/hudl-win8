@@ -12,11 +12,19 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.ViewManagement;
 
 namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
     {
+        private const int SNAPPED_FONT_SIZE = 24;
+        private const int FONT_SIZE = 28;
+
+        private const Visibility SNAPPED_VISIBILITY = Visibility.Collapsed;
+        private const Visibility FULL_VISIBILITY = Visibility.Visible;
+
         private readonly INavigationService navigationService;
 
         private ConcurrentDictionary<string, Task<ClipResponse>> CachedCutupCalls;
@@ -89,6 +97,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility _visibility;
+        public Visibility Visibility
+        {
+            get { return _visibility; }
+            set
+            {
+                _visibility = value;
+                NotifyOfPropertyChange(() => Visibility);
+            }
+        }
+
         private BindableCollection<Season> seasonsForDropDown;
         public BindableCollection<Season> SeasonsDropDown
         {
@@ -142,6 +161,38 @@ namespace HudlRT.ViewModels
                 {
                     LoadPageFromDefault(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, CachedParameter.sectionViewGames);
                 }
+            }
+            if (Cutups != null)
+            {
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Snapped)
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Width = new GridLength(0);
+                        cutup.FontSize = SNAPPED_FONT_SIZE;
+                    }
+                }
+                else
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = FULL_VISIBILITY;
+                        cutup.Thumbnail_Visibility = FULL_VISIBILITY;
+                        cutup.Width = new GridLength(180);
+                        cutup.FontSize = FONT_SIZE;
+                    }
+                }
+                if (Cutups.Count != 0)
+                {
+                    Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                Visibility = Visibility.Visible;
             }
         }
 
@@ -307,6 +358,26 @@ namespace HudlRT.ViewModels
                 }
                 //Cutups = cuts;
             }
+            var currentViewState = ApplicationView.Value;
+            if (currentViewState == ApplicationViewState.Snapped)
+            {
+                foreach (var cutup in Cutups)
+                {
+                    cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                    cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                    cutup.Width = new GridLength(0);
+                    cutup.FontSize = SNAPPED_FONT_SIZE;
+                }
+            }
+            if (Cutups == null || Cutups.Count == 0)
+            {
+                Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Visibility = Visibility.Collapsed;
+            }
+
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
@@ -427,6 +498,43 @@ namespace HudlRT.ViewModels
         {
             CachedParameter.hubViewNextGame = null;
             CachedParameter.hubViewPreviousGame = null;
+        }
+
+        public void OnWindowSizeChanged()
+        {
+            if (Cutups != null)
+            {
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Snapped)
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Width = new GridLength(0);
+                        cutup.FontSize = SNAPPED_FONT_SIZE;
+                    }
+                }
+                else
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = FULL_VISIBILITY;
+                        cutup.Thumbnail_Visibility = FULL_VISIBILITY;
+                        cutup.Width = new GridLength(180);
+                        cutup.FontSize = FONT_SIZE;
+                    }
+                }
+
+                if (Cutups == null || Cutups.Count == 0)
+                {
+                    Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
 

@@ -479,5 +479,14 @@ namespace HudlRT.ViewModels
             saveAnglePreferences();
             navigationService.GoBack();
         }
+
+        public void snapped_GoBack()
+        {
+            DeleteTempData();
+            dispRequest.RequestRelease();
+            dispRequest = null;
+            saveAnglePreferences();
+            navigationService.GoBack();
+        }
     }
 }
