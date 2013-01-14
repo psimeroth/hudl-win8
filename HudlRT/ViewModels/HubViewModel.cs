@@ -9,14 +9,17 @@ using Newtonsoft.Json;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HudlRT.ViewModels
 {
     public class HubViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        public CachedParameter Parameter { get; set; }
-        private long? lastViewedId = null;
+        private string lastViewedId = null;
+
+        private Task<ClipResponse> loadLastViewed;
+        private CutupViewModel lastViewedCutup;
 
         private bool noGamesGrid;
         public bool NoGamesGrid
@@ -185,26 +188,32 @@ namespace HudlRT.ViewModels
         public async void NavigateToSectionPage()
         {
             UpdateCachedParameter();
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            navigationService.NavigateToViewModel<SectionViewModel>();
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
         }
 
         protected override void OnActivate()
         {
             base.OnActivate();
-            if (Parameter != null)
+            if (CachedParameter.isInitialized)
             {
-                SeasonsDropDown = Parameter.seasonsDropDown;
-                SelectedSeason = Parameter.seasonSelected;
-                if (Parameter.hubViewNextGame != null && Parameter.hubViewPreviousGame != null)
+                SeasonsDropDown = CachedParameter.seasonsDropDown;
+                SelectedSeason = CachedParameter.seasonSelected;
+                if (CachedParameter.hubViewNextGame != null && CachedParameter.hubViewPreviousGame != null)
                 {
-                    NextGame = Parameter.hubViewNextGame;
-                    PreviousGame = Parameter.hubViewPreviousGame;
+                    NextGame = CachedParameter.hubViewNextGame;
+                    PreviousGame = CachedParameter.hubViewPreviousGame;
                     NextGameCategories = NextGame.categories;
                     PreviousGameCategories = PreviousGame.categories;
                 }
                 else
                 {
                     FindNextPreviousGames(SelectedSeason);
+                    CachedParameter.isInitialized = true;
                 }
             }
             else
@@ -222,36 +231,38 @@ namespace HudlRT.ViewModels
             {
                 LastViewedName = response.name;
                 LastViewedTimeStamp = "Viewed: " + response.timeStamp;
-                lastViewedId = (long)response.ID;
+                lastViewedId = response.ID;
+
+                loadLastViewed = LoadLastViewedCutup();
             }
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
 
+        private async Task<ClipResponse> LoadLastViewedCutup()
+        {
+            lastViewedCutup = new CutupViewModel { CutupId = lastViewedId, Name = LastViewedName };
+            return await ServiceAccessor.GetCutupClips(lastViewedCutup);
+        }
+
         public void UpdateCachedParameter()
         {
-            if (Parameter == null)
-            {
-                Parameter = new CachedParameter();
-            }
-            Parameter.seasonsDropDown = SeasonsDropDown;
-            Parameter.seasonSelected = SelectedSeason;
-            Parameter.hubViewNextGame = NextGame;
-            Parameter.hubViewPreviousGame = PreviousGame;
+            CachedParameter.seasonsDropDown = SeasonsDropDown;
+            CachedParameter.seasonSelected = SelectedSeason;
+            CachedParameter.hubViewNextGame = NextGame;
+            CachedParameter.hubViewPreviousGame = PreviousGame;
+            CachedParameter.isInitialized = true;
         }
 
         public void UpdateParameterOnSeasonChange()
         {
-            if (Parameter != null)
-            {
-                Parameter.sectionViewCategories = null;
-                Parameter.sectionViewCategorySelected = null;
-                Parameter.sectionViewCutups = null;
-                Parameter.sectionViewGames = null;
-                Parameter.sectionViewGameSelected = null;
-                Parameter.selectedCutup = null;
-            }
+                CachedParameter.sectionViewCategories = null;
+                CachedParameter.sectionViewCategorySelected = null;
+                CachedParameter.sectionViewCutups = null;
+                CachedParameter.sectionViewGames = null;
+                CachedParameter.sectionViewGameSelected = null;
+                CachedParameter.selectedCutup = null;
         }
 
         public async void PopulateDropDown()
@@ -260,14 +271,14 @@ namespace HudlRT.ViewModels
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 Teams = response.teams;
-                long teamID = -1;
-                long seasonID = -1;
+                string teamID = null;
+                string seasonID = null;
                 bool foundSavedSeason = false;
                 TeamContextResponse teamContext = AppDataAccessor.GetTeamContext();
                 if (teamContext.seasonID != null && teamContext.teamID != null)
                 {
-                    teamID = (long)teamContext.teamID;
-                    seasonID = (long)teamContext.seasonID;
+                    teamID = teamContext.teamID;
+                    seasonID = teamContext.seasonID;
                 }
                 SeasonsDropDown = new BindableCollection<Season>();
                 foreach (Team team in Teams)
@@ -305,7 +316,6 @@ namespace HudlRT.ViewModels
             }
             else//could better handle exceptions
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 Teams = null;
             }
         }
@@ -368,7 +378,7 @@ namespace HudlRT.ViewModels
                     }
                     else//could better handle exceptions
                     {
-                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                        //Common.APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
                         NextGameCategories = null;
                     }
                 }
@@ -382,7 +392,6 @@ namespace HudlRT.ViewModels
                     }
                     else//could better handle exceptions
                     {
-                        Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                         PreviousGameCategories = null;
                     }
                 }
@@ -398,7 +407,6 @@ namespace HudlRT.ViewModels
             }
             else//could better handle exceptions
             {
-                Common.APIExceptionDialog.ShowExceptionDialog(null, null);
                 NextGame = null;
             }
         }
@@ -416,9 +424,9 @@ namespace HudlRT.ViewModels
             
             var category = (Category)eventArgs.ClickedItem;
             UpdateCachedParameter();
-            Parameter.categoryId = category.categoryId;
-            Parameter.gameId = NextGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            CachedParameter.categoryId = category.categoryId;
+            CachedParameter.gameId = NextGame.gameId;
+            navigationService.NavigateToViewModel<SectionViewModel>();
 
         }
 
@@ -427,32 +435,39 @@ namespace HudlRT.ViewModels
 
             var category = (Category)eventArgs.ClickedItem;
             UpdateCachedParameter();
-            Parameter.categoryId = category.categoryId;
-            Parameter.gameId = PreviousGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            CachedParameter.categoryId = category.categoryId;
+            CachedParameter.gameId = PreviousGame.gameId;
+            navigationService.NavigateToViewModel<SectionViewModel>();
 
         }
 
         public async void LastViewedSelected()
         {
-            if (lastViewedId.HasValue)
+            if (lastViewedId != null)
             {
                 ProgressRingVisibility = "Visible";
-                CutupViewModel cutup = new CutupViewModel { CutupId = lastViewedId.Value, Name = LastViewedName };
-                ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+                
+                ClipResponse response = await loadLastViewed;
                 if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
-                    cutup.Clips = response.clips;
+                    lastViewedCutup.Clips = response.clips;
                     UpdateCachedParameter();
-                    Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Convert.ToInt32(cutup.ClipCount), name = cutup.Name };
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
+                    CachedParameter.selectedCutup = new Cutup {
+                                                                cutupId = lastViewedCutup.CutupId,
+                                                                clips = lastViewedCutup.Clips,
+                                                                displayColumns = lastViewedCutup.DisplayColumns,
+                                                                clipCount = Convert.ToInt32(lastViewedCutup.ClipCount),
+                                                                name = lastViewedCutup.Name
+                                                            };
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>();
                 }
+
                 ProgressRingVisibility = "Collapsed";
             }
             else
             {
                 UpdateCachedParameter();
-                navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+                navigationService.NavigateToViewModel<SectionViewModel>();
             }
         }
 

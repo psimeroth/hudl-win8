@@ -24,7 +24,6 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
-        public CachedParameter Parameter { get; set; }
         private BindableCollection<Clip> clips;
         public BindableCollection<Clip> Clips
         {
@@ -112,16 +111,16 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
 
-            AppDataAccessor.SetLastViewed(Parameter.selectedCutup.name, DateTime.Now.ToString("g"), Parameter.selectedCutup.cutupId);
-            Clips = new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order < INITIAL_LOAD_COUNT).ToList());
-            GridHeaders = Parameter.selectedCutup.displayColumns;
+            AppDataAccessor.SetLastViewed(CachedParameter.selectedCutup.name, DateTime.Now.ToString("g"), CachedParameter.selectedCutup.cutupId);
+            Clips = new BindableCollection<Clip>(CachedParameter.selectedCutup.clips.Where(u => u.order < INITIAL_LOAD_COUNT).ToList());
+            GridHeaders = CachedParameter.selectedCutup.displayColumns;
             if (Clips.Count > 0)
             {
                 GetAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
             }
-            CutupName = Parameter.selectedCutup.name;
+            CutupName = CachedParameter.selectedCutup.name;
 
 
             int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
@@ -152,13 +151,13 @@ namespace HudlRT.ViewModels
 
         protected override async void OnViewLoaded(object view)
         {
-            AddClipsToGrid(Parameter.selectedCutup.clips.Count);
+            AddClipsToGrid(CachedParameter.selectedCutup.clips.Count);
             initialClipPreload();
         }
 
         private async Task AddClipsToGrid(int count)
         {
-            foreach (Clip clip in new BindableCollection<Clip>(Parameter.selectedCutup.clips.Where(u => u.order >= INITIAL_LOAD_COUNT).ToList()))
+            foreach (Clip clip in new BindableCollection<Clip>(CachedParameter.selectedCutup.clips.Where(u => u.order >= INITIAL_LOAD_COUNT).ToList()))
             {
                 await Task.Run(() => Clips.Add(clip));
             }
@@ -167,7 +166,7 @@ namespace HudlRT.ViewModels
         private void GetAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in Parameter.selectedCutup.clips)
+            foreach (Clip clip in CachedParameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -182,7 +181,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in Parameter.selectedCutup.clips)
+            foreach (Clip clip in CachedParameter.selectedCutup.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -478,16 +477,16 @@ namespace HudlRT.ViewModels
             dispRequest.RequestRelease();
 			dispRequest = null;
             saveAnglePreferences();
-            //CachedParameter param;
-            //if (Parameter.sectionViewGameSelected == null)
-            //{
-            //    param = new CachedParameter { categoryId = 0, gameId = 0, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = null };
-            //}
-            //else
-            //{
-            //    param = new CachedParameter { categoryId = Parameter.sectionViewCategorySelected.CategoryId, gameId = Parameter.sectionViewGameSelected.GameId, seasonsDropDown = Parameter.seasonsDropDown, seasonSelected = Parameter.seasonSelected, sectionViewGames = Parameter.sectionViewGames };
-            //}
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            navigationService.GoBack();
+        }
+
+        public void snapped_GoBack()
+        {
+            DeleteTempData();
+            dispRequest.RequestRelease();
+            dispRequest = null;
+            saveAnglePreferences();
+            navigationService.GoBack();
         }
     }
 }
