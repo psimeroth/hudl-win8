@@ -15,7 +15,7 @@ namespace HudlRT.ViewModels
     {
         private string _name { get; set; }
         private int _clipCount { get; set; }
-        private long _cutupId { get; set; }
+        private string _cutupId { get; set; }
         private BindableCollection<Clip> _clips { get; set; }
         private string[] _displayColumns { get; set; }
         private bool _clipLoading { get; set; }
@@ -25,7 +25,7 @@ namespace HudlRT.ViewModels
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
             CutupViewModel cutup = new CutupViewModel();
-            cutup._cutupId = cutupDTO.CutupID;
+            cutup._cutupId = cutupDTO.PlaylistId;
             cutup._clipCount = cutupDTO.ClipCount; 
             cutup._name = cutupDTO.Name;
             cutup._clipLoading = false;
@@ -120,7 +120,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public long CutupId
+        public string CutupId
         {
             get { return _cutupId; }
             set
