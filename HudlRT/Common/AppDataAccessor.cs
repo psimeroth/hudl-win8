@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Activation;using Windows.Security.Credentials;
+using Windows.ApplicationModel.Activation;
+using Windows.Security.Credentials;
 
 namespace HudlRT.Common
 {
@@ -204,7 +205,7 @@ namespace HudlRT.Common
             }
         }
 
-public static void SetSplashScreen(SplashScreen splash)
+        public static void SetSplashScreen(SplashScreen splash)
         {
             SetRoamingSetting<double>(SPLASH_X, splash.ImageLocation.Left);
             SetRoamingSetting<double>(SPLASH_Y, splash.ImageLocation.Top);

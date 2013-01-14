@@ -4,6 +4,7 @@ using HudlRT.Models;
 using HudlRT.Parameters;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,9 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        public CachedParameter Parameter { get; set; }
+
+        private ConcurrentDictionary<string, Task<ClipResponse>> CachedCutupCalls;
+        private List<CutupViewModel> CachedCutups;
 
         private BindableCollection<GameViewModel> _schedule { get; set; }
         public BindableCollection<GameViewModel> Schedule
@@ -123,18 +126,21 @@ namespace HudlRT.ViewModels
                 seasonID = null;
             }
 
-            if (Parameter != null)
+			CachedCutups = new List<CutupViewModel>();
+            CachedCutupCalls = new ConcurrentDictionary<string, Task<ClipResponse>>();
+
+            if (CachedParameter.isInitialized)
             {
-                SeasonsDropDown = Parameter.seasonsDropDown;
-                SelectedSeason = Parameter.seasonSelected;
-                Cutups = Parameter.sectionViewCutups;
-                if (Parameter.categoryId != null && Parameter.gameId != null)
+                SeasonsDropDown = CachedParameter.seasonsDropDown;
+                SelectedSeason = CachedParameter.seasonSelected;
+                Cutups = CachedParameter.sectionViewCutups;
+                if (CachedParameter.categoryId != null && CachedParameter.gameId != null)
                 {
-                    LoadPageFromParameter(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.gameId, Parameter.categoryId, Parameter.sectionViewGames);
+                    LoadPageFromParameter(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, CachedParameter.gameId, CachedParameter.categoryId, CachedParameter.sectionViewGames);
                 }
                 else
                 {
-                    LoadPageFromDefault(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, Parameter.sectionViewGames);
+                    LoadPageFromDefault(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID, CachedParameter.sectionViewGames);
                 }
             }
         }
@@ -208,13 +214,13 @@ namespace HudlRT.ViewModels
             }
             if (Schedule.Any())
             {
-                if (Schedule.Contains(Parameter.sectionViewGameSelected))
+                if (Schedule.Contains(CachedParameter.sectionViewGameSelected))
                 {
-                    SelectedGame = Parameter.sectionViewGameSelected;
+                    SelectedGame = CachedParameter.sectionViewGameSelected;
                     SelectedGame.TextColor = "#0099FF";
-                    Categories = Parameter.sectionViewCategories;
-                    SelectedCategory = Parameter.sectionViewCategorySelected;
-                    Cutups = Parameter.sectionViewCutups;
+                    Categories = CachedParameter.sectionViewCategories;
+                    SelectedCategory = CachedParameter.sectionViewCategorySelected;
+                    Cutups = CachedParameter.sectionViewCutups;
                 }
                 else
                 {
@@ -236,6 +242,12 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private async Task<ClipResponse> LoadCutup(CutupViewModel cutup)
+        {
+            CachedCutups.Add(cutup);
+            return await ServiceAccessor.GetCutupClips(cutup);
+        }
+
         public async Task GetGames(string teamID, string seasonID)
         {
             GameResponse response = await ServiceAccessor.GetGames(teamID.ToString(), seasonID.ToString());
@@ -251,11 +263,7 @@ namespace HudlRT.ViewModels
                 {
                     Schedule.Add(schedule[i]);
                 }
-                //Parameter.sectionViewGames = Schedule;
             }
-            /*else if (games.status == SERVICE_RESPONSE.NULL_RESPONSE)
-            {
-            }*/
             else
             {
                 Schedule = null;
@@ -289,27 +297,43 @@ namespace HudlRT.ViewModels
             CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                var cuts = new BindableCollection<CutupViewModel>();
+                //var cuts = new BindableCollection<CutupViewModel>();
+                Cutups = new BindableCollection<CutupViewModel>();
                 foreach (Cutup cutup in response.cutups)
                 {
-                    cuts.Add(CutupViewModel.FromCutup(cutup));
+                    Cutups.Add(CutupViewModel.FromCutup(cutup));
+                    Task<ClipResponse> tempResponse = LoadCutup(CutupViewModel.FromCutup(cutup));
+                    CachedCutupCalls.TryAdd(cutup.cutupId, tempResponse);
                 }
-                Cutups = cuts;
+                //Cutups = cuts;
             }
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
         {
-            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
+            ClipResponse response;
+            if (CachedCutupCalls.ContainsKey(cutup.CutupId))
+            {
+                // Don't need to check if it exists b/c the addition to cached cutups is in the same place as cached cutup calls
+                int cutCacheIndex = CachedCutups.FindIndex(cut => cut.CutupId == cutup.CutupId);
+                cutup = CachedCutups[cutCacheIndex];
+                response = await CachedCutupCalls[cutup.CutupId];
+            }
+            else
+            {
+                response = await ServiceAccessor.GetCutupClips(cutup);
+            }
+
+
+
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 cutup.Clips = response.clips;
                 string[] clipCount = cutup.ClipCount.ToString().Split(' ');
                 UpdateCachedParameter();
-                Parameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
-                Parameter.sectionViewCutupSelected = cutup;
-                //Parameter.videoPageClips = Parameter.selectedCutup.clips;
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(Parameter);
+                CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
+                CachedParameter.sectionViewCutupSelected = cutup;
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }
             else
             {
@@ -378,7 +402,7 @@ namespace HudlRT.ViewModels
         public void GoBack()
         {
             UpdateCachedParameter();
-            navigationService.NavigateToViewModel<HubViewModel>(Parameter);
+            navigationService.GoBack();
         }
 
         public void LogOut()
@@ -388,24 +412,21 @@ namespace HudlRT.ViewModels
 
         public void UpdateCachedParameter()
         {
-            Parameter.seasonsDropDown = SeasonsDropDown;
-            Parameter.seasonSelected = SelectedSeason;
-            Parameter.sectionViewCutups = Cutups;
-            Parameter.sectionViewCategorySelected = SelectedCategory;
-            Parameter.sectionViewCategories = Categories;
-            Parameter.sectionViewGames = Schedule;
-            Parameter.sectionViewGameSelected = SelectedGame;
-            Parameter.gameId = null;
-            Parameter.categoryId = null;
+            CachedParameter.seasonsDropDown = SeasonsDropDown;
+            CachedParameter.seasonSelected = SelectedSeason;
+            CachedParameter.sectionViewCutups = Cutups;
+            CachedParameter.sectionViewCategorySelected = SelectedCategory;
+            CachedParameter.sectionViewCategories = Categories;
+            CachedParameter.sectionViewGames = Schedule;
+            CachedParameter.sectionViewGameSelected = SelectedGame;
+            CachedParameter.gameId = null;
+            CachedParameter.categoryId = null;
         }
 
         public void UpdateParameterOnSeasonChange()
         {
-            if (Parameter != null)
-            {
-                Parameter.hubViewNextGame = null;
-                Parameter.hubViewPreviousGame = null;
-            }
+            CachedParameter.hubViewNextGame = null;
+            CachedParameter.hubViewPreviousGame = null;
         }
 
 
