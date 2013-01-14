@@ -182,7 +182,7 @@
                     </Button.Content>
 
                 </Button>
-                <Button x:Name="Downloads_Button" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
+                <Button x:Name="Downloads_Button" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [ViewDownloads()]">
                     <Button.Content>
                         <Grid Grid.Column="1" Height="120">
                             <Grid.RowDefinitions>

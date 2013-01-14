@@ -21,6 +21,9 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class DownloadsView : Page
     {
+        private int selectedIndex { get; set; }
+        private bool rightClicked { get; set; }
+
         public DownloadsView()
         {
             this.InitializeComponent();
@@ -34,5 +37,30 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
+
+        private void Cutup_Selected(object sender, ItemClickEventArgs e)
+        {
+            Cutups.IsEnabled = false;
+            //Logo.Opacity = .5;
+            //ProgressRing.Visibility = Visibility.Visible;
+        }
+        private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            ListView l = (ListView)sender;
+            selectedIndex = l.SelectedIndex;
+            rightClicked = true;
+            e.Handled = true;
+        }
+
+        private void ListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (rightClicked)
+            {
+                ListView l = (ListView)sender;
+                l.SelectedIndex = selectedIndex;
+                rightClicked = false;
+            }
+        }
+
     }
 }

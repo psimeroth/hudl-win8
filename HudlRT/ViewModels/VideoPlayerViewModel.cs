@@ -233,7 +233,7 @@ namespace HudlRT.ViewModels
                 listView.SelectedItem = SelectedClip;
 
                 Angle nextAngle = clip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % Clips.Count;
                 PreloadClips(SelectedClip.angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
@@ -261,7 +261,7 @@ namespace HudlRT.ViewModels
                 if (angleIndex < filteredAngles.Count - 1)
                 {
                     Angle nextAngle = filteredAngles[angleIndex + 1];
-                    SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                    SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
                 }
                 else
                 {
@@ -270,7 +270,7 @@ namespace HudlRT.ViewModels
                         if (filteredAngles.Any())
                         {
                             Angle nextAngle = filteredAngles[0];
-                            SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : new Angle(nextAngle.clipAngleId, nextAngle.fileLocation);
+                            SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : new Angle(nextAngle.clipAngleId, nextAngle.fileLocation);
                         }
                         else
                         {
@@ -294,7 +294,7 @@ namespace HudlRT.ViewModels
                 SelectedClip = Clips[SelectedClipIndex];
                 listView.SelectedItem = SelectedClip;
                 Angle nextAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
                 
                 int nextClipIndex = (SelectedClipIndex + 1) % Clips.Count;
                 PreloadClips(Clips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
@@ -316,7 +316,7 @@ namespace HudlRT.ViewModels
                 if (angleIndex > 0)
                 {
                     Angle nextAngle = filteredAngles[angleIndex - 1];
-                    SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                    SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
                 }
                 else
                 {
@@ -334,14 +334,14 @@ namespace HudlRT.ViewModels
                 SelectedClip = Clips[SelectedClipIndex];
                 listView.SelectedItem = SelectedClip;
                 Angle nextAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
             }
         }
 
         public void ResetClip()
         {
             Angle firstAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
-            SelectedAngle = (firstAngle != null && firstAngle.isPreloaded) ? new Angle(firstAngle.clipAngleId, firstAngle.preloadFile.Path) : new Angle(firstAngle.clipAngleId, firstAngle.fileLocation);
+            SelectedAngle = (firstAngle != null && firstAngle.isPreloaded) ? new Angle(firstAngle.clipAngleId, firstAngle.preloadFile) : new Angle(firstAngle.clipAngleId, firstAngle.fileLocation);
         }
 
         public void AngleFilter()
@@ -358,13 +358,13 @@ namespace HudlRT.ViewModels
                 if (filteredAngles.Where(angle => angle.clipAngleId == SelectedAngle.clipAngleId).FirstOrDefault() == null)
                 {
                     Angle nextAngle = filteredAngles.FirstOrDefault();
-                    SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                    SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
                 }
             }
             else
             {
                 Angle nextAngle = filteredAngles.FirstOrDefault();
-                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
             }
         }
 
@@ -442,7 +442,7 @@ namespace HudlRT.ViewModels
                         var downloadOperation = await download.StartAsync();
                         
                         file = (StorageFile)downloadOperation.ResultFile;
-                        angle.preloadFile = file;
+                        angle.preloadFile = file.Path;
                         angle.isPreloaded = true;
                     }
                 }
