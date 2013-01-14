@@ -99,7 +99,7 @@ namespace HudlRT.Common
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
                 AppDataAccessor.SetAuthToken(obj.Token);
-                string urlExtension = "privileges/" + obj.UserId.ToString();
+                string urlExtension = "users/" + obj.UserId.ToString() + "/privileges/";
 #if DEBUG
 #else
                 var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension, false);
