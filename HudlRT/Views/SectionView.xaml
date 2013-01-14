@@ -8,6 +8,7 @@
     xmlns:Controls="using:Callisto.Controls"
     x:Class="HudlRT.Views.SectionView"
     IsTabStop="false"
+    NavigationCacheMode="Required"
     mc:Ignorable="d">
 
     <common:LayoutAwarePage.Resources>
