@@ -32,5 +32,25 @@ namespace HudlRT.Parameters
         public static BindableCollection<Clip> videoPageClips { get; set; }
                 
         public static Cutup selectedCutup { get; set; }
+
+
+        public static void resetCache(){
+            isInitialized = false;
+            categoryId = null;
+            gameId = null;
+            seasonsDropDown = null;
+            seasonSelected = null;
+            hubViewNextGame = null;
+            hubViewPreviousGame = null;
+            sectionViewGames = null;
+            sectionViewGameSelected = null;
+            sectionViewCategories = null;
+            sectionViewCategorySelected = null;
+            sectionViewCutups = null;
+            sectionViewCutupSelected = null;
+            videoPageClips = null;
+            selectedCutup = null;
+
+        }
     }
 }
