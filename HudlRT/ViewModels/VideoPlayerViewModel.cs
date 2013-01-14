@@ -486,7 +486,7 @@ namespace HudlRT.ViewModels
             dispRequest.RequestRelease();
             dispRequest = null;
             saveAnglePreferences();
-            navigationService.NavigateToViewModel<SectionViewModel>(Parameter);
+            navigationService.GoBack();
         }
     }
 }
