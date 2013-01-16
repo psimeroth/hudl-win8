@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using HudlRT.Common;
 using HudlRT.Models;
 using HudlRT.ViewModels;
 using System;
@@ -32,6 +33,8 @@ namespace HudlRT.Parameters
         public static BindableCollection<Clip> videoPageClips { get; set; }
                 
         public static Cutup selectedCutup { get; set; }
+
+        public static DownloadAccessor downloadAccessor = new DownloadAccessor();
 
 
         public static void resetCache(){

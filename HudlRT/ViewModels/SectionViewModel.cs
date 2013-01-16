@@ -23,6 +23,8 @@ namespace HudlRT.ViewModels
         private const int SNAPPED_FONT_SIZE = 24;
         private const int FONT_SIZE = 28;
 
+        private DispatcherTimer timer;
+
         private const Visibility SNAPPED_VISIBILITY = Visibility.Collapsed;
         private const Visibility FULL_VISIBILITY = Visibility.Visible;
 
@@ -141,7 +143,7 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-
+            updateProgress();
             // Get the team and season ID
             string teamID;
             string seasonID;
@@ -406,9 +408,6 @@ namespace HudlRT.ViewModels
             {
                 response = await ServiceAccessor.GetCutupClips(cutup);
             }
-
-
-
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 cutup.Clips = response.clips;
@@ -416,13 +415,37 @@ namespace HudlRT.ViewModels
                 UpdateCachedParameter();
                 CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
                 CachedParameter.sectionViewCutupSelected = cutup;
-                await DownloadCutups(new List<Cutup> { CachedParameter.selectedCutup });
+                //DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
+                //timer.Start();
+                //CachedParameter.downloadAccessor.DownloadCutups(new List<Cutup> { CachedParameter.selectedCutup });
                 
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }
             else
             {
                 Common.APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
+            }
+        }
+
+        private async Task updateProgress()
+        {
+            timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            timer.Tick += rewindTimerTick;
+            timer.Start();
+        }
+
+        void rewindTimerTick(object sender, object e)
+        {
+            if (!CachedParameter.downloadAccessor.downloadComplete)
+            {
+                //await Task.Run(() => DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress);
+                DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
+            }
+            else
+            {
+                DownloadProgress = 100;
+                timer.Stop();
             }
         }
 
