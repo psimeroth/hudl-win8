@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="ms-appx:///Common/CustomStyles.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Common/HubStyles.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Common/SectionStyles.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Common/DownloadStyles.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Common/VideoPlayerStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
