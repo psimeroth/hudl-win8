@@ -20,7 +20,7 @@
             <TextBlock Style="{StaticResource Section_TextBlockStyle_Title}" x:Name="Name" Margin="0,0,0,-10" FontSize="{Binding FontSize}" />
             <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="ClipCountDisplay" Margin="0,-10,0,0" Visibility="{Binding Name_Visibility}" />
         </StackPanel>
-        <CheckBox Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-25,-25,0,0">
+        <CheckBox x:Name="CheckBox" Visibility="{Binding CheckBox_Visibility}" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-25,-25,0,0" caliburn:Message.Attach="[Event Click] = [CheckBoxSelected()]">
             <CheckBox.RenderTransform>
                 <ScaleTransform ScaleX="2" ScaleY="2"/>
             </CheckBox.RenderTransform>

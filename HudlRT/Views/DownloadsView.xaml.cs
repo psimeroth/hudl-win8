@@ -38,12 +38,6 @@ namespace HudlRT.Views
         {
         }
 
-        private void Cutup_Selected(object sender, ItemClickEventArgs e)
-        {
-            Cutups.IsEnabled = false;
-            //Logo.Opacity = .5;
-            //ProgressRing.Visibility = Visibility.Visible;
-        }
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             ListView l = (ListView)sender;
