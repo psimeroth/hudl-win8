@@ -40,8 +40,10 @@ namespace HudlRT.Common
             downloading = true;
             long totalSize = 0;
             long currentDownloadedBytes = 0;
+            long cutupTotalSize = 0;
             foreach (Cutup cut in cutups)
             {
+                cutupTotalSize = 0;
                 foreach (Clip c in cut.clips)
                 {
                     foreach (Angle angle in c.angles)
@@ -51,9 +53,11 @@ namespace HudlRT.Common
                         var httpRequestMessage = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Head, uri);
                         var response = await httpClient.SendAsync(httpRequestMessage);
                         var angleSize = response.Content.Headers.ContentLength;
+                        cutupTotalSize += (long)angleSize;
                         totalSize += (long)angleSize;
                     }
                 }
+                cut.totalFileSize = cutupTotalSize;
             }
 
             foreach (Cutup cut in cutups)
@@ -95,9 +99,9 @@ namespace HudlRT.Common
                 }
                 string updatedModel = JsonConvert.SerializeObject(cut);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
-                downloadComplete = true;
-                downloading = false;
             }
+            downloadComplete = true;
+            downloading = false;
         }
 
         private async Task RemoveDownload(Cutup cutup)

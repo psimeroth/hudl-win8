@@ -19,6 +19,7 @@ namespace HudlRT.ViewModels
         private const bool CLIP_LOADING = false;
         private const double OPACITY = 1.0;
 
+        private long _totalCutupSize { get; set; }
         private string _name { get; set; }
         private int _clipCount { get; set; }
         private string _cutupId { get; set; }
@@ -86,6 +87,17 @@ namespace HudlRT.ViewModels
                 if (value == _name) return;
                 _name = value;
                 NotifyOfPropertyChange(() => Name);
+            }
+        }
+
+        public long TotalCutupSize
+        {
+            get { return _totalCutupSize; }
+            set
+            {
+                if (value == _totalCutupSize) return;
+                _totalCutupSize = value;
+                NotifyOfPropertyChange(() => TotalCutupSize);
             }
         }
 

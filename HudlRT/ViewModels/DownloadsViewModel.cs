@@ -207,7 +207,13 @@ namespace HudlRT.ViewModels
                     totalClips += cutupVM.ClipCount;
                 }
             }
-            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + "cutup size";
+            long totalsize = 0;
+            foreach (CutupViewModel c in Cutups)
+            {
+                totalsize += c.TotalCutupSize;
+            }
+            long megabytes = (totalsize / 1048576);
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes;
         }
 
 
@@ -222,20 +228,31 @@ namespace HudlRT.ViewModels
                 if (folder.Name.Contains(AppDataAccessor.GetUsername()))
                 {
                     StorageFile model = await folder.GetFileAsync("DownloadsModel");
-                    string text = await Windows.Storage.FileIO.ReadTextAsync(model);
-                    Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
-                    CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);
-                    cutupVM.Clips = savedCutup.clips;
-                    cutupVM.DisplayColumns = savedCutup.displayColumns;
-                    Cutups.Add(cutupVM);
-                    totalClips += cutupVM.ClipCount;
+                    try
+                    {
+                        string text = await Windows.Storage.FileIO.ReadTextAsync(model);
+                        Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
+                        CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);
+                        cutupVM.Clips = savedCutup.clips;
+                        cutupVM.TotalCutupSize = savedCutup.totalFileSize;
+                        cutupVM.DisplayColumns = savedCutup.displayColumns;
+                        Cutups.Add(cutupVM);
+                        totalClips += cutupVM.ClipCount;
+                    }
+                    catch (Exception) { }
                 }
             }
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
             }
-            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + "cutup size";
+            long totalsize = 0;
+            foreach (CutupViewModel c in Cutups)
+            {
+                totalsize += c.TotalCutupSize;
+            }
+            double megabytes = (totalsize / (1048576));
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
         private async Task RemoveDownload(CutupViewModel cutup)
