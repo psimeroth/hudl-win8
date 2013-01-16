@@ -32,10 +32,12 @@ namespace HudlRT.Common
         }
 
         public Boolean downloadComplete = false;
+        public Boolean downloading = false;
 
         public async Task DownloadCutups(List<Cutup> cutups)
         {
             downloadComplete = false;
+            downloading = true;
             long totalSize = 0;
             long currentDownloadedBytes = 0;
             foreach (Cutup cut in cutups)
@@ -94,6 +96,7 @@ namespace HudlRT.Common
                 string updatedModel = JsonConvert.SerializeObject(cut);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
                 downloadComplete = true;
+                downloading = false;
             }
         }
 
@@ -101,7 +104,7 @@ namespace HudlRT.Common
         {
             try
             {
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.CutupId.ToString());
+                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.cutupId.ToString());
                 folder.DeleteAsync();
             }
             catch (Exception)

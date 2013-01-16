@@ -43,14 +43,14 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private Visibility buttonPanel_Visibility;
-        public Visibility ButtonPanel_Visibility
+        private Visibility cancelButton_Visibility;
+        public Visibility CancelButton_Visibility
         {
-            get { return buttonPanel_Visibility; }
+            get { return cancelButton_Visibility; }
             set
             {
-                buttonPanel_Visibility = value;
-                NotifyOfPropertyChange(() => ButtonPanel_Visibility);
+                cancelButton_Visibility = value;
+                NotifyOfPropertyChange(() => CancelButton_Visibility);
             }
         }
 
@@ -87,6 +87,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private String download_Contents;
+        public String Download_Contents
+        {
+            get { return download_Contents; }
+            set
+            {
+                download_Contents = value;
+                NotifyOfPropertyChange(() => Download_Contents);
+            }
+        }
+
         public DownloadsViewModel(INavigationService navigationService): base(navigationService)
         {
             this.navigationService = navigationService;
@@ -95,7 +106,7 @@ namespace HudlRT.ViewModels
         protected override async void OnActivate()
         {
             base.OnActivate();
-            ButtonPanel_Visibility = Visibility.Collapsed;
+            CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
             Progress_Visibility = Visibility.Collapsed;
             await GetDownloads();
@@ -143,7 +154,7 @@ namespace HudlRT.ViewModels
         {
             deleting = true;
             DeleteButton_Visibility = Visibility.Collapsed;
-            ButtonPanel_Visibility = Visibility.Visible;
+            CancelButton_Visibility = Visibility.Visible;
             foreach (CutupViewModel cutupVM in Cutups)
             {
                 cutupVM.CheckBox_Visibility = Visibility.Visible;
@@ -158,7 +169,8 @@ namespace HudlRT.ViewModels
         {
             deleting = false; ;
             DeleteButton_Visibility = Visibility.Visible;
-            ButtonPanel_Visibility = Visibility.Collapsed;
+            CancelButton_Visibility = Visibility.Collapsed;
+            ConfirmButton_Visibility = Visibility.Collapsed;
             foreach (CutupViewModel cutupVM in Cutups)
             {
                 cutupVM.CheckBox_Visibility = Visibility.Collapsed;
@@ -179,7 +191,9 @@ namespace HudlRT.ViewModels
                 }
             }
 
-            ButtonPanel_Visibility = Visibility.Collapsed;
+            CancelButton_Visibility = Visibility.Collapsed;
+            ConfirmButton_Visibility = Visibility.Collapsed;
+            var totalClips = 0;
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
@@ -190,8 +204,10 @@ namespace HudlRT.ViewModels
                 foreach (CutupViewModel cutupVM in Cutups)
                 {
                     cutupVM.CheckBox_Visibility = Visibility.Collapsed;
+                    totalClips += cutupVM.ClipCount;
                 }
             }
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + "cutup size";
         }
 
 
@@ -200,6 +216,7 @@ namespace HudlRT.ViewModels
             Cutups = new BindableCollection<CutupViewModel>();
             var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
             Downloads downloads = new Downloads();
+            var totalClips = 0;
             foreach (StorageFolder folder in downloadFolders)
             {
                 if (folder.Name.Contains(AppDataAccessor.GetUsername()))
@@ -211,12 +228,14 @@ namespace HudlRT.ViewModels
                     cutupVM.Clips = savedCutup.clips;
                     cutupVM.DisplayColumns = savedCutup.displayColumns;
                     Cutups.Add(cutupVM);
+                    totalClips += cutupVM.ClipCount;
                 }
             }
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
             }
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + "cutup size";
         }
 
         private async Task RemoveDownload(CutupViewModel cutup)
