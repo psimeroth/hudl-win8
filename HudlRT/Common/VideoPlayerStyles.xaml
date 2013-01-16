@@ -14,7 +14,7 @@
         <Setter Property="Margin" Value="5,0"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{StaticResource OrangeToOrangeGradient}" />
+        <Setter Property="Foreground" Value="{StaticResource HudlOrange}" />
     </Style>
 
     <Style x:Key="VideoPlayer_ListViewItemStyle_Standard" TargetType="ListViewItem">
@@ -37,7 +37,7 @@
                                 <VisualState x:Name="Normal"/>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueTransparentColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -57,7 +57,7 @@
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueTransparentColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="UnselectedSwiping">
@@ -96,7 +96,7 @@
                                     </Rectangle>
                                     <Rectangle x:Name="BackgroundColor" Opacity="0" >
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="{StaticResource HudlLightBlueTransparentColor}" />
+                                            <SolidColorBrush Color="{StaticResource HudlLightBlueColor}" />
                                         </Rectangle.Fill>
                                     </Rectangle>
                                 </Grid>
