@@ -24,6 +24,64 @@
         <Grid.Background>
             <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
         </Grid.Background>
+        <Grid.Resources>
+            <Storyboard x:Name="CollapseGridAnimation">
+                <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True"/>
+                <DoubleAnimation Storyboard.TargetName="videoMediaElement" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True" />
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid_Row2" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="525" />
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Container1_Row1" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="525" />
+                </ObjectAnimationUsingKeyFrames>
+            </Storyboard>
+            <Storyboard x:Name="ExpandGridAnimation">
+                <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="350" EnableDependentAnimation="True"/>
+                <DoubleAnimation Storyboard.TargetName="videoMediaElement" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="350" EnableDependentAnimation="True" />
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid_Row2" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="375" />
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Container1_Row1" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="375" />
+                </ObjectAnimationUsingKeyFrames>
+            </Storyboard>
+        </Grid.Resources>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
             <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />

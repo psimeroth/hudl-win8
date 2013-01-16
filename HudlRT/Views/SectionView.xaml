@@ -82,7 +82,9 @@
                           caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
                           PointerPressed="ListViewItemPointerPressed" 
                           ItemContainerStyle="{StaticResource Section_ListViewItemStyle_GameList}" 
-                          Style="{StaticResource Section_ListViewStyle_Standard}"/>
+                          Style="{StaticResource Section_ListViewStyle_Standard}"
+                          Visibility="{Binding ScheduleVisibility}"/>
+                <ProgressRing Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ScheduleProgressRing_Visibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}"/>
 
                 <Grid x:Name="rightGrid" Grid.Column="1" Margin="10,0,0,0">
                     <Grid.RowDefinitions>
@@ -90,13 +92,16 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid x:Name="Header" Grid.Row="0" Grid.Column="1">
+                        <ProgressRing HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HeaderProgressRing_Visibility}" IsActive="True" Height="60" Width="60" Foreground="{StaticResource HudlLightBlue}"/>
                         <Border BorderThickness="0,0,0,2" Margin="0,0,0,3" BorderBrush="{StaticResource HudlLightBlue}"/>
                             <GridView Grid.Row="0" x:Name="Categories" Margin="0" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
-                                        PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
+                                        PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"
+                                      Visibility="{Binding HeadersVisibility}"/>
                     </Grid>
-                    
+
+                    <ProgressRing Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CutupsProgressRing_Visibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}"/>
                     <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
-                              ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected">
+                              ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected" Visibility="{Binding CutupsVisibility}">
                     </ListView>
                     <TextBlock Text="No entries for this week" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Section_TextBlockStyle_Title}" Visibility="{Binding Visibility}" TextWrapping="Wrap" FontSize="40" TextAlignment="Center" ></TextBlock>
                 </Grid>

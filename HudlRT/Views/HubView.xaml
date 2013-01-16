@@ -12,6 +12,9 @@
 
     <Page.Resources>
         <x:String x:Key="Hudl">Hudl</x:String>
+        <TransitionCollection x:Key="PageTransition">
+            <EntranceThemeTransition />
+        </TransitionCollection>
     </Page.Resources>
     
     <!--Actual Layout-->
@@ -80,13 +83,13 @@
                 <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            
-            <Grid x:Name="Group1_Grid" Grid.Column="0">
+
+            <Grid x:Name="Group1_Grid" Grid.Column="0" Transitions="{StaticResource PageTransition}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="VideoLibrary_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]" Click="VideoLibraryClicked">
+                <Button x:Name="VideoLibrary_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]" Transitions="{StaticResource PageTransition}" Click="VideoLibraryClicked">
                     <TextBlock>
                         <Run Text="&#xE173;" Foreground="{StaticResource HudlOrange}"/> Video Library
                     </TextBlock>
@@ -169,7 +172,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="0*"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]" Click="LastViewedClicked" >
+                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]" Transitions="{StaticResource PageTransition}" Click="LastViewedClicked">
                     <Button.Content>
                         <Grid Grid.Column="1" Height="575">
                             <Grid.RowDefinitions>
