@@ -9,22 +9,47 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Grid.Background>
+            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="65"/>
-            <RowDefinition Height="5*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock FontSize="40" VerticalAlignment="Center">Downloads</TextBlock>
-            <TextBlock FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Right">3 Playlists | 321 Clips | 320 MB</TextBlock>
-        </StackPanel>
+
+        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
+            <Grid Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
+            <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlBlackButton}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
+            </Grid>
+            <Grid Height="55" x:Name="LogoGrid">
+                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
+                <Image x:Name="Logo" VerticalAlignment="Center" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="110,0,0,0" HorizontalAlignment="Left"/>
+            </Grid>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,0">
+                <TextBlock FontSize="40" VerticalAlignment="Center" Foreground="White" Margin="10,0">Downloads</TextBlock>
+                <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="White" Margin="10,0,0,0">3 Playlists | 321 Clips | 320 MB</TextBlock>
+            </StackPanel>
+        </Grid>
+        <!--End TopTitleGrid-->
+
         <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
                               ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected">
         </ListView>
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button>Delete Playlists</Button>
-            <Button>Confirm</Button>
-            <Button>Cancel</Button>
-        </StackPanel>
+        
+        <Grid Grid.Row="2" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Style="{StaticResource Section_ButtonStyle_Standard}">Delete Playlists</Button>
+            <Button Grid.Column="2" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0">Confirm</Button>
+            <ProgressBar Grid.Column="2" IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="200" Margin="0"/>
+            <Button Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
+        </Grid>
     </Grid>
 </Page>
