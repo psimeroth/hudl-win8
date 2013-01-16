@@ -162,8 +162,7 @@ namespace HudlRT.Views
         {
             base.OnNavigatedFrom(e);
 
-            for (int i = gridHeaders.Children.Count() - 1; i >= 0; i--)
-                gridHeaders.Children.RemoveAt(i);
+            gridHeaders.Children.Clear();
         }
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
         {
