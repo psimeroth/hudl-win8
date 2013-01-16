@@ -31,6 +31,9 @@ namespace HudlRT.ViewModels
         private Visibility _nameVisibility { get; set; }
         private GridLength _width { get; set; }
         private double _fontSize { get; set; }
+        private Boolean _checkbox { get; set; }
+
+        private Visibility _checkbox_visibility { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
@@ -61,8 +64,18 @@ namespace HudlRT.ViewModels
             cutup._thumbnailVisibility = FULL_VISIBILITY;
             cutup._width = new GridLength(180);
             cutup._fontSize = FONT_SIZE;
-
+            cutup._checkbox_visibility = Visibility.Collapsed;
             return cutup;
+        }
+
+        public Boolean CheckBox
+        {
+            get { return _checkbox; }
+            set
+            {
+                _checkbox = value;
+                NotifyOfPropertyChange(() => CheckBox);
+            }
         }
 
         public string Name
@@ -73,6 +86,17 @@ namespace HudlRT.ViewModels
                 if (value == _name) return;
                 _name = value;
                 NotifyOfPropertyChange(() => Name);
+            }
+        }
+
+        public Visibility CheckBox_Visibility
+        {
+            get { return _checkbox_visibility; }
+            set
+            {
+                if (value == _checkbox_visibility) return;
+                _checkbox_visibility = value;
+                NotifyOfPropertyChange(() => CheckBox_Visibility);
             }
         }
 

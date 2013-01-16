@@ -43,14 +43,25 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private Visibility button_Visibility;
-        public Visibility Button_Visibility
+        private Visibility buttonPanel_Visibility;
+        public Visibility ButtonPanel_Visibility
         {
-            get { return button_Visibility; }
+            get { return buttonPanel_Visibility; }
             set
             {
-                button_Visibility = value;
-                NotifyOfPropertyChange(() => Button_Visibility);
+                buttonPanel_Visibility = value;
+                NotifyOfPropertyChange(() => ButtonPanel_Visibility);
+            }
+        }
+
+        private Visibility deleteButton_Visibility;
+        public Visibility DeleteButton_Visibility
+        {
+            get { return deleteButton_Visibility; }
+            set
+            {
+                deleteButton_Visibility = value;
+                NotifyOfPropertyChange(() => DeleteButton_Visibility);
             }
         }
 
@@ -62,7 +73,7 @@ namespace HudlRT.ViewModels
         protected override async void OnActivate()
         {
             base.OnActivate();
-            Button_Visibility = Visibility.Collapsed;
+            ButtonPanel_Visibility = Visibility.Collapsed;
             await GetDownloads();
         }
 
@@ -82,7 +93,22 @@ namespace HudlRT.ViewModels
 
         public void Delete_Playlists()
         {
-            Button_Visibility = Visibility.Visible;
+            DeleteButton_Visibility = Visibility.Collapsed;
+            ButtonPanel_Visibility = Visibility.Visible;
+            foreach (CutupViewModel cutupVM in Cutups)
+            {
+                cutupVM.CheckBox_Visibility = Visibility.Visible;
+            }
+        }
+
+        public void Cancel_Delete()
+        {
+            DeleteButton_Visibility = Visibility.Visible;
+            ButtonPanel_Visibility = Visibility.Collapsed;
+            foreach (CutupViewModel cutupVM in Cutups)
+            {
+                cutupVM.CheckBox_Visibility = Visibility.Collapsed;
+            }
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
