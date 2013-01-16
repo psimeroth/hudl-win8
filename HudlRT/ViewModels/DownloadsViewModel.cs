@@ -19,7 +19,7 @@ namespace HudlRT.ViewModels
     public class DownloadsViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-       
+        private Boolean deleting = false;
 
         private BindableCollection<CutupViewModel> _cutups { get; set; }
         public BindableCollection<CutupViewModel> Cutups
@@ -65,6 +65,28 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility confirmButton_Visibility;
+        public Visibility ConfirmButton_Visibility
+        {
+            get { return confirmButton_Visibility; }
+            set
+            {
+                confirmButton_Visibility = value;
+                NotifyOfPropertyChange(() => ConfirmButton_Visibility);
+            }
+        }
+
+        private Visibility progress_Visibility;
+        public Visibility Progress_Visibility
+        {
+            get { return progress_Visibility; }
+            set
+            {
+                progress_Visibility = value;
+                NotifyOfPropertyChange(() => Progress_Visibility);
+            }
+        }
+
         public DownloadsViewModel(INavigationService navigationService): base(navigationService)
         {
             this.navigationService = navigationService;
@@ -74,16 +96,42 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
             ButtonPanel_Visibility = Visibility.Collapsed;
+            ConfirmButton_Visibility = Visibility.Collapsed;
+            Progress_Visibility = Visibility.Collapsed;
             await GetDownloads();
         }
 
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
-            CachedParameter.sectionViewCutupSelected = cutup;
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>();
-            //await GetClipsByCutup(cutup);
+            if (!deleting)
+            {     
+                CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
+                CachedParameter.sectionViewCutupSelected = cutup;
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+            }
+            else
+            {
+                cutup.CheckBox = !cutup.CheckBox;
+                CheckBoxSelected();
+            }
+        }
+
+        public void CheckBoxSelected()
+        {
+            bool checkFound = false;
+            foreach (CutupViewModel cutupVM in Cutups)
+            {
+                if (cutupVM.CheckBox)
+                {
+                    checkFound = true;
+                    ConfirmButton_Visibility = Visibility.Visible;
+                }
+            }
+            if (!checkFound)
+            {
+                ConfirmButton_Visibility = Visibility.Collapsed;
+            }
         }
 
         public void GoBack()
@@ -93,46 +141,59 @@ namespace HudlRT.ViewModels
 
         public void Delete_Playlists()
         {
+            deleting = true;
             DeleteButton_Visibility = Visibility.Collapsed;
             ButtonPanel_Visibility = Visibility.Visible;
             foreach (CutupViewModel cutupVM in Cutups)
             {
                 cutupVM.CheckBox_Visibility = Visibility.Visible;
+                if (cutupVM.CheckBox)
+                {
+                    ConfirmButton_Visibility = Visibility.Visible;
+                }
             }
         }
 
         public void Cancel_Delete()
         {
+            deleting = false; ;
             DeleteButton_Visibility = Visibility.Visible;
             ButtonPanel_Visibility = Visibility.Collapsed;
             foreach (CutupViewModel cutupVM in Cutups)
             {
                 cutupVM.CheckBox_Visibility = Visibility.Collapsed;
+                cutupVM.CheckBox = false;
             }
         }
 
-        public async Task GetClipsByCutup(CutupViewModel cutup)
+        public async void Confirm_Delete()
         {
-            ClipResponse response = await ServiceAccessor.GetCutupClips(cutup);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            CutupViewModel[] copy = new CutupViewModel[Cutups.Count];
+            Cutups.CopyTo(copy, 0);
+            foreach (CutupViewModel cutupVM in copy)
             {
-                cutup.Clips = response.clips;
-                string[] clipCount = cutup.ClipCount.ToString().Split(' ');
-                //UpdateCachedParameter();
-                CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
-                CachedParameter.sectionViewCutupSelected = cutup;
-                //Parameter.videoPageClips = Parameter.selectedCutup.clips;
+                if (cutupVM.CheckBox)
+                {
+                    await RemoveDownload(cutupVM);
+                    Cutups.Remove(cutupVM);
+                }
+            }
 
-                //await GetDownloads();
-                //await DownloadCutups(new List<Cutup>{Parameter.selectedCutup});
-                //await RemoveDownload(Parameter.selectedCutup);
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+            ButtonPanel_Visibility = Visibility.Collapsed;
+            if (!Cutups.Any())
+            {
+                DeleteButton_Visibility = Visibility.Collapsed;
             }
             else
             {
-                //Common.APIExceptionDialog.ShowExceptionDialog(null, null);
+                DeleteButton_Visibility = Visibility.Visible;
+                foreach (CutupViewModel cutupVM in Cutups)
+                {
+                    cutupVM.CheckBox_Visibility = Visibility.Collapsed;
+                }
             }
         }
+
 
         private async Task GetDownloads()
         {
@@ -152,13 +213,17 @@ namespace HudlRT.ViewModels
                     Cutups.Add(cutupVM);
                 }
             }
+            if (!Cutups.Any())
+            {
+                DeleteButton_Visibility = Visibility.Collapsed;
+            }
         }
 
-        private async Task RemoveDownload(Cutup cutup)
+        private async Task RemoveDownload(CutupViewModel cutup)
         {
             try
             {
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.cutupId.ToString());
+                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.CutupId.ToString());
                 folder.DeleteAsync();
             }
             catch (Exception)

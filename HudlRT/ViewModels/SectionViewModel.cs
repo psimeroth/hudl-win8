@@ -416,7 +416,7 @@ namespace HudlRT.ViewModels
                 UpdateCachedParameter();
                 CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
                 CachedParameter.sectionViewCutupSelected = cutup;
-                //await DownloadCutups(new List<Cutup> { CachedParameter.selectedCutup });
+                await DownloadCutups(new List<Cutup> { CachedParameter.selectedCutup });
                 
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }
