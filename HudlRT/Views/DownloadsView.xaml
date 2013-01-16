@@ -46,14 +46,14 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name ="Delete_Playlists" Visibility="{Binding DeleteButton_Visibility}" Grid.Column="0" Style="{StaticResource Section_ButtonStyle_Standard}">Delete Playlists</Button>
-            <Grid x:Name="Buttons" Visibility="{Binding ButtonPanel_Visibility}" Grid.Column="2">
+            <Grid x:Name="Buttons" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="Confirm_Delete" Visibility="{Binding ConfirmButton_Visibility}" Grid.Column="0" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0">Confirm</Button>
                 <!--<ProgressBar x:Name="Progress_Bar" Visibility="{Binding Progress_Visibility}" Grid.Column="0" IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="200" Margin="0"/>-->
-                <Button x:Name="Cancel_Delete" Grid.Column="1" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
+                <Button x:Name="Cancel_Delete" Visibility="{Binding CancelButton_Visibility}" Grid.Column="1" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
             </Grid>
         </Grid>
     </Grid>

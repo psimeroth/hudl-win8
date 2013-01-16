@@ -88,13 +88,7 @@ namespace HudlRT.Views
 
         private void Cutup_Selected(object sender, ItemClickEventArgs e)
         {
-            Cutups.IsEnabled = false;
-            Schedule.IsEnabled = false;
-            Categories.IsEnabled = false;
-            GoBack.IsEnabled = false;
-            SeasonsDropDown.IsEnabled = false;
             Logo.Opacity = .5;
-            ProgressRing.Visibility = Visibility.Visible;
         }
     }
 }
