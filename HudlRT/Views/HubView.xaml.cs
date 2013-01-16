@@ -39,11 +39,14 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            // Enable all clickable elements
             VideoLibrary_Button.IsEnabled = true;
             LastViewed_Button.IsEnabled = true;
             PreviousGameCategories.IsEnabled = true;
             NextGameCategories.IsEnabled = true;
             SeasonsDropDown.IsEnabled = true;
+
+            // Unfade all text
             SeasonsDropDown.Opacity = 1;
             Logo.Opacity = 1;
             NoGamesGrid.Opacity = 1;
@@ -96,11 +99,14 @@ namespace HudlRT.Views
 
         private void disablePageElements()
         {
+            // Diable all clickable elements
             VideoLibrary_Button.IsEnabled = false;
             LastViewed_Button.IsEnabled = false;
             PreviousGameCategories.IsEnabled = false;
             NextGameCategories.IsEnabled = false;
             SeasonsDropDown.IsEnabled = false;
+
+            // Fade all text
             SeasonsDropDown.Opacity = 0.5;
             Logo.Opacity = 0.5;
             NoGamesGrid.Opacity = 0.5;

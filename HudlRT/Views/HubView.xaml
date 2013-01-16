@@ -16,6 +16,7 @@
     
     <!--Actual Layout-->
     <Grid x:Name="RootGrid">
+        
         <Grid.Background>
             <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
         </Grid.Background>
