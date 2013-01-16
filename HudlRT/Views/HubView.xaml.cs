@@ -39,6 +39,18 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            VideoLibrary_Button.IsEnabled = true;
+            LastViewed_Button.IsEnabled = true;
+            PreviousGameCategories.IsEnabled = true;
+            NextGameCategories.IsEnabled = true;
+            SeasonsDropDown.IsEnabled = true;
+            SeasonsDropDown.Opacity = 1;
+            Logo.Opacity = 1;
+            NoGamesGrid.Opacity = 1;
+            NextGameHeader_Text.Opacity = 1;
+            NextGameHeaderDate_Text.Opacity = 1;
+            PreviousGameHeader_Text.Opacity = 1;
+            PreviousGameHeaderDate_Text.Opacity = 1;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
@@ -65,6 +77,37 @@ namespace HudlRT.Views
             SeasonsDropDown.BorderBrush = new SolidColorBrush(Color.FromArgb(0x00, 0, 0, 0));
             HubViewModel vm = (HubViewModel)this.DataContext;
             vm.SeasonSelected(SeasonsDropDown.SelectedItem);
+        }
+
+        private void LastViewedClicked(object sender, object e)
+        {
+            disablePageElements();
+        }
+
+        private void VideoLibraryClicked(object sender, object e)
+        {
+            disablePageElements();
+        }
+
+        private void CategorySelected(object sender, ItemClickEventArgs e)
+        {
+            disablePageElements();
+        }
+
+        private void disablePageElements()
+        {
+            VideoLibrary_Button.IsEnabled = false;
+            LastViewed_Button.IsEnabled = false;
+            PreviousGameCategories.IsEnabled = false;
+            NextGameCategories.IsEnabled = false;
+            SeasonsDropDown.IsEnabled = false;
+            SeasonsDropDown.Opacity = 0.5;
+            Logo.Opacity = 0.5;
+            NoGamesGrid.Opacity = 0.5;
+            NextGameHeader_Text.Opacity = 0.5;
+            NextGameHeaderDate_Text.Opacity = 0.5;
+            PreviousGameHeader_Text.Opacity = 0.5;
+            PreviousGameHeaderDate_Text.Opacity = 0.5;
         }
     }
 }

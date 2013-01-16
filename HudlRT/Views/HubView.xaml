@@ -85,7 +85,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]">
+                <Button x:Name="VideoLibrary_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]" Click="VideoLibraryClicked">
                     <TextBlock>
                         <Run Text="&#xE173;" Foreground="{StaticResource HudlOrange}"/> Video Library
                     </TextBlock>
@@ -114,9 +114,9 @@
                             <RowDefinition Height="15*"/>
                         </Grid.RowDefinitions>
                         <Border BorderBrush="{StaticResource HudlLightBlue}" BorderThickness="0,0,0,2">
-                            <TextBlock Grid.Row="0" DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
+                            <TextBlock x:Name="NextGameHeader_Text" Grid.Row="0" DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
                         </Border>
-                        <TextBlock Grid.Row="1" DataContext ="{Binding NextGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
+                        <TextBlock x:Name="NextGameHeaderDate_Text" Grid.Row="1" DataContext ="{Binding NextGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
                         <ListView Grid.Row="3" x:Name="NextGameCategories"
                                     caliburn:Message.Attach="[Event ItemClick] = [NextCategorySelected($eventArgs)]"
                                     Style="{StaticResource Hub_ListViewStyle_Standard}"
@@ -124,6 +124,7 @@
                                     SelectedItem="{Binding SelectedCategory}" 
                                     SelectionChanged="ItemListView_SelectionChanged" 
                                     PointerPressed="ListViewItemPointerPressed"
+                                    ItemClick="CategorySelected"
                                   Margin="0">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -140,16 +141,17 @@
                             <RowDefinition Height="15*"/>
                         </Grid.RowDefinitions>
                         <Border BorderBrush="{StaticResource HudlLightBlue}" BorderThickness="0,0,0,2">
-                            <TextBlock Grid.Row="0" DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
+                            <TextBlock x:Name="PreviousGameHeader_Text" Grid.Row="0" DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
                         </Border>
-                        <TextBlock Grid.Row="1" DataContext ="{Binding PreviousGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
+                        <TextBlock x:Name="PreviousGameHeaderDate_Text" Grid.Row="1" DataContext ="{Binding PreviousGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
                         <ListView Grid.Row="3" x:Name="PreviousGameCategories"
                                   SelectionChanged="ItemListView_SelectionChanged" 
                                   PointerPressed="ListViewItemPointerPressed" 
                                   caliburn:Message.Attach="[Event ItemClick] = [PreviousCategorySelected($eventArgs)]"
                                   Style="{StaticResource Hub_ListViewStyle_Standard}"
                                   ItemContainerStyle="{StaticResource Hub_ListViewItemStyle_Standard}" 
-                                  SelectedItem="{Binding SelectedCategory}">
+                                  SelectedItem="{Binding SelectedCategory}"
+                                  ItemClick="CategorySelected">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock x:Name="PreviousWeekCategory_Button" Text="{Binding name}"/>
@@ -166,7 +168,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="0*"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]">
+                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]" Click="LastViewedClicked" >
                     <Button.Content>
                         <Grid Grid.Column="1" Height="575">
                             <Grid.RowDefinitions>

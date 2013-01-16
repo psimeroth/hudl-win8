@@ -45,6 +45,7 @@ namespace HudlRT.Views
             Categories.IsEnabled = true;
             GoBack.IsEnabled = true;
             SeasonsDropDown.IsEnabled = true;
+            SeasonsDropDown.Opacity = 1;
             Logo.Opacity = 1;
             ProgressRing.Visibility = Visibility.Collapsed;
         }
@@ -100,6 +101,7 @@ namespace HudlRT.Views
             Categories.IsEnabled = false;
             GoBack.IsEnabled = false;
             SeasonsDropDown.IsEnabled = false;
+            SeasonsDropDown.Opacity = 0.5;
             Logo.Opacity = .5;
             ProgressRing.Visibility = Visibility.Visible;
         }
