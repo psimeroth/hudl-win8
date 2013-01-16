@@ -19,6 +19,7 @@ using HudlRT.Parameters;
 using Windows.UI.Xaml.Markup;
 using Windows.UI;using Windows.UI.ViewManagement;
 using System.Diagnostics;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace HudlRT.Views
 {   
@@ -575,33 +576,15 @@ namespace HudlRT.Views
 
         private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
         {
-            TransportControlsPanel_Left.Margin = new Thickness(0, 18, 45, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(45, 18, 0, 0);
-
-            double width = videoMediaElement.ActualWidth * .7;
-
-            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(375);
-            Container1.RowDefinitions.First().Height = new GridLength(375);
-
-            videoContainer.Height = 350;
-            videoMediaElement.Height = 350;
-            videoMediaElement.Width = Window.Current.Bounds.Width - 300;
+            Storyboard sb = (Storyboard)RootGrid.Resources["ExpandGridAnimation"];
+            sb.Begin();
             isGridCollapsed = false;
-       
         }
 
         private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
         {
-            TransportControlsPanel_Left.Margin = new Thickness(0, 110, 45, 0);
-            TransportControlsPanel_Right.Margin = new Thickness(45, 110, 0, 0);
-
-            mainGrid.RowDefinitions.ElementAt(1).Height = new GridLength(525);
-            Container1.RowDefinitions.First().Height = new GridLength(525);
-
-            videoContainer.Height = 500;
-            videoMediaElement.Height = 500;
-            videoMediaElement.Width = Window.Current.Bounds.Width - 300;
-
+            Storyboard sb = (Storyboard)RootGrid.Resources["CollapseGridAnimation"];
+            sb.Begin();
             isGridCollapsed = true;
         }
 
