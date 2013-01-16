@@ -23,6 +23,9 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class HubView : LayoutAwarePage
     {
+        private double FULL_OPAQUE = 1;
+        private double FADED_OPAQUE = 0.5;
+
         private int selectedIndex { get; set; }
         private bool rightClicked { get; set; }
 
@@ -47,13 +50,13 @@ namespace HudlRT.Views
             SeasonsDropDown.IsEnabled = true;
 
             // Unfade all text
-            SeasonsDropDown.Opacity = 1;
-            Logo.Opacity = 1;
-            NoGamesGrid.Opacity = 1;
-            NextGameHeader_Text.Opacity = 1;
-            NextGameHeaderDate_Text.Opacity = 1;
-            PreviousGameHeader_Text.Opacity = 1;
-            PreviousGameHeaderDate_Text.Opacity = 1;
+            SeasonsDropDown.Opacity = FULL_OPAQUE;
+            Logo.Opacity = FULL_OPAQUE;
+            NoGamesGrid.Opacity = FULL_OPAQUE;
+            NextGameHeader_Text.Opacity = FULL_OPAQUE;
+            NextGameHeaderDate_Text.Opacity = FULL_OPAQUE;
+            PreviousGameHeader_Text.Opacity = FULL_OPAQUE;
+            PreviousGameHeaderDate_Text.Opacity = FULL_OPAQUE;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
@@ -107,13 +110,13 @@ namespace HudlRT.Views
             SeasonsDropDown.IsEnabled = false;
 
             // Fade all text
-            SeasonsDropDown.Opacity = 0.5;
-            Logo.Opacity = 0.5;
-            NoGamesGrid.Opacity = 0.5;
-            NextGameHeader_Text.Opacity = 0.5;
-            NextGameHeaderDate_Text.Opacity = 0.5;
-            PreviousGameHeader_Text.Opacity = 0.5;
-            PreviousGameHeaderDate_Text.Opacity = 0.5;
+            SeasonsDropDown.Opacity = FADED_OPAQUE;
+            Logo.Opacity = FADED_OPAQUE;
+            NoGamesGrid.Opacity = FADED_OPAQUE;
+            NextGameHeader_Text.Opacity = FADED_OPAQUE;
+            NextGameHeaderDate_Text.Opacity = FADED_OPAQUE;
+            PreviousGameHeader_Text.Opacity = FADED_OPAQUE;
+            PreviousGameHeaderDate_Text.Opacity = FADED_OPAQUE;
         }
     }
 }

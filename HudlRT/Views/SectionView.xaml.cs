@@ -24,6 +24,8 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class SectionView : LayoutAwarePage
     {
+        private double FULL_OPAQUE = 1;
+        private double FADED_OPAQUE = 0.5;
 
         private int selectedIndex { get; set; }
         private bool rightClicked { get; set; }
@@ -45,8 +47,8 @@ namespace HudlRT.Views
             Categories.IsEnabled = true;
             GoBack.IsEnabled = true;
             SeasonsDropDown.IsEnabled = true;
-            SeasonsDropDown.Opacity = 1;
-            Logo.Opacity = 1;
+            SeasonsDropDown.Opacity = FULL_OPAQUE;
+            Logo.Opacity = FULL_OPAQUE;
             ProgressRing.Visibility = Visibility.Collapsed;
         }
 
@@ -101,8 +103,8 @@ namespace HudlRT.Views
             Categories.IsEnabled = false;
             GoBack.IsEnabled = false;
             SeasonsDropDown.IsEnabled = false;
-            SeasonsDropDown.Opacity = 0.5;
-            Logo.Opacity = .5;
+            SeasonsDropDown.Opacity = FADED_OPAQUE;
+            Logo.Opacity = FADED_OPAQUE;
             ProgressRing.Visibility = Visibility.Visible;
         }
     }
