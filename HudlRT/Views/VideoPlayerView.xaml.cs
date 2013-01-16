@@ -156,8 +156,15 @@ namespace HudlRT.Views
 
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
             vm.listView = Clips;
+            Clips.SelectedIndex = 0;
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            gridHeaders.Children.Clear();
+        }
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
         {
             gridHeaderScroll.ScrollToHorizontalOffset(gridScroll.HorizontalOffset);

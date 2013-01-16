@@ -480,6 +480,8 @@ namespace HudlRT.ViewModels
                 UpdateCachedParameter();
                 CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = Int32.Parse(clipCount[0]), name = cutup.Name };
                 CachedParameter.sectionViewCutupSelected = cutup;
+
+                //disable UI
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }
             else
