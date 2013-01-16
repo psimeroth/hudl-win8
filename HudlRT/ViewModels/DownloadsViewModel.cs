@@ -54,6 +54,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private String download_Contents;
+        public String Download_Contents
+        {
+            get { return download_Contents; }
+            set
+            {
+                download_Contents = value;
+                NotifyOfPropertyChange(() => Download_Contents);
+            }
+        }
+
         public DownloadsViewModel(INavigationService navigationService): base(navigationService)
         {
             this.navigationService = navigationService;
@@ -113,6 +124,7 @@ namespace HudlRT.ViewModels
             Cutups = new BindableCollection<CutupViewModel>();
             var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
             Downloads downloads = new Downloads();
+            var totalClips = 0;
             foreach (StorageFolder folder in downloadFolders)
             {
                 if (folder.Name.Contains(AppDataAccessor.GetUsername()))
@@ -124,8 +136,10 @@ namespace HudlRT.ViewModels
                     cutupVM.Clips = savedCutup.clips;
                     cutupVM.DisplayColumns = savedCutup.displayColumns;
                     Cutups.Add(cutupVM);
+                    totalClips += cutupVM.ClipCount;
                 }
             }
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + "cutup size";
         }
 
         private async Task RemoveDownload(Cutup cutup)
