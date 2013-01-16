@@ -37,7 +37,7 @@
                                 <VisualState x:Name="Normal"/>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -57,7 +57,7 @@
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="UnselectedSwiping">
@@ -96,7 +96,7 @@
                                     </Rectangle>
                                     <Rectangle x:Name="BackgroundColor" Opacity="0" >
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="{StaticResource HudlLightBlueColor}" />
+                                            <SolidColorBrush Color="{StaticResource HudlBlueColor}" />
                                         </Rectangle.Fill>
                                     </Rectangle>
                                 </Grid>

@@ -20,10 +20,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkerGray}">
         <Grid.Resources>
             <Storyboard x:Name="CollapseGridAnimation">
                 <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True"/>
@@ -94,7 +91,7 @@
                 <RowDefinition x:Name="mainGrid_Row2" Height="375" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Name="header" Background="{StaticResource WhiteToClearGradient}">
+            <Grid Name="header" Background="{StaticResource HudlDarkGray}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="180"/>
                     <ColumnDefinition Width="*"/>
@@ -153,7 +150,7 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Background="{StaticResource WhiteToClearGradient}">
+                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Background="{StaticResource HudlDarkGray}">
                     <Border BorderBrush="Black" BorderThickness="0,0,0,2">
                         <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False"
                           ManipulationMode="All" >

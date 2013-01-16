@@ -4,11 +4,14 @@
     
     <!--COLORS!!!!!!-->
     <Color x:Key="HudlOrangeColor">#FF6700</Color>
-    <Color x:Key="HudlLightBlueColor">#007ACC</Color>
+    <Color x:Key="HudlBlueColor">#007ACC</Color>
+    <Color x:Key="HudlLightBlueColor">#0099FF</Color>
+    <Color x:Key="HudlLightBlueColor_Highlight">#00FFE6</Color>
     <Color x:Key="HudlLightGrayColor">#878787</Color>
     <Color x:Key="HudlMediumGrayColor">#575757</Color>
+    <Color x:Key="HudlHeaderGrayColor">#474747</Color>
     <Color x:Key="HudlDarkGrayColor">#373737</Color>
-    <Color x:Key="HudlDarkerGrayColor">#313131</Color>
+    <Color x:Key="HudlDarkerGrayColor">#272727</Color>
     <Color x:Key="HudlBlackButtonColor">#111111</Color>
     <Color x:Key="HudlBlackButtonHoverColor">#171717</Color>
     <Color x:Key="HudlGrayButtonColor">#777777</Color>
@@ -18,29 +21,18 @@
     <!--BRUSHES!!!!!-->
     <!--Solid-->
     <SolidColorBrush x:Key="HudlOrange" Color="{StaticResource HudlOrangeColor}" />
+    <SolidColorBrush x:Key="HudlBlue" Color="{StaticResource HudlBlueColor}" />
     <SolidColorBrush x:Key="HudlLightBlue" Color="{StaticResource HudlLightBlueColor}" />
     <SolidColorBrush x:Key="HudlLightGray" Color="{StaticResource HudlLightGrayColor}" />
     <SolidColorBrush x:Key="HudlMediumGray" Color="{StaticResource HudlMediumGrayColor}" />
+    <SolidColorBrush x:Key="HudlHeaderGray" Color="{StaticResource HudlHeaderGrayColor}" />
     <SolidColorBrush x:Key="HudlDarkGray" Color="{StaticResource HudlDarkGrayColor}" />
+    <SolidColorBrush x:Key="HudlDarkerGray" Color="{StaticResource HudlDarkerGrayColor}" />
     <SolidColorBrush x:Key="HudlBlackButton" Color="{StaticResource HudlBlackButtonColor}" />
     <SolidColorBrush x:Key="HudlBlackButtonHover" Color="{StaticResource HudlBlackButtonHoverColor}" />
     <SolidColorBrush x:Key="HudlGrayButton" Color="{StaticResource HudlGrayButtonColor}" />
     <SolidColorBrush x:Key="HudlGrayButtonHover" Color="{StaticResource HudlGrayButtonHoverColor}" />
     <SolidColorBrush x:Key="HudlAppBar" Color="{StaticResource HudlAppBarColor}" />
-    
-    <!--Gradient-->
-    <LinearGradientBrush x:Key="WhiteToClearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
-        <GradientStop Color="#22FFFFFF" Offset="1"/>
-        <GradientStop Color="#00000000" Offset=".5"/>
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DarkBottomToClearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
-        <GradientStop Color="{StaticResource HudlDarkerGrayColor}" Offset="1"/>
-        <GradientStop Color="#00000000" Offset=".9"/>
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DarkTopToClearGradient" EndPoint="0.5,1" StartPoint="0.5,0">
-        <GradientStop Color="#00000000" Offset=".05"/>
-        <GradientStop Color="{StaticResource HudlDarkerGrayColor}" Offset="0"/>
-    </LinearGradientBrush>
     
     <!--St-st-st-styles-->
     <!--Naming convention: Page_ItemStyle_Specific (e.g. Section_TextBlockStyle_Cutups). 
@@ -62,7 +54,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -125,7 +117,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -189,7 +181,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -387,7 +379,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
