@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Input;
 using Windows.Networking.BackgroundTransfer;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
@@ -42,6 +43,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility button_Visibility;
+        public Visibility Button_Visibility
+        {
+            get { return button_Visibility; }
+            set
+            {
+                button_Visibility = value;
+                NotifyOfPropertyChange(() => Button_Visibility);
+            }
+        }
+
         public DownloadsViewModel(INavigationService navigationService): base(navigationService)
         {
             this.navigationService = navigationService;
@@ -50,13 +62,27 @@ namespace HudlRT.ViewModels
         protected override async void OnActivate()
         {
             base.OnActivate();
+            Button_Visibility = Visibility.Collapsed;
             await GetDownloads();
         }
 
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            await GetClipsByCutup(cutup);
+            CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
+            CachedParameter.sectionViewCutupSelected = cutup;
+            navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+            //await GetClipsByCutup(cutup);
+        }
+
+        public void GoBack()
+        {
+            navigationService.GoBack();
+        }
+
+        public void Delete_Playlists()
+        {
+            Button_Visibility = Visibility.Visible;
         }
 
         public async Task GetClipsByCutup(CutupViewModel cutup)
@@ -94,7 +120,9 @@ namespace HudlRT.ViewModels
                     StorageFile model = await folder.GetFileAsync("DownloadsModel");
                     string text = await Windows.Storage.FileIO.ReadTextAsync(model);
                     Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
-                    CutupViewModel cutupVM = new CutupViewModel {ClipCount = savedCutup.clipCount, Clips = savedCutup.clips, Name = savedCutup.name, Thumbnail = savedCutup.thumbnailLocation, CutupId = savedCutup.cutupId, DisplayColumns = savedCutup.displayColumns};
+                    CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);
+                    cutupVM.Clips = savedCutup.clips;
+                    cutupVM.DisplayColumns = savedCutup.displayColumns;
                     Cutups.Add(cutupVM);
                 }
             }

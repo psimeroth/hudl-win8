@@ -112,7 +112,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action ViewDownloads()]">
+                <Button x:Name ="Downloads_Button" Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol">
                     <TextBlock>
                         <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads
                     </TextBlock>

@@ -43,13 +43,18 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Style="{StaticResource Section_ButtonStyle_Standard}">Delete Playlists</Button>
-            <Button Grid.Column="2" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0">Confirm</Button>
-            <ProgressBar Grid.Column="2" IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="200" Margin="0"/>
-            <Button Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
+            <Button x:Name ="Delete_Playlists" Grid.Column="0" Style="{StaticResource Section_ButtonStyle_Standard}">Delete Playlists</Button>
+            <Grid x:Name="Buttons" Visibility="{Binding Button_Visibility}" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0">Confirm</Button>
+                <ProgressBar Grid.Column="0" IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="200" Margin="0"/>
+                <Button Grid.Column="1" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
+            </Grid>
         </Grid>
     </Grid>
 </Page>
