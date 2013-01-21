@@ -20,10 +20,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkerGray}">
         <Grid.Resources>
             <Storyboard x:Name="CollapseGridAnimation">
                 <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True"/>
@@ -90,19 +87,19 @@
 
         <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="55" />
+                <RowDefinition Height="50" />
                 <RowDefinition x:Name="mainGrid_Row2" Height="375" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Name="header" Background="{StaticResource WhiteToClearGradient}">
+            <Grid Name="header" Background="{StaticResource HudlDarkGray}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="180"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="180"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
+                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="17,0,0,0" />
                 <TextBlock x:Name="CutupName" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
-                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,18,0" Width="162" Height="50" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
+                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,20,0" Width="160" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
                          caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
             </Grid>
             <Grid Background="Black" Grid.Row="1" x:Name="Container1">
@@ -153,7 +150,7 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Background="{StaticResource WhiteToClearGradient}">
+                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                     <Border BorderBrush="Black" BorderThickness="0,0,0,2">
                         <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False"
                           ManipulationMode="All" >
