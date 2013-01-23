@@ -530,16 +530,17 @@ namespace HudlRT.ViewModels
         {
             if (filter != null)
             {
-                List<Clip> unfilteredClips = new List<Clip>();
-                switch (filter.sortType)
+                if (filter.sortType != SortType.None)
                 {
-                    case SortType.Ascending:
-                        unfilteredClips.AddRange(clips.Where(clip => clip.breakDownData[filter.columnId].Contains("-")));
-                        foreach (Clip clip in unfilteredClips)
-                        {
-                            clips.Remove(clip);
-                        }
+                    List<Clip> unfilteredClips = new List<Clip>();
+                    unfilteredClips.AddRange(clips.Where(clip => clip.breakDownData[filter.columnId].Contains("-")));
+                    foreach (Clip clip in unfilteredClips)
+                    {
+                        clips.Remove(clip);
+                    }
 
+                    if (filter.sortType == SortType.Ascending)
+                    {
                         clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
                         try
                         {
@@ -549,16 +550,9 @@ namespace HudlRT.ViewModels
                         {
                             clips = clips.OrderBy(clip => clip.breakDownData[filter.columnId]).ToList();
                         }
-
-                        clips.AddRange(unfilteredClips);
-                        break;
-                    case SortType.Descending:
-                        unfilteredClips.AddRange(clips.Where(clip => clip.breakDownData[filter.columnId].Contains("-")));
-                        foreach (Clip clip in unfilteredClips)
-                        {
-                            clips.Remove(clip);
-                        }
-
+                    }
+                    else if (filter.sortType == SortType.Descending)
+                    {
                         clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
                         try
                         {
@@ -568,9 +562,9 @@ namespace HudlRT.ViewModels
                         {
                             clips = clips.OrderByDescending(clip => clip.breakDownData[filter.columnId]).ToList();
                         }
+                    }
 
-                        clips.AddRange(unfilteredClips);
-                        break;
+                    clips.AddRange(unfilteredClips);
                 }
             }
             else
