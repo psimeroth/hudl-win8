@@ -34,6 +34,11 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <Style x:Key="VideoPlayer_RadioButtonStyle_Standard" TargetType="RadioButton" >
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Padding" Value="2,-1,0,0" />
+    </Style>
 
     <Style x:Key="VideoPlayer_ListViewItemStyle_Standard" TargetType="ListViewItem">
         <Setter Property="Foreground" Value="White"/>
