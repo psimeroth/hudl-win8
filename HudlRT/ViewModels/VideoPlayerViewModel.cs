@@ -430,9 +430,21 @@ namespace HudlRT.ViewModels
                 FilterViewModel sortFilter;
                 if (SelectedFilter.sortType == SortType.Ascending || SelectedFilter.sortType == SortType.Descending)
                 {
+                    List<FilterViewModel> sortOnlyFilters = new List<FilterViewModel>();
                     foreach (FilterViewModel filter in FiltersList)
                     {
-                        filter.setSortType(SortType.None);
+                        if (filter.FilterCriteria.Where(c => c.IsChecked).Count() == 0)
+                        {
+                            sortOnlyFilters.Add(filter);
+                        }
+                        else
+                        {
+                            filter.setSortType(SortType.None);
+                        }
+                    }
+                    foreach (FilterViewModel filter in sortOnlyFilters)
+                    {
+                        FiltersList.Remove(filter);
                     }
                     sortFilter = SelectedFilter;
                 }
@@ -474,6 +486,10 @@ namespace HudlRT.ViewModels
                         clips.AddRange(allClips.Where(clip => clip.breakDownData[filter.columnId].Equals(criteria.Name)));
                     }
                 }
+                else
+                {
+                    clips.AddRange(allClips);
+                }
 
                 allClips.Clear();
                 allClips.AddRange(clips);
@@ -514,9 +530,16 @@ namespace HudlRT.ViewModels
         {
             if (filter != null)
             {
+                List<Clip> unfilteredClips = new List<Clip>();
                 switch (filter.sortType)
                 {
                     case SortType.Ascending:
+                        unfilteredClips.AddRange(clips.Where(clip => clip.breakDownData[filter.columnId].Contains("-")));
+                        foreach (Clip clip in unfilteredClips)
+                        {
+                            clips.Remove(clip);
+                        }
+
                         clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
                         try
                         {
@@ -526,8 +549,16 @@ namespace HudlRT.ViewModels
                         {
                             clips = clips.OrderBy(clip => clip.breakDownData[filter.columnId]).ToList();
                         }
+
+                        clips.AddRange(unfilteredClips);
                         break;
                     case SortType.Descending:
+                        unfilteredClips.AddRange(clips.Where(clip => clip.breakDownData[filter.columnId].Contains("-")));
+                        foreach (Clip clip in unfilteredClips)
+                        {
+                            clips.Remove(clip);
+                        }
+
                         clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
                         try
                         {
@@ -537,6 +568,8 @@ namespace HudlRT.ViewModels
                         {
                             clips = clips.OrderByDescending(clip => clip.breakDownData[filter.columnId]).ToList();
                         }
+
+                        clips.AddRange(unfilteredClips);
                         break;
                 }
             }
