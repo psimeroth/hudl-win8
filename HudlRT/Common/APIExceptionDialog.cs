@@ -12,14 +12,14 @@ namespace HudlRT.Common
 {
     class APIExceptionDialog
     {
-        static public void ShowNoInternetConnectionDialog(object sender, RoutedEventArgs e)
+        static public void ShowNoInternetConnectionDialog(object sender = null, RoutedEventArgs e = null)
         {
             string message = "We didn't detect an internet connection.";
             message += "\nPlease connect to the internet, and then try again. If you have connected to the internet and this error persists, please leave feedback with the button below or email kyle.deterding@hudl.com";
             ShowExceptionDialog(message, sender, e);
         }
 
-        static public void ShowGeneralExceptionDialog(object sender, RoutedEventArgs e)
+        static public void ShowGeneralExceptionDialog(object sender = null, RoutedEventArgs e = null)
         {
             string message = "Looks like something broke!";
             message += "\nPlease let us know what you were doing prior to seeing this error and we will work on getting this problem resolved. You can leave feedback with the button below or email kyle.deterding@hudl.com";
@@ -27,7 +27,7 @@ namespace HudlRT.Common
             ShowExceptionDialog(message, sender, e);
         }
 
-        static public void ShowStatusCodeExceptionDialog(object sender, RoutedEventArgs e, string statusCode, string url)
+        static public void ShowStatusCodeExceptionDialog(string statusCode, string url, object sender = null, RoutedEventArgs e = null)
         {
             string message;
             if (statusCode == "Unauthorized")
@@ -45,7 +45,7 @@ namespace HudlRT.Common
             ShowExceptionDialog(message, sender, e);
         }
 
-        static private async void ShowExceptionDialog(string text, object sender, RoutedEventArgs e)
+        static private async void ShowExceptionDialog(string text, object sender = null, RoutedEventArgs e = null)
         {
             string message = text;
             // Create the message dialog and set its content
