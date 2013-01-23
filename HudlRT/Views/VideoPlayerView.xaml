@@ -113,20 +113,13 @@
                         <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="1" />
                         <StackPanel Orientation="Vertical" Grid.Row="2">
                             <TextBlock Text="Filter" FontSize="24" Margin="10,0,0,0" />
-                            <ItemsControl  ItemsSource="{Binding FilterCriteria}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" Height="200"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
+                            <ListView Height="200"  ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                           <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Margin="30,0,10,0" FontSize="16"/>
-                                        </StackPanel>
+                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Margin="30,0,10,0" FontSize="16"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            </ListView>
                         </StackPanel>
                         <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="2" />
                         <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center">
