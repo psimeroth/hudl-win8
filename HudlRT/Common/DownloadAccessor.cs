@@ -18,23 +18,20 @@ using System.Threading;
 
 namespace HudlRT.Common
 {
-    public class DownloadAccessor : PropertyChangedBase
+    public class DownloadAccessor
     {
 
-        private double downloadProgress;
-        public double DownloadProgress
-        {
-            get { return downloadProgress; }
-            set
-            {
-                downloadProgress = value;
-                NotifyOfPropertyChange(() => DownloadProgress);
-            }
-        }
+        public double DownloadProgress;
 
-        public Boolean downloadComplete = false;
-        public Boolean downloading = false;
-        public Boolean downloadCanceled = false;
+        public bool downloadComplete = false;
+        public bool downloading = false;
+        public bool downloadCanceled = false;
+        public bool findingFileSize = false;
+        public DownloadOperation download;
+        public long totalBytes = 0;
+        public long clipsComplete = 0;
+        public long currentDownloadedBytes = 0;
+        public long totalClips = 0;
 
         public async Task<BindableCollection<CutupViewModel>> GetDownloads()
         {
@@ -52,7 +49,7 @@ namespace HudlRT.Common
                         Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
                         CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);
                         cutupVM.Clips = savedCutup.clips;
-                        cutupVM.TotalCutupSize = savedCutup.totalFileSize;
+                        cutupVM.TotalCutupSize = savedCutup.totalFilesSize;
                         cutupVM.DisplayColumns = savedCutup.displayColumns;
                         cutups.Add(cutupVM);
                     }
@@ -63,13 +60,34 @@ namespace HudlRT.Common
             return cutups;
         }
 
+        private async Task RemoveDownload(Cutup cutup)
+        {
+            try
+            {
+                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.cutupId.ToString());
+                try
+                {
+                    folder.DeleteAsync();
+                }
+                catch (Exception) { }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
         public async Task DownloadCutups(List<Cutup> cutups, CancellationToken ct)
         {
             downloadComplete = false;
             downloading = true;
             downloadCanceled = false;
-            long totalSize = 0;
-            long currentDownloadedBytes = 0;
+            totalBytes = 0;
+            clipsComplete = 0;
+            currentDownloadedBytes = 0;
+            totalClips = 0;
+
+            findingFileSize = true;
             long cutupTotalSize = 0;
             var httpClient = new System.Net.Http.HttpClient();
             foreach (Cutup cut in cutups)
@@ -84,11 +102,13 @@ namespace HudlRT.Common
                         var response = await httpClient.SendAsync(httpRequestMessage);
                         var angleSize = response.Content.Headers.ContentLength;
                         cutupTotalSize += (long)angleSize;
-                        totalSize += (long)angleSize;
+                        totalBytes += (long)angleSize;
+                        totalClips++;
                     }
                 }
-                cut.totalFileSize = cutupTotalSize;
+                cut.totalFilesSize = cutupTotalSize;
             }
+            findingFileSize = false;
 
             foreach (Cutup cut in cutups)
             {
@@ -103,7 +123,7 @@ namespace HudlRT.Common
                         {
                             if (ct.IsCancellationRequested)
                             {
-                                await RemoveDownload(cut);
+                                await CachedParameter.downloadAccessor.RemoveDownload(cut);
                                 downloadComplete = false;
                                 downloading = false;
                                 downloadCanceled = true;
@@ -119,14 +139,13 @@ namespace HudlRT.Common
                                 //CutupId-ClipId-ClipAngleId
                                 var destinationFile = await fileFolder.CreateFileAsync(cut.cutupId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
                                 var downloader = new BackgroundDownloader();
-                                var download = downloader.CreateDownload(source, destinationFile);
+                                download = downloader.CreateDownload(source, destinationFile);
                                 var downloadOperation = await download.StartAsync();
-                                //DownloadProgress = (download.Progress.BytesReceived / download.Progress.TotalBytesToReceive) * (100.0 / totalFiles) + (count * (100.0 / totalFiles));
-                                DownloadProgress = 100 * (((long)download.Progress.BytesReceived + currentDownloadedBytes) / (double)totalSize);
                                 file = (StorageFile)downloadOperation.ResultFile;
                                 angle.preloadFile = file.Path;
                                 angle.isPreloaded = true;
                                 currentDownloadedBytes += (long)download.Progress.BytesReceived;
+                                clipsComplete++;
                             }
                         }
                         catch (Exception e)
@@ -143,32 +162,6 @@ namespace HudlRT.Common
             downloadComplete = true;
             downloading = false;
             DownloadProgress = 0;
-        }
-
-        private async Task RemoveDownload(Cutup cutup)
-        {
-            try
-            {
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.cutupId.ToString());
-                folder.DeleteAsync();
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        private async Task RemoveDownload(CutupViewModel cutup)
-        {
-            try
-            {
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.CutupId.ToString());
-                folder.DeleteAsync();
-            }
-            catch (Exception)
-            {
-
-            }
         }
     }
 }

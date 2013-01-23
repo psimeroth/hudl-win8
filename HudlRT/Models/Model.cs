@@ -165,7 +165,7 @@ namespace HudlRT.Models
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
         public string thumbnailLocation { get; set; }
-        public long totalFileSize { get; set; }
+        public long totalFilesSize { get; set; }
         public Cutup()
         {
             clips = new BindableCollection<Clip>();

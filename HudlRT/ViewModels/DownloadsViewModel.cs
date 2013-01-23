@@ -238,8 +238,12 @@ namespace HudlRT.ViewModels
             try
             {
                 var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.CutupId.ToString());
-                folder.DeleteAsync();
-                CachedParameter.downloadedCutups.Remove(cutup);
+                try
+                {
+                    folder.DeleteAsync();
+                    CachedParameter.downloadedCutups.Remove(cutup);
+                }
+                catch (Exception) { }
             }
             catch (Exception)
             {

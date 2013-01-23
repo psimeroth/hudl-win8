@@ -49,6 +49,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private string downloadProgressText { get; set; }
+        public string DownloadProgressText
+        {
+            get { return downloadProgressText; }
+            set
+            {
+                downloadProgressText = value;
+                NotifyOfPropertyChange(() => DownloadProgressText);
+            }
+        }
+
         private BindableCollection<CategoryViewModel> _categories { get; set; }
         public BindableCollection<CategoryViewModel> Categories
         {
@@ -628,7 +639,7 @@ namespace HudlRT.ViewModels
                 {
                     DownloadButton_Visibility = Visibility.Collapsed;
                 }
-                else
+                else if (!CachedParameter.downloadAccessor.downloading)
                 {
                     DownloadButton_Visibility = Visibility.Visible;
                 }
@@ -650,6 +661,7 @@ namespace HudlRT.ViewModels
             DownloadProgress_Visibility = Visibility.Visible;
             ConfirmButton_Visibility = Visibility.Collapsed;
             DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
+            DownloadProgressText = "";
             StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
             CachedParameter.downloadAccessor.DownloadCutups(cutupList, CachedParameter.cts.Token);
@@ -658,17 +670,29 @@ namespace HudlRT.ViewModels
         private async Task StartTimer()
         {
             timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 350);
             timer.Tick += timerTick;
             timer.Start();
         }
 
         void timerTick(object sender, object e)
         {
-            if (!CachedParameter.downloadAccessor.downloadComplete)
+            if (!CachedParameter.downloadAccessor.downloadComplete && CachedParameter.downloadAccessor.downloading)
             {
-                //await Task.Run(() => DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress);
-                DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
+                try
+                {
+                    
+                    if (CachedParameter.downloadAccessor.findingFileSize)
+                    {
+                        DownloadProgressText = "Determining Download Size";
+                    }
+                    else
+                    {
+                        DownloadProgressText = CachedParameter.downloadAccessor.clipsComplete + " / " + CachedParameter.downloadAccessor.totalClips + " Clips";
+                        DownloadProgress = 100.0 * (((long)CachedParameter.downloadAccessor.download.Progress.BytesReceived + CachedParameter.downloadAccessor.currentDownloadedBytes) / (double)CachedParameter.downloadAccessor.totalBytes);
+                    }
+                }
+                catch (Exception) { };
                 if (CachedParameter.downloadAccessor.downloadCanceled)
                 {
                     timer.Stop();
