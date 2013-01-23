@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.ViewManagement;
+using System.Threading;
 
 namespace HudlRT.ViewModels
 {
@@ -34,6 +35,8 @@ namespace HudlRT.ViewModels
         private List<CutupViewModel> CachedCutups;
 
         private Boolean downloading = false;
+
+        CancellationTokenSource cts = new CancellationTokenSource();
 
         private BindableCollection<GameViewModel> _schedule { get; set; }
         public BindableCollection<GameViewModel> Schedule
@@ -505,6 +508,27 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public void Cancel_Download()
+        {
+            if (!CachedParameter.downloadAccessor.downloading)
+            {
+                downloading = false; ;
+                DownloadButton_Visibility = Visibility.Visible;
+                ConfirmButton_Visibility = Visibility.Collapsed;
+                CancelButton_Visibility = Visibility.Collapsed;
+                foreach (CutupViewModel cutupVM in Cutups)
+                {
+                    cutupVM.CheckBox_Visibility = Visibility.Collapsed;
+                    cutupVM.CheckBox = false;
+                }
+            }
+            else
+            {
+                cts.Cancel();
+                DownloadProgress_Visibility = Visibility.Collapsed;
+            }
+        }
+
         public async void Confirm_Download()
         {
             List<Cutup> cutupList = new List<Cutup>();
@@ -521,7 +545,7 @@ namespace HudlRT.ViewModels
             ConfirmButton_Visibility = Visibility.Collapsed;
             DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
             timer.Start();
-            CachedParameter.downloadAccessor.DownloadCutups(cutupList);
+            CachedParameter.downloadAccessor.DownloadCutups(cutupList, cts.Token);
         }
 
         private async Task updateProgress()
@@ -715,105 +739,6 @@ namespace HudlRT.ViewModels
                     ConfirmButton_Visibility = Visibility.Visible;
                 }
             }
-        }
-
-        public void Cancel_Download()
-        {
-            if (!CachedParameter.downloadAccessor.downloading)
-            {
-                downloading = false; ;
-                DownloadButton_Visibility = Visibility.Visible;
-                ConfirmButton_Visibility = Visibility.Collapsed;
-                CancelButton_Visibility = Visibility.Collapsed;
-                foreach (CutupViewModel cutupVM in Cutups)
-                {
-                    cutupVM.CheckBox_Visibility = Visibility.Collapsed;
-                    cutupVM.CheckBox = false;
-                }
-            }
-            else
-            {
-                //cancel download process
-            }
-        }
-
-        private async Task<Downloads> GetDownloads()
-        {
-            var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
-            Downloads downloads = new Downloads();
-            foreach (StorageFolder folder in downloadFolders)
-            {
-                if (folder.Name.Contains(AppDataAccessor.GetUsername()))
-                {
-                    StorageFile model =  await folder.GetFileAsync("DownloadsModel");
-                    string text = await Windows.Storage.FileIO.ReadTextAsync(model);
-                    Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
-                    downloads.cutups.Add(savedCutup);
-                }
-            }
-            return downloads;
-        }
-
-        private async Task DownloadCutups(List<Cutup> cutups)
-        {
-
-            long totalSize = 0;
-            long currentDownloadedBytes = 0;
-            foreach (Cutup cut in cutups)
-            {
-                foreach (Clip c in cut.clips)
-                {
-                    foreach (Angle angle in c.angles)
-                    {
-                        var httpClient = new System.Net.Http.HttpClient();
-                        Uri uri = new Uri(angle.fileLocation);
-                        var httpRequestMessage = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Head, uri);
-                        var response = await httpClient.SendAsync(httpRequestMessage);
-                        var angleSize = response.Content.Headers.ContentLength;
-                        totalSize += (long)angleSize;
-                    }
-                }
-            }
-
-            foreach (Cutup cut in cutups)
-            {
-                var fileFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername() + cut.cutupId.ToString(), Windows.Storage.CreationCollisionOption.OpenIfExists);
-
-                StorageFile downloadModel = await fileFolder.CreateFileAsync("DownloadsModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
-                foreach (Clip c in cut.clips)
-                {
-                    foreach (Angle angle in c.angles)
-                    {
-                        try
-                        {
-                            var source = new Uri(angle.fileLocation);
-                            var files = await fileFolder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
-                            var file = files.FirstOrDefault(x => x.Name.Equals(angle.clipAngleId.ToString()));
-
-                            if (file == null)
-                            {
-                                //CutupId-ClipId-ClipAngleId
-                                var destinationFile = await fileFolder.CreateFileAsync(cut.cutupId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
-                                var downloader = new BackgroundDownloader();
-                                var download = downloader.CreateDownload(source, destinationFile);
-                                var downloadOperation = await download.StartAsync();
-                                //DownloadProgress = (download.Progress.BytesReceived / download.Progress.TotalBytesToReceive) * (100.0 / totalFiles) + (count * (100.0 / totalFiles));
-                                DownloadProgress = 100 * (((long)download.Progress.BytesReceived + currentDownloadedBytes) / (double)totalSize);
-                                file = (StorageFile)downloadOperation.ResultFile;
-                                angle.preloadFile = file.Path;
-                                angle.isPreloaded = true;
-                                currentDownloadedBytes += (long)download.Progress.BytesReceived;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                        }
-                    }
-                }
-                string updatedModel = JsonConvert.SerializeObject(cut);
-                await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
-            }
-
         }
 
         public void Downloads_Button()

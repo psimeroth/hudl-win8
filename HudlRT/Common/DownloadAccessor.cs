@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
 using HudlRT.ViewModels;
+using System.Threading;
 
 namespace HudlRT.Common
 {
@@ -34,31 +35,34 @@ namespace HudlRT.Common
         public Boolean downloadComplete = false;
         public Boolean downloading = false;
 
-        public async Task DownloadCutups(List<Cutup> cutups)
+        public async Task DownloadCutups(List<Cutup> cutups, CancellationToken ct)
         {
-            downloadComplete = false;
-            downloading = true;
-            long totalSize = 0;
-            long currentDownloadedBytes = 0;
-            long cutupTotalSize = 0;
-            foreach (Cutup cut in cutups)
-            {
-                cutupTotalSize = 0;
-                foreach (Clip c in cut.clips)
+            //await Task.Run(() => 
+            //{
+                downloadComplete = false;
+                downloading = true;
+                long totalSize = 0;
+                long currentDownloadedBytes = 0;
+                long cutupTotalSize = 0;
+                var httpClient = new System.Net.Http.HttpClient();
+                foreach (Cutup cut in cutups)
                 {
-                    foreach (Angle angle in c.angles)
+                    cutupTotalSize = 0;
+                    foreach (Clip c in cut.clips)
                     {
-                        var httpClient = new System.Net.Http.HttpClient();
-                        Uri uri = new Uri(angle.fileLocation);
-                        var httpRequestMessage = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Head, uri);
-                        var response = await httpClient.SendAsync(httpRequestMessage);
-                        var angleSize = response.Content.Headers.ContentLength;
-                        cutupTotalSize += (long)angleSize;
-                        totalSize += (long)angleSize;
+                        foreach (Angle angle in c.angles)
+                        {
+                            Uri uri = new Uri(angle.fileLocation);
+                            var httpRequestMessage = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Head, uri);
+                            var response = await httpClient.SendAsync(httpRequestMessage);
+                            var angleSize = response.Content.Headers.ContentLength;
+                            cutupTotalSize += (long)angleSize;
+                            totalSize += (long)angleSize;
+                        }
                     }
+                    cut.totalFileSize = cutupTotalSize;
                 }
-                cut.totalFileSize = cutupTotalSize;
-            }
+            //});
 
             foreach (Cutup cut in cutups)
             {
@@ -71,6 +75,14 @@ namespace HudlRT.Common
                     {
                         try
                         {
+                            if (ct.IsCancellationRequested)
+                            {
+                                await RemoveDownload(cut);
+                                downloadComplete = true;
+                                downloading = false;
+                                DownloadProgress = 0;
+                                return;
+                            }
                             var source = new Uri(angle.fileLocation);
                             var files = await fileFolder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
                             var file = files.FirstOrDefault(x => x.Name.Equals(angle.clipAngleId.ToString()));
