@@ -71,7 +71,7 @@ namespace HudlRT.Views
             videoMediaElement.ManipulationDelta += videoMediaElement_ManipulationDelta;
 
             gridHeaders.RenderTransform = this.dragTranslation;
-            Clips.RenderTransform = this.dragTranslation;
+            FilteredClips.RenderTransform = this.dragTranslation;
             gridScroll.ViewChanged += scrollHeaders;
             //gridHeaderScroll.ViewChanged += scrollGrid;
 
@@ -143,6 +143,10 @@ namespace HudlRT.Views
                     b.SetValue(Grid.ColumnProperty, i);
                     t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
                     t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                    
+                    t.Tag = i;
+                    t.PointerPressed += columnHeaderClick;
+
                     b.Child = t;
                     gridHeaders.Children.Add(b);
                 }
@@ -150,18 +154,43 @@ namespace HudlRT.Views
             template = template.Replace("@", columnDefinitions).Replace("%", rowText);
 
             var dt = (DataTemplate)XamlReader.Load(template);
-            Clips.ItemTemplate = dt;
+            FilteredClips.ItemTemplate = dt;
             //btnExpandGrid_Click(null, null);
 
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.listView = Clips;
-            Clips.SelectedIndex = 0;
+            vm.listView = FilteredClips;
+            vm.SortFilterPopupControl = SortFilterPopup;
+            FilteredClips.SelectedIndex = 0;
+        }
+
+        private void columnHeaderClick(object sender, PointerRoutedEventArgs e)
+        {
+            int id = (int) ((TextBlock)sender).Tag;
+
+            if (id != 0)
+            {
+                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                vm.PrepareSortFilterPopup(id);
+
+                if (!SortFilterPopup.IsOpen)
+                {
+                    RootPopupBorder.Width = 646;
+                    SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - 646;
+
+                    SortFilterPopup.IsOpen = true;
+                }
+            }
+        }
+
+        private void closeSettingsPopupClicked(object sender, RoutedEventArgs e)
+        {
+            if (SortFilterPopup.IsOpen) { SortFilterPopup.IsOpen = false; }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-
+            
             for (int i = gridHeaders.Children.Count() - 1; i >= 0; i--)
                 gridHeaders.Children.RemoveAt(i);
         }
@@ -250,7 +279,7 @@ namespace HudlRT.Views
             }
             else
             {
-                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 39);
+                gridScroll.ScrollToVerticalOffset((FilteredClips.SelectedIndex) * 39);
             }
         }
 
@@ -267,7 +296,7 @@ namespace HudlRT.Views
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
                 gridScroll.Visibility = Visibility.Collapsed;
-                Clips.UpdateLayout();
+                FilteredClips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaderScroll.Visibility = Visibility.Collapsed;
@@ -717,7 +746,7 @@ namespace HudlRT.Views
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
                 gridScroll.Visibility = Visibility.Collapsed;
-                Clips.UpdateLayout();
+                FilteredClips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaderScroll.Visibility = Visibility.Collapsed;

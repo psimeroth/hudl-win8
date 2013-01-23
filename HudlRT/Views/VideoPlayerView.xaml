@@ -30,6 +30,42 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
+        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="True">
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PaneThemeTransition />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+            <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" BorderThickness="2" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" x:Name="RootPopupBorder">
+                <ContentControl DataContext="{Binding SelectedFilter}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ColumnHeaderName}" FontSize="24.667" HorizontalAlignment="Center" />
+                        <RadioButton Content="Asc" IsChecked="{Binding IsAscendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 0)]"/>
+                        <RadioButton Content="Dsc" IsChecked="{Binding IsDescendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 1)]"/>
+                        <RadioButton Content="None" IsChecked="{Binding IsNoneChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 2)]"/>
+                        <ItemsControl  ItemsSource="{Binding FilterCriteria}" Grid.Column="1">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                       <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Margin="0,0,10,0" FontSize="16"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    
+                        <Button Content="Close" Click="closeSettingsPopupClicked" HorizontalAlignment="Center" />
+                        <Button Content="Apply Filter" HorizontalAlignment="Center" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]"/>
+                        <Button Content="Remove Filter" HorizontalAlignment="Center" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]"/>
+                    </StackPanel>
+                </ContentControl>
+            </Border>
+        </Popup>
+
         <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="55" />
@@ -97,13 +133,13 @@
                 </Grid.RowDefinitions>
                 <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Background="{StaticResource WhiteToClearGradient}">
                     <Border BorderBrush="Black" BorderThickness="0,0,0,2">
-                        <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False"
-                          ManipulationMode="All" >
+                        <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False" 
+                          ManipulationMode="All">
                         </Grid>
                     </Border>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollBarVisibility="Hidden" ZoomMode="Disabled" Grid.Row="1" Margin="0">
-                    <common:VideoPlayerListView x:Name="Clips"  HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
+                    <common:VideoPlayerListView x:Name="FilteredClips"  HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
                             ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True">
 
                     </common:VideoPlayerListView>
@@ -242,6 +278,8 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Foreground="White" FontSize="24" Padding="10,0,5,0" Grid.Column="0">
                     Angles:
@@ -255,11 +293,13 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Margin="0,0,10,0" FontSize="16" Foreground="White"/>
+                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Margin="0,0,10,0" FontSize="16" Foreground="White"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <Button Content="Filter" caliburn:Message.Attach="[Event Click] = [Action Filter()]" Grid.Column="2"/>
+                <Button Content="Remove Filter" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Grid.Column="3"/>
             </Grid>
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
