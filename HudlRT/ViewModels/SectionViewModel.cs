@@ -738,9 +738,22 @@ namespace HudlRT.ViewModels
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
             if (!DownloadMode)
             {
+                bool downloadfound = false;
                 ProgressRing_Visibility = Visibility.Visible;
                 Enabled_Boolean = false;
-                cutup = await GetClipsByCutup(cutup);
+                foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
+                {
+                    if (cVM.CutupId == cutup.CutupId)
+                    {
+                        downloadfound = true;
+                        cutup = cVM;
+                        break;
+                    }
+                }
+                if (!downloadfound)
+                {
+                    cutup = await GetClipsByCutup(cutup);
+                }
                 UpdateCachedParameter();
                 CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
                 CachedParameter.sectionViewCutupSelected = cutup;
