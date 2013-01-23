@@ -75,6 +75,28 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private string downloadedCutupSize;
+        public string DownloadedCutupSize
+        {
+            get { return downloadedCutupSize; }
+            set
+            {
+                downloadedCutupSize = value;
+                NotifyOfPropertyChange(() => DownloadedCutupSize);
+            }
+        }
+
+        private string downloadedCutupCount;
+        public string DownloadedCutupCount
+        {
+            get { return downloadedCutupCount; }
+            set
+            {
+                downloadedCutupCount = value;
+                NotifyOfPropertyChange(() => DownloadedCutupCount);
+            }
+        }
+
         private BindableCollection<Team> teams;
         public BindableCollection<Team> Teams
         {
@@ -196,7 +218,7 @@ namespace HudlRT.ViewModels
             base.OnDeactivate(close);
         }
 
-        protected override void OnActivate()
+        protected override async void OnActivate()
         {
             base.OnActivate();
             if (CachedParameter.isInitialized)
@@ -238,6 +260,18 @@ namespace HudlRT.ViewModels
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
+            if (CachedParameter.downloadedCutups == null)
+            {
+                await CachedParameter.downloadAccessor.GetDownloads();
+            }
+            DownloadedCutupCount = CachedParameter.downloadedCutups.Count + " Cutups";
+            long totalSize = 0;
+            foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
+            {
+                totalSize += cVM.TotalCutupSize;
+            }
+            DownloadedCutupSize = (totalSize / 1048576) + " MB";
+
         }
 
         private async Task<ClipResponse> LoadLastViewedCutup()

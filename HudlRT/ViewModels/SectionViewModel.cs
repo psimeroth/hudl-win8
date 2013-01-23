@@ -281,7 +281,7 @@ namespace HudlRT.ViewModels
 
 
             DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
-            updateProgress();
+            UpdateProgressBar();
             ConfirmButton_Visibility = Visibility.Collapsed;
             if (CachedParameter.downloadAccessor.downloading)
             {
@@ -443,6 +443,18 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public void UpdateDownloadsCheckBox()
+        {
+            if (DownloadButton_Visibility == Visibility.Collapsed)
+            {
+                foreach (CutupViewModel cutupVM in Cutups)
+                {
+                    cutupVM.CheckBox_Visibility = Visibility.Visible;
+                    cutupVM.CheckBox = false;
+                }
+            }
+        }
+
         public async Task GetCutupsByCategory(CategoryViewModel category)
         {
             Cutups = null;
@@ -458,6 +470,7 @@ namespace HudlRT.ViewModels
                     Task<ClipResponse> tempResponse = LoadCutup(CutupViewModel.FromCutup(cutup));
                     CachedCutupCalls.TryAdd(cutup.cutupId, tempResponse);
                 }
+                UpdateDownloadsCheckBox();
                 //Cutups = cuts;
             }
             var currentViewState = ApplicationView.Value;
@@ -525,8 +538,10 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                cts.Cancel();
                 DownloadProgress_Visibility = Visibility.Collapsed;
+                CancelButton_Visibility = Visibility.Collapsed;
+                DownloadButton_Visibility = Visibility.Visible;
+                cts.Cancel();  
             }
         }
 
@@ -549,7 +564,7 @@ namespace HudlRT.ViewModels
             CachedParameter.downloadAccessor.DownloadCutups(cutupList, cts.Token);
         }
 
-        private async Task updateProgress()
+        private async Task UpdateProgressBar()
         {
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
@@ -663,6 +678,10 @@ namespace HudlRT.ViewModels
         public void GoBack()
         {
             UpdateCachedParameter();
+            foreach (CutupViewModel cutupVM in Cutups)
+            {
+                cutupVM.CheckBox_Visibility = Visibility.Collapsed;
+            }
             navigationService.GoBack();
         }
 

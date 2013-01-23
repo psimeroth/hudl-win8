@@ -36,6 +36,8 @@ namespace HudlRT.Parameters
 
         public static DownloadAccessor downloadAccessor = new DownloadAccessor();
 
+        public static BindableCollection<CutupViewModel> downloadedCutups { get; set; }
+
 
         public static void resetCache(){
             isInitialized = false;
@@ -53,7 +55,7 @@ namespace HudlRT.Parameters
             sectionViewCutupSelected = null;
             videoPageClips = null;
             selectedCutup = null;
-
+            downloadedCutups = null;
         }
     }
 }

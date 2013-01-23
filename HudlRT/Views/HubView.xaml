@@ -175,8 +175,8 @@
                                 <RowDefinition Height="2*"/>
                             </Grid.RowDefinitions>
                             <TextBlock VerticalAlignment="Center" Margin="0,0,0,10" Grid.Row="0"> <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed</TextBlock>
-                            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
-                            <TextBlock Grid.Row="2" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
+                            <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
+                            <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
                             <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" Canvas.ZIndex="1" />
                         </Grid>
                     </Button.Content>
@@ -191,8 +191,8 @@
                                 <RowDefinition Height="2*"/>
                             </Grid.RowDefinitions>
                             <TextBlock VerticalAlignment="Center" Margin="0,0,0,10" Grid.Row="0"> <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads </TextBlock>
-                            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="18" Text="3 Playlists"/>
-                            <TextBlock Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="18" Text="320 MB"/>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="18" Text="{Binding DownloadedCutupCount}"/>
+                            <TextBlock Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="18" Text="{Binding DownloadedCutupSize}"/>
                         </Grid>
                     </Button.Content>
                 </Button>

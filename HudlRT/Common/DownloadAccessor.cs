@@ -35,34 +35,58 @@ namespace HudlRT.Common
         public Boolean downloadComplete = false;
         public Boolean downloading = false;
 
+        public async Task<BindableCollection<CutupViewModel>> GetDownloads()
+        {
+            BindableCollection<CutupViewModel> cutups = new BindableCollection<CutupViewModel>();
+            var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
+            Downloads downloads = new Downloads();
+            foreach (StorageFolder folder in downloadFolders)
+            {
+                if (folder.Name.Contains(AppDataAccessor.GetUsername()))
+                {
+                    StorageFile model = await folder.GetFileAsync("DownloadsModel");
+                    try
+                    {
+                        string text = await Windows.Storage.FileIO.ReadTextAsync(model);
+                        Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
+                        CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);
+                        cutupVM.Clips = savedCutup.clips;
+                        cutupVM.TotalCutupSize = savedCutup.totalFileSize;
+                        cutupVM.DisplayColumns = savedCutup.displayColumns;
+                        cutups.Add(cutupVM);
+                    }
+                    catch (Exception) { }
+                }
+            }
+            CachedParameter.downloadedCutups = cutups;
+            return cutups;
+        }
+
         public async Task DownloadCutups(List<Cutup> cutups, CancellationToken ct)
         {
-            //await Task.Run(() => 
-            //{
-                downloadComplete = false;
-                downloading = true;
-                long totalSize = 0;
-                long currentDownloadedBytes = 0;
-                long cutupTotalSize = 0;
-                var httpClient = new System.Net.Http.HttpClient();
-                foreach (Cutup cut in cutups)
+            downloadComplete = false;
+            downloading = true;
+            long totalSize = 0;
+            long currentDownloadedBytes = 0;
+            long cutupTotalSize = 0;
+            var httpClient = new System.Net.Http.HttpClient();
+            foreach (Cutup cut in cutups)
+            {
+                cutupTotalSize = 0;
+                foreach (Clip c in cut.clips)
                 {
-                    cutupTotalSize = 0;
-                    foreach (Clip c in cut.clips)
+                    foreach (Angle angle in c.angles)
                     {
-                        foreach (Angle angle in c.angles)
-                        {
-                            Uri uri = new Uri(angle.fileLocation);
-                            var httpRequestMessage = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Head, uri);
-                            var response = await httpClient.SendAsync(httpRequestMessage);
-                            var angleSize = response.Content.Headers.ContentLength;
-                            cutupTotalSize += (long)angleSize;
-                            totalSize += (long)angleSize;
-                        }
+                        Uri uri = new Uri(angle.fileLocation);
+                        var httpRequestMessage = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Head, uri);
+                        var response = await httpClient.SendAsync(httpRequestMessage);
+                        var angleSize = response.Content.Headers.ContentLength;
+                        cutupTotalSize += (long)angleSize;
+                        totalSize += (long)angleSize;
                     }
-                    cut.totalFileSize = cutupTotalSize;
                 }
-            //});
+                cut.totalFileSize = cutupTotalSize;
+            }
 
             foreach (Cutup cut in cutups)
             {

@@ -219,40 +219,18 @@ namespace HudlRT.ViewModels
 
         private async Task GetDownloads()
         {
-            Cutups = new BindableCollection<CutupViewModel>();
-            var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
-            Downloads downloads = new Downloads();
-            var totalClips = 0;
-            foreach (StorageFolder folder in downloadFolders)
-            {
-                if (folder.Name.Contains(AppDataAccessor.GetUsername()))
-                {
-                    StorageFile model = await folder.GetFileAsync("DownloadsModel");
-                    try
-                    {
-                        string text = await Windows.Storage.FileIO.ReadTextAsync(model);
-                        Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
-                        CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);
-                        cutupVM.Clips = savedCutup.clips;
-                        cutupVM.TotalCutupSize = savedCutup.totalFileSize;
-                        cutupVM.DisplayColumns = savedCutup.displayColumns;
-                        Cutups.Add(cutupVM);
-                        totalClips += cutupVM.ClipCount;
-                    }
-                    catch (Exception) { }
-                }
-            }
+            long totalsize = 0;
+            Cutups = await CachedParameter.downloadAccessor.GetDownloads();
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
             }
-            long totalsize = 0;
-            foreach (CutupViewModel c in Cutups)
+            foreach (CutupViewModel cVM in Cutups)
             {
-                totalsize += c.TotalCutupSize;
+                totalsize += cVM.TotalCutupSize;
             }
             double megabytes = (totalsize / (1048576));
-            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + Cutups.Count + " | Size: " + megabytes + " MB";
         }
 
         private async Task RemoveDownload(CutupViewModel cutup)
