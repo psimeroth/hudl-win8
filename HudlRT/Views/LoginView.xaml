@@ -23,12 +23,8 @@
             </Storyboard>
         </Grid.Resources>
         
-        <!--Just a stack panel that spans the page to make the background fade in-->
-        <StackPanel x:Name="BackgroundGrid"  Opacity="0">
-            <StackPanel.Background>
-                <ImageBrush ImageSource="ms-appx:///Assets/medium_BG_Tiled.png"/>
-            </StackPanel.Background>
-        </StackPanel>
+        <!--Just a grid that spans the page to make the background fade in-->
+        <Grid x:Name="BackgroundGrid"  Background="{StaticResource HudlDarkerGray}" Opacity="0"/>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
             <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />

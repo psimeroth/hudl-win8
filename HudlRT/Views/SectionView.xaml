@@ -19,16 +19,12 @@
     </common:LayoutAwarePage.Resources>
 
     <!--Actual Layout-->
-    <Grid x:Name="RootGrid" caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]">
+    <Grid x:Name="RootGrid" caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]" Background="{StaticResource HudlDarkerGray}">
         <Grid.Resources>
             <Storyboard x:Name="FadeOutCol">
                 <DoubleAnimation Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="0" />
             </Storyboard>
         </Grid.Resources>
-
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
      
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
@@ -38,23 +34,20 @@
 
         <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="65"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
+            <Grid x:Name="TopTitleGrid" Background="{StaticResource HudlDarkGray}">
                 <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-                <Grid Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
-                <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlBlackButton}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
-                    <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
+                <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlHeaderGray}" Width="250" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Border BorderBrush="Black" BorderThickness="1,0,1,1"/>
                 </Grid>
-                <Grid Height="55" x:Name="LogoGrid">
-                    <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
-                    <Image x:Name="Logo" VerticalAlignment="Center" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="110,0,0,0" HorizontalAlignment="Left"/>
-                </Grid>
+                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
+                <Image x:Name="Logo" VerticalAlignment="Center" Width="150" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="120,0,0,0" HorizontalAlignment="Left"/>
 
-                <Grid x:Name="ComboBoxGrid" MinWidth ="700" Margin="0,0,14,0" HorizontalAlignment="Right">
-                    <ComboBox x:Name="SeasonsDropDown" MinWidth="375" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
+                <Grid x:Name="ComboBoxGrid" MinWidth ="700" Margin="0,0,15,0" HorizontalAlignment="Right">
+                    <ComboBox x:Name="SeasonsDropDown" MinWidth="700" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" BorderBrush="#00000000" Background="#00000000" Foreground="White" DropDownClosed="ResetComboBoxColor">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
@@ -65,7 +58,7 @@
             </Grid>
             <!--End TopTitleGrid-->
 
-            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,10,20,20" Visibility="{Binding ColVisibility}">
+            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,20,20,20" Visibility="{Binding ColVisibility}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -82,7 +75,9 @@
                           caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
                           PointerPressed="ListViewItemPointerPressed" 
                           ItemContainerStyle="{StaticResource Section_ListViewItemStyle_GameList}" 
-                          Style="{StaticResource Section_ListViewStyle_Standard}"/>
+                          Style="{StaticResource Section_ListViewStyle_Standard}"
+                          Visibility="{Binding ScheduleVisibility}"/>
+                <ProgressRing Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ScheduleProgressRing_Visibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}"/>
 
                 <Grid x:Name="rightGrid" Grid.Column="1" Margin="10,0,0,0">
                     <Grid.RowDefinitions>
@@ -90,13 +85,16 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid x:Name="Header" Grid.Row="0" Grid.Column="1">
-                        <Border BorderThickness="0,0,0,2" Margin="0,0,0,3" BorderBrush="{StaticResource HudlLightBlue}"/>
+                        <ProgressRing HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HeaderProgressRing_Visibility}" IsActive="True" Height="60" Width="60" Foreground="{StaticResource HudlLightBlue}"/>
+                        <Border BorderThickness="0,0,0,2" Margin="0,0,0,3" BorderBrush="{StaticResource HudlBlue}"/>
                             <GridView Grid.Row="0" x:Name="Categories" Margin="0" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
-                                        PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"/>
+                                        PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"
+                                      Visibility="{Binding HeadersVisibility}"/>
                     </Grid>
-                    
+
+                    <ProgressRing Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CutupsProgressRing_Visibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}"/>
                     <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
-                              ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected">
+                              ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected" Visibility="{Binding CutupsVisibility}">
                     </ListView>
                     <TextBlock Text="No entries for this week" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Section_TextBlockStyle_Title}" Visibility="{Binding Visibility}" TextWrapping="Wrap" FontSize="40" TextAlignment="Center" ></TextBlock>
                 </Grid>
