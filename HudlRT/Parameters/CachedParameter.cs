@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HudlRT.Parameters
@@ -37,6 +38,8 @@ namespace HudlRT.Parameters
         public static DownloadAccessor downloadAccessor = new DownloadAccessor();
 
         public static BindableCollection<CutupViewModel> downloadedCutups { get; set; }
+
+        public static CancellationTokenSource cts = new CancellationTokenSource();
 
 
         public static void resetCache(){

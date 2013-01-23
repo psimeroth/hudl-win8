@@ -34,6 +34,7 @@ namespace HudlRT.Common
 
         public Boolean downloadComplete = false;
         public Boolean downloading = false;
+        public Boolean downloadCanceled = false;
 
         public async Task<BindableCollection<CutupViewModel>> GetDownloads()
         {
@@ -66,6 +67,7 @@ namespace HudlRT.Common
         {
             downloadComplete = false;
             downloading = true;
+            downloadCanceled = false;
             long totalSize = 0;
             long currentDownloadedBytes = 0;
             long cutupTotalSize = 0;
@@ -102,8 +104,9 @@ namespace HudlRT.Common
                             if (ct.IsCancellationRequested)
                             {
                                 await RemoveDownload(cut);
-                                downloadComplete = true;
+                                downloadComplete = false;
                                 downloading = false;
+                                downloadCanceled = true;
                                 DownloadProgress = 0;
                                 return;
                             }
@@ -135,9 +138,11 @@ namespace HudlRT.Common
                 }
                 string updatedModel = JsonConvert.SerializeObject(cut);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
+                CachedParameter.downloadedCutups.Add(CutupViewModel.FromCutup(cut));
             }
             downloadComplete = true;
             downloading = false;
+            DownloadProgress = 0;
         }
 
         private async Task RemoveDownload(Cutup cutup)

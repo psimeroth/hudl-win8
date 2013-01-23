@@ -213,7 +213,7 @@ namespace HudlRT.ViewModels
                 totalsize += c.TotalCutupSize;
             }
             long megabytes = (totalsize / 1048576);
-            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes;
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
 
