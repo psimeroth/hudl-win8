@@ -24,7 +24,7 @@ namespace HudlRT.ViewModels
         private const int SNAPPED_FONT_SIZE = 24;
         private const int FONT_SIZE = 28;
 
-        private DispatcherTimer timer;
+        private DispatcherTimer timer = new DispatcherTimer();
 
         private const Visibility SNAPPED_VISIBILITY = Visibility.Collapsed;
         private const Visibility FULL_VISIBILITY = Visibility.Visible;
@@ -34,7 +34,7 @@ namespace HudlRT.ViewModels
         private ConcurrentDictionary<string, Task<ClipResponse>> CachedCutupCalls;
         private List<CutupViewModel> CachedCutups;
 
-        private Boolean downloading = false;
+        private Boolean DownloadMode = false;
 
         //CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -214,6 +214,7 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+            DownloadButton_Visibility = Visibility.Collapsed;
             // Get the team and season ID
             string teamID;
             string seasonID;
@@ -279,15 +280,11 @@ namespace HudlRT.ViewModels
                 Visibility = Visibility.Visible;
             }
 
-
-            DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
-            UpdateProgressBar();
-            ConfirmButton_Visibility = Visibility.Collapsed;
             if (CachedParameter.downloadAccessor.downloading)
             {
+                StartTimer();
                 DownloadProgress_Visibility = Visibility.Visible;
                 CancelButton_Visibility = Visibility.Visible;
-                DownloadButton_Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -295,6 +292,7 @@ namespace HudlRT.ViewModels
                 CancelButton_Visibility = Visibility.Collapsed;
             }
             ProgressRing_Visibility = Visibility.Collapsed;
+            ConfirmButton_Visibility = Visibility.Collapsed;
             Enabled_Boolean = true;
         }
 
@@ -374,6 +372,8 @@ namespace HudlRT.ViewModels
                     Categories = CachedParameter.sectionViewCategories;
                     SelectedCategory = CachedParameter.sectionViewCategorySelected;
                     Cutups = CachedParameter.sectionViewCutups;
+                    MarkDownloads();
+                    SetDownloadButtonVisibility();
                 }
                 else
                 {
@@ -443,32 +443,84 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void UpdateDownloadsCheckBox()
+        //public void UpdateDownloadsCheckBox()
+        //{
+        //    bool cutupDownloaded = false;
+        //    foreach (CutupViewModel cutupVM in Cutups)
+        //    {
+        //        cutupDownloaded = false;
+        //        foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
+        //        {
+        //            if (downloadedCutup.CutupId == cutupVM.CutupId)
+        //            {
+        //                cutupDownloaded = true;
+        //                break;
+        //            }
+        //        }
+        //        if (cutupDownloaded)
+        //        {
+        //            cutupVM.DownloadedVisibility = Visibility.Visible;
+        //        }
+        //        else
+        //        {
+        //            if (downloading)
+        //            {
+        //                cutupVM.CheckBox_Visibility = Visibility.Visible;
+        //            }
+        //        }
+        //        cutupVM.CheckBox = false;
+        //    }
+        //}
+
+        public void MarkDownloads()
         {
-            bool cutupDownloaded = false;
+            bool downloadFound = false;
             foreach (CutupViewModel cutupVM in Cutups)
             {
-                cutupDownloaded = false;
+                downloadFound = false;
                 foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
                 {
                     if (downloadedCutup.CutupId == cutupVM.CutupId)
                     {
-                        cutupDownloaded = true;
+                        cutupVM.DownloadedVisibility = Visibility.Visible;
+                        cutupVM.CheckBox = false;
+                        downloadFound = true;
                         break;
                     }
                 }
-                if (cutupDownloaded)
+                if (!downloadFound)
                 {
-                    cutupVM.DownloadedVisibility = Visibility.Visible;
+                    cutupVM.DownloadedVisibility = Visibility.Collapsed;
                 }
-                else
+            }
+        }
+
+        public void ShowCheckBoxes()
+        {
+            if (Cutups != null)
+            {
+                foreach (CutupViewModel cutupViewModel in Cutups)
                 {
-                    if (downloading)
+                    if (cutupViewModel.DownloadedVisibility == Visibility.Collapsed)//faster than checking if its in CachedParameter.downloadedCutups
                     {
-                        cutupVM.CheckBox_Visibility = Visibility.Visible;
+                        cutupViewModel.CheckBox_Visibility = Visibility.Visible;
                     }
                 }
-                cutupVM.CheckBox = false;
+            }
+        }
+
+        public void HideCheckBoxes()
+        {
+            if (Cutups != null)
+            {
+                foreach (CutupViewModel cutupViewModel in Cutups)
+                {
+                    if (cutupViewModel.CheckBox_Visibility == Visibility.Visible)//faster than checking if its in CachedParameter.downloadedCutups
+                    {
+                        cutupViewModel.CheckBox_Visibility = Visibility.Collapsed;
+                        cutupViewModel.CheckBox = false;
+                    }
+                }
             }
         }
 
@@ -486,7 +538,8 @@ namespace HudlRT.ViewModels
                     Task<ClipResponse> tempResponse = LoadCutup(CutupViewModel.FromCutup(cutup));
                     CachedCutupCalls.TryAdd(cutup.cutupId, tempResponse);
                 }
-                UpdateDownloadsCheckBox();
+                MarkDownloads();
+                SetDownloadButtonVisibility();
             }
             var currentViewState = ApplicationView.Value;
             if (currentViewState == ApplicationViewState.Snapped)
@@ -538,24 +591,47 @@ namespace HudlRT.ViewModels
 
         public void Cancel_Download()
         {
-            if (!CachedParameter.downloadAccessor.downloading)
+            ExitDownloadMode();
+            if (CachedParameter.downloadAccessor.downloading)
             {
-                downloading = false; ;
-                DownloadButton_Visibility = Visibility.Visible;
-                ConfirmButton_Visibility = Visibility.Collapsed;
-                CancelButton_Visibility = Visibility.Collapsed;
+                CachedParameter.cts.Cancel();  
+            }
+        }
+
+        public void ExitDownloadMode()
+        {
+            DownloadMode = false;
+            ConfirmButton_Visibility = Visibility.Collapsed;
+            DownloadProgress_Visibility = Visibility.Collapsed;
+            CancelButton_Visibility = Visibility.Collapsed;
+            HideCheckBoxes();
+            SetDownloadButtonVisibility();   
+        }
+
+        public void SetDownloadButtonVisibility()
+        {
+            if (Cutups != null)
+            {
+                int downloadedCount = 0;
                 foreach (CutupViewModel cutupVM in Cutups)
                 {
-                    cutupVM.CheckBox_Visibility = Visibility.Collapsed;
-                    cutupVM.CheckBox = false;
+                    foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
+                    {
+                        if (downloadedCutup.CutupId == cutupVM.CutupId)
+                        {
+                            downloadedCount++;
+                            break;
+                        }
+                    }
                 }
-            }
-            else
-            {
-                DownloadProgress_Visibility = Visibility.Collapsed;
-                CancelButton_Visibility = Visibility.Collapsed;
-                DownloadButton_Visibility = Visibility.Visible;
-                CachedParameter.cts.Cancel();  
+                if (downloadedCount == Cutups.Count)
+                {
+                    DownloadButton_Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    DownloadButton_Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -574,12 +650,12 @@ namespace HudlRT.ViewModels
             DownloadProgress_Visibility = Visibility.Visible;
             ConfirmButton_Visibility = Visibility.Collapsed;
             DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
-            timer.Start();
+            StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
             CachedParameter.downloadAccessor.DownloadCutups(cutupList, CachedParameter.cts.Token);
         }
 
-        private async Task UpdateProgressBar()
+        private async Task StartTimer()
         {
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
@@ -598,12 +674,12 @@ namespace HudlRT.ViewModels
                     timer.Stop();
                 }
             }
-            else
+            else//when the download completes
             {
                 DownloadProgress = 100;
                 timer.Stop();
-                UpdateDownloadsCheckBox();
-                downloading = false;
+                MarkDownloads();
+                ExitDownloadMode();
             }
         }
 
@@ -615,6 +691,7 @@ namespace HudlRT.ViewModels
                 SelectedGame = game;
                 ListView x = (ListView)eventArgs.OriginalSource;
                 x.SelectedItem = game;
+
                 Cutups = null;
                 foreach (var g in Schedule.ToList())
                 {
@@ -631,10 +708,10 @@ namespace HudlRT.ViewModels
                     Categories = null;
                 }
 
-                //DownloadButton_Visibility = Visibility.Visible;
-                //CancelButton_Visibility = Visibility.Collapsed;
-                //ConfirmButton_Visibility = Visibility.Collapsed;
-                //Cancel_Download();
+                if (Cutups != null)
+                {
+                    ExitDownloadMode();
+                }
             }
         }
 
@@ -652,12 +729,13 @@ namespace HudlRT.ViewModels
                 SelectedCategory = category;
                 GetCutupsByCategory(category);
             }
+            ExitDownloadMode();
         }
 
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            if (!downloading)
+            if (!DownloadMode)
             {
                 ProgressRing_Visibility = Visibility.Visible;
                 Enabled_Boolean = false;
@@ -707,11 +785,7 @@ namespace HudlRT.ViewModels
         public void GoBack()
         {
             UpdateCachedParameter();
-            foreach (CutupViewModel cutupVM in Cutups)
-            {
-                cutupVM.CheckBox_Visibility = Visibility.Collapsed;
-                cutupVM.DownloadedVisibility = Visibility.Collapsed;
-            }
+            HideCheckBoxes();
             navigationService.GoBack();
         }
 
@@ -778,30 +852,16 @@ namespace HudlRT.ViewModels
 
         public void Download_Playlists()
         {
-            downloading = true;
+            DownloadMode = true;
             DownloadButton_Visibility = Visibility.Collapsed;
             CancelButton_Visibility = Visibility.Visible;
-            foreach (CutupViewModel cutupVM in Cutups)
-            {
-                UpdateDownloadsCheckBox();
-                if (cutupVM.CheckBox)
-                {
-                    ConfirmButton_Visibility = Visibility.Visible;
-                }
-            }
+            ShowCheckBoxes();
         }
 
         public void Downloads_Button()
         {
             UpdateCachedParameter();
-            if (Cutups != null)
-            {
-                foreach (CutupViewModel cutupVM in Cutups)
-                {
-                    cutupVM.CheckBox_Visibility = Visibility.Collapsed;
-                    cutupVM.DownloadedVisibility = Visibility.Collapsed;
-                }
-            }
+            HideCheckBoxes();
             navigationService.NavigateToViewModel<DownloadsViewModel>();
         }
 
