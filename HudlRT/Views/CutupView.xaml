@@ -25,6 +25,12 @@
                 <ScaleTransform ScaleX="2" ScaleY="2"/>
             </CheckBox.RenderTransform>
         </CheckBox>
+        <TextBlock Grid.Column="2" Margin="-15,30,0,0" Visibility="{Binding DownloadedVisibility}">
+            <Run FontFamily="Segoe UI Symbol" Text="&#xE001;" Foreground="{StaticResource HudlLightGray}"/>
+            <TextBlock.RenderTransform>
+                <ScaleTransform ScaleX="4" ScaleY="4"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
         <Image Source="ms-appx:///Assets/selectArrow.png" Height="100" Grid.Column="3" VerticalAlignment="Center" Margin="0,0,20,0" HorizontalAlignment="Right"/>
     </Grid>
 </UserControl>

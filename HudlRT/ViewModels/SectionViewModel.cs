@@ -519,6 +519,7 @@ namespace HudlRT.ViewModels
                 foreach (CutupViewModel cutupVM in Cutups)
                 {
                     cutupVM.CheckBox_Visibility = Visibility.Collapsed;
+                    cutupVM.DownloadedVisibility = Visibility.Collapsed;
                     cutupVM.CheckBox = false;
                 }
             }
@@ -733,7 +734,11 @@ namespace HudlRT.ViewModels
             CancelButton_Visibility = Visibility.Visible;
             foreach (CutupViewModel cutupVM in Cutups)
             {
-                cutupVM.CheckBox_Visibility = Visibility.Visible;
+                //check cached parameter for downloads
+                //if already downloaded
+                    cutupVM.DownloadedVisibility = Visibility.Visible;
+                //else
+                    cutupVM.CheckBox_Visibility = Visibility.Visible;
                 if (cutupVM.CheckBox)
                 {
                     ConfirmButton_Visibility = Visibility.Visible;

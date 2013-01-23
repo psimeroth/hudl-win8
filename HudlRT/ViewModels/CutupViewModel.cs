@@ -33,6 +33,7 @@ namespace HudlRT.ViewModels
         private GridLength _width { get; set; }
         private double _fontSize { get; set; }
         private Boolean _checkbox { get; set; }
+        private Visibility _downloadedVisibility { get; set; }
 
         private Visibility _checkbox_visibility { get; set; }
 
@@ -66,8 +67,19 @@ namespace HudlRT.ViewModels
             cutup._width = new GridLength(180);
             cutup._fontSize = FONT_SIZE;
             cutup._checkbox_visibility = Visibility.Collapsed;
+            cutup._downloadedVisibility = Visibility.Collapsed;
             return cutup;
         }
+
+        public Visibility DownloadedVisibility
+        {
+            get { return _downloadedVisibility; }
+            set
+            {
+                _downloadedVisibility = value;
+                NotifyOfPropertyChange(() => DownloadedVisibility);
+            }
+        } 
 
         public Boolean CheckBox
         {
