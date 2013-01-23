@@ -216,10 +216,6 @@ namespace HudlRT.Models
                 {
                     clip.angles.Add(a);
                 }
-                else
-                {
-                    return null;
-                }
             }
             return clip;
         }
