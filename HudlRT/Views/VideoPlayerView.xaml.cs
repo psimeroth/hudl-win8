@@ -38,7 +38,6 @@ namespace HudlRT.Views
 
         private Size _previousVideoContainerSize = new Size();
         private Size _previousVideoSize = new Size();
-        private TextBlock headerText;
         private string _rootNamespace;
         private Brush background;
         public string RootNamespace
@@ -163,12 +162,18 @@ namespace HudlRT.Views
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             FilteredClips.SelectedIndex = 0;
+
+            List<TextBlock> cHeaders = new List<TextBlock>();
+            foreach (Border x in gridHeaders.Children)
+            {
+                cHeaders.Add((TextBlock) x.Child);
+            }
+            vm.ColumnHeaderTextBlocks = cHeaders;
         }
 
         private void columnHeaderClick(object sender, PointerRoutedEventArgs e)
         {
             int id = (int) ((TextBlock)sender).Tag;
-            headerText = (TextBlock)sender;
 
             if (id != 0)
             {
@@ -183,23 +188,6 @@ namespace HudlRT.Views
                     SortFilterPopup.IsOpen = true;
                 }
             }
-        }
-
-        private void HighlightHeaderText(object sender, RoutedEventArgs e)
-        {
-            headerText.Foreground = (Brush)Application.Current.Resources["HudlLightBlue"];
-            /*if ((bool)AscBtn.IsChecked)
-            {
-                string symbol = "\uE010";
-                headerText.FontFamily = new FontFamily("Segoe UI Symbol");
-                headerText.Text += symbol;
-                
-            }*/
-        }
-
-        private void RestoreHeaderText(object sender, RoutedEventArgs e)
-        {
-            headerText.Foreground = (Brush)Application.Current.Resources["HudlOrange"];
         }
 
         private void closeSettingsPopupClicked(object sender, RoutedEventArgs e)

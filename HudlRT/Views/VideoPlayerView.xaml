@@ -129,8 +129,8 @@
                         <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="2" />
                         <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" >
-                                <Button Content="Apply Filter" HorizontalAlignment="Center" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" Click="HighlightHeaderText" />
-                                <Button Content="Remove Filter" HorizontalAlignment="Center" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Click="RestoreHeaderText"/>
+                                <Button Content="Apply Filter" HorizontalAlignment="Center" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]"/>
+                                <Button Content="Remove Filter" HorizontalAlignment="Center" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]"/>
                             </StackPanel>
                             <Button Content="Close" Click="closeSettingsPopupClicked" HorizontalAlignment="Center" />
                         </StackPanel>

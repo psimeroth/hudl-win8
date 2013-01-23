@@ -119,6 +119,7 @@ namespace HudlRT.ViewModels
         private CancellationToken addClipsToGridCT { get; set; }
         private CancellationTokenSource preloadCTS { get; set; }
         private CancellationToken preloadCT { get; set; }
+        public List<TextBlock> ColumnHeaderTextBlocks { get; set; }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -400,6 +401,8 @@ namespace HudlRT.ViewModels
         {
             if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Count() > 0)
             {
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
+                
                 List<Clip> newFilteredClips = new List<Clip>();
                 List<Clip> currentFilteredClips;
 
@@ -424,33 +427,26 @@ namespace HudlRT.ViewModels
                     newFilteredClips.AddRange(currentFilteredClips);
                 }
 
-                FilterViewModel sortFilter;
+                FilterViewModel currentSortFilter = FiltersList.Where(f => f.sortType != SortType.None).FirstOrDefault();
                 if (SelectedFilter.sortType == SortType.Ascending || SelectedFilter.sortType == SortType.Descending)
                 {
-                    List<FilterViewModel> sortOnlyFilters = new List<FilterViewModel>();
-                    foreach (FilterViewModel filter in FiltersList)
+                    if (currentSortFilter != null)
                     {
-                        if (filter.FilterCriteria.Where(c => c.IsChecked).Count() == 0)
+                        if (currentSortFilter.FilterCriteria.Where(c => c.IsChecked).Count() == 0)
                         {
-                            sortOnlyFilters.Add(filter);
+                            ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+                            FiltersList.Remove(currentSortFilter);
                         }
                         else
                         {
-                            filter.setSortType(SortType.None);
+                            currentSortFilter.setSortType(SortType.None);
                         }
                     }
-                    foreach (FilterViewModel filter in sortOnlyFilters)
-                    {
-                        FiltersList.Remove(filter);
-                    }
-                    sortFilter = SelectedFilter;
-                }
-                else
-                {
-                    sortFilter = FiltersList.Where(f => f.sortType != SortType.None).FirstOrDefault();
+
+                    currentSortFilter = SelectedFilter;
                 }
 
-                sortClips(ref newFilteredClips, sortFilter);
+                sortClips(ref newFilteredClips, currentSortFilter);
                 FiltersList.Add(SelectedFilter);
                 applyFilter(newFilteredClips);
             }   
@@ -458,6 +454,7 @@ namespace HudlRT.ViewModels
 
         public void RemoveSelectedFilter()
         {
+            ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
             List<Clip> clips = removeFilter();
             sortClips(ref clips, FiltersList.Where(f => f.sortType != SortType.None).FirstOrDefault());
             applyFilter(clips);   
