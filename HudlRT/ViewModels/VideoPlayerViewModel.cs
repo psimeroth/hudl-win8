@@ -401,7 +401,7 @@ namespace HudlRT.ViewModels
 
         public void ApplySelectedFilter()
         {
-            if (addClipsToGridFinished)
+            if (addClipsToGridFinished && (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Count() > 0))
             {
                 List<Clip> newFilteredClips = new List<Clip>();
                 List<Clip> currentFilteredClips;
