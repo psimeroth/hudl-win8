@@ -38,6 +38,7 @@ namespace HudlRT.Views
 
         private Size _previousVideoContainerSize = new Size();
         private Size _previousVideoSize = new Size();
+        private TextBlock headerText;
         private string _rootNamespace;
         private Brush background;
         public string RootNamespace
@@ -134,7 +135,7 @@ namespace HudlRT.Views
                     {
                         columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
                     }
-                    rowText = rowText + @"<TextBlock  Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
+                    rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                     Border b = new Border();
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
                     b.BorderThickness = new Thickness(0, 0, 1, 0);
@@ -167,6 +168,7 @@ namespace HudlRT.Views
         private void columnHeaderClick(object sender, PointerRoutedEventArgs e)
         {
             int id = (int) ((TextBlock)sender).Tag;
+            headerText = (TextBlock)sender;
 
             if (id != 0)
             {
@@ -181,6 +183,23 @@ namespace HudlRT.Views
                     SortFilterPopup.IsOpen = true;
                 }
             }
+        }
+
+        private void HighlightHeaderText(object sender, RoutedEventArgs e)
+        {
+            headerText.Foreground = (Brush)Application.Current.Resources["HudlLightBlue"];
+            /*if ((bool)AscBtn.IsChecked)
+            {
+                string symbol = "\uE010";
+                headerText.FontFamily = new FontFamily("Segoe UI Symbol");
+                headerText.Text += symbol;
+                
+            }*/
+        }
+
+        private void RestoreHeaderText(object sender, RoutedEventArgs e)
+        {
+            headerText.Foreground = (Brush)Application.Current.Resources["HudlOrange"];
         }
 
         private void closeSettingsPopupClicked(object sender, RoutedEventArgs e)
@@ -649,6 +668,7 @@ namespace HudlRT.Views
 
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
+            SortFilterPopup.IsOpen = false;
             snapped_mainGrid.Visibility = Visibility.Collapsed;
             videoMediaElement.ControlPanel.Visibility = Visibility.Visible;
             var currentViewState = ApplicationView.Value;
