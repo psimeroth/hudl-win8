@@ -680,6 +680,7 @@ namespace HudlRT.ViewModels
                 timer.Stop();
                 MarkDownloads();
                 ExitDownloadMode();
+
             }
         }
 

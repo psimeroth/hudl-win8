@@ -15,6 +15,8 @@ using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
 using HudlRT.ViewModels;
 using System.Threading;
+using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
 
 namespace HudlRT.Common
 {
@@ -141,6 +143,7 @@ namespace HudlRT.Common
                 CachedParameter.downloadedCutups.Add(CutupViewModel.FromCutup(cut));
             }
             downloadComplete = true;
+            DownloadComplete_Notification();
             downloading = false;
             DownloadProgress = 0;
         }
@@ -169,6 +172,15 @@ namespace HudlRT.Common
             {
 
             }
+        }
+
+        private void DownloadComplete_Notification()
+        {
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+            var elements = toastXml.GetElementsByTagName("text");
+            elements[0].AppendChild(toastXml.CreateTextNode("Download Complete"));
+            var toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier().Show(toast);
         }
     }
 }
