@@ -9,7 +9,8 @@
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
     xmlns:mmppf="using:Microsoft.PlayerFramework"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -19,10 +20,65 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkerGray}">
+        <Grid.Resources>
+            <Storyboard x:Name="CollapseGridAnimation">
+                <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True"/>
+                <DoubleAnimation Storyboard.TargetName="videoMediaElement" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True" />
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid_Row2" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="525" />
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Container1_Row1" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="525" />
+                </ObjectAnimationUsingKeyFrames>
+            </Storyboard>
+            <Storyboard x:Name="ExpandGridAnimation">
+                <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="350" EnableDependentAnimation="True"/>
+                <DoubleAnimation Storyboard.TargetName="videoMediaElement" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="350" EnableDependentAnimation="True" />
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid_Row2" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="375" />
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Container1_Row1" Storyboard.TargetProperty="Height" >
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="510" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="495" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="480" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="465" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="435" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="420" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="405" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="390" />
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="375" />
+                </ObjectAnimationUsingKeyFrames>
+            </Storyboard>
+        </Grid.Resources>
         <!--For snapped view-->
         <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
             <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
@@ -31,19 +87,19 @@
 
         <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="55" />
+                <RowDefinition Height="50" />
                 <RowDefinition x:Name="mainGrid_Row2" Height="375" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Name="header" Background="{StaticResource WhiteToClearGradient}">
+            <Grid Name="header" Background="{StaticResource HudlDarkGray}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="180"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="180"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
+                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="17,0,0,0" />
                 <TextBlock x:Name="CutupName" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
-                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,18,0" Width="162" Height="50" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
+                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,20,0" Width="160" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
                          caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
             </Grid>
             <Grid Background="Black" Grid.Row="1" x:Name="Container1">
@@ -94,7 +150,7 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Background="{StaticResource WhiteToClearGradient}">
+                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                     <Border BorderBrush="Black" BorderThickness="0,0,0,2">
                         <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False"
                           ManipulationMode="All" >
@@ -102,7 +158,7 @@
                     </Border>
                 </ScrollViewer>
                 <ScrollViewer x:Name="gridScroll" HorizontalScrollBarVisibility="Hidden" ZoomMode="Disabled" Grid.Row="1" Margin="0">
-                    <common:VideoPlayerListView x:Name="Clips" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
+                    <common:VideoPlayerListView x:Name="Clips"  HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
                             ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True">
 
                     </common:VideoPlayerListView>
@@ -118,7 +174,7 @@
                             VerticalContentAlignment="Bottom"
                             Height="350"
                             DataContext="{Binding SelectedAngle}">
-                <mmppf:MediaPlayer x:Name="videoMediaElement" Width="1100" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
+                <mmppf:MediaPlayer x:Name="videoMediaElement" Source="{Binding fileLocation}" IsPlayPauseVisible="False"
                                    AutoPlay="True"
                                    MediaOpened="videoElement_MediaOpened"
                                    MediaEnded="videoMediaElement_MediaEnded"
@@ -193,6 +249,22 @@
 
         </Grid>
 
+        <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
+
+            <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,-396,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                <Button x:Name="snapped_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
+                        caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" />
+                <Button x:Name="snapped_btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"
+                                    Visibility="Collapsed" AutomationProperties.Name=""/>
+                <Button x:Name="snapped_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
+                                    Visibility="Collapsed" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="snapped_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="snapped_btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name=""
+                        caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
+            </StackPanel>
+        </Grid>
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="FullScreenLandscape">
@@ -212,25 +284,6 @@
                 <VisualState x:Name="FullScreenPortrait">
                     <Storyboard>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Snapped">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="full_mainGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VideoGrid" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>

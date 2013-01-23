@@ -62,7 +62,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#aaFFFFFF">
+                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#BBFFFFFF">
                                     <Grid Margin="30,6,30,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -83,7 +83,7 @@
                                                                 <Setter Property="Template">
                                                                     <Setter.Value>
                                                                         <ControlTemplate TargetType="Thumb">
-                                                                            <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-5,0,0">
+                                                                            <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-35,-5,0,0">
                                                                                 <Grid>
                                                                                     <Ellipse Stroke="Black" Fill="{StaticResource ButtonPressedForegroundThemeBrush}" StrokeThickness="2" Width="35" Height="35"/>
                                                                                 </Grid>
