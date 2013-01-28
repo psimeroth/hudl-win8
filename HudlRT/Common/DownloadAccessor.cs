@@ -48,11 +48,7 @@ namespace HudlRT.Common
                     try
                     {
                         string text = await Windows.Storage.FileIO.ReadTextAsync(model);
-                        Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
-                        CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);
-                        cutupVM.Clips = savedCutup.clips;
-                        cutupVM.TotalCutupSize = savedCutup.totalFilesSize;
-                        cutupVM.DisplayColumns = savedCutup.displayColumns;
+                        CutupViewModel cutupVM = JsonConvert.DeserializeObject<CutupViewModel>(text);
                         cutups.Add(cutupVM);
                     }
                     catch (Exception) { }
@@ -79,7 +75,7 @@ namespace HudlRT.Common
             }
         }
 
-        public async Task DownloadCutups(List<Cutup> cutups, CancellationToken ct)
+        public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g, CancellationToken ct)
         {
             downloadComplete = false;
             downloading = true;
@@ -166,9 +162,12 @@ namespace HudlRT.Common
                         }
                     }
                 }
-                string updatedModel = JsonConvert.SerializeObject(cut);
+                CutupViewModel cutupForSave = CutupViewModel.FromCutup(cut);
+                cutupForSave.GameName = g.Opponent;
+                cutupForSave.GameDate = g.Date;
+                string updatedModel = JsonConvert.SerializeObject(cutupForSave);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
-                CachedParameter.downloadedCutups.Add(CutupViewModel.FromCutup(cut));
+                CachedParameter.downloadedCutups.Add(cutupForSave);
             }
             downloadComplete = true;
             DownloadComplete_Notification();
