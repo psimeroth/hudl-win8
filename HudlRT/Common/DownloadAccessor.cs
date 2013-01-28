@@ -44,9 +44,9 @@ namespace HudlRT.Common
             {
                 if (folder.Name.Contains(AppDataAccessor.GetUsername()))
                 {
-                    StorageFile model = await folder.GetFileAsync("DownloadsModel");
                     try
                     {
+                        StorageFile model = await folder.GetFileAsync("DownloadsModel");
                         string text = await Windows.Storage.FileIO.ReadTextAsync(model);
                         Cutup savedCutup = JsonConvert.DeserializeObject<Cutup>(text);
                         CutupViewModel cutupVM = CutupViewModel.FromCutup(savedCutup);

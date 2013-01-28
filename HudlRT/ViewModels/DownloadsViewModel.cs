@@ -117,11 +117,17 @@ namespace HudlRT.ViewModels
         protected override async void OnActivate()
         {
             base.OnActivate();
+            Cutups = new BindableCollection<CutupViewModel>();
             CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
             NoDownloadsVisibility = Visibility.Collapsed;
             Progress_Visibility = Visibility.Collapsed;
             await GetDownloads();
+        }
+
+        private void Cutups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NoDownloadsVisibility = Cutups.Any() ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public async void CutupSelected(ItemClickEventArgs eventArgs)
@@ -256,6 +262,7 @@ namespace HudlRT.ViewModels
                 megabytes = 1;
             }
             Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
+            Cutups.CollectionChanged += Cutups_CollectionChanged;
         }
 
         private async Task RemoveDownload(CutupViewModel cutup)
