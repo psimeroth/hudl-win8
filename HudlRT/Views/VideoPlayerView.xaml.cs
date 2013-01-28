@@ -190,7 +190,7 @@ namespace HudlRT.Views
                 }
             }
 
-            if (RemoveFilterBtn.Visibility == Visibility.Visible && count > 0)
+            if (RemoveFilterBtn.Visibility == Visibility.Visible && count > 0 && FilterButtonsGrid.ColumnDefinitions.Count < 3)
             {
                 FilterButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 Grid.SetColumn(CloseBtn, 2);
@@ -198,7 +198,7 @@ namespace HudlRT.Views
             }
             else
             {
-                if (FilterButtonsGrid.ColumnDefinitions.Count > 2)
+                if (FilterButtonsGrid.ColumnDefinitions.Count > 2 && RemoveFilterBtn.Visibility == Visibility.Collapsed)
                 {
                     FilterButtonsGrid.ColumnDefinitions.RemoveAt(2);
                     Grid.SetColumn(CloseBtn, 1);
