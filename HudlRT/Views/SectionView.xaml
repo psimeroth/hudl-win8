@@ -84,7 +84,7 @@
                           ItemContainerStyle="{StaticResource Section_ListViewItemStyle_GameList}" 
                           Style="{StaticResource Section_ListViewStyle_Standard}"/>
 
-                <Grid x:Name="rightGrid" Grid.Column="1" Margin="10,0,0,0">
+                <Grid x:Name="rightGrid" Grid.Column="1" Margin="0,0,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition x:Name="HeaderRow" Height="70" />
                         <RowDefinition Height="*" />
