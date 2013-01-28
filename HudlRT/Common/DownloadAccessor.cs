@@ -49,7 +49,10 @@ namespace HudlRT.Common
                     {
                         string text = await Windows.Storage.FileIO.ReadTextAsync(model);
                         CutupViewModel cutupVM = JsonConvert.DeserializeObject<CutupViewModel>(text);
-                        cutups.Add(cutupVM);
+                        if (cutupVM != null)
+                        {
+                            cutups.Add(cutupVM);
+                        }
                     }
                     catch (Exception) { }
                 }

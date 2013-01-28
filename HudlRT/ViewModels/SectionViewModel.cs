@@ -688,7 +688,7 @@ namespace HudlRT.ViewModels
                     }
                     else
                     {
-                        DownloadProgressText = CachedParameter.downloadAccessor.clipsComplete + " / " + CachedParameter.downloadAccessor.totalClips + " Clips";
+                        DownloadProgressText = CachedParameter.downloadAccessor.clipsComplete + " / " + CachedParameter.downloadAccessor.totalClips + " File(s)";
                         DownloadProgress = 100.0 * (((long)CachedParameter.downloadAccessor.download.Progress.BytesReceived + CachedParameter.downloadAccessor.currentDownloadedBytes) / (double)CachedParameter.downloadAccessor.totalBytes);
                     }
                 }

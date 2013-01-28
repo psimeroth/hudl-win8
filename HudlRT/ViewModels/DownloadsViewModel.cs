@@ -87,6 +87,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility backButton_Visibility;
+        public Visibility BackButton_Visibility
+        {
+            get { return backButton_Visibility; }
+            set
+            {
+                backButton_Visibility = value;
+                NotifyOfPropertyChange(() => BackButton_Visibility);
+            }
+        }
+
         private String download_Contents;
         public String Download_Contents
         {
@@ -109,6 +120,10 @@ namespace HudlRT.ViewModels
             CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
             Progress_Visibility = Visibility.Collapsed;
+            if (!ServiceAccessor.ConnectedToInternet())
+            {
+                BackButton_Visibility = Visibility.Collapsed;
+            }
             await GetDownloads();
         }
 

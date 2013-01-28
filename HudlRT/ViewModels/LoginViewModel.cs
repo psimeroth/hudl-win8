@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.ApplicationSettings;
 using Windows.Security.Credentials;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HudlRT.ViewModels
 {
@@ -98,7 +99,6 @@ namespace HudlRT.ViewModels
 
             base.OnInitialize();
 
-            //Login = new LoginModel();
             ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
@@ -119,6 +119,7 @@ namespace HudlRT.ViewModels
                 }
             }
         }
+
 
         public async void LoginAttempt()
         {
@@ -148,6 +149,7 @@ namespace HudlRT.ViewModels
                 if (RememberMe)
                 {
                     AppDataAccessor.SetPassword(Password);
+                    AppDataAccessor.SetLoginDate(DateTime.Now.ToString());
                 }
                 navigationService.NavigateToViewModel<HubViewModel>();
             }
@@ -165,7 +167,13 @@ namespace HudlRT.ViewModels
             }
             else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
             {
-                LoginFeedback = "No internet connection. Please connect to the internet and try again.";
+                DateTime LastLogin = new DateTime();
+                await Task.Run(() => LastLogin = DateTime.Parse(AppDataAccessor.GetLoginDate()));//need an async task in order to the page to navigate
+                TimeSpan ts = DateTime.Now - LastLogin;
+                if (ts.Days <= 14)
+                {
+                    navigationService.NavigateToViewModel<DownloadsViewModel>();
+                }
             }
 
             // Dismiss the loading indicator
