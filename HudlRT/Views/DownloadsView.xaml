@@ -38,6 +38,8 @@
         <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
                               ItemContainerStyle="{StaticResource Downloads_ListViewItemStyle_Standard}" Style="{StaticResource Downloads_ListViewStyle_Standard}">
         </ListView>
+
+        <TextBlock Text="You have no downloads" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Downloads_TextBlockStyle_Title}" Visibility="{Binding NoDownloadsVisibility}" TextWrapping="Wrap" FontSize="40" TextAlignment="Center"/>
         
         <Grid Grid.Row="2" Margin="20">
             <Grid.ColumnDefinitions>

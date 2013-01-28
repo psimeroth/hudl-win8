@@ -273,7 +273,14 @@ namespace HudlRT.ViewModels
                     totalSize += cVM.TotalCutupSize;
                 }
             }
-            DownloadedCutupSize = (totalSize / 1048576) + " MB";
+            if (CachedParameter.downloadedCutups.Count > 0 && (totalSize / 1048576) < 1)
+            {
+                DownloadedCutupSize = "1 MB";
+            }
+            else
+            {
+                DownloadedCutupSize = (totalSize / 1048576) + " MB";
+            }
 
         }
 

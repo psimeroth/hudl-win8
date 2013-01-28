@@ -87,6 +87,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility no_downloads_Visibility;
+        public Visibility NoDownloadsVisibility
+        {
+            get { return no_downloads_Visibility; }
+            set
+            {
+                no_downloads_Visibility = value;
+                NotifyOfPropertyChange(() => NoDownloadsVisibility);
+            }
+        }        
+        
         private Visibility backButton_Visibility;
         public Visibility BackButton_Visibility
         {
@@ -119,6 +130,7 @@ namespace HudlRT.ViewModels
             base.OnActivate();
             CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
+            NoDownloadsVisibility = Visibility.Collapsed;
             Progress_Visibility = Visibility.Collapsed;
             if (!ServiceAccessor.ConnectedToInternet())
             {
@@ -182,7 +194,7 @@ namespace HudlRT.ViewModels
 
         public void Cancel_Delete()
         {
-            deleting = false; ;
+            deleting = false; 
             DeleteButton_Visibility = Visibility.Visible;
             CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
@@ -212,10 +224,12 @@ namespace HudlRT.ViewModels
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
+                NoDownloadsVisibility = Visibility.Visible;
             }
             else
             {
                 DeleteButton_Visibility = Visibility.Visible;
+                NoDownloadsVisibility = Visibility.Collapsed;
                 foreach (CutupViewModel cutupVM in Cutups)
                 {
                     cutupVM.CheckBox_Visibility = Visibility.Collapsed;
@@ -228,6 +242,10 @@ namespace HudlRT.ViewModels
                 totalsize += c.TotalCutupSize;
             }
             long megabytes = (totalsize / 1048576);
+            if (Cutups.Count > 0 && megabytes < 1)
+            {
+                megabytes = 1;
+            }
             Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
@@ -235,17 +253,24 @@ namespace HudlRT.ViewModels
         private async Task GetDownloads()
         {
             long totalsize = 0;
+            var totalClips = 0;
             Cutups = await CachedParameter.downloadAccessor.GetDownloads();
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
+                NoDownloadsVisibility = Visibility.Visible;
             }
             foreach (CutupViewModel cVM in Cutups)
             {
                 totalsize += cVM.TotalCutupSize;
+                totalClips += cVM.ClipCount;
             }
-            double megabytes = (totalsize / (1048576));
-            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + Cutups.Count + " | Size: " + megabytes + " MB";
+            long megabytes = (totalsize / (1048576));
+            if (Cutups.Count > 0 && megabytes < 1)
+            {
+                megabytes = 1;
+            }
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
         private async Task RemoveDownload(CutupViewModel cutup)
