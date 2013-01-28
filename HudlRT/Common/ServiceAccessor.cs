@@ -89,7 +89,7 @@ namespace HudlRT.Common
         public static bool ConnectedToInternet()
         {
             ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-            return (InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0);
+            return !(InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0);
         }
 
         public static async Task<LoginResponse> Login(string loginArgs)
