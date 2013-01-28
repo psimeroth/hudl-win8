@@ -47,6 +47,7 @@ namespace HudlRT.Views
         }
         Point initialPoint = new Point();
         Point currentPoint = new Point();
+        private int count = 0;
         bool isGridCollapsed = false;
         private  TranslateTransform dragTranslation;
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
@@ -182,12 +183,28 @@ namespace HudlRT.Views
 
                 if (!SortFilterPopup.IsOpen)
                 {
-                    RootPopupBorder.Width = 646;
-                    SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - 646;
+                    RootPopupBorder.Width = 346;
+                    SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - 346;
 
                     SortFilterPopup.IsOpen = true;
                 }
             }
+
+            if (RemoveFilterBtn.Visibility == Visibility.Visible && count > 0)
+            {
+                FilterButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                Grid.SetColumn(CloseBtn, 2);
+
+            }
+            else
+            {
+                if (FilterButtonsGrid.ColumnDefinitions.Count > 2)
+                {
+                    FilterButtonsGrid.ColumnDefinitions.RemoveAt(2);
+                    Grid.SetColumn(CloseBtn, 1);
+                }
+            }
+            count++;
         }
 
         private void closeSettingsPopupClicked(object sender, RoutedEventArgs e)
