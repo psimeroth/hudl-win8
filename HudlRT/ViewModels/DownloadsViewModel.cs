@@ -227,6 +227,10 @@ namespace HudlRT.ViewModels
                 totalsize += c.TotalCutupSize;
             }
             long megabytes = (totalsize / 1048576);
+            if (Cutups.Count > 0 && megabytes < 1)
+            {
+                megabytes = 1;
+            }
             Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
@@ -234,6 +238,7 @@ namespace HudlRT.ViewModels
         private async Task GetDownloads()
         {
             long totalsize = 0;
+            var totalClips = 0;
             Cutups = await CachedParameter.downloadAccessor.GetDownloads();
             if (!Cutups.Any())
             {
@@ -243,9 +248,14 @@ namespace HudlRT.ViewModels
             foreach (CutupViewModel cVM in Cutups)
             {
                 totalsize += cVM.TotalCutupSize;
+                totalClips += cVM.ClipCount;
             }
-            double megabytes = (totalsize / (1048576));
-            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + Cutups.Count + " | Size: " + megabytes + " MB";
+            long megabytes = (totalsize / (1048576));
+            if (Cutups.Count > 0 && megabytes < 1)
+            {
+                megabytes = 1;
+            }
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
         private async Task RemoveDownload(CutupViewModel cutup)
