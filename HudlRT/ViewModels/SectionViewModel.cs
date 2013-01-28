@@ -664,7 +664,7 @@ namespace HudlRT.ViewModels
             DownloadProgressText = "";
             StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
-            CachedParameter.downloadAccessor.DownloadCutups(cutupList, CachedParameter.cts.Token);
+            CachedParameter.downloadAccessor.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
         }
 
         private async Task StartTimer()

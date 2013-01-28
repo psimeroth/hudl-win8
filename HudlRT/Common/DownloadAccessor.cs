@@ -163,8 +163,7 @@ namespace HudlRT.Common
                     }
                 }
                 CutupViewModel cutupForSave = CutupViewModel.FromCutup(cut);
-                cutupForSave.GameName = g.Opponent;
-                cutupForSave.GameDate = g.Date;
+                cutupForSave.GameInfo = g.Date + " - " + g.Opponent + ": ";
                 string updatedModel = JsonConvert.SerializeObject(cutupForSave);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
                 CachedParameter.downloadedCutups.Add(cutupForSave);

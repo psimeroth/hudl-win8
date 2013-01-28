@@ -187,7 +187,6 @@ namespace HudlRT.Models
         public string clipId { get; set; }
         public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
-        //public Dictionary<string, string> breakdownData { get; set; }
         public string[] breakDownData { get; set; }
 
 
