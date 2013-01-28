@@ -531,7 +531,7 @@ namespace HudlRT.ViewModels
                 if (filter.sortType != SortType.None)
                 {
                     List<Clip> unfilteredClips = new List<Clip>();
-                    unfilteredClips.AddRange(clips.Where(clip => clip.breakDownData[filter.columnId].Contains("-")));
+                    unfilteredClips.AddRange(clips.Where(clip => clip.breakDownData[filter.columnId].Equals("-")));
                     foreach (Clip clip in unfilteredClips)
                     {
                         clips.Remove(clip);
