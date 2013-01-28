@@ -34,7 +34,8 @@ namespace HudlRT.ViewModels
         private ConcurrentDictionary<string, Task<ClipResponse>> CachedCutupCalls;
         private List<CutupViewModel> CachedCutups;
 
-        private Boolean DownloadMode = false;
+        private enum DownloadMode {Selecting, Dowloading, Off};
+        DownloadMode downloadMode = new DownloadMode();
 
         //CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -294,11 +295,13 @@ namespace HudlRT.ViewModels
             if (CachedParameter.downloadAccessor.downloading)
             {
                 StartTimer();
+                downloadMode = DownloadMode.Dowloading;
                 DownloadProgress_Visibility = Visibility.Visible;
                 CancelButton_Visibility = Visibility.Visible;
             }
             else
             {
+                downloadMode = DownloadMode.Off;
                 DownloadProgress_Visibility = Visibility.Collapsed;
                 CancelButton_Visibility = Visibility.Collapsed;
             }
@@ -602,6 +605,7 @@ namespace HudlRT.ViewModels
 
         public void Cancel_Download()
         {
+            downloadMode = DownloadMode.Off;
             ExitDownloadMode();
             if (CachedParameter.downloadAccessor.downloading)
             {
@@ -611,10 +615,14 @@ namespace HudlRT.ViewModels
 
         public void ExitDownloadMode()
         {
-            DownloadMode = false;
+            
             ConfirmButton_Visibility = Visibility.Collapsed;
-            DownloadProgress_Visibility = Visibility.Collapsed;
-            CancelButton_Visibility = Visibility.Collapsed;
+            if (downloadMode != DownloadMode.Dowloading)
+            {
+                DownloadProgress_Visibility = Visibility.Collapsed;
+                CancelButton_Visibility = Visibility.Collapsed;
+                downloadMode = DownloadMode.Off;
+            }
             HideCheckBoxes();
             SetDownloadButtonVisibility();   
         }
@@ -664,7 +672,8 @@ namespace HudlRT.ViewModels
             DownloadProgressText = "";
             StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
-            CachedParameter.downloadAccessor.DownloadCutups(cutupList, CachedParameter.cts.Token);
+            downloadMode = DownloadMode.Dowloading;
+            CachedParameter.downloadAccessor.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
         }
 
         private async Task StartTimer()
@@ -688,7 +697,7 @@ namespace HudlRT.ViewModels
                     }
                     else
                     {
-                        DownloadProgressText = CachedParameter.downloadAccessor.clipsComplete + " / " + CachedParameter.downloadAccessor.totalClips + " Clips";
+                        DownloadProgressText = CachedParameter.downloadAccessor.clipsComplete + " / " + CachedParameter.downloadAccessor.totalClips + " File(s)";
                         DownloadProgress = 100.0 * (((long)CachedParameter.downloadAccessor.download.Progress.BytesReceived + CachedParameter.downloadAccessor.currentDownloadedBytes) / (double)CachedParameter.downloadAccessor.totalBytes);
                     }
                 }
@@ -703,6 +712,7 @@ namespace HudlRT.ViewModels
                 DownloadProgress = 100;
                 timer.Stop();
                 MarkDownloads();
+                downloadMode = DownloadMode.Off;
                 ExitDownloadMode();
 
             }
@@ -760,7 +770,7 @@ namespace HudlRT.ViewModels
         public async void CutupSelected(ItemClickEventArgs eventArgs)
         {
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
-            if (!DownloadMode)
+            if (downloadMode == DownloadMode.Off || downloadMode == DownloadMode.Dowloading)
             {
                 bool downloadfound = false;
                 ProgressRing_Visibility = Visibility.Visible;
@@ -783,7 +793,7 @@ namespace HudlRT.ViewModels
                 CachedParameter.sectionViewCutupSelected = cutup;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }
-            else
+            else if(downloadMode == DownloadMode.Selecting)
             {
                 if (cutup.DownloadedVisibility == Visibility.Collapsed)
                 {
@@ -890,7 +900,7 @@ namespace HudlRT.ViewModels
 
         public void Download_Playlists()
         {
-            DownloadMode = true;
+            downloadMode = DownloadMode.Selecting;
             DownloadButton_Visibility = Visibility.Collapsed;
             CancelButton_Visibility = Visibility.Visible;
             ShowCheckBoxes();

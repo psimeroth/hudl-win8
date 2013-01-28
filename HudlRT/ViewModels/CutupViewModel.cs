@@ -34,8 +34,9 @@ namespace HudlRT.ViewModels
         private double _fontSize { get; set; }
         private Boolean _checkbox { get; set; }
         private Visibility _downloadedVisibility { get; set; }
-
         private Visibility _checkbox_visibility { get; set; }
+
+        private string _game_info { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
@@ -68,6 +69,9 @@ namespace HudlRT.ViewModels
             cutup._fontSize = FONT_SIZE;
             cutup._checkbox_visibility = Visibility.Collapsed;
             cutup._downloadedVisibility = Visibility.Collapsed;
+            cutup.Clips = cutupDTO.clips;
+            cutup.TotalCutupSize = cutupDTO.totalFilesSize;
+            cutup.DisplayColumns = cutupDTO.displayColumns;
             return cutup;
         }
 
@@ -79,7 +83,7 @@ namespace HudlRT.ViewModels
                 _downloadedVisibility = value;
                 NotifyOfPropertyChange(() => DownloadedVisibility);
             }
-        } 
+        }
 
         public Boolean CheckBox
         {
@@ -99,6 +103,17 @@ namespace HudlRT.ViewModels
                 if (value == _name) return;
                 _name = value;
                 NotifyOfPropertyChange(() => Name);
+            }
+        }
+
+        public string GameInfo
+        {
+            get { return _game_info; }
+            set
+            {
+                if (value == _game_info) return;
+                _game_info = value;
+                NotifyOfPropertyChange(() => GameInfo);
             }
         }
 

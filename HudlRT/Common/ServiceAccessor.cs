@@ -12,6 +12,7 @@ using HudlRT.Models;
 using Caliburn.Micro;
 using Windows.Networking.Connectivity;
 using HudlRT.ViewModels;
+using HudlRT.Parameters;
 
 namespace HudlRT.Common
 {
@@ -94,6 +95,11 @@ namespace HudlRT.Common
         public static async Task<LoginResponse> Login(string loginArgs)
         {
             //var loginResponse = await ServiceAccessor.MakeApiCallGet("athlete");
+
+            if (!ConnectedToInternet())
+            {
+                return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
             if (!string.IsNullOrEmpty(loginResponse))
             {
@@ -346,12 +352,6 @@ namespace HudlRT.Common
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallPost(string url, string jsonString, bool showDialog)
         {
-            if (!ConnectedToInternet())
-            {
-            APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
-            return null;
-            }
-
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE_SECURE + url);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);

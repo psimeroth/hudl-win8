@@ -119,6 +119,10 @@ namespace HudlRT.ViewModels
                 GetAngleNames();
                 SelectedClip = Clips.First();
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                if (SelectedAngle.isPreloaded)
+                {
+                    SelectedAngle.fileLocation = SelectedAngle.preloadFile;
+                }
             }
             CutupName = CachedParameter.selectedCutup.name;
 

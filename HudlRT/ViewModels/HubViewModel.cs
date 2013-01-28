@@ -268,7 +268,10 @@ namespace HudlRT.ViewModels
             long totalSize = 0;
             foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
             {
-                totalSize += cVM.TotalCutupSize;
+                if (cVM != null)
+                {
+                    totalSize += cVM.TotalCutupSize;
+                }
             }
             if (CachedParameter.downloadedCutups.Count > 0 && (totalSize / 1048576) < 1)
             {

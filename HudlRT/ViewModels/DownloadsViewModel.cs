@@ -96,6 +96,17 @@ namespace HudlRT.ViewModels
                 no_downloads_Visibility = value;
                 NotifyOfPropertyChange(() => NoDownloadsVisibility);
             }
+        }        
+        
+        private Visibility backButton_Visibility;
+        public Visibility BackButton_Visibility
+        {
+            get { return backButton_Visibility; }
+            set
+            {
+                backButton_Visibility = value;
+                NotifyOfPropertyChange(() => BackButton_Visibility);
+            }
         }
 
         private String download_Contents;
@@ -122,6 +133,10 @@ namespace HudlRT.ViewModels
             ConfirmButton_Visibility = Visibility.Collapsed;
             NoDownloadsVisibility = Visibility.Collapsed;
             Progress_Visibility = Visibility.Collapsed;
+            if (!ServiceAccessor.ConnectedToInternet())
+            {
+                BackButton_Visibility = Visibility.Collapsed;
+            }
             await GetDownloads();
         }
 
@@ -185,7 +200,7 @@ namespace HudlRT.ViewModels
 
         public void Cancel_Delete()
         {
-            deleting = false; ;
+            deleting = false; 
             DeleteButton_Visibility = Visibility.Visible;
             CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
