@@ -15,6 +15,8 @@ using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
 using HudlRT.ViewModels;
 using System.Threading;
+using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
 
 namespace HudlRT.Common
 {
@@ -114,6 +116,15 @@ namespace HudlRT.Common
             {
                 var fileFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername() + cut.cutupId.ToString(), Windows.Storage.CreationCollisionOption.OpenIfExists);
 
+                //save thumbnail
+                var sourceThumb = new Uri(cut.thumbnailLocation);
+                var destinationFileThumb = await fileFolder.CreateFileAsync("Thumbnail.jpg", CreationCollisionOption.ReplaceExisting);
+                var downloaderThumb = new BackgroundDownloader();
+                var downloadThumb = downloaderThumb.CreateDownload(sourceThumb, destinationFileThumb);
+                var downloadOperationThumb = await downloadThumb.StartAsync();
+                var fileThumb = (StorageFile)downloadOperationThumb.ResultFile;
+                cut.thumbnailLocation = fileThumb.Path.Replace("\\","/");
+
                 StorageFile downloadModel = await fileFolder.CreateFileAsync("DownloadsModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
                 foreach (Clip c in cut.clips)
                 {
@@ -160,8 +171,18 @@ namespace HudlRT.Common
                 CachedParameter.downloadedCutups.Add(CutupViewModel.FromCutup(cut));
             }
             downloadComplete = true;
+            DownloadComplete_Notification();
             downloading = false;
             DownloadProgress = 0;
+        }
+
+        private void DownloadComplete_Notification()
+        {
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+            var elements = toastXml.GetElementsByTagName("text");
+            elements[0].AppendChild(toastXml.CreateTextNode("Download Complete"));
+            var toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier().Show(toast);
         }
     }
 }
