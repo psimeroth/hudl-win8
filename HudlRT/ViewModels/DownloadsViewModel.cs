@@ -87,6 +87,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility no_downloads_Visibility;
+        public Visibility NoDownloadsVisibility
+        {
+            get { return no_downloads_Visibility; }
+            set
+            {
+                no_downloads_Visibility = value;
+                NotifyOfPropertyChange(() => NoDownloadsVisibility);
+            }
+        }
+
         private String download_Contents;
         public String Download_Contents
         {
@@ -108,6 +119,7 @@ namespace HudlRT.ViewModels
             base.OnActivate();
             CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
+            NoDownloadsVisibility = Visibility.Collapsed;
             Progress_Visibility = Visibility.Collapsed;
             await GetDownloads();
         }
@@ -197,10 +209,12 @@ namespace HudlRT.ViewModels
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
+                NoDownloadsVisibility = Visibility.Visible;
             }
             else
             {
                 DeleteButton_Visibility = Visibility.Visible;
+                NoDownloadsVisibility = Visibility.Collapsed;
                 foreach (CutupViewModel cutupVM in Cutups)
                 {
                     cutupVM.CheckBox_Visibility = Visibility.Collapsed;
@@ -224,6 +238,7 @@ namespace HudlRT.ViewModels
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
+                NoDownloadsVisibility = Visibility.Visible;
             }
             foreach (CutupViewModel cVM in Cutups)
             {
