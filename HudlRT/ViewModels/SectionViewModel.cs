@@ -489,22 +489,25 @@ namespace HudlRT.ViewModels
         public void MarkDownloads()
         {
             bool downloadFound = false;
-            foreach (CutupViewModel cutupVM in Cutups)
+            if(Cutups != null)
             {
-                downloadFound = false;
-                foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
+                foreach (CutupViewModel cutupVM in Cutups)
                 {
-                    if (downloadedCutup.CutupId == cutupVM.CutupId)
+                    downloadFound = false;
+                    foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
                     {
-                        cutupVM.DownloadedVisibility = Visibility.Visible;
-                        cutupVM.CheckBox = false;
-                        downloadFound = true;
-                        break;
+                        if (downloadedCutup.CutupId == cutupVM.CutupId)
+                        {
+                            cutupVM.DownloadedVisibility = Visibility.Visible;
+                            cutupVM.CheckBox = false;
+                            downloadFound = true;
+                            break;
+                        }
                     }
-                }
-                if (!downloadFound)
-                {
-                    cutupVM.DownloadedVisibility = Visibility.Collapsed;
+                    if (!downloadFound)
+                    {
+                        cutupVM.DownloadedVisibility = Visibility.Collapsed;
+                    }
                 }
             }
         }
