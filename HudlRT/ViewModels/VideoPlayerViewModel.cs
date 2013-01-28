@@ -517,7 +517,10 @@ namespace HudlRT.ViewModels
                 FilteredClips = new BindableCollection<Clip>();
             }
 
-            SetClip(FilteredClips.First());
+            if (FilteredClips.Count > 0)
+            {
+                SetClip(FilteredClips.First());
+            }
             SortFilterPopupControl.IsOpen = false;
         }
 
