@@ -76,7 +76,8 @@ namespace HudlRT.Common
 
         public static string GetLoginDate()
         {
-            return GetRoamingSetting<string>(LOGINDATE);
+            string username = GetUsername();
+            return GetRoamingSetting<string>(username+LOGINDATE);
         }
 
         public static void SetUsername(string username)
@@ -86,7 +87,8 @@ namespace HudlRT.Common
 
         public static void SetLoginDate(string loginDate)
         {
-            SetRoamingSetting<string>(LOGINDATE, loginDate);
+            string username = GetUsername();
+            SetRoamingSetting<string>(username+LOGINDATE, loginDate);
         }
 
         public static TeamContextResponse GetTeamContext() {

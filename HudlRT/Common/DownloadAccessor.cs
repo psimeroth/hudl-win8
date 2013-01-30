@@ -49,6 +49,7 @@ namespace HudlRT.Common
                         StorageFile model = await folder.GetFileAsync("DownloadsModel");
                         string text = await Windows.Storage.FileIO.ReadTextAsync(model);
                         CutupViewModel cutupVM = JsonConvert.DeserializeObject<CutupViewModel>(text);
+                        cutupVM.Width = new GridLength(180);
                         if (cutupVM != null)
                         {
                             cutups.Add(cutupVM);
@@ -57,8 +58,11 @@ namespace HudlRT.Common
                     catch (Exception) { }
                 }
             }
-            CachedParameter.downloadedCutups = cutups;
-            return cutups;
+            
+            //return SortCutupsByDownloadedDate(cutups);
+            BindableCollection<CutupViewModel> sortedCutups = new BindableCollection<CutupViewModel>(cutups.OrderByDescending(c => c.downloadedDate));
+            CachedParameter.downloadedCutups = sortedCutups;
+            return sortedCutups;
         }
 
         private async Task RemoveDownload(Cutup cutup)
@@ -166,6 +170,7 @@ namespace HudlRT.Common
                     }
                 }
                 CutupViewModel cutupForSave = CutupViewModel.FromCutup(cut);
+                cutupForSave.downloadedDate = DateTime.Now;
                 cutupForSave.GameInfo = g.Date + " - " + g.Opponent + ": ";
                 string updatedModel = JsonConvert.SerializeObject(cutupForSave);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);

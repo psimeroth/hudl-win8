@@ -41,6 +41,9 @@ namespace HudlRT.Parameters
 
         public static CancellationTokenSource cts = new CancellationTokenSource();
 
+        public static bool noConnection = false;
+        
+
 
         public static void resetCache(){
             isInitialized = false;

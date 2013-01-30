@@ -35,6 +35,7 @@ namespace HudlRT.ViewModels
         private Boolean _checkbox { get; set; }
         private Visibility _downloadedVisibility { get; set; }
         private Visibility _checkbox_visibility { get; set; }
+        public DateTime downloadedDate { get; set; }
 
         private string _game_info { get; set; }
 
