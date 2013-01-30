@@ -574,7 +574,7 @@ namespace HudlRT.Views
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
-            if (videoMediaElement.Position.Seconds < 3)
+            if (videoMediaElement.Position.Ticks < (videoMediaElement.Duration.Ticks / 3) && videoMediaElement.Position != new TimeSpan(0))
             {
                 videoMediaElement.Stop();
                 isStopped = true;
