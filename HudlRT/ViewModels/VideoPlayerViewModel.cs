@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Data;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.UI.Xaml.Documents;
 
 namespace HudlRT.ViewModels
 {
@@ -415,6 +416,27 @@ namespace HudlRT.ViewModels
             {
                 ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
 
+                if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
+                {
+                    ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.RemoveAt(1);
+                }
+                if (SelectedFilter.sortType == SortType.Ascending)
+                {
+                    Run text = new Run();
+                    text.Text = "   \u25B2";
+                    ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Add(text);
+                }
+                else if (SelectedFilter.sortType == SortType.Descending)
+                {
+                    Run text = new Run();
+                    text.Text = "   \u25BC";
+                    ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Add(text);
+                }
+                if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Text.Length >= 10 && ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
+                {
+                    ColumnHeaderTextBlocks[SelectedFilter.columnId].FontSize = 18;
+                }
+                
                 List<Clip> newFilteredClips = new List<Clip>();
                 List<Clip> currentFilteredClips;
 
@@ -447,14 +469,22 @@ namespace HudlRT.ViewModels
                         if (currentSortFilter.FilterCriteria.Where(c => c.IsChecked).Count() == 0)
                         {
                             ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+                            if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
+                            {
+                                ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.RemoveAt(1);
+                            }
                             FiltersList.Remove(currentSortFilter);
                         }
                         else
                         {
+                            if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
+                            {
+                                ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.RemoveAt(1);
+                            }
                             currentSortFilter.setSortType(SortType.None);
                         }
+                        ColumnHeaderTextBlocks[currentSortFilter.columnId].FontSize = 24;
                     }
-
                     currentSortFilter = SelectedFilter;
                 }
 
@@ -467,6 +497,11 @@ namespace HudlRT.ViewModels
         public void RemoveSelectedFilter()
         {
             ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+            if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
+            {
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.RemoveAt(1);
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].FontSize = 24;
+            }
             List<Clip> clips = removeFilter();
             sortClips(ref clips, FiltersList.Where(f => f.sortType != SortType.None).FirstOrDefault());
             applyFilter(clips);

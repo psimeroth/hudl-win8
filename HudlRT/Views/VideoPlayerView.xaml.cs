@@ -213,6 +213,10 @@ namespace HudlRT.Views
                 }
             }
 
+            /* 
+             * RemoveFilterBtn visibility is set to visible by default, so we do not want to display it the first time a grid header is clicked.
+             * So, we use a variable count to ensure we don't display the RemoveFilterBtn the first time a header is clicked.
+             */
             if (RemoveFilterBtn.Visibility == Visibility.Visible && count > 0 && FilterButtonsGrid.ColumnDefinitions.Count < 3)
             {
                 FilterButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -227,7 +231,12 @@ namespace HudlRT.Views
                     Grid.SetColumn(CloseBtn, 1);
                 }
             }
-            count++;
+
+            //Only increment count when a header other than Play # is clicked
+            if (id != 0)
+            {
+                count++;
+            }
         }
 
         private void closeSettingsPopupClicked(object sender, RoutedEventArgs e)
