@@ -28,6 +28,8 @@ namespace HudlRT.Views
 {
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
+        private const int POPUP_WIDTH = 346;
+
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
         private bool _isFullscreenToggle = false;
@@ -60,7 +62,7 @@ namespace HudlRT.Views
         private DispatcherTimer rewindTimer { get; set; }
         private int rewindTimerInterval { get; set; }
         private int rewindPositionChange { get; set; }
-        private ScrollViewer filteredListScrollViewer { get; set; }\
+        private ScrollViewer filteredListScrollViewer { get; set; }
 
         public VideoPlayerView()
         {
@@ -125,12 +127,7 @@ namespace HudlRT.Views
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
 
-            List<TextBlock> cHeaders = new List<TextBlock>();
-            foreach (Border x in gridHeaders.Children)
-            {
-                cHeaders.Add((TextBlock)x.Child);
-            }
-            vm.ColumnHeaderTextBlocks = cHeaders;
+            vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
         }
 
         private void initializeGrid()
@@ -205,8 +202,8 @@ namespace HudlRT.Views
 
                 if (!SortFilterPopup.IsOpen)
                 {
-                    RootPopupBorder.Width = 346;
-                    SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - 346;
+                    RootPopupBorder.Width = POPUP_WIDTH;
+                    SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH;
 
                     SortFilterPopup.IsOpen = true;
                 }

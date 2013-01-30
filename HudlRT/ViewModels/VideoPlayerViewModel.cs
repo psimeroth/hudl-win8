@@ -135,7 +135,7 @@ namespace HudlRT.ViewModels
             Clips = CachedParameter.selectedCutup.clips.ToList();
             
             FilteredClips = new ObservableCollection<Clip>(Clips);
-            if (FilteredClips.Count() > 0)
+            if (FilteredClips.Any())
             {
                 getAngleNames();
                 SelectedClip = FilteredClips.First();
@@ -176,13 +176,13 @@ namespace HudlRT.ViewModels
         private async void initialClipPreload()
         {
             await DeleteTempData(); //Make sure there are no left over temp files (from app crash, etc)
-            if (FilteredClips.Count > 0)
+            if (FilteredClips.Any())
             {
-                PreloadClips(preloadCT, FilteredClips[0].angles.Where(angle => angle.angleType.IsChecked).ToList());
+                PreloadClips(preloadCT, FilteredClips[0].angles.Where(angle => angle.angleType.IsChecked));
             }
             if (FilteredClips.Count > 1)
             {
-                PreloadClips(preloadCT, FilteredClips[1].angles.Where(angle => angle.angleType.IsChecked).ToList());
+                PreloadClips(preloadCT, FilteredClips[1].angles.Where(angle => angle.angleType.IsChecked));
             }
         }
 
@@ -273,8 +273,8 @@ namespace HudlRT.ViewModels
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
+                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
+                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
             }
             else
             {
@@ -336,7 +336,7 @@ namespace HudlRT.ViewModels
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
+                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
             }
         }
 
@@ -391,8 +391,8 @@ namespace HudlRT.ViewModels
             List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
 
             int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-            PreloadClips(preloadCT, filteredAngles.Where(angle => angle.isPreloaded == false).ToList());
-            PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false).ToList());
+            PreloadClips(preloadCT, filteredAngles.Where(angle => angle.isPreloaded == false));
+            PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
 
             //If the current angle has been filtered out, reset the clip to the first unfiltered angle, or null
             if (SelectedAngle != null)
@@ -412,7 +412,7 @@ namespace HudlRT.ViewModels
 
         public void ApplySelectedFilter()
         {
-            if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Count() > 0)
+            if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Any())
             {
                 ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
 
@@ -449,7 +449,7 @@ namespace HudlRT.ViewModels
                     currentFilteredClips = FilteredClips.ToList();
                 }
 
-                if (SelectedFilter.FilterCriteria != null && SelectedFilter.FilterCriteria.Where(c => c.IsChecked).Count() > 0)
+                if (SelectedFilter.FilterCriteria != null && SelectedFilter.FilterCriteria.Where(c => c.IsChecked).Any())
                 {
                     foreach (FilterCriteriaViewModel criteria in SelectedFilter.FilterCriteria.Where(c => c.IsChecked))
                     {
@@ -517,7 +517,7 @@ namespace HudlRT.ViewModels
 
             foreach (FilterViewModel filter in FiltersList)
             {
-                if (filter.FilterCriteria != null && filter.FilterCriteria.Where(c => c.IsChecked).Count() > 0)
+                if (filter.FilterCriteria != null && filter.FilterCriteria.Where(c => c.IsChecked).Any())
                 {
                     foreach (FilterCriteriaViewModel criteria in filter.FilterCriteria.Where(c => c.IsChecked))
                     {
@@ -545,7 +545,7 @@ namespace HudlRT.ViewModels
             listView.ScrollIntoView(FilteredClips[0], ScrollIntoViewAlignment.Default);
             FilteredClips = new ObservableCollection<Clip>(clips);
 
-            if (FilteredClips.Count > 0)
+            if (FilteredClips.Any())
             {
                 SetClip(FilteredClips.First());
             }
@@ -687,7 +687,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async Task PreloadClips(CancellationToken ct, List<Angle> angles)
+        private async Task PreloadClips(CancellationToken ct, IEnumerable<Angle> angles)
         {
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             foreach (Angle angle in angles)
