@@ -121,8 +121,7 @@ namespace HudlRT.ViewModels
         private CancellationToken preloadCT { get; set; }
         public List<TextBlock> ColumnHeaderTextBlocks { get; set; }
 
-        public VideoPlayerViewModel(INavigationService navigationService)
-            : base(navigationService)
+        public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
         }
@@ -133,10 +132,11 @@ namespace HudlRT.ViewModels
 
             AppDataAccessor.SetLastViewed(CachedParameter.selectedCutup.name, DateTime.Now.ToString("g"), CachedParameter.selectedCutup.cutupId);
             Clips = CachedParameter.selectedCutup.clips.ToList();
-            getAngleNames();
+            
             FilteredClips = new ObservableCollection<Clip>(Clips);
             if (FilteredClips.Count() > 0)
             {
+                getAngleNames();
                 SelectedClip = FilteredClips.First();
                 SelectedClipIndex = 0;
                 SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
