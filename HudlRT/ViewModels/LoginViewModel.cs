@@ -168,11 +168,24 @@ namespace HudlRT.ViewModels
             else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
             {
                 DateTime LastLogin = new DateTime();
-                await Task.Run(() => LastLogin = DateTime.Parse(AppDataAccessor.GetLoginDate()));//need an async task in order to the page to navigate
-                TimeSpan ts = DateTime.Now - LastLogin;
-                if (ts.Days <= 14)
+                string loginDate = AppDataAccessor.GetLoginDate();
+                if (loginDate != null)
                 {
-                    navigationService.NavigateToViewModel<DownloadsViewModel>();
+                    await Task.Run(() => LastLogin = DateTime.Parse(AppDataAccessor.GetLoginDate()));//need an async task in order to the page to navigate
+                    TimeSpan ts = DateTime.Now - LastLogin;
+                    if (ts.Days <= 14)
+                    {
+                        CachedParameter.noConnection = true;
+                        navigationService.NavigateToViewModel<DownloadsViewModel>();
+                    }
+                    else
+                    {
+                        APIExceptionDialog.ShowNoInternetConnectionLoginDialog(null, null);
+                    }
+                }
+                else
+                {
+                    APIExceptionDialog.ShowNoInternetConnectionLoginDialog(null, null);
                 }
             }
 

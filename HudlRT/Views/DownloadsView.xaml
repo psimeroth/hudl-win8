@@ -35,7 +35,7 @@
         </Grid>
         <!--End TopTitleGrid-->
 
-        <ListView x:Name="Cutups" Grid.Row="1" Margin="0,3,0,0" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
+        <ListView x:Name="Cutups" Grid.Row="1" Margin="20,3,20,0" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
                               ItemContainerStyle="{StaticResource Downloads_ListViewItemStyle_Standard}" Style="{StaticResource Downloads_ListViewStyle_Standard}">
         </ListView>
 
@@ -48,8 +48,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name ="Delete_Playlists" Visibility="{Binding DeleteButton_Visibility}" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Delete Playlists</Button>
-            <Button x:Name="Confirm_Delete" Visibility="{Binding ConfirmButton_Visibility}" Grid.Column="2" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0">Confirm</Button>
+            <Button x:Name ="Delete_Playlists" Visibility="{Binding DeleteButton_Visibility}" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Delete Cutups</Button>
+            <Button x:Name="Confirm_Delete" Visibility="{Binding ConfirmButton_Visibility}" Grid.Column="2" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0">Delete</Button>
             <Button x:Name="Cancel_Delete" Visibility="{Binding CancelButton_Visibility}" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
         </Grid>
         <VisualStateManager.VisualStateGroups>

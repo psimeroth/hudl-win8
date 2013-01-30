@@ -20,20 +20,38 @@ using Windows.Data.Xml.Dom;
 
 namespace HudlRT.Common
 {
-    public class DownloadAccessor
+    public sealed class DownloadAccessor
     {
+        private static readonly Lazy<DownloadAccessor> downloader = new Lazy<DownloadAccessor>(() => new DownloadAccessor());
 
-        public double DownloadProgress;
+        public static DownloadAccessor Instance
+        {
+            get { return downloader.Value; }
+        }
 
-        public bool downloadComplete = false;
-        public bool downloading = false;
-        public bool downloadCanceled = false;
-        public bool findingFileSize = false;
-        public DownloadOperation download;
-        public long totalBytes = 0;
-        public long clipsComplete = 0;
-        public long currentDownloadedBytes = 0;
-        public long totalClips = 0;
+        private DownloadAccessor()
+        {
+            Downloading = false;
+            DownloadComplete = false;
+            DownloadCanceled = false;
+            FindingFileSize = false;
+            TotalBytes = 0;
+            ClipsComplete = 0;
+            CurrentDownloadedBytes = 0;
+            TotalClips = 0;
+        }
+
+        public DownloadOperation Download { get; set; }
+        public double DownloadProgress { get; set; }
+
+        public bool Downloading { get; set; }
+        public bool DownloadComplete { get; set; }
+        public bool DownloadCanceled { get; set; }
+        public bool FindingFileSize { get; set; }
+        public long TotalBytes { get; set; }
+        public long ClipsComplete { get; set; }
+        public long CurrentDownloadedBytes { get; set; }
+        public long TotalClips { get; set; }
 
         public async Task<BindableCollection<CutupViewModel>> GetDownloads()
         {
@@ -49,6 +67,7 @@ namespace HudlRT.Common
                         StorageFile model = await folder.GetFileAsync("DownloadsModel");
                         string text = await Windows.Storage.FileIO.ReadTextAsync(model);
                         CutupViewModel cutupVM = JsonConvert.DeserializeObject<CutupViewModel>(text);
+                        cutupVM.Width = new GridLength(180);
                         if (cutupVM != null)
                         {
                             cutups.Add(cutupVM);
@@ -57,8 +76,11 @@ namespace HudlRT.Common
                     catch (Exception) { }
                 }
             }
-            CachedParameter.downloadedCutups = cutups;
-            return cutups;
+            
+            //return SortCutupsByDownloadedDate(cutups);
+            BindableCollection<CutupViewModel> sortedCutups = new BindableCollection<CutupViewModel>(cutups.OrderByDescending(c => c.downloadedDate));
+            CachedParameter.downloadedCutups = sortedCutups;
+            return sortedCutups;
         }
 
         private async Task RemoveDownload(Cutup cutup)
@@ -80,15 +102,15 @@ namespace HudlRT.Common
 
         public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g, CancellationToken ct)
         {
-            downloadComplete = false;
-            downloading = true;
-            downloadCanceled = false;
-            totalBytes = 0;
-            clipsComplete = 0;
-            currentDownloadedBytes = 0;
-            totalClips = 0;
+            DownloadComplete = false;
+            Downloading = true;
+            DownloadCanceled = false;
+            TotalBytes = 0;
+            ClipsComplete = 0;
+            CurrentDownloadedBytes = 0;
+            TotalClips = 0;
 
-            findingFileSize = true;
+            FindingFileSize = true;
             long cutupTotalSize = 0;
             var httpClient = new System.Net.Http.HttpClient();
             foreach (Cutup cut in cutups)
@@ -103,13 +125,13 @@ namespace HudlRT.Common
                         var response = await httpClient.SendAsync(httpRequestMessage);
                         var angleSize = response.Content.Headers.ContentLength;
                         cutupTotalSize += (long)angleSize;
-                        totalBytes += (long)angleSize;
-                        totalClips++;
+                        TotalBytes += (long)angleSize;
+                        TotalClips++;
                     }
                 }
                 cut.totalFilesSize = cutupTotalSize;
             }
-            findingFileSize = false;
+            FindingFileSize = false;
 
             foreach (Cutup cut in cutups)
             {
@@ -133,11 +155,11 @@ namespace HudlRT.Common
                         {
                             if (ct.IsCancellationRequested)
                             {
-                                await CachedParameter.downloadAccessor.RemoveDownload(cut);
-                                downloadComplete = false;
-                                downloading = false;
-                                downloadCanceled = true;
-                                DownloadProgress = 0;
+                                await DownloadAccessor.Instance.RemoveDownload(cut);
+                                DownloadComplete = false;
+                                Downloading = false;
+                                DownloadCanceled = true;
+                                CurrentDownloadedBytes = 0;
                                 return;
                             }
                             var source = new Uri(angle.fileLocation);
@@ -149,13 +171,13 @@ namespace HudlRT.Common
                                 //CutupId-ClipId-ClipAngleId
                                 var destinationFile = await fileFolder.CreateFileAsync(cut.cutupId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
                                 var downloader = new BackgroundDownloader();
-                                download = downloader.CreateDownload(source, destinationFile);
-                                var downloadOperation = await download.StartAsync();
+                                Download = downloader.CreateDownload(source, destinationFile);
+                                var downloadOperation = await Download.StartAsync();
                                 file = (StorageFile)downloadOperation.ResultFile;
                                 angle.preloadFile = file.Path;
                                 angle.isPreloaded = true;
-                                currentDownloadedBytes += (long)download.Progress.BytesReceived;
-                                clipsComplete++;
+                                CurrentDownloadedBytes += (long)Download.Progress.BytesReceived;
+                                ClipsComplete++;
                             }
                         }
                         catch (Exception e)
@@ -166,15 +188,16 @@ namespace HudlRT.Common
                     }
                 }
                 CutupViewModel cutupForSave = CutupViewModel.FromCutup(cut);
+                cutupForSave.downloadedDate = DateTime.Now;
                 cutupForSave.GameInfo = g.Date + " - " + g.Opponent + ": ";
                 string updatedModel = JsonConvert.SerializeObject(cutupForSave);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
                 CachedParameter.downloadedCutups.Add(cutupForSave);
             }
-            downloadComplete = true;
+            DownloadComplete = true;
             DownloadComplete_Notification();
-            downloading = false;
-            DownloadProgress = 0;
+            Downloading = false;
+            CurrentDownloadedBytes = 0;
         }
 
         private void DownloadComplete_Notification()

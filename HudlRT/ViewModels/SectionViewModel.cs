@@ -292,7 +292,7 @@ namespace HudlRT.ViewModels
                 NoEntriesMessage_Visibility = Visibility.Visible;
             }
 
-            if (CachedParameter.downloadAccessor.downloading)
+            if (DownloadAccessor.Instance.Downloading)
             {
                 StartTimer();
                 downloadMode = DownloadMode.Dowloading;
@@ -327,7 +327,7 @@ namespace HudlRT.ViewModels
             }
 
             // Make sure there are game entries for the season.
-            if (Schedule.Any())
+            if (Schedule != null && Schedule.Any())
             {
                 // Find the passed in game
                 SelectedGame = Schedule.FirstOrDefault(game => game.GameId == gameID);
@@ -340,7 +340,7 @@ namespace HudlRT.ViewModels
                 await GetGameCategories(SelectedGame);
 
                 // Make sure there are categories for the selected game
-                if (Categories.Any())
+                if (Categories != null && Categories.Any())
                 {
                     // Find the selected category
                     SelectedCategory = Categories.FirstOrDefault(cat => cat.CategoryId == categoryID);
@@ -377,7 +377,7 @@ namespace HudlRT.ViewModels
             {
                 await GetGames(teamID, seasonID);
             }
-            if (Schedule.Any())
+            if (Schedule != null && Schedule.Any())
             {
                 if (Schedule.Contains(CachedParameter.sectionViewGameSelected))
                 {
@@ -431,6 +431,10 @@ namespace HudlRT.ViewModels
                     Schedule.Add(schedule[i]);
                 }
             }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
+            }
             else
             {
                 Schedule = null;
@@ -450,6 +454,10 @@ namespace HudlRT.ViewModels
                     cats.Add(CategoryViewModel.FromCategory(category));
                 }
                 Categories = cats;
+            }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
             }
             else
             {
@@ -558,6 +566,10 @@ namespace HudlRT.ViewModels
                 MarkDownloads();
                 SetDownloadButtonVisibility();
             }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
+            }
             var currentViewState = ApplicationView.Value;
             if (currentViewState == ApplicationViewState.Snapped)
             {
@@ -583,7 +595,7 @@ namespace HudlRT.ViewModels
         public async Task<CutupViewModel> GetClipsByCutup(CutupViewModel cutup)
         {
             ClipResponse response;
-            if (CachedCutupCalls.ContainsKey(cutup.CutupId))
+            if (CachedCutupCalls.ContainsKey(cutup.CutupId) && ServiceAccessor.ConnectedToInternet())
             {
                 // Don't need to check if it exists b/c the addition to cached cutups is in the same place as cached cutup calls
                 int cutCacheIndex = CachedCutups.FindIndex(cut => cut.CutupId == cutup.CutupId);
@@ -599,6 +611,10 @@ namespace HudlRT.ViewModels
                 cutup.Clips = response.clips;
                 return cutup;
             }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                return null;
+            }
             else
             {
                 Common.APIExceptionDialog.ShowGeneralExceptionDialog(null, null);
@@ -610,7 +626,7 @@ namespace HudlRT.ViewModels
         {
             downloadMode = DownloadMode.Off;
             ExitDownloadMode();
-            if (CachedParameter.downloadAccessor.downloading)
+            if (DownloadAccessor.Instance.Downloading)
             {
                 CachedParameter.cts.Cancel();  
             }
@@ -650,7 +666,7 @@ namespace HudlRT.ViewModels
                 {
                     DownloadButton_Visibility = Visibility.Collapsed;
                 }
-                else if (!CachedParameter.downloadAccessor.downloading)
+                else if (!DownloadAccessor.Instance.Downloading)
                 {
                     DownloadButton_Visibility = Visibility.Visible;
                 }
@@ -671,12 +687,11 @@ namespace HudlRT.ViewModels
             }
             DownloadProgress_Visibility = Visibility.Visible;
             ConfirmButton_Visibility = Visibility.Collapsed;
-            DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
             DownloadProgressText = "";
             StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
             downloadMode = DownloadMode.Dowloading;
-            CachedParameter.downloadAccessor.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
+            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
         }
 
         private async Task StartTimer()
@@ -689,23 +704,23 @@ namespace HudlRT.ViewModels
 
         void timerTick(object sender, object e)
         {
-            if (!CachedParameter.downloadAccessor.downloadComplete && CachedParameter.downloadAccessor.downloading)
+            if (!DownloadAccessor.Instance.DownloadComplete && DownloadAccessor.Instance.Downloading)
             {
                 try
                 {
                     
-                    if (CachedParameter.downloadAccessor.findingFileSize)
+                    if (DownloadAccessor.Instance.FindingFileSize)
                     {
                         DownloadProgressText = "Determining Download Size";
                     }
                     else
                     {
-                        DownloadProgressText = CachedParameter.downloadAccessor.clipsComplete + " / " + CachedParameter.downloadAccessor.totalClips + " File(s)";
-                        DownloadProgress = 100.0 * (((long)CachedParameter.downloadAccessor.download.Progress.BytesReceived + CachedParameter.downloadAccessor.currentDownloadedBytes) / (double)CachedParameter.downloadAccessor.totalBytes);
+                        DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
+                        DownloadProgress = 100.0 * (((long)DownloadAccessor.Instance.Download.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
                     }
                 }
                 catch (Exception) { };
-                if (CachedParameter.downloadAccessor.downloadCanceled)
+                if (DownloadAccessor.Instance.DownloadCanceled)
                 {
                     timer.Stop();
                 }
@@ -737,7 +752,7 @@ namespace HudlRT.ViewModels
                 }
                 await GetGameCategories(game);
 
-                if (Categories.Any())
+                if (Categories != null && Categories.Any())
                 {
                     SelectedCategory = Categories.First();
                 }
@@ -792,9 +807,16 @@ namespace HudlRT.ViewModels
                     cutup = await GetClipsByCutup(cutup);
                 }
                 UpdateCachedParameter();
-                CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
-                CachedParameter.sectionViewCutupSelected = cutup;
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+                if (cutup == null)
+                {
+                    navigationService.NavigateToViewModel<DownloadsViewModel>();
+                }
+                else
+                {
+                    CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
+                    CachedParameter.sectionViewCutupSelected = cutup;
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+                }
             }
             else if(downloadMode == DownloadMode.Selecting)
             {

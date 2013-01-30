@@ -35,11 +35,12 @@ namespace HudlRT.Parameters
                 
         public static Cutup selectedCutup { get; set; }
 
-        public static DownloadAccessor downloadAccessor = new DownloadAccessor();
-
         public static BindableCollection<CutupViewModel> downloadedCutups { get; set; }
 
         public static CancellationTokenSource cts = new CancellationTokenSource();
+
+        public static bool noConnection = false;
+        
 
 
         public static void resetCache(){

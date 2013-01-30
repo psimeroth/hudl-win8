@@ -26,7 +26,7 @@ namespace HudlRT.ViewModels
 
         private readonly INavigationService navigationService;
         private Boolean deleting = false;
-
+        public Parameter Parameter;
         private BindableCollection<CutupViewModel> _cutups { get; set; }
         public BindableCollection<CutupViewModel> Cutups
         {
@@ -129,6 +129,8 @@ namespace HudlRT.ViewModels
         public DownloadsViewModel(INavigationService navigationService): base(navigationService)
         {
             this.navigationService = navigationService;
+            CharmsData.navigationService = navigationService;
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
 
         protected override async void OnActivate()
@@ -139,10 +141,6 @@ namespace HudlRT.ViewModels
             ConfirmButton_Visibility = Visibility.Collapsed;
             NoDownloadsVisibility = Visibility.Collapsed;
             Progress_Visibility = Visibility.Collapsed;
-            if (!ServiceAccessor.ConnectedToInternet())
-            {
-                BackButton_Visibility = Visibility.Collapsed;
-            }
             await GetDownloads();
 
             if (Cutups != null)
@@ -174,6 +172,16 @@ namespace HudlRT.ViewModels
         private void Cutups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             NoDownloadsVisibility = Cutups.Any() ? Visibility.Collapsed : Visibility.Visible;
+            Cutups = new BindableCollection<CutupViewModel>(Cutups.OrderByDescending(c => c.downloadedDate));
+            long totalsize = 0;
+            long totalClips = 0;
+            foreach (CutupViewModel c in Cutups)
+            {
+                totalsize += c.TotalCutupSize;
+                totalClips += c.ClipCount;
+            }
+            long megabytes = (long)Math.Ceiling((totalsize / 1048576.0));
+            Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
         public async void CutupSelected(ItemClickEventArgs eventArgs)
@@ -211,7 +219,22 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
-            navigationService.GoBack();
+            if (!ServiceAccessor.ConnectedToInternet())
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            }
+            else
+            { 
+                if (CachedParameter.noConnection)
+                {
+                    CachedParameter.noConnection = false;
+                    navigationService.NavigateToViewModel<HubViewModel>();
+                }
+                else
+                {
+                    navigationService.GoBack();
+                }
+            }
         }
 
         public void Delete_Playlists()
@@ -278,11 +301,7 @@ namespace HudlRT.ViewModels
             {
                 totalsize += c.TotalCutupSize;
             }
-            long megabytes = (totalsize / 1048576);
-            if (Cutups.Count > 0 && megabytes < 1)
-            {
-                megabytes = 1;
-            }
+            long megabytes = (long)Math.Ceiling((totalsize / 1048576.0));
             Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         }
 
@@ -291,7 +310,7 @@ namespace HudlRT.ViewModels
         {
             long totalsize = 0;
             var totalClips = 0;
-            Cutups = await CachedParameter.downloadAccessor.GetDownloads();
+            Cutups = await DownloadAccessor.Instance.GetDownloads();
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;

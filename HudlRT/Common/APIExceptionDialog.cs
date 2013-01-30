@@ -15,8 +15,15 @@ namespace HudlRT.Common
         static public void ShowNoInternetConnectionDialog(object sender, RoutedEventArgs e)
         {
             string message = "We didn't detect an internet connection.";
-            message += "\nPlease connect to the internet, and then try again. If you have connected to the internet and this error persists, please leave feedback with the button below or email kyle.deterding@hudl.com";
-            ShowExceptionDialog(message, sender, e);
+            message += "\nPlease connect to the internet if you wish to view non-downloaded content.";
+            ShowExceptionDialog(message, false, sender, e);
+        }
+
+        static public void ShowNoInternetConnectionLoginDialog(object sender, RoutedEventArgs e)
+        {
+            string message = "We didn't detect an internet connection.";
+            message += "\nTo watch downloaded content while offline, please choose \"Remember Me\" next time you login";
+            ShowExceptionDialog(message, false, sender, e);
         }
 
         static public void ShowGeneralExceptionDialog(object sender, RoutedEventArgs e)
@@ -24,7 +31,7 @@ namespace HudlRT.Common
             string message = "Looks like something broke!";
             message += "\nPlease let us know what you were doing prior to seeing this error and we will work on getting this problem resolved. You can leave feedback with the button below or email kyle.deterding@hudl.com";
 
-            ShowExceptionDialog(message, sender, e);
+            ShowExceptionDialog(message, true, sender, e);
         }
 
         static public void ShowStatusCodeExceptionDialog(object sender, RoutedEventArgs e, string statusCode, string url)
@@ -42,19 +49,22 @@ namespace HudlRT.Common
                 message += "\nWhen contacting the server, we ran into an error. Please email kyle.deterding@hudl.com with the following URL and Error Code: \nURL: " + url + "\nStatus Code: " + statusCode;
             }
 
-            ShowExceptionDialog(message, sender, e);
+            ShowExceptionDialog(message, true, sender, e);
         }
 
-        static public async void ShowExceptionDialog(string text, object sender, RoutedEventArgs e)
+        static public async void ShowExceptionDialog(string text, bool feedback, object sender, RoutedEventArgs e)
         {
             string message = text;
             // Create the message dialog and set its content
             var messageDialog = new MessageDialog(message);
 
             // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
-            messageDialog.Commands.Add(new UICommand(
-                "Submit Feedback",
-                new UICommandInvokedHandler(CommandInvokedHandler)));
+            if (feedback)
+            {
+                messageDialog.Commands.Add(new UICommand(
+                    "Submit Feedback",
+                    new UICommandInvokedHandler(CommandInvokedHandler)));
+            }
             messageDialog.Commands.Add(new UICommand(
                 "Close",
                 new UICommandInvokedHandler(CommandInvokedHandler)));
