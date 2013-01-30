@@ -231,11 +231,11 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(CutupViewModel cutup, int startIndex)
+        public static async Task<List<Clip>> GetAdditionalCutupClips(string cutupID, int startIndex)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()), true);
+            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutupID).Replace("%", startIndex.ToString()), true);
             var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-            BindableCollection<Clip> clipCollection = new BindableCollection<Clip>();
+            List<Clip> clipCollection = new List<Clip>();
             if (clipResponseDTO.ClipsList.Clips.Count == 100)
             {
                 foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
@@ -246,7 +246,7 @@ namespace HudlRT.Common
                         clipCollection.Add(c);
                     }
                 }
-                var additionalClips = await GetAdditionalCutupClips(cutup, startIndex+100);
+                var additionalClips = await GetAdditionalCutupClips(cutupID, startIndex + 100);
                 foreach (Clip c in additionalClips)
                 {
                     clipCollection.Add(c);
@@ -282,14 +282,6 @@ namespace HudlRT.Common
                     {
                         Clip c = Clip.FromDTO(clipDTO, obj.DisplayColumns);
                         if (c != null)
-                        {
-                            clipCollection.Add(c);
-                        }
-                    }
-                    if (clipCollection.Count == 100)
-                    {
-                        var additionalClips = await GetAdditionalCutupClips(cutup, 100);
-                        foreach (Clip c in additionalClips)
                         {
                             clipCollection.Add(c);
                         }
