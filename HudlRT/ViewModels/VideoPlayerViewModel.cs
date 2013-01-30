@@ -140,7 +140,7 @@ namespace HudlRT.ViewModels
                 getAngleNames();
                 SelectedClip = FilteredClips.First();
                 SelectedClipIndex = 0;
-                SelectedAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                SelectedAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 if (listView != null)
                 {
                     listView.SelectedItem = SelectedClip;
@@ -193,7 +193,7 @@ namespace HudlRT.ViewModels
             {
                 foreach (Angle angle in clip.angles)
                 {
-                    angle.angleType = AngleTypes.Where(angleType => angleType.Name.Equals(angle.angleName)).FirstOrDefault();
+                    angle.angleType = AngleTypes.FirstOrDefault(angleType => angleType.Name.Equals(angle.angleName));
                 }
             }
             foreach (Clip c in remainingClipsList)
@@ -222,7 +222,7 @@ namespace HudlRT.ViewModels
             {
                 foreach (Angle angle in clip.angles)
                 {
-                    angle.angleType = AngleTypes.Where(angleType => angleType.Name.Equals(angle.angleName)).FirstOrDefault();
+                    angle.angleType = AngleTypes.FirstOrDefault(angleType => angleType.Name.Equals(angle.angleName));
                 }
             }
 
@@ -269,7 +269,7 @@ namespace HudlRT.ViewModels
 
                 listView.SelectedItem = SelectedClip;
 
-                Angle nextAngle = clip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                Angle nextAngle = clip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
@@ -293,7 +293,7 @@ namespace HudlRT.ViewModels
                 else
                 {
                     List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-                    Angle currentAngle = SelectedClip.angles.Where(a => a.clipAngleId == SelectedAngle.clipAngleId).FirstOrDefault();
+                    Angle currentAngle = SelectedClip.angles.FirstOrDefault(a => a.clipAngleId == SelectedAngle.clipAngleId);
 
                     int angleIndex = filteredAngles.IndexOf(currentAngle);
                     if (angleIndex < filteredAngles.Count - 1)
@@ -332,7 +332,7 @@ namespace HudlRT.ViewModels
 
                 SelectedClip = FilteredClips[SelectedClipIndex];
                 listView.SelectedItem = SelectedClip;
-                Angle nextAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
@@ -351,7 +351,7 @@ namespace HudlRT.ViewModels
                 else
                 {
                     List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
-                    Angle currentAngle = SelectedClip.angles.Where(a => a.clipAngleId == SelectedAngle.clipAngleId).FirstOrDefault();
+                    Angle currentAngle = SelectedClip.angles.FirstOrDefault(a => a.clipAngleId == SelectedAngle.clipAngleId);
 
                     int angleIndex = filteredAngles.IndexOf(currentAngle);
                     if (angleIndex > 0)
@@ -375,14 +375,14 @@ namespace HudlRT.ViewModels
 
                 SelectedClip = FilteredClips[SelectedClipIndex];
                 listView.SelectedItem = SelectedClip;
-                Angle nextAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+                Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
             }
         }
 
         public void ResetClip()
         {
-            Angle firstAngle = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).FirstOrDefault();
+            Angle firstAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
             SelectedAngle = (firstAngle != null && firstAngle.isPreloaded) ? new Angle(firstAngle.clipAngleId, firstAngle.preloadFile.Path) : new Angle(firstAngle.clipAngleId, firstAngle.fileLocation);
         }
 
@@ -397,7 +397,7 @@ namespace HudlRT.ViewModels
             //If the current angle has been filtered out, reset the clip to the first unfiltered angle, or null
             if (SelectedAngle != null)
             {
-                if (filteredAngles.Where(angle => angle.clipAngleId == SelectedAngle.clipAngleId).FirstOrDefault() == null)
+                if (filteredAngles.FirstOrDefault(angle => angle.clipAngleId == SelectedAngle.clipAngleId) == null)
                 {
                     Angle nextAngle = filteredAngles.FirstOrDefault();
                     SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile.Path) : nextAngle;
@@ -461,7 +461,7 @@ namespace HudlRT.ViewModels
                     newFilteredClips.AddRange(currentFilteredClips);
                 }
 
-                FilterViewModel currentSortFilter = FiltersList.Where(f => f.sortType != SortType.None).FirstOrDefault();
+                FilterViewModel currentSortFilter = FiltersList.FirstOrDefault(f => f.sortType != SortType.None);
                 if (SelectedFilter.sortType == SortType.Ascending || SelectedFilter.sortType == SortType.Descending)
                 {
                     if (currentSortFilter != null)
@@ -503,7 +503,7 @@ namespace HudlRT.ViewModels
                 ColumnHeaderTextBlocks[SelectedFilter.columnId].FontSize = 24;
             }
             List<Clip> clips = removeFilter();
-            sortClips(ref clips, FiltersList.Where(f => f.sortType != SortType.None).FirstOrDefault());
+            sortClips(ref clips, FiltersList.FirstOrDefault(f => f.sortType != SortType.None));
             applyFilter(clips);
         }
 
@@ -602,7 +602,7 @@ namespace HudlRT.ViewModels
 
         public void PrepareSortFilterPopup(int id)
         {
-            FilterViewModel filter = FiltersList.Where(f => f.columnId == id).FirstOrDefault();
+            FilterViewModel filter = FiltersList.FirstOrDefault(f => f.columnId == id);
 
             if (filter == null)
             {
