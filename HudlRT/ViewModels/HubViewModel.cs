@@ -209,8 +209,15 @@ namespace HudlRT.ViewModels
 
         public async void NavigateToSectionPage()
         {
-            UpdateCachedParameter();
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                UpdateCachedParameter();
+                navigationService.NavigateToViewModel<SectionViewModel>();
+            }
+            else
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            }
         }
 
         protected override void OnDeactivate(bool close)
@@ -243,26 +250,11 @@ namespace HudlRT.ViewModels
                 PopulateDropDown();
             }
 
-            LastViewedResponse response = AppDataAccessor.GetLastViewed();
-            if (response.ID == null)
-            {
-                LastViewedName = "Hey Rookie!";
-                LastViewedTimeStamp = "You haven't watched anything yet!";
-            }
-            else
-            {
-                LastViewedName = response.name;
-                LastViewedTimeStamp = "Viewed: " + response.timeStamp;
-                lastViewedId = response.ID;
-
-                loadLastViewed = LoadLastViewedCutup();
-            }
-
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
             if (CachedParameter.downloadedCutups == null)
             {
-                await CachedParameter.downloadAccessor.GetDownloads();
+                await DownloadAccessor.Instance.GetDownloads();
             }
             DownloadedCutupSize = "";
             DownloadedCutupCount = CachedParameter.downloadedCutups.Count > 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
@@ -279,11 +271,38 @@ namespace HudlRT.ViewModels
                 long megabytes = (long)Math.Ceiling((totalSize / 1048576.0));
                 DownloadedCutupSize = megabytes + " MB";
             }
+
+            LastViewedResponse response = AppDataAccessor.GetLastViewed();
+            if (response.ID == null)
+            {
+                LastViewedName = "Hey Rookie!";
+                LastViewedTimeStamp = "You haven't watched anything yet!";
+            }
+            else
+            {
+                LastViewedName = response.name;
+                LastViewedTimeStamp = "Viewed: " + response.timeStamp;
+                lastViewedId = response.ID;
+
+                loadLastViewed = LoadLastViewedCutup();
+            }
         }
 
         private async Task<ClipResponse> LoadLastViewedCutup()
         {
             lastViewedCutup = new CutupViewModel { CutupId = lastViewedId, Name = LastViewedName };
+            if (CachedParameter.downloadedCutups != null)
+            {
+                foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
+                {
+                    if (cVM.CutupId == lastViewedId)
+                    {
+                        lastViewedCutup.DisplayColumns = cVM.DisplayColumns;
+                        lastViewedCutup.ClipCount = cVM.ClipCount;
+                        return new ClipResponse { clips = cVM.Clips, status = SERVICE_RESPONSE.SUCCESS };
+                    }
+                }
+            }
             return await ServiceAccessor.GetCutupClips(lastViewedCutup);
         }
 
@@ -354,6 +373,10 @@ namespace HudlRT.ViewModels
 
                 //populate this/next game
                 
+            }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
             }
             else//could better handle exceptions
             {
@@ -446,6 +469,10 @@ namespace HudlRT.ViewModels
                 }
 
             }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
+            }
             else//could better handle exceptions
             {
                 NextGame = null;
@@ -462,23 +489,37 @@ namespace HudlRT.ViewModels
 
         public void NextCategorySelected(ItemClickEventArgs eventArgs)
         {
-            
-            var category = (Category)eventArgs.ClickedItem;
-            UpdateCachedParameter();
-            CachedParameter.categoryId = category.categoryId;
-            CachedParameter.gameId = NextGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>();
+
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                var category = (Category)eventArgs.ClickedItem;
+                UpdateCachedParameter();
+                CachedParameter.categoryId = category.categoryId;
+                CachedParameter.gameId = NextGame.gameId;
+                navigationService.NavigateToViewModel<SectionViewModel>();
+            }
+            else
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            }
 
         }
 
         public void PreviousCategorySelected(ItemClickEventArgs eventArgs)
         {
 
-            var category = (Category)eventArgs.ClickedItem;
-            UpdateCachedParameter();
-            CachedParameter.categoryId = category.categoryId;
-            CachedParameter.gameId = PreviousGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                var category = (Category)eventArgs.ClickedItem;
+                UpdateCachedParameter();
+                CachedParameter.categoryId = category.categoryId;
+                CachedParameter.gameId = PreviousGame.gameId;
+                navigationService.NavigateToViewModel<SectionViewModel>();
+            }
+            else
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            }
 
         }
 
@@ -497,7 +538,7 @@ namespace HudlRT.ViewModels
                                                                 cutupId = lastViewedCutup.CutupId,
                                                                 clips = lastViewedCutup.Clips,
                                                                 displayColumns = lastViewedCutup.DisplayColumns,
-                                                                clipCount = Convert.ToInt32(lastViewedCutup.ClipCount),
+                                                                clipCount = lastViewedCutup.ClipCount,
                                                                 name = lastViewedCutup.Name
                                                             };
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>();

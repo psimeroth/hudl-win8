@@ -136,7 +136,7 @@ namespace HudlRT.Common
         public static async Task<TeamResponse> GetTeams()
         {
             var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
-            if (!string.IsNullOrEmpty(teams))
+            if (!string.IsNullOrEmpty(teams) && teams != "NoConnection")
             {
                 try
                 {
@@ -153,6 +153,10 @@ namespace HudlRT.Common
                     return new TeamResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (teams == "NoConnection")
+            {
+                return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new TeamResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -162,7 +166,7 @@ namespace HudlRT.Common
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
             var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId), true);
-            if (!string.IsNullOrEmpty(games))
+            if (!string.IsNullOrEmpty(games) && games != "NoConnection")
             {
                 try
                 {
@@ -179,6 +183,10 @@ namespace HudlRT.Common
                     return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (games == "NoConnection")
+            {
+                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new GameResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -188,7 +196,7 @@ namespace HudlRT.Common
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
             var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId), true);
-            if (!string.IsNullOrEmpty(categories))
+            if (!string.IsNullOrEmpty(categories) && categories != "NoConnection")
             {
                 try
                 {
@@ -205,6 +213,10 @@ namespace HudlRT.Common
                     return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (categories == "NoConnection")
+            {
+                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new CategoryResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -214,7 +226,7 @@ namespace HudlRT.Common
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
             var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId), true);
-            if (!string.IsNullOrEmpty(cutups))
+            if (!string.IsNullOrEmpty(cutups) && cutups != "NoConnection")
             {
                 try
                 {
@@ -230,6 +242,10 @@ namespace HudlRT.Common
                 {
                     return new CutupResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
+            }
+            else if (cutups == "NoConnection")
+            {
+                return new CutupResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
             else
             {
@@ -277,7 +293,7 @@ namespace HudlRT.Common
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
             var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"), true);
-            if (!string.IsNullOrEmpty(clips))
+            if (!string.IsNullOrEmpty(clips) && clips != "NoConnection")
             {
                 try
                 {
@@ -307,6 +323,10 @@ namespace HudlRT.Common
                     return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (clips == "NoConnection")
+            {
+                return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -324,7 +344,7 @@ namespace HudlRT.Common
             if (!ConnectedToInternet())
             {
                 APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
-                return null;
+                return "NoConnection";
             }
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE + url);
