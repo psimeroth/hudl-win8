@@ -449,7 +449,7 @@ namespace HudlRT.ViewModels
                     currentFilteredClips = FilteredClips.ToList();
                 }
 
-                if (SelectedFilter.FilterCriteria != null && SelectedFilter.FilterCriteria.Where(c => c.IsChecked).Any())
+                if (SelectedFilter.FilterCriteria != null && SelectedFilter.FilterCriteria.Any(c => c.IsChecked))
                 {
                     foreach (FilterCriteriaViewModel criteria in SelectedFilter.FilterCriteria.Where(c => c.IsChecked))
                     {
@@ -466,7 +466,7 @@ namespace HudlRT.ViewModels
                 {
                     if (currentSortFilter != null)
                     {
-                        if (currentSortFilter.FilterCriteria.Count(c => c.IsChecked) == 0)
+                        if (!currentSortFilter.FilterCriteria.Any(c => c.IsChecked))
                         {
                             ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
                             if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
