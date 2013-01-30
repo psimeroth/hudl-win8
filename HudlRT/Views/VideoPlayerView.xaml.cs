@@ -61,6 +61,7 @@ namespace HudlRT.Views
         private int rewindTimerInterval { get; set; }
         private int rewindPositionChange { get; set; }
         private ScrollViewer filteredListScrollViewer { get; set; }
+        private DispatcherTimer shittyVideoTimer { get; set; }
 
         public VideoPlayerView()
         {
@@ -79,7 +80,7 @@ namespace HudlRT.Views
             gridHeaders.RenderTransform = this.dragTranslation;
             FilteredClips.RenderTransform = this.dragTranslation;
             gridHeaderScroll.ViewChanged += gridHeaderScroll_ViewChanged;
-            FilteredClips.Loaded += FilteredClips_Loaded;
+            FilteredClips.Loaded += filteredClips_Loaded;
 
             btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
             full_btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
@@ -93,10 +94,10 @@ namespace HudlRT.Views
             Window.Current.CoreWindow.KeyDown += VideoPage_KeyDown;
             Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
 
+            rewindTimerInterval = 1;
             rewindTimer = new DispatcherTimer();
             rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, rewindTimerInterval);
             rewindTimer.Tick += rewindTimerTick;
-            rewindTimerInterval = 1;
         }
 
         /// <summary>
@@ -119,7 +120,22 @@ namespace HudlRT.Views
                 Windows.Storage.FileProperties.ThumbnailMode.VideosView, 190,
                 Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale, false);
 
-            var dataSource = fif.GetVirtualizedFilesVector();
+            initializeGrid();
+
+            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+            vm.listView = FilteredClips;
+            vm.SortFilterPopupControl = SortFilterPopup;
+
+            List<TextBlock> cHeaders = new List<TextBlock>();
+            foreach (Border x in gridHeaders.Children)
+            {
+                cHeaders.Add((TextBlock)x.Child);
+            }
+            vm.ColumnHeaderTextBlocks = cHeaders;
+        }
+
+        private void initializeGrid()
+        {
             string[] displayColumns = CachedParameter.selectedCutup.displayColumns;
             var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid VerticalAlignment =""Center""> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
             string columnDefinitions = "";
@@ -158,21 +174,9 @@ namespace HudlRT.Views
 
             var dt = (DataTemplate)XamlReader.Load(template);
             FilteredClips.ItemTemplate = dt;
-            //btnExpandGrid_Click(null, null);
-
-            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.listView = FilteredClips;
-            vm.SortFilterPopupControl = SortFilterPopup;
-
-            List<TextBlock> cHeaders = new List<TextBlock>();
-            foreach (Border x in gridHeaders.Children)
-            {
-                cHeaders.Add((TextBlock)x.Child);
-            }
-            vm.ColumnHeaderTextBlocks = cHeaders;
         }
 
-        private void FilteredClips_Loaded(object sender, RoutedEventArgs e)
+        private void filteredClips_Loaded(object sender, RoutedEventArgs e)
         {
             filteredListScrollViewer = FilteredClips.GetFirstDescendantOfType<ScrollViewer>();
             filteredListScrollViewer.ViewChanged += filteredListScrollViewer_ViewChanged;
