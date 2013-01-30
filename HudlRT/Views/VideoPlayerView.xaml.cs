@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI;using Windows.UI.ViewManagement;
 using System.Diagnostics;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Documents;
 
 namespace HudlRT.Views
 {   
@@ -140,12 +141,15 @@ namespace HudlRT.Views
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
                     b.BorderThickness = new Thickness(0, 0, 1, 0);
                     TextBlock t = new TextBlock();
-                    t.Text = displayColumns[i];
+                    Run text = new Run();
+                    text.Text = displayColumns[i];
+                    Underline underline = new Underline();
+                    underline.Inlines.Add(text);
+                    t.Inlines.Add(underline);
                     b.SetValue(Grid.RowProperty, 0);
                     b.SetValue(Grid.ColumnProperty, i);
                     t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
                     t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-                    
                     t.Tag = i;
                     t.PointerPressed += columnHeaderClick;
 
