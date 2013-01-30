@@ -13,11 +13,17 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Input;
 using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
+using Windows.UI.ViewManagement;
 
 namespace HudlRT.ViewModels
 {
     public class DownloadsViewModel : ViewModelBase
     {
+        private const int SNAPPED_FONT_SIZE = 24;
+        private const int FONT_SIZE = 28;
+        private const Visibility SNAPPED_VISIBILITY = Visibility.Collapsed;
+        private const Visibility FULL_VISIBILITY = Visibility.Visible;
+
         private readonly INavigationService navigationService;
         private Boolean deleting = false;
 
@@ -138,6 +144,31 @@ namespace HudlRT.ViewModels
                 BackButton_Visibility = Visibility.Collapsed;
             }
             await GetDownloads();
+
+            if (Cutups != null)
+            {
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Snapped)
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Width = new GridLength(0);
+                        cutup.FontSize = SNAPPED_FONT_SIZE;
+                    }
+                }
+                else
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = FULL_VISIBILITY;
+                        cutup.Thumbnail_Visibility = FULL_VISIBILITY;
+                        cutup.Width = new GridLength(180);
+                        cutup.FontSize = FONT_SIZE;
+                    }
+                }
+            }
         }
 
         private void Cutups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -295,6 +326,34 @@ namespace HudlRT.ViewModels
             catch (Exception)
             {
 
+            }
+        }
+
+        public void OnWindowSizeChanged()
+        {
+            if (Cutups != null)
+            {
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState == ApplicationViewState.Snapped)
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                        cutup.Width = new GridLength(0);
+                        cutup.FontSize = SNAPPED_FONT_SIZE;
+                    }
+                }
+                else
+                {
+                    foreach (var cutup in Cutups)
+                    {
+                        cutup.Name_Visibility = FULL_VISIBILITY;
+                        cutup.Thumbnail_Visibility = FULL_VISIBILITY;
+                        cutup.Width = new GridLength(180);
+                        cutup.FontSize = FONT_SIZE;
+                    }
+                }
             }
         }
 

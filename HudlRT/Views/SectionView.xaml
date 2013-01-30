@@ -39,7 +39,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="65"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition x:Name="Downloads_Row" Height="100"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
@@ -98,16 +98,16 @@
                     <ListView x:Name="Cutups"  IsEnabled="{Binding Enabled_Boolean}" Grid.Row="1" Margin="0,3,0,0" SelectedItem="{Binding SelectedCutup}" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
                               ItemContainerStyle="{StaticResource Section_ListViewItemStyle_Standard}" Style="{StaticResource Section_ListViewStyle_Standard}" ItemClick="Cutup_Selected">
                     </ListView>
-                    <TextBlock Text="No entries for this week" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Section_TextBlockStyle_Title}" Visibility="{Binding Visibility}" TextWrapping="Wrap" FontSize="40" TextAlignment="Center" ></TextBlock>
+                    <TextBlock Text="No entries for this week" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Section_TextBlockStyle_Title}" Visibility="{Binding NoEntriesMessage_Visibility}" TextWrapping="Wrap" FontSize="40" TextAlignment="Center" ></TextBlock>
                 </Grid>
             </Grid>
             <!--End BottomContentGrid-->
             <Grid x:Name="DownloadsGrid" Grid.Row="2" Margin="20,10,20,0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="65" />
+                    <RowDefinition x:Name="Downloads_Button_Row" Height="65" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="450"/>
+                    <ColumnDefinition x:Name="Downloads_Button_Column" Width="450"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -116,6 +116,12 @@
                     <TextBlock>
                         <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads
                     </TextBlock>
+                </Button>
+                <Button x:Name ="Downloads_Button_Snapped" Visibility="Collapsed" VerticalAlignment="Stretch" Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE19C;" Foreground="{StaticResource HudlOrange}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Downloads" />
+                    </StackPanel>
                 </Button>
                 <Button x:Name="Download_Playlists" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0" Visibility="{Binding DownloadButton_Visibility}">Download Playlists</Button>
                 <Button x:Name="Confirm_Download" Grid.Column="2" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0" Visibility="{Binding ConfirmButton_Visibility}">Confirm</Button>
@@ -150,6 +156,15 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo_BackgroundGrid" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Download_Playlists" Storyboard.TargetProperty="(Grid.ColumnSpan)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Download_Playlists" Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Download_Playlists" Storyboard.TargetProperty="HorizontalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Right" />
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="FullScreenPortrait">
@@ -175,6 +190,24 @@
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ComboBoxGrid" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Downloads_Button_Snapped" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Downloads_Button" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Downloads_Row" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="175" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Downloads_Button_Column" Storyboard.TargetProperty="Width">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="290" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Downloads_Button_Row" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="150" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

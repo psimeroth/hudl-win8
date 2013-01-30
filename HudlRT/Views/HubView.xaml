@@ -34,6 +34,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Button Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]"
                     VerticalAlignment="Stretch" Margin="10,20">
@@ -49,6 +50,15 @@
                     <TextBlock Text="Last Viewed" HorizontalAlignment="Center"/>
                     <ProgressRing x:Name="snapped_LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" Canvas.ZIndex="1" />
                 </StackPanel>
+            </Button>
+            <Button x:Name="Downloads_Button_Snapped" Grid.Row="2" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [ViewDownloads()]" 
+                    Margin="10,20" VerticalAlignment="Stretch">
+                <Button.Content>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE19C;" Foreground="{StaticResource HudlOrange}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Downloads" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Button.Content>
             </Button>
         </Grid>
         

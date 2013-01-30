@@ -117,14 +117,14 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private Visibility _visibility;
-        public Visibility Visibility
+        private Visibility _noEntriesMessage_Visibility;
+        public Visibility NoEntriesMessage_Visibility
         {
-            get { return _visibility; }
+            get { return _noEntriesMessage_Visibility; }
             set
             {
-                _visibility = value;
-                NotifyOfPropertyChange(() => Visibility);
+                _noEntriesMessage_Visibility = value;
+                NotifyOfPropertyChange(() => NoEntriesMessage_Visibility);
             }
         }
 
@@ -284,12 +284,12 @@ namespace HudlRT.ViewModels
                 }
                 if (Cutups.Count != 0)
                 {
-                    Visibility = Visibility.Collapsed;
+                    NoEntriesMessage_Visibility = Visibility.Collapsed;
                 }
             }
             else
             {
-                Visibility = Visibility.Visible;
+                NoEntriesMessage_Visibility = Visibility.Visible;
             }
 
             if (CachedParameter.downloadAccessor.downloading)
@@ -571,11 +571,11 @@ namespace HudlRT.ViewModels
             }
             if (Cutups == null || Cutups.Count == 0)
             {
-                Visibility = Visibility.Visible;
+                NoEntriesMessage_Visibility = Visibility.Visible;
             }
             else
             {
-                Visibility = Visibility.Collapsed;
+                NoEntriesMessage_Visibility = Visibility.Collapsed;
             }
 
         }
@@ -892,11 +892,11 @@ namespace HudlRT.ViewModels
 
                 if (Cutups == null || Cutups.Count == 0)
                 {
-                    Visibility = Visibility.Visible;
+                    NoEntriesMessage_Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    Visibility = Visibility.Collapsed;
+                    NoEntriesMessage_Visibility = Visibility.Collapsed;
                 }
             }
         }
@@ -910,6 +910,13 @@ namespace HudlRT.ViewModels
         }
 
         public void Downloads_Button()
+        {
+            UpdateCachedParameter();
+            HideCheckBoxes();
+            navigationService.NavigateToViewModel<DownloadsViewModel>();
+        }
+
+        public void Downloads_Button_Snapped()
         {
             UpdateCachedParameter();
             HideCheckBoxes();
