@@ -15,7 +15,7 @@ namespace HudlRT.Common
         static public void ShowNoInternetConnectionDialog(object sender, RoutedEventArgs e)
         {
             string message = "We didn't detect an internet connection.";
-            message += "\nPlease connect to the internet, and then try again if you wish to view non-downloaded content.";
+            message += "\nPlease connect to the internet if you wish to view non-downloaded content.";
             ShowExceptionDialog(message, false, sender, e);
         }
 

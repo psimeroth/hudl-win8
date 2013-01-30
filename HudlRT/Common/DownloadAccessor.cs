@@ -141,7 +141,7 @@ namespace HudlRT.Common
                                 downloadComplete = false;
                                 downloading = false;
                                 downloadCanceled = true;
-                                DownloadProgress = 0;
+                                currentDownloadedBytes = 0;
                                 return;
                             }
                             var source = new Uri(angle.fileLocation);
@@ -179,7 +179,7 @@ namespace HudlRT.Common
             downloadComplete = true;
             DownloadComplete_Notification();
             downloading = false;
-            DownloadProgress = 0;
+            currentDownloadedBytes = 0;
         }
 
         private void DownloadComplete_Notification()

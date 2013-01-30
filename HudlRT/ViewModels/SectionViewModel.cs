@@ -671,7 +671,6 @@ namespace HudlRT.ViewModels
             }
             DownloadProgress_Visibility = Visibility.Visible;
             ConfirmButton_Visibility = Visibility.Collapsed;
-            DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
             DownloadProgressText = "";
             StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
