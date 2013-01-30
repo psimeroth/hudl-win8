@@ -292,7 +292,7 @@ namespace HudlRT.ViewModels
                 }
                 else
                 {
-                    List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+                    List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList();
                     Angle currentAngle = SelectedClip.angles.FirstOrDefault(a => a.clipAngleId == SelectedAngle.clipAngleId);
 
                     int angleIndex = filteredAngles.IndexOf(currentAngle);
@@ -466,7 +466,7 @@ namespace HudlRT.ViewModels
                 {
                     if (currentSortFilter != null)
                     {
-                        if (currentSortFilter.FilterCriteria.Where(c => c.IsChecked).Count() == 0)
+                        if (currentSortFilter.FilterCriteria.Count(c => c.IsChecked) == 0)
                         {
                             ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
                             if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
