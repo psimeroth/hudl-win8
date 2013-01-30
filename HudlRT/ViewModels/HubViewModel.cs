@@ -262,7 +262,7 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = "Collapsed";
             if (CachedParameter.downloadedCutups == null)
             {
-                await CachedParameter.downloadAccessor.GetDownloads();
+                await DownloadAccessor.Instance.GetDownloads();
             }
             DownloadedCutupSize = "";
             DownloadedCutupCount = CachedParameter.downloadedCutups.Count > 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";

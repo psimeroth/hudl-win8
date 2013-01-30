@@ -292,7 +292,7 @@ namespace HudlRT.ViewModels
                 Visibility = Visibility.Visible;
             }
 
-            if (CachedParameter.downloadAccessor.downloading)
+            if (DownloadAccessor.Instance.Downloading)
             {
                 StartTimer();
                 downloadMode = DownloadMode.Dowloading;
@@ -610,7 +610,7 @@ namespace HudlRT.ViewModels
         {
             downloadMode = DownloadMode.Off;
             ExitDownloadMode();
-            if (CachedParameter.downloadAccessor.downloading)
+            if (DownloadAccessor.Instance.Downloading)
             {
                 CachedParameter.cts.Cancel();  
             }
@@ -650,7 +650,7 @@ namespace HudlRT.ViewModels
                 {
                     DownloadButton_Visibility = Visibility.Collapsed;
                 }
-                else if (!CachedParameter.downloadAccessor.downloading)
+                else if (!DownloadAccessor.Instance.Downloading)
                 {
                     DownloadButton_Visibility = Visibility.Visible;
                 }
@@ -671,12 +671,12 @@ namespace HudlRT.ViewModels
             }
             DownloadProgress_Visibility = Visibility.Visible;
             ConfirmButton_Visibility = Visibility.Collapsed;
-            DownloadProgress = CachedParameter.downloadAccessor.DownloadProgress;
+            DownloadProgress = DownloadAccessor.Instance.DownloadProgress;
             DownloadProgressText = "";
             StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
             downloadMode = DownloadMode.Dowloading;
-            CachedParameter.downloadAccessor.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
+            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
         }
 
         private async Task StartTimer()
@@ -689,23 +689,23 @@ namespace HudlRT.ViewModels
 
         void timerTick(object sender, object e)
         {
-            if (!CachedParameter.downloadAccessor.downloadComplete && CachedParameter.downloadAccessor.downloading)
+            if (!DownloadAccessor.Instance.DownloadComplete && DownloadAccessor.Instance.Downloading)
             {
                 try
                 {
                     
-                    if (CachedParameter.downloadAccessor.findingFileSize)
+                    if (DownloadAccessor.Instance.FindingFileSize)
                     {
                         DownloadProgressText = "Determining Download Size";
                     }
                     else
                     {
-                        DownloadProgressText = CachedParameter.downloadAccessor.clipsComplete + " / " + CachedParameter.downloadAccessor.totalClips + " File(s)";
-                        DownloadProgress = 100.0 * (((long)CachedParameter.downloadAccessor.download.Progress.BytesReceived + CachedParameter.downloadAccessor.currentDownloadedBytes) / (double)CachedParameter.downloadAccessor.totalBytes);
+                        DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
+                        DownloadProgress = 100.0 * (((long)DownloadAccessor.Instance.Download.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
                     }
                 }
                 catch (Exception) { };
-                if (CachedParameter.downloadAccessor.downloadCanceled)
+                if (DownloadAccessor.Instance.DownloadCanceled)
                 {
                     timer.Stop();
                 }

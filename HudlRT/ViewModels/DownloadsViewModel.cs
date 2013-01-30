@@ -279,7 +279,7 @@ namespace HudlRT.ViewModels
         {
             long totalsize = 0;
             var totalClips = 0;
-            Cutups = await CachedParameter.downloadAccessor.GetDownloads();
+            Cutups = await DownloadAccessor.Instance.GetDownloads();
             if (!Cutups.Any())
             {
                 DeleteButton_Visibility = Visibility.Collapsed;
