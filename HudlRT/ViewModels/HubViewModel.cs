@@ -18,6 +18,8 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         private string lastViewedId = null;
 
+        private bool lastViewedLocal = false;
+
         private Task<ClipResponse> loadLastViewed;
         private CutupViewModel lastViewedCutup;
 
@@ -299,10 +301,12 @@ namespace HudlRT.ViewModels
                     {
                         lastViewedCutup.DisplayColumns = cVM.DisplayColumns;
                         lastViewedCutup.ClipCount = cVM.ClipCount;
+                        lastViewedLocal = true;
                         return new ClipResponse { clips = cVM.Clips, status = SERVICE_RESPONSE.SUCCESS };
                     }
                 }
             }
+            lastViewedLocal = false;
             return await ServiceAccessor.GetCutupClips(lastViewedCutup);
         }
 
@@ -525,31 +529,39 @@ namespace HudlRT.ViewModels
 
         public async void LastViewedSelected()
         {
-            if (lastViewedId != null)
+            if (ServiceAccessor.ConnectedToInternet() || lastViewedLocal)
             {
-                ProgressRingVisibility = "Visible";
-                
-                ClipResponse response = await loadLastViewed;
-                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                if (lastViewedId != null)
                 {
-                    lastViewedCutup.Clips = response.clips;
-                    UpdateCachedParameter();
-                    CachedParameter.selectedCutup = new Cutup {
-                                                                cutupId = lastViewedCutup.CutupId,
-                                                                clips = lastViewedCutup.Clips,
-                                                                displayColumns = lastViewedCutup.DisplayColumns,
-                                                                clipCount = lastViewedCutup.ClipCount,
-                                                                name = lastViewedCutup.Name
-                                                            };
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>();
-                }
+                    ProgressRingVisibility = "Visible";
 
-                ProgressRingVisibility = "Collapsed";
+                    ClipResponse response = await loadLastViewed;
+                    if (response.status == SERVICE_RESPONSE.SUCCESS)
+                    {
+                        lastViewedCutup.Clips = response.clips;
+                        UpdateCachedParameter();
+                        CachedParameter.selectedCutup = new Cutup
+                        {
+                            cutupId = lastViewedCutup.CutupId,
+                            clips = lastViewedCutup.Clips,
+                            displayColumns = lastViewedCutup.DisplayColumns,
+                            clipCount = lastViewedCutup.ClipCount,
+                            name = lastViewedCutup.Name
+                        };
+                        navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+                    }
+
+                    ProgressRingVisibility = "Collapsed";
+                }
+                else
+                {
+                    UpdateCachedParameter();
+                    navigationService.NavigateToViewModel<SectionViewModel>();
+                }
             }
             else
             {
-                UpdateCachedParameter();
-                navigationService.NavigateToViewModel<SectionViewModel>();
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
             }
         }
 
