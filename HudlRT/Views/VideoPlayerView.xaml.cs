@@ -60,8 +60,7 @@ namespace HudlRT.Views
         private DispatcherTimer rewindTimer { get; set; }
         private int rewindTimerInterval { get; set; }
         private int rewindPositionChange { get; set; }
-        private ScrollViewer filteredListScrollViewer { get; set; }
-        private DispatcherTimer shittyVideoTimer { get; set; }
+        private ScrollViewer filteredListScrollViewer { get; set; }\
 
         public VideoPlayerView()
         {
