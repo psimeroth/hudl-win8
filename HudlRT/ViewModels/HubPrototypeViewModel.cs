@@ -41,7 +41,7 @@ namespace HudlRT.ViewModels
 
         protected override void OnActivate()
         {
-            CachedParameter.initializeForFrontend();
+            CachedParameter.InitializeForFrontend();
             PreviousGame = LargeGameViewModel.FromGame(CachedParameter.hubViewPreviousGame);
             NextGame = LargeGameViewModel.FromGame(CachedParameter.hubViewNextGame);
             base.OnActivate();

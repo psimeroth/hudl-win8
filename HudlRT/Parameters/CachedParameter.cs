@@ -34,6 +34,38 @@ namespace HudlRT.Parameters
         public static Cutup selectedCutup { get; set; }
 
 
+        public static void InitializeForFrontend(){
+            isInitialized= false;
+            categoryId = null;
+            hubViewNextGame = new Game()
+            {
+                categories = new BindableCollection<Category>()
+                {
+                    new Category(){categoryId = "4102838", cutups = new BindableCollection<Cutup>(), name ="Game Footage"},
+                    new Category(){categoryId = "4102839", cutups = new BindableCollection<Cutup>(), name ="Practice"},
+                    new Category(){categoryId = "4102840", cutups = new BindableCollection<Cutup>(), name ="Opponent Scout"}
+                },
+                date = new DateTime(634865184000000000),
+                gameId = "881301",
+                isHome = true,
+                opponent = "Wichita Southeast"
+            };
+
+            hubViewPreviousGame = new Game()
+            {
+                categories = new BindableCollection<Category>()
+                {
+                    new Category(){categoryId = "4102818", cutups = new BindableCollection<Cutup>(), name ="Game Footage"},
+                    new Category(){categoryId = "4102819", cutups = new BindableCollection<Cutup>(), name ="Practice"},
+                    new Category(){categoryId = "4102820", cutups = new BindableCollection<Cutup>(), name ="Opponent Scout"}
+                },
+                date = new DateTime(634859136000000000),
+                gameId = "881296",
+                isHome = true,
+                opponent = "Wichita east"
+            };
+        }
+
         public static void resetCache(){
             isInitialized = false;
             categoryId = null;
