@@ -108,18 +108,7 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var library = Windows.Storage.KnownFolders.VideosLibrary;
-            var queryOptions = new Windows.Storage.Search.QueryOptions();
-            queryOptions.FolderDepth = Windows.Storage.Search.FolderDepth.Deep;
-            queryOptions.IndexerOption = Windows.Storage.Search.IndexerOption.UseIndexerWhenAvailable;
-
             videoMediaElement.Width = Window.Current.Bounds.Width - 300;
-
-            var fileQuery = library.CreateFileQueryWithOptions(queryOptions);
-
-            var fif = new Windows.Storage.BulkAccess.FileInformationFactory(fileQuery,
-                Windows.Storage.FileProperties.ThumbnailMode.VideosView, 190,
-                Windows.Storage.FileProperties.ThumbnailOptions.UseCurrentScale, false);
 
             initializeGrid();
 
