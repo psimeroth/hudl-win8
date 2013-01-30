@@ -10,7 +10,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:views="using:HudlRT.ViewModels">
-
+    <UserControl.Resources>
+        <CollectionViewSource x:Name="HubGames" IsSourceGrouped="True" ItemsPath="Games" />
+    </UserControl.Resources>
+    
     <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
@@ -24,14 +27,53 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
-            <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
+            <Image x:Name="Logo" Grid.Column="1" Margin="0,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
         </Grid>
 
         <!-- Horizontal scrolling grid used in most view states -->
-        <GridView Grid.Row="1" IsSwipeEnabled="false">
-            <ContentControl x:Name="PreviousGame" />
-            <ContentControl x:Name="NextGame" />
+        <GridView x:Name="ItemsByCategory"  VerticalAlignment="Bottom" ItemsSource="{Binding Source={StaticResource HubGames}}">
+
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Background="{StaticResource HudlLightGray}" Height="600" Width="300" Orientation="Vertical">
+                        <Image></Image>
+
+                        <Grid Height="100">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Name="Opponent" Text ="{Binding opponent}" Grid.Row="0"/>
+                            <TextBlock x:Name="Date" Text ="{Binding DisplayDate}" Grid.Row="1"/>
+                            <TextBlock x:Name="NumPlaylists" Text="{Binding gameId}" HorizontalAlignment="Right" Grid.Row="1"/>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+
+            <GridView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="0">
+                                <TextBlock Text="TEST" Foreground="Gray" FontSize="25" />
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+
+                    <GroupStyle.Panel>
+                        <ItemsPanelTemplate>
+                            <VariableSizedWrapGrid Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </GroupStyle.Panel>
+                </GroupStyle>
+            </GridView.GroupStyle>
         </GridView>
     </Grid>
-
 </common:LayoutAwarePage>

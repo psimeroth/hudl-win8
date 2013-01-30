@@ -127,6 +127,18 @@ namespace HudlRT.Models
         }
     }
 
+    public class HubPageGameEntry
+    {
+        public string Name {get; set;}
+        public List<Game> Games {get; set;}
+
+        public HubPageGameEntry()
+        {
+            Games = new List<Game>();
+            Name = "";
+        }
+    }
+
     public class Category
     {
         public string name { get; set; }

@@ -58,7 +58,7 @@ namespace HudlRT.ViewModels
            {
                Opponent = "vs. " + game.opponent,
                Date = game.date.ToString("d"),
-               NumPlaylists = numplaylists.ToString()
+               NumPlaylists = numplaylists.ToString() + " playlists"
            };
 
            return largeVM;

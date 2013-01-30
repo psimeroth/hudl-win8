@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HudlRT.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,17 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             // TODO: Assign a collection of bindable groups to this.DefaultViewModel["Groups"]
+        }
+
+        private void HubGames_ItemClick_1(object sender, ItemClickEventArgs e)
+        {
+            var x = (HubPageGameEntry)sender;
+        }
+
+        private void GridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            var x = (GridView)sender;
+            var y = e.AddedItems.FirstOrDefault();
         }
     }
 }
