@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI;using Windows.UI.ViewManagement;
 using System.Diagnostics;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Documents;
 
 namespace HudlRT.Views
 {   
@@ -47,6 +48,7 @@ namespace HudlRT.Views
         }
         Point initialPoint = new Point();
         Point currentPoint = new Point();
+        private int count = 0;
         bool isGridCollapsed = false;
         private  TranslateTransform dragTranslation;
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
@@ -72,7 +74,7 @@ namespace HudlRT.Views
             videoMediaElement.ManipulationDelta += videoMediaElement_ManipulationDelta;
 
             gridHeaders.RenderTransform = this.dragTranslation;
-            Clips.RenderTransform = this.dragTranslation;
+            FilteredClips.RenderTransform = this.dragTranslation;
             gridScroll.ViewChanged += scrollHeaders;
             //gridHeaderScroll.ViewChanged += scrollGrid;
 
@@ -134,16 +136,23 @@ namespace HudlRT.Views
                     {
                         columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
                     }
-                    rowText = rowText + @"<TextBlock  Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
+                    rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                     Border b = new Border();
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
                     b.BorderThickness = new Thickness(0, 0, 1, 0);
                     TextBlock t = new TextBlock();
-                    t.Text = displayColumns[i];
+                    Run text = new Run();
+                    text.Text = displayColumns[i];
+                    Underline underline = new Underline();
+                    underline.Inlines.Add(text);
+                    t.Inlines.Add(underline);
                     b.SetValue(Grid.RowProperty, 0);
                     b.SetValue(Grid.ColumnProperty, i);
                     t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
                     t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                    t.Tag = i;
+                    t.PointerPressed += columnHeaderClick;
+
                     b.Child = t;
                     gridHeaders.Children.Add(b);
                 }
@@ -151,18 +160,75 @@ namespace HudlRT.Views
             template = template.Replace("@", columnDefinitions).Replace("%", rowText);
 
             var dt = (DataTemplate)XamlReader.Load(template);
-            Clips.ItemTemplate = dt;
+            FilteredClips.ItemTemplate = dt;
             //btnExpandGrid_Click(null, null);
 
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.listView = Clips;
-            Clips.SelectedIndex = 0;
+            vm.listView = FilteredClips;
+            vm.SortFilterPopupControl = SortFilterPopup;
+            FilteredClips.SelectedIndex = 0;
+
+            List<TextBlock> cHeaders = new List<TextBlock>();
+            foreach (Border x in gridHeaders.Children)
+            {
+                cHeaders.Add((TextBlock) x.Child);
+            }
+            vm.ColumnHeaderTextBlocks = cHeaders;
+        }
+
+        private void columnHeaderClick(object sender, PointerRoutedEventArgs e)
+        {
+            int id = (int) ((TextBlock)sender).Tag;
+
+            if (id != 0)
+            {
+                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                vm.PrepareSortFilterPopup(id);
+
+                if (!SortFilterPopup.IsOpen)
+                {
+                    RootPopupBorder.Width = 346;
+                    SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - 346;
+
+                    SortFilterPopup.IsOpen = true;
+                }
+            }
+
+            /* 
+             * RemoveFilterBtn visibility is set to visible by default, so we do not want to display it the first time a grid header is clicked.
+             * So, we use a variable count to ensure we don't display the RemoveFilterBtn the first time a header is clicked.
+             */
+            if (RemoveFilterBtn.Visibility == Visibility.Visible && count > 0 && FilterButtonsGrid.ColumnDefinitions.Count < 3)
+            {
+                FilterButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                Grid.SetColumn(CloseBtn, 2);
+
+            }
+            else
+            {
+                if (FilterButtonsGrid.ColumnDefinitions.Count > 2 && RemoveFilterBtn.Visibility == Visibility.Collapsed)
+                {
+                    FilterButtonsGrid.ColumnDefinitions.RemoveAt(2);
+                    Grid.SetColumn(CloseBtn, 1);
+                }
+            }
+
+            //Only increment count when a header other than Play # is clicked
+            if (id != 0)
+            {
+                count++;
+            }
+        }
+
+        private void closeSettingsPopupClicked(object sender, RoutedEventArgs e)
+        {
+            if (SortFilterPopup.IsOpen) { SortFilterPopup.IsOpen = false; }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-
+            
             gridHeaders.Children.Clear();
         }
         private void scrollHeaders(object sender, ScrollViewerViewChangedEventArgs e)
@@ -250,7 +316,7 @@ namespace HudlRT.Views
             }
             else
             {
-                gridScroll.ScrollToVerticalOffset((Clips.SelectedIndex) * 39);
+                gridScroll.ScrollToVerticalOffset((FilteredClips.SelectedIndex) * 39);
             }
         }
 
@@ -267,7 +333,7 @@ namespace HudlRT.Views
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
                 gridScroll.Visibility = Visibility.Collapsed;
-                Clips.UpdateLayout();
+                FilteredClips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaderScroll.Visibility = Visibility.Collapsed;
@@ -620,6 +686,7 @@ namespace HudlRT.Views
 
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
+            SortFilterPopup.IsOpen = false;
             snapped_mainGrid.Visibility = Visibility.Collapsed;
             videoMediaElement.ControlPanel.Visibility = Visibility.Visible;
             var currentViewState = ApplicationView.Value;
@@ -699,7 +766,7 @@ namespace HudlRT.Views
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
                 gridScroll.Visibility = Visibility.Collapsed;
-                Clips.UpdateLayout();
+                FilteredClips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaderScroll.Visibility = Visibility.Collapsed;
