@@ -277,6 +277,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Caliburn.Micro\Windows.UI.Interactivity.dll</HintPath>
     </Reference>
+    <Reference Include="WinRTXamlToolkit">
+      <HintPath>packages\winrtxamltoolkit.1.3.5.3\lib\netcore45\WinRTXamlToolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

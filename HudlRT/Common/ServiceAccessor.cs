@@ -79,11 +79,11 @@ namespace HudlRT.Common
 #endif
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
-        public const string URL_SERVICE_GET_SCHEDULE = "teams/#/schedule";//returns games
-        public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/#/schedule?season=%";//returns games
-        public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/#/categories";//returns categories
-        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
-        public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips?startIndex=%";//returns clips
+        public const string URL_SERVICE_GET_SCHEDULE = "teams/{0}/schedule";//returns games
+        public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games
+        public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/{0}/categories";//returns categories
+        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns cutups
+        public const string URL_SERVICE_GET_CLIPS = "playlists/{0}/clips?startIndex={1}";//returns clips
 
         public static bool ConnectedToInternet()
         {
@@ -94,7 +94,7 @@ namespace HudlRT.Common
         public static async Task<LoginResponse> Login(string loginArgs)
         {
             //var loginResponse = await ServiceAccessor.MakeApiCallGet("athlete");
-            var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
+            var loginResponse = await MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
             if (!string.IsNullOrEmpty(loginResponse))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
@@ -129,7 +129,7 @@ namespace HudlRT.Common
 
         public static async Task<TeamResponse> GetTeams()
         {
-            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
+            var teams = await MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
             if (!string.IsNullOrEmpty(teams))
             {
                 try
@@ -155,7 +155,7 @@ namespace HudlRT.Common
 
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId), true);
+            var games = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON, teamId, seasonId), true);
             if (!string.IsNullOrEmpty(games))
             {
                 try
@@ -181,7 +181,7 @@ namespace HudlRT.Common
 
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId), true);
+            var categories = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME,gameId), true);
             if (!string.IsNullOrEmpty(categories))
             {
                 try
@@ -207,7 +207,7 @@ namespace HudlRT.Common
 
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId), true);
+            var cutups = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY, categoryId), true);
             if (!string.IsNullOrEmpty(cutups))
             {
                 try
@@ -231,11 +231,11 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(CutupViewModel cutup, int startIndex)
+        public static async Task<List<Clip>> GetAdditionalCutupClips(string cutupID, int startIndex)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()), true);
+            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, cutupID, startIndex.ToString()), true);
             var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-            BindableCollection<Clip> clipCollection = new BindableCollection<Clip>();
+            List<Clip> clipCollection = new List<Clip>();
             if (clipResponseDTO.ClipsList.Clips.Count == 100)
             {
                 foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
@@ -246,7 +246,7 @@ namespace HudlRT.Common
                         clipCollection.Add(c);
                     }
                 }
-                var additionalClips = await GetAdditionalCutupClips(cutup, startIndex+100);
+                var additionalClips = await GetAdditionalCutupClips(cutupID, startIndex + 100);
                 foreach (Clip c in additionalClips)
                 {
                     clipCollection.Add(c);
@@ -270,7 +270,7 @@ namespace HudlRT.Common
 
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"), true);
+            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, cutup.CutupId.ToString(), "0"), true);
             if (!string.IsNullOrEmpty(clips))
             {
                 try
@@ -282,14 +282,6 @@ namespace HudlRT.Common
                     {
                         Clip c = Clip.FromDTO(clipDTO, obj.DisplayColumns);
                         if (c != null)
-                        {
-                            clipCollection.Add(c);
-                        }
-                    }
-                    if (clipCollection.Count == 100)
-                    {
-                        var additionalClips = await GetAdditionalCutupClips(cutup, 100);
-                        foreach (Clip c in additionalClips)
                         {
                             clipCollection.Add(c);
                         }
