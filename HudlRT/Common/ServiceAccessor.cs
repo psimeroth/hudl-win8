@@ -317,7 +317,7 @@ namespace HudlRT.Common
         {
             if (!ConnectedToInternet())
             {
-                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+                APIExceptionDialog.ShowNoInternetConnectionDialog();
                 return null;
             }
             var httpClient = new HttpClient();
@@ -330,7 +330,7 @@ namespace HudlRT.Common
             {
                 if (!response.IsSuccessStatusCode)
                 {
-                    APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
+                    APIExceptionDialog.ShowStatusCodeExceptionDialog(response.StatusCode.ToString(), uri.ToString());
                     return null;
                 }
             }
@@ -348,8 +348,8 @@ namespace HudlRT.Common
         {
             if (!ConnectedToInternet())
             {
-            APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
-            return null;
+                APIExceptionDialog.ShowNoInternetConnectionDialog();
+                return null;
             }
 
             var httpClient = new HttpClient();
@@ -362,7 +362,7 @@ namespace HudlRT.Common
             //response.StatusCode 404 500 401
             if(!response.IsSuccessStatusCode)
             {
-                APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
+                APIExceptionDialog.ShowStatusCodeExceptionDialog(response.StatusCode.ToString(), uri.ToString());
                 return null;
             }
             return await response.Content.ReadAsStringAsync();
