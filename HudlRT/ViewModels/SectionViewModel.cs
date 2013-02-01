@@ -128,6 +128,72 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private Visibility _scheduleProgressRing_Visibility;
+        public Visibility ScheduleProgressRing_Visibility
+        {
+            get { return _scheduleProgressRing_Visibility; }
+            set
+            {
+                _scheduleProgressRing_Visibility = value;
+                NotifyOfPropertyChange(() => ScheduleProgressRing_Visibility);
+            }
+        }
+
+        private Visibility _headerProgressRing_Visibility;
+        public Visibility HeaderProgressRing_Visibility
+        {
+            get { return _headerProgressRing_Visibility; }
+            set
+            {
+                _headerProgressRing_Visibility = value;
+                NotifyOfPropertyChange(() => HeaderProgressRing_Visibility);
+            }
+        }
+
+        private Visibility _cutupsProgressRing_Visibility;
+        public Visibility CutupsProgressRing_Visibility
+        {
+            get { return _cutupsProgressRing_Visibility; }
+            set
+            {
+                _cutupsProgressRing_Visibility = value;
+                NotifyOfPropertyChange(() => CutupsProgressRing_Visibility);
+            }
+        }
+
+        private Visibility _scheduleVisibility;
+        public Visibility ScheduleVisibility
+        {
+            get { return _scheduleVisibility; }
+            set
+            {
+                _scheduleVisibility = value;
+                NotifyOfPropertyChange(() => ScheduleVisibility);
+            }
+        }
+
+        private Visibility _headersVisibility;
+        public Visibility HeadersVisibility
+        {
+            get { return _headersVisibility; }
+            set
+            {
+                _headersVisibility = value;
+                NotifyOfPropertyChange(() => HeadersVisibility);
+            }
+        }
+
+        private Visibility _cutupsVisibility;
+        public Visibility CutupsVisibility
+        {
+            get { return _cutupsVisibility; }
+            set
+            {
+                _cutupsVisibility = value;
+                NotifyOfPropertyChange(() => CutupsVisibility);
+            }
+        }
+
         private Visibility downloadButton_Visibility;
         public Visibility DownloadButton_Visibility
         {
@@ -170,9 +236,7 @@ namespace HudlRT.ViewModels
                 enabled_Boolean = value;
                 NotifyOfPropertyChange(() => Enabled_Boolean);
             }
-        }
-
-        private BindableCollection<Season> seasonsForDropDown;
+        }        private BindableCollection<Season> seasonsForDropDown;
         public BindableCollection<Season> SeasonsDropDown
         {
             get { return seasonsForDropDown; }
@@ -226,6 +290,11 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+            ScheduleProgressRing_Visibility = Visibility.Collapsed;
+            HeaderProgressRing_Visibility = Visibility.Collapsed;
+            CutupsProgressRing_Visibility = Visibility.Collapsed;
+            NoEntriesMessage_Visibility = Visibility.Collapsed;
+
             DownloadButton_Visibility = Visibility.Collapsed;
             // Get the team and season ID
             string teamID;
@@ -406,6 +475,7 @@ namespace HudlRT.ViewModels
             else
             {
                 Schedule = null;
+                HeaderProgressRing_Visibility = Visibility.Collapsed;
             }
         }
 
@@ -417,6 +487,8 @@ namespace HudlRT.ViewModels
 
         public async Task GetGames(string teamID, string seasonID)
         {
+            ScheduleVisibility = Visibility.Collapsed;
+            ScheduleProgressRing_Visibility = Visibility.Visible;
             GameResponse response = await ServiceAccessor.GetGames(teamID.ToString(), seasonID.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
@@ -439,10 +511,14 @@ namespace HudlRT.ViewModels
             {
                 Schedule = null;
             }
+            ScheduleProgressRing_Visibility = Visibility.Collapsed;
+            ScheduleVisibility = Visibility.Visible;
         }
 
         public async Task GetGameCategories(GameViewModel game)
         {
+            HeadersVisibility = Visibility.Collapsed;
+            HeaderProgressRing_Visibility = Visibility.Visible;
             Categories = null;
             game.TextColor = "#0099FF";
             CategoryResponse response = await ServiceAccessor.GetGameCategories(game.GameId.ToString());
@@ -463,6 +539,8 @@ namespace HudlRT.ViewModels
             {
                 Categories = null;
             }
+            HeaderProgressRing_Visibility = Visibility.Collapsed;
+            HeadersVisibility = Visibility.Visible;
         }
 
         //public void UpdateDownloadsCheckBox()
@@ -551,6 +629,9 @@ namespace HudlRT.ViewModels
 
         public async Task GetCutupsByCategory(CategoryViewModel category)
         {
+            NoEntriesMessage_Visibility = Visibility.Collapsed;
+            CutupsVisibility = Visibility.Collapsed;
+            CutupsProgressRing_Visibility = Visibility.Visible;
             Cutups = null;
             SelectedCategory.TextColor = "#0099FF";
             CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
@@ -589,6 +670,8 @@ namespace HudlRT.ViewModels
             {
                 NoEntriesMessage_Visibility = Visibility.Collapsed;
             }
+            CutupsProgressRing_Visibility = Visibility.Collapsed;
+            CutupsVisibility = Visibility.Visible;
 
         }
 

@@ -10,10 +10,7 @@
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
-    <Grid x:Name="RootGrid">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid x:Name="RootGrid" Background="{StaticResource HudlDarkerGray}">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
@@ -26,10 +23,10 @@
         </StackPanel>
 
 
-        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
+        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10" Background="{StaticResource HudlDarkGray}">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
-            <Grid Margin="65,0,0,0" Background="{StaticResource HudlBlackButton}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" />
+            <Grid Margin="65,0,0,0" Background="{StaticResource HudlHeaderGray}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
             </Grid>
             <Grid Grid.Column="1" Height="50" VerticalAlignment="Center">
