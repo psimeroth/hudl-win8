@@ -234,6 +234,7 @@ namespace HudlRT.Views
             base.OnNavigatedFrom(e);
 
             gridHeaders.Children.Clear();
+            gridHeaders.ColumnDefinitions.Clear();
         }
 
         void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
