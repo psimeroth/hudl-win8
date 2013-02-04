@@ -33,4 +33,27 @@
         </StackPanel>
     </DataTemplate>
 
+    <DataTemplate x:Key="HubPageSnappedGamesTemplate">
+        <Grid Margin="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
+                <Image Source="{Binding Image}" Stretch="UniformToFill"/>
+            </Border>
+            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch">
+                <TextBlock Text="{Binding Opponent}" Style="{StaticResource ItemTextStyle}" MaxHeight="40"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Date}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>
+                    <TextBlock Text="{Binding NumPlaylists}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Grid.Column="1" HorizontalAlignment="Right"/>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
 </ResourceDictionary>
