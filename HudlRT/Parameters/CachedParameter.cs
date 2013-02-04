@@ -44,6 +44,8 @@ namespace HudlRT.Parameters
         public static string hubViewDownloadsCount { get; set; }
         
         public static string hubViewDownloadsSizeInMB { get; set; }
+
+        public static List<Cutup> currentlyDownloadingCutups { get; set; }
         
 
         public static void resetCache(){

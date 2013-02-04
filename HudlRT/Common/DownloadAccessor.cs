@@ -17,6 +17,7 @@ using HudlRT.ViewModels;
 using System.Threading;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
+using System.ComponentModel;
 
 namespace HudlRT.Common
 {
@@ -32,9 +33,6 @@ namespace HudlRT.Common
         private DownloadAccessor()
         {
             Downloading = false;
-            DownloadComplete = false;
-            DownloadCanceled = false;
-            FindingFileSize = false;
             TotalBytes = 0;
             ClipsComplete = 0;
             CurrentDownloadedBytes = 0;
@@ -43,11 +41,7 @@ namespace HudlRT.Common
 
         public DownloadOperation Download { get; set; }
         public double DownloadProgress { get; set; }
-
         public bool Downloading { get; set; }
-        public bool DownloadComplete { get; set; }
-        public bool DownloadCanceled { get; set; }
-        public bool FindingFileSize { get; set; }
         public long TotalBytes { get; set; }
         public long ClipsComplete { get; set; }
         public long CurrentDownloadedBytes { get; set; }
@@ -102,17 +96,21 @@ namespace HudlRT.Common
             }
         }
 
-        public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g, CancellationToken ct)
+        private async Task<StorageFile> StartDownloadAsync(DownloadOperation downloadOperation, Progress<DownloadOperation> progress)
         {
-            DownloadComplete = false;
+            Download = downloadOperation;
+            await downloadOperation.StartAsync().AsTask(progress);
+            CurrentDownloadedBytes += (long)downloadOperation.Progress.BytesReceived;
+            return (StorageFile)downloadOperation.ResultFile;
+        }
+
+        public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g, CancellationToken ct, Progress<DownloadOperation> progressCallBack)
+        {
             Downloading = true;
-            DownloadCanceled = false;
             TotalBytes = 0;
             ClipsComplete = 0;
             CurrentDownloadedBytes = 0;
             TotalClips = 0;
-
-            FindingFileSize = true;
             long cutupTotalSize = 0;
             var httpClient = new System.Net.Http.HttpClient();
             foreach (Cutup cut in cutups)
@@ -133,7 +131,6 @@ namespace HudlRT.Common
                 }
                 cut.totalFilesSize = cutupTotalSize;
             }
-            FindingFileSize = false;
 
             foreach (Cutup cut in cutups)
             {
@@ -158,9 +155,7 @@ namespace HudlRT.Common
                             if (ct.IsCancellationRequested)
                             {
                                 await DownloadAccessor.Instance.RemoveDownload(cut);
-                                DownloadComplete = false;
                                 Downloading = false;
-                                DownloadCanceled = true;
                                 CurrentDownloadedBytes = 0;
                                 return;
                             }
@@ -174,11 +169,9 @@ namespace HudlRT.Common
                                 var destinationFile = await fileFolder.CreateFileAsync(cut.cutupId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
                                 var downloader = new BackgroundDownloader();
                                 Download = downloader.CreateDownload(source, destinationFile);
-                                var downloadOperation = await Download.StartAsync();
-                                file = (StorageFile)downloadOperation.ResultFile;
+                                file = await StartDownloadAsync(Download, progressCallBack);
                                 angle.preloadFile = file.Path;
                                 angle.isPreloaded = true;
-                                CurrentDownloadedBytes += (long)Download.Progress.BytesReceived;
                                 ClipsComplete++;
                             }
                         }
@@ -195,8 +188,8 @@ namespace HudlRT.Common
                 string updatedModel = JsonConvert.SerializeObject(cutupForSave);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
                 CachedParameter.downloadedCutups.Add(cutupForSave);
+                
             }
-            DownloadComplete = true;
             DownloadComplete_Notification();
             Downloading = false;
             CurrentDownloadedBytes = 0;

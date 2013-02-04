@@ -366,7 +366,6 @@ namespace HudlRT.ViewModels
 
             if (DownloadAccessor.Instance.Downloading)
             {
-                StartTimer();
                 downloadMode = DownloadMode.Dowloading;
                 DownloadProgress_Visibility = Visibility.Visible;
                 CancelButton_Visibility = Visibility.Visible;
@@ -591,10 +590,10 @@ namespace HudlRT.ViewModels
             {
                 foreach (CutupViewModel cutupViewModel in Cutups)
                 {
+                    cutupViewModel.CheckBox = false;
                     if (cutupViewModel.CheckBox_Visibility == Visibility.Visible)//faster than checking if its in CachedParameter.downloadedCutups
                     {
-                        cutupViewModel.CheckBox_Visibility = Visibility.Collapsed;
-                        cutupViewModel.CheckBox = false;
+                        cutupViewModel.CheckBox_Visibility = Visibility.Collapsed;  
                     }
                 }
             }
@@ -680,12 +679,12 @@ namespace HudlRT.ViewModels
 
         public void Cancel_Download()
         {
-            downloadMode = DownloadMode.Off;
-            ExitDownloadMode();
             if (DownloadAccessor.Instance.Downloading)
             {
                 CachedParameter.cts.Cancel();  
             }
+            downloadMode = DownloadMode.Off;
+            ExitDownloadMode();
         }
 
         public void ExitDownloadMode()
@@ -722,7 +721,7 @@ namespace HudlRT.ViewModels
                 {
                     DownloadButton_Visibility = Visibility.Collapsed;
                 }
-                else if (!DownloadAccessor.Instance.Downloading)
+                else
                 {
                     DownloadButton_Visibility = Visibility.Visible;
                 }
@@ -731,6 +730,7 @@ namespace HudlRT.ViewModels
 
         public async void Confirm_Download()
         {
+            DownloadProgress = 0;
             List<Cutup> cutupList = new List<Cutup>();
             foreach (CutupViewModel cutupVM in Cutups)
             {
@@ -744,51 +744,52 @@ namespace HudlRT.ViewModels
             DownloadProgress_Visibility = Visibility.Visible;
             ConfirmButton_Visibility = Visibility.Collapsed;
             DownloadProgressText = "";
-            StartTimer();
+            //StartTimer();
             CachedParameter.cts = new CancellationTokenSource();
             downloadMode = DownloadMode.Dowloading;
-            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
+            DownloadProgressText = "Determining Download Size";
+            CachedParameter.currentlyDownloadingCutups = cutupList;
+            var progress = new Progress<DownloadOperation>(ProgressCallback);
+            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token, progress);
         }
 
-        private async Task StartTimer()
+        private void ProgressCallback(DownloadOperation obj)
         {
-            timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 350);
-            timer.Tick += timerTick;
-            timer.Start();
-        }
 
-        void timerTick(object sender, object e)
-        {
-            if (!DownloadAccessor.Instance.DownloadComplete && DownloadAccessor.Instance.Downloading)
+            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
+            DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
+            int downloadedCutupCount = 0;
+            if (DownloadProgress == 100)
             {
-                try
+                bool downloadFound = false;
+                if (Cutups != null)
                 {
-                    
-                    if (DownloadAccessor.Instance.FindingFileSize)
+                    foreach (CutupViewModel cutupVM in Cutups)
                     {
-                        DownloadProgressText = "Determining Download Size";
-                    }
-                    else
-                    {
-                        DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
-                        DownloadProgress = 100.0 * (((long)DownloadAccessor.Instance.Download.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
+                        downloadFound = false;
+                        foreach (Cutup downloadedCutup in CachedParameter.currentlyDownloadingCutups)
+                        {
+                            if (downloadedCutup.cutupId == cutupVM.CutupId)
+                            {
+                                cutupVM.DownloadedVisibility = Visibility.Visible;
+                                cutupVM.CheckBox = false;
+                                downloadFound = true;
+                                downloadedCutupCount++;
+                                break;
+                            }
+                        }
+                        if (!downloadFound)
+                        {
+                            cutupVM.DownloadedVisibility = Visibility.Collapsed;
+                        }
                     }
                 }
-                catch (Exception) { };
-                if (DownloadAccessor.Instance.DownloadCanceled)
-                {
-                    timer.Stop();
-                }
-            }
-            else//when the download completes
-            {
-                DownloadProgress = 100;
-                timer.Stop();
-                MarkDownloads();
+                DownloadProgress_Visibility = Visibility.Collapsed;
+                CancelButton_Visibility = Visibility.Collapsed;
                 downloadMode = DownloadMode.Off;
-                ExitDownloadMode();
-
+                DownloadButton_Visibility = downloadedCutupCount == Cutups.Count ? Visibility.Collapsed : Visibility.Visible;
+                CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
+                DownloadProgress = 0;
             }
         }
 
@@ -877,6 +878,11 @@ namespace HudlRT.ViewModels
                     CheckBoxSelected();
                 }
             }
+        }
+
+        public void ProgressUpdated(double percent)
+        {
+            DownloadProgress = percent;
         }
 
         public void CheckBoxSelected()
