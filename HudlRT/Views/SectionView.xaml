@@ -32,14 +32,14 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
-        <Grid x:Name="mainGrid" Margin="10,0,-10,0">
+        <Grid x:Name="mainGrid" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition x:Name="Downloads_Row" Height="100"/>
             </Grid.RowDefinitions>
 
-            <Grid x:Name="TopTitleGrid" Background="{StaticResource HudlDarkGray}">
+            <Grid x:Name="TopTitleGrid" Background="{StaticResource HudlDarkGray}" Grid.Row="0">
                 <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
                 <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlHeaderGray}" Width="250" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <Border BorderBrush="Black" BorderThickness="1,0,1,1"/>
@@ -70,7 +70,7 @@
 
                 <!-- Vertical scrolling item list -->
 
-                <ListView Grid.Column="0" x:Name="Schedule" IsEnabled="{Binding Enabled_Boolean}" Margin="0,0,10,0" 
+                <ListView Grid.Column="0" x:Name="Schedule" IsEnabled="{Binding Enabled_Boolean}" Margin="0,-2,10,0" 
                           SelectedItem="{Binding SelectedGame, Mode=TwoWay}" 
                           SelectionChanged="ListViewSelectionChanged" 
                           caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]"
@@ -82,13 +82,13 @@
 
                 <Grid x:Name="rightGrid" Grid.Column="1" Margin="0,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition x:Name="HeaderRow" Height="70" />
+                        <RowDefinition x:Name="HeaderRow" Height="80" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid x:Name="Header" Grid.Row="0" Grid.Column="1">
                         <ProgressRing HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HeaderProgressRing_Visibility}" IsActive="True" Height="60" Width="60" Foreground="{StaticResource HudlLightBlue}"/>
-                        <Border BorderThickness="0,0,0,2" Margin="0,0,0,3" BorderBrush="{StaticResource HudlBlue}"/>
-                            <GridView Grid.Row="0" x:Name="Categories" IsEnabled="{Binding Enabled_Boolean}" Margin="0" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
+                        <Border BorderThickness="0,0,0,2" Margin="0,0,0,4" BorderBrush="{StaticResource HudlMediumGray}"/>
+                            <GridView Grid.Row="0" x:Name="Categories" IsEnabled="{Binding Enabled_Boolean}" Margin="-2,0,0,0" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"  SelectionChanged="GridViewSelectionChanged" caliburn:Message.Attach="[Event SelectionChanged] = [CategorySelected($eventArgs)]"
                                         PointerPressed="GridViewItemPointerPressed" ItemContainerStyle="{StaticResource Section_GridViewItemStyle_Standard}" IsHoldingEnabled="False" IsSwipeEnabled="False"
                                       Visibility="{Binding HeadersVisibility}"/>
                     </Grid>

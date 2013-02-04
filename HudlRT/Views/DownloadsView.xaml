@@ -8,26 +8,21 @@
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
-    <Grid caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]" Background="{StaticResource HudlDarkerGray}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="65"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10" Background="{StaticResource HudlDarkGray}">
+        <Grid x:Name="TopTitleGrid" Background="{StaticResource HudlDarkGray}">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid Height="60" VerticalAlignment="Top"/>
-            <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlHeaderGray}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
+            <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlHeaderGray}" Width="250" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1,0,1,1"/>
             </Grid>
-            <Grid Height="55" x:Name="LogoGrid">
-                <Button x:Name="GoBack" Visibility="{Binding BackButton_Visibility}" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
-                <Image x:Name="Logo" VerticalAlignment="Center" Width="170" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="110,0,0,0" HorizontalAlignment="Left"/>
-            </Grid>
+            <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />
+            <Image x:Name="Logo" VerticalAlignment="Center" Width="150" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="120,0,0,0" HorizontalAlignment="Left"/>
+
             <StackPanel x:Name="Downloads_Header" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,0">
                 <TextBlock Style="{StaticResource Downloads_TextBlockStyle_Title}" Margin="10,0">Downloads</TextBlock>
                 <TextBlock Style="{StaticResource Downloads_TextBlockStyle_Standard}" Margin="10,0,0,0" Text="{Binding Download_Contents}"></TextBlock>

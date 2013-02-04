@@ -226,17 +226,8 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => CancelButton_Visibility);
             }
         }
-
-        private Boolean enabled_Boolean;
-        public Boolean Enabled_Boolean
-        {
-            get { return enabled_Boolean; }
-            set
-            {
-                enabled_Boolean = value;
-                NotifyOfPropertyChange(() => Enabled_Boolean);
-            }
-        }        private BindableCollection<Season> seasonsForDropDown;
+        
+        private BindableCollection<Season> seasonsForDropDown;
         public BindableCollection<Season> SeasonsDropDown
         {
             get { return seasonsForDropDown; }
@@ -376,7 +367,6 @@ namespace HudlRT.ViewModels
             }
             ProgressRing_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;
-            Enabled_Boolean = true;
         }
 
         private async void LoadPageFromParameter(string seasonID, string teamID, string gameID, string categoryID, BindableCollection<GameViewModel> games)
@@ -542,35 +532,6 @@ namespace HudlRT.ViewModels
             HeaderProgressRing_Visibility = Visibility.Collapsed;
             HeadersVisibility = Visibility.Visible;
         }
-
-        //public void UpdateDownloadsCheckBox()
-        //{
-        //    bool cutupDownloaded = false;
-        //    foreach (CutupViewModel cutupVM in Cutups)
-        //    {
-        //        cutupDownloaded = false;
-        //        foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
-        //        {
-        //            if (downloadedCutup.CutupId == cutupVM.CutupId)
-        //            {
-        //                cutupDownloaded = true;
-        //                break;
-        //            }
-        //        }
-        //        if (cutupDownloaded)
-        //        {
-        //            cutupVM.DownloadedVisibility = Visibility.Visible;
-        //        }
-        //        else
-        //        {
-        //            if (downloading)
-        //            {
-        //                cutupVM.CheckBox_Visibility = Visibility.Visible;
-        //            }
-        //        }
-        //        cutupVM.CheckBox = false;
-        //    }
-        //}
 
         public void MarkDownloads()
         {
@@ -875,7 +836,6 @@ namespace HudlRT.ViewModels
             {
                 bool downloadfound = false;
                 ProgressRing_Visibility = Visibility.Visible;
-                Enabled_Boolean = false;
                 foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
                 {
                     if (cVM.CutupId == cutup.CutupId)

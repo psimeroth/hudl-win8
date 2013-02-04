@@ -40,8 +40,11 @@ namespace HudlRT.Parameters
         public static CancellationTokenSource cts = new CancellationTokenSource();
 
         public static bool noConnection = false;
-        
 
+        public static string hubViewDownloadsCount { get; set; }
+        
+        public static string hubViewDownloadsSizeInMB { get; set; }
+        
 
         public static void resetCache(){
             isInitialized = false;
