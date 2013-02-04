@@ -60,9 +60,9 @@ namespace HudlRT.Views
         private bool isStopped { get; set; }
         private long keyPressLength = 225;
         private DispatcherTimer rewindTimer { get; set; }
-        private int rewindTimerInterval { get; set; }
-        private int rewindPositionChange { get; set; }
         private ScrollViewer filteredListScrollViewer { get; set; }
+        private bool isFastRewind { get; set; }
+        private Stopwatch rewindStopwatch { get; set; }
 
         public VideoPlayerView()
         {
@@ -95,9 +95,8 @@ namespace HudlRT.Views
             Window.Current.CoreWindow.KeyDown += VideoPage_KeyDown;
             Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
 
-            rewindTimerInterval = 1;
             rewindTimer = new DispatcherTimer();
-            rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, rewindTimerInterval);
+            rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             rewindTimer.Tick += rewindTimerTick;
         }
 
@@ -115,7 +114,6 @@ namespace HudlRT.Views
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
-
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
         }
 
@@ -434,17 +432,19 @@ namespace HudlRT.Views
 
         private void btnFastReverse_Click(object sender, RoutedEventArgs e)
         {
-            rewindPositionChange = 30;
-
+            isFastRewind = true;
+            rewindStopwatch = new Stopwatch();
             videoMediaElement.Pause();
+            rewindStopwatch.Start();
             rewindTimer.Start();
         }
 
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
         {
-            rewindPositionChange = 8;
-
+            isFastRewind = false;
+            rewindStopwatch = new Stopwatch();
             videoMediaElement.Pause();
+            rewindStopwatch.Start();
             rewindTimer.Start();
         }
 
@@ -686,15 +686,18 @@ namespace HudlRT.Views
 
         void rewindTimerTick(object sender, object e)
         {
-            if (videoMediaElement.Position.TotalMilliseconds > rewindPositionChange)
+            rewindStopwatch.Stop();
+            if (isFastRewind)
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, rewindPositionChange));
+                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds * 2)));
             }
             else
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(videoMediaElement.Position.TotalMilliseconds)));
-                rewindTimer.Stop();
+                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds / 2)));
             }
+            
+            rewindStopwatch.Reset();
+            rewindStopwatch.Start();
         }
 
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
