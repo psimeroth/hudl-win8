@@ -63,6 +63,7 @@ namespace HudlRT.Views
         private ScrollViewer filteredListScrollViewer { get; set; }
         private bool isFastRewind { get; set; }
         private Stopwatch rewindStopwatch { get; set; }
+        private bool videoLoadRetry = true;
 
         public VideoPlayerView()
         {
@@ -560,6 +561,17 @@ namespace HudlRT.Views
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
+            if (videoLoadRetry)
+            {
+                videoMediaElement.Retry();
+                videoLoadRetry = false;
+                return;
+            }
+            else
+            {
+                videoLoadRetry = true;
+            }
+
             videoMediaElement.DefaultPlaybackRate = 1.0;
             videoMediaElement.PlaybackRate = 1.0;
             setPauseVisible();
