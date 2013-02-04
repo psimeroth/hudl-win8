@@ -350,7 +350,7 @@
     <Language Code="zu-za" InMinimumRequirementSet="false" />
   </SupportedLocales>
   <ProductReservedInfo>
-    <MainPackageIdentityName>Hudl.Hudl</MainPackageIdentityName>
+    <MainPackageIdentityName>Hudl.Hudl2</MainPackageIdentityName>
     <ReservedNames>
       <ReservedName>Hudl</ReservedName>
     </ReservedNames>
