@@ -18,10 +18,10 @@
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
+        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10" Background="{StaticResource HudlDarkGray}">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
-            <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlBlackButton}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid Height="60" VerticalAlignment="Top"/>
+            <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlHeaderGray}" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
             </Grid>
             <Grid Height="55" x:Name="LogoGrid">
