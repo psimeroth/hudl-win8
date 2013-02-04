@@ -170,8 +170,8 @@
                 </Grid>
                 
             </Grid>
-            
-            <Grid x:Name="Group2_Grid" Grid.Column="2">
+
+            <Grid x:Name="Group2_Grid" Grid.Column="2" Transitions="{StaticResource PageTransition}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>

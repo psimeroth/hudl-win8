@@ -149,7 +149,7 @@ namespace HudlRT.Views
                     t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
 
                     t.Tag = i;
-                    t.PointerPressed += columnHeaderClick;
+                    t.PointerReleased += columnHeaderClick;
 
                     b.Child = t;
                     gridHeaders.Children.Add(b);
@@ -194,7 +194,11 @@ namespace HudlRT.Views
                     RootPopupBorder.Width = POPUP_WIDTH;
                     SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH;
 
-                    SortFilterPopup.IsOpen = true;
+                    var currentViewState = ApplicationView.Value;
+                    if (currentViewState != ApplicationViewState.Filled)
+                    {
+                        SortFilterPopup.IsOpen = true;
+                    }
                 }
             }
 
@@ -325,6 +329,7 @@ namespace HudlRT.Views
 
             if (this.IsFullscreen)
             {
+                SortFilterPopup.IsOpen = false;
                 background = RootGrid.Background;
                 RootGrid.Background = new SolidColorBrush();
                 dataPanel.Background = new SolidColorBrush();
@@ -355,6 +360,7 @@ namespace HudlRT.Views
             }
             else
             {
+                SortFilterPopup.IsOpen = false;
                 RootGrid.Background = background;
                 // Show the non full screen controls
                 header.Visibility = Visibility.Visible;
@@ -651,6 +657,10 @@ namespace HudlRT.Views
             Storyboard sb = (Storyboard)RootGrid.Resources["ExpandGridAnimation"];
             sb.Begin();
             isGridCollapsed = false;
+            SortFilterPopup.IsOpen = false;
+            FilterGrid.Height = 425;
+            FiltersListRow.Height = new GridLength(220);
+            FiltersList.Height = 200;
         }
 
         private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
@@ -658,6 +668,10 @@ namespace HudlRT.Views
             Storyboard sb = (Storyboard)RootGrid.Resources["CollapseGridAnimation"];
             sb.Begin();
             isGridCollapsed = true;
+            SortFilterPopup.IsOpen = false;
+            FilterGrid.Height = 575;
+            FiltersListRow.Height = new GridLength(370);
+            FiltersList.Height = 350;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
