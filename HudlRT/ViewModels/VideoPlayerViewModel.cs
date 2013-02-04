@@ -140,14 +140,11 @@ namespace HudlRT.ViewModels
                 getAngleNames();
                 SelectedClip = FilteredClips.First();
                 SelectedClipIndex = 0;
-                SelectedAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
+                Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
+                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
                 if (listView != null)
                 {
                     listView.SelectedItem = SelectedClip;
-                }
-                if (SelectedAngle.isPreloaded)
-                {
-                    SelectedAngle.fileLocation = SelectedAngle.preloadFile;
                 }
             }
             getMoreClips();
