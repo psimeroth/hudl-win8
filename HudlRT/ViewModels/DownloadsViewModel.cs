@@ -303,6 +303,10 @@ namespace HudlRT.ViewModels
             }
             long megabytes = (long)Math.Ceiling((totalsize / 1048576.0));
             Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
+
+            CachedParameter.hubViewDownloadsCount = CachedParameter.downloadedCutups.Count != 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
+            CachedParameter.hubViewDownloadsSizeInMB = CachedParameter.downloadedCutups.Count > 0 ? megabytes + " MB" : " 0 MB";
+
         }
 
 
