@@ -85,7 +85,7 @@ namespace HudlRT.Common
 
             CachedParameter.hubViewDownloadsCount = CachedParameter.downloadedCutups.Count > 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
             long megabytes = (long)Math.Ceiling((totalSize / 1048576.0));
-            CachedParameter.hubViewDownloadsSizeInMB = megabytes + " MB";
+            CachedParameter.hubViewDownloadsSizeInMB = CachedParameter.downloadedCutups.Count > 0 ? megabytes + " MB" : "";
             return sortedCutups;
         }
 
@@ -94,15 +94,11 @@ namespace HudlRT.Common
             try
             {
                 var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.cutupId.ToString());
-                try
-                {
-                    folder.DeleteAsync();
-                }
-                catch (Exception) { }
+                folder.DeleteAsync();
             }
             catch (Exception)
             {
-
+                //should only fail if the folder does not exist - meaning its already deleted
             }
         }
 
