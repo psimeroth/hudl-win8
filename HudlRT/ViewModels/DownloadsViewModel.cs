@@ -130,12 +130,14 @@ namespace HudlRT.ViewModels
         {
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
 
         protected override async void OnActivate()
         {
             base.OnActivate();
+
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
+
             Cutups = new BindableCollection<CutupViewModel>();
             CancelButton_Visibility = Visibility.Collapsed;
             ConfirmButton_Visibility = Visibility.Collapsed;

@@ -286,12 +286,14 @@ namespace HudlRT.ViewModels
         {
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
 
         protected override void OnActivate()
         {
             base.OnActivate();
+
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
+
             ScheduleProgressRing_Visibility = Visibility.Collapsed;
             HeaderProgressRing_Visibility = Visibility.Collapsed;
             CutupsProgressRing_Visibility = Visibility.Collapsed;

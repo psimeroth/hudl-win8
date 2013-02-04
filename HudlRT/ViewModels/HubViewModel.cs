@@ -206,7 +206,6 @@ namespace HudlRT.ViewModels
         {
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
 
         public async void NavigateToSectionPage()
@@ -230,6 +229,9 @@ namespace HudlRT.ViewModels
         protected override async void OnActivate()
         {
             base.OnActivate();
+
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
+
             if (CachedParameter.isInitialized)
             {
                 SeasonsDropDown = CachedParameter.seasonsDropDown;
