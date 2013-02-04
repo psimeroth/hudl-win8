@@ -48,9 +48,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name ="Delete_Playlists" Visibility="{Binding DeleteButton_Visibility}" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Delete Cutups</Button>
-            <Button x:Name="Confirm_Delete" Visibility="{Binding ConfirmButton_Visibility}" Grid.Column="2" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,10,0">Delete</Button>
-            <Button x:Name="Cancel_Delete" Visibility="{Binding CancelButton_Visibility}" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
+            <Button x:Name ="Delete_Playlists" Visibility="{Binding DeleteButton_Visibility}" Grid.Column="3" Style="{StaticResource Downloads_ButtonStyle_Standard}" Margin="10,0,0,0">Delete Cutups</Button>
+            <Button x:Name="Confirm_Delete" Visibility="{Binding ConfirmButton_Visibility}" Grid.Column="2" Style="{StaticResource Downloads_ButtonStyle_Standard}" Margin="0,0,10,0">Delete</Button>
+            <Button x:Name="Cancel_Delete" Visibility="{Binding CancelButton_Visibility}" Grid.Column="3" Style="{StaticResource Downloads_ButtonStyle_Standard}" Margin="10,0,0,0">Cancel</Button>
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

@@ -111,12 +111,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name ="Downloads_Button" Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol">
+                <Button x:Name ="Downloads_Button" Grid.Column="0" Margin="0,0,10,0" Style="{StaticResource Section_ButtonStyle_Downloads}" FontFamily="Segoe UI Symbol">
                     <TextBlock>
                         <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads
                     </TextBlock>
                 </Button>
-                <Button x:Name ="Downloads_Button_Snapped" Visibility="Collapsed" VerticalAlignment="Stretch" Grid.Column="0" HorizontalAlignment="Stretch" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol">
+                <Button x:Name ="Downloads_Button_Snapped" Visibility="Collapsed" VerticalAlignment="Stretch" Grid.Column="0" HorizontalAlignment="Stretch" Style="{StaticResource Section_ButtonStyle_Downloads}" FontFamily="Segoe UI Symbol">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="&#xE19C;" Foreground="{StaticResource HudlOrange}" HorizontalAlignment="Center" />
                         <TextBlock Text="Downloads" />
