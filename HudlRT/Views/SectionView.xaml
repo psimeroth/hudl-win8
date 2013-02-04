@@ -59,7 +59,7 @@
             </Grid>
             <!--End TopTitleGrid-->
 
-            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="10,10,20,10" Visibility="{Binding ColVisibility}">
+            <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20,20,20,10" Visibility="{Binding ColVisibility}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -101,7 +101,7 @@
                 </Grid>
             </Grid>
             <!--End BottomContentGrid-->
-            <Grid x:Name="DownloadsGrid" Grid.Row="2" Margin="10,10,20,0">
+            <Grid x:Name="DownloadsGrid" Grid.Row="2" Margin="20,10,20,20">
                 <Grid.RowDefinitions>
                     <RowDefinition x:Name="Downloads_Button_Row" Height="65" />
                 </Grid.RowDefinitions>
