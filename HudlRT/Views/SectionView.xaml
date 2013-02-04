@@ -32,7 +32,7 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
-        <Grid x:Name="mainGrid" Margin="10,0,-10,0">
+        <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
