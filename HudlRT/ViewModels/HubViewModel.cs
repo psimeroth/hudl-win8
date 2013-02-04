@@ -258,21 +258,9 @@ namespace HudlRT.ViewModels
             {
                 await DownloadAccessor.Instance.GetDownloads();
             }
-            DownloadedCutupSize = "";
-            DownloadedCutupCount = CachedParameter.downloadedCutups.Count > 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
-            if (CachedParameter.downloadedCutups.Any())
-            {     
-                long totalSize = 0;
-                foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
-                {
-                    if (cVM != null)
-                    {
-                        totalSize += cVM.TotalCutupSize;
-                    }
-                }
-                long megabytes = (long)Math.Ceiling((totalSize / 1048576.0));
-                DownloadedCutupSize = megabytes + " MB";
-            }
+            DownloadedCutupSize = CachedParameter.hubViewDownloadsSizeInMB;
+            DownloadedCutupCount = CachedParameter.hubViewDownloadsCount;
+
 
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
             if (response.ID == null)

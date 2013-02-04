@@ -58,6 +58,7 @@ namespace HudlRT.Common
             BindableCollection<CutupViewModel> cutups = new BindableCollection<CutupViewModel>();
             var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
             Downloads downloads = new Downloads();
+            long totalSize = 0;
             foreach (StorageFolder folder in downloadFolders)
             {
                 if (folder.Name.Contains(AppDataAccessor.GetUsername()))
@@ -70,6 +71,7 @@ namespace HudlRT.Common
                         cutupVM.Width = new GridLength(180);
                         if (cutupVM != null)
                         {
+                            totalSize += cutupVM.TotalCutupSize;
                             cutups.Add(cutupVM);
                         }
                     }
@@ -80,6 +82,10 @@ namespace HudlRT.Common
             //return SortCutupsByDownloadedDate(cutups);
             BindableCollection<CutupViewModel> sortedCutups = new BindableCollection<CutupViewModel>(cutups.OrderByDescending(c => c.downloadedDate));
             CachedParameter.downloadedCutups = sortedCutups;
+
+            CachedParameter.hubViewDownloadsCount = CachedParameter.downloadedCutups.Count > 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
+            long megabytes = (long)Math.Ceiling((totalSize / 1048576.0));
+            CachedParameter.hubViewDownloadsSizeInMB = megabytes + " MB";
             return sortedCutups;
         }
 
