@@ -34,8 +34,8 @@ namespace HudlRT.ViewModels
         private ConcurrentDictionary<string, Task<ClipResponse>> CachedCutupCalls;
         private List<CutupViewModel> CachedCutups;
 
-        private enum DownloadMode {Selecting, Dowloading, Off};
-        DownloadMode downloadMode = new DownloadMode();
+        public enum DownloadMode {Selecting, Dowloading, Off};
+        public DownloadMode downloadMode = new DownloadMode();
 
         //CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -271,6 +271,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private bool enabled_Boolean;
+        public bool Enabled_Boolean
+        {
+            get { return enabled_Boolean; }
+            set
+            {
+                enabled_Boolean = value;
+                NotifyOfPropertyChange(() => Enabled_Boolean);
+            }
+        }
+
         public SectionViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
@@ -285,6 +296,7 @@ namespace HudlRT.ViewModels
             HeaderProgressRing_Visibility = Visibility.Collapsed;
             CutupsProgressRing_Visibility = Visibility.Collapsed;
             NoEntriesMessage_Visibility = Visibility.Collapsed;
+            Enabled_Boolean = true;
 
             DownloadButton_Visibility = Visibility.Collapsed;
             // Get the team and season ID
@@ -849,13 +861,9 @@ namespace HudlRT.ViewModels
                 {
                     cutup = await GetClipsByCutup(cutup);
                 }
-                UpdateCachedParameter();
-                if (cutup == null)
+                if (cutup != null)
                 {
-                    navigationService.NavigateToViewModel<DownloadsViewModel>();
-                }
-                else
-                {
+                    UpdateCachedParameter();
                     CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
                     CachedParameter.sectionViewCutupSelected = cutup;
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>();
