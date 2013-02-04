@@ -8,9 +8,14 @@ using System.Threading.Tasks;
 
 namespace HudlRT.ViewModels
 {
-    public class LargeGameViewModel : PropertyChangedBase
+    public class LargeGameViewModel
     {
-        private string _opponent;
+        public string Opponent { get; set; }
+        public string Date { get; set; }
+        public string NumPlaylists { get; set; }
+        public bool isLargeView { get; set; }
+
+        /*private string _opponent;
         private string _date;
         private string _numPlaylists;
 
@@ -46,9 +51,9 @@ namespace HudlRT.ViewModels
                 _numPlaylists = value;
                 NotifyOfPropertyChange(() => NumPlaylists);
             }
-        }
+        }*/
 
-       public static LargeGameViewModel FromGame(Game game)
+       public static LargeGameViewModel FromGame(Game game, bool isLarge)
        {
            int numplaylists = 0;
            foreach(Category c in game.categories){
@@ -58,7 +63,8 @@ namespace HudlRT.ViewModels
            {
                Opponent = "vs. " + game.opponent,
                Date = game.date.ToString("d"),
-               NumPlaylists = numplaylists.ToString() + " playlists"
+               NumPlaylists = numplaylists.ToString() + " playlists",
+               isLargeView = isLarge
            };
 
            return largeVM;

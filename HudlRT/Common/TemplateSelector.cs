@@ -1,34 +1,28 @@
-﻿using System;
+﻿using HudlRT.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.Common
 {
-    /*public class TemplateSelector : DataTemplateSelector
+    public class TemplateSelector : DataTemplateSelector
     {
         protected override Windows.UI.Xaml.DataTemplate SelectTemplateCore(object item, Windows.UI.Xaml.DependencyObject container)
         {
-            var project = item as Project;
+            LargeGameViewModel game = item as LargeGameViewModel;
 
-            var uiElement = container as UIElement;
-
-            if (project.IsStarred)
+            if (game.isLargeView)
             {
-                VariableSizedWrapGrid.SetColumnSpan(uiElement, 1);
-                VariableSizedWrapGrid.SetRowSpan(uiElement, 2);
-
-                return App.Current.Resources["FavoriteProjectItemTemplate"] as DataTemplate;
+                return  this.LargeTemplate;
             }
-
-            VariableSizedWrapGrid.SetColumnSpan(uiElement, 1);
-            VariableSizedWrapGrid.SetRowSpan(uiElement, 1);
-
-            return App.Current.Resources["ProjectItemTemplate"] as DataTemplate;
+            return this.SmallTemplate;
         }
-    }
 
-    }*/
+        public DataTemplate LargeTemplate { get; set; }
+        public DataTemplate SmallTemplate { get; set; }
+    }
 }

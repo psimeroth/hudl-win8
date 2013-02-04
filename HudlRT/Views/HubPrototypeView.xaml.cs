@@ -25,25 +25,10 @@ namespace HudlRT.Views
             this.InitializeComponent();
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.  The Parameter
-        /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // TODO: Assign a collection of bindable groups to this.DefaultViewModel["Groups"]
-        }
+            //.Items
 
-        private void HubGames_ItemClick_1(object sender, ItemClickEventArgs e)
-        {
-            var x = (HubPageGameEntry)sender;
-        }
-
-        private void GridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-            var x = (GridView)sender;
-            var y = e.AddedItems.FirstOrDefault();
         }
     }
 }

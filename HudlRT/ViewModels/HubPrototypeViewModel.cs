@@ -13,32 +13,7 @@ namespace HudlRT.ViewModels
 {
     public class HubPrototypeViewModel : ViewModelBase
     {
-        INavigationService navigationService;
-        /*private LargeGameViewModel _previousGame;
-        private LargeGameViewModel _nextGame;
-
-        public LargeGameViewModel NextGame
-        {
-            get { return _nextGame; }
-            set
-            {
-                if (value == _nextGame) return;
-                _nextGame = value;
-                NotifyOfPropertyChange(() => NextGame);
-            }
-        }
-
-        public LargeGameViewModel PreviousGame
-        {
-            get { return _previousGame; }
-            set
-            {
-                if (value == _previousGame) return;
-                _previousGame = value;
-                NotifyOfPropertyChange(() => PreviousGame);
-            }
-        }*/
-
+        /*INavigationService navigationService;
         private BindableCollection<HubPageGameEntry> _hubGames;
 
         public BindableCollection<HubPageGameEntry> HubGames
@@ -50,34 +25,52 @@ namespace HudlRT.ViewModels
                 _hubGames = value;
                 NotifyOfPropertyChange(() => HubGames);
             }
+        }*/
+
+        public BindableCollection<HubGroupViewModel> Groups
+        {
+            get;
+            private set;
         }
 
         protected override void OnActivate()
         {
+            base.OnInitialize();
+            
             CachedParameter.InitializeForFrontend();
-            //PreviousGame = LargeGameViewModel.FromGame(CachedParameter.hubViewPreviousGame);
-            //NextGame = LargeGameViewModel.FromGame(CachedParameter.hubViewNextGame);
-            HubGames = new BindableCollection<HubPageGameEntry>();
-            HubPageGameEntry NextGame = new HubPageGameEntry() { Name = "Next Game" };
-            NextGame.Games.Add(CachedParameter.hubViewNextGame);
-            HubPageGameEntry LastGame = new HubPageGameEntry() { Name = "Last Game" };
-            LastGame.Games.Add(CachedParameter.hubViewPreviousGame);
-            HubGames.Add(NextGame);
-            HubGames.Add(LastGame);
+            LargeGameViewModel previous = LargeGameViewModel.FromGame(CachedParameter.hubViewPreviousGame, true);
+            LargeGameViewModel next = LargeGameViewModel.FromGame(CachedParameter.hubViewNextGame, true);
+            previous.isLargeView = true;
+            next.isLargeView = true;
+            HubGroupViewModel NextGame = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<LargeGameViewModel>() };
+            NextGame.Games.Add(previous);
+            HubGroupViewModel LastGame = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<LargeGameViewModel>() };
+            LastGame.Games.Add(next);
+            Groups.Add(NextGame);
+            Groups.Add(LastGame);
 
+            HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<LargeGameViewModel>() };
+            for (int i = 0; i < 5; i++)
+            {
+                LargeGameViewModel temp = LargeGameViewModel.FromGame(CachedParameter.hubViewPreviousGame, false);
+                LargeGameViewModel temp2 = LargeGameViewModel.FromGame(CachedParameter.hubViewNextGame, false);
+                schedule.Games.Add(temp);
+                schedule.Games.Add(temp2);
+            }
+            Groups.Add(schedule);
 
-            base.OnActivate();
         }
 
-        public void Test(ItemClickEventArgs eventArgs)
+        /*public void Test(ItemClickEventArgs eventArgs)
         {
             var clip = (HubPageGameEntry)eventArgs.ClickedItem;
-        }
+        }*/
 
         public HubPrototypeViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            this.navigationService = navigationService;
+            Groups = new BindableCollection<HubGroupViewModel>();
+            //this.navigationService = navigationService;
             //CharmsData.navigationService = navigationService;
             //this.OnActivate();
             //SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
