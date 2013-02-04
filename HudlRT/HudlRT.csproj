@@ -122,6 +122,7 @@
     <Compile Include="ViewModels\CutupViewModel.cs" />
     <Compile Include="ViewModels\FeatureDisabledViewModel.cs" />
     <Compile Include="ViewModels\GameViewModel.cs" />
+    <Compile Include="ViewModels\HubGroupViewModel.cs" />
     <Compile Include="ViewModels\HubPrototypeViewModel.cs" />
     <Compile Include="ViewModels\LargeGameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
