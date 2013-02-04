@@ -334,6 +334,7 @@ namespace HudlRT.Views
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
                 gridHeaderScroll.Visibility = Visibility.Collapsed;
+                dataPanel.Visibility = Visibility.Collapsed;
 
                 // Show the full screen controls
                 full_mainGrid.Visibility = Visibility.Visible;
@@ -359,6 +360,7 @@ namespace HudlRT.Views
                 TransportControlsPanel_Left.Visibility = Visibility.Visible;
                 TransportControlsPanel_Right.Visibility = Visibility.Visible;
                 gridHeaderScroll.Visibility = Visibility.Visible;
+                dataPanel.Visibility = Visibility.Visible;
 
                 // Hide the full screen controls
                 full_mainGrid.Visibility = Visibility.Collapsed;
@@ -712,6 +714,7 @@ namespace HudlRT.Views
                 if (!previousVideoStateIsFullScreen && previousStateIsSnapped)
                 {
                     FullscreenToggle();
+                    dataPanel.Visibility = Visibility.Visible;
                 }
                 previousStateIsSnapped = false;
                 previousVideoStateIsFullScreen = false;
@@ -735,6 +738,7 @@ namespace HudlRT.Views
                 if (!previousVideoStateIsFullScreen && previousStateIsSnapped)
                 {
                     FullscreenToggle();
+                    dataPanel.Visibility = Visibility.Visible;
                 }
                 previousStateIsSnapped = false;
                 previousVideoStateIsFullScreen = false;
@@ -758,7 +762,7 @@ namespace HudlRT.Views
                 this.IsFullscreen = true;
 
                 RootGrid.Background = new SolidColorBrush();
-                dataPanel.Background = new SolidColorBrush();
+                dataPanel.Visibility = Visibility.Collapsed;
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
                 FilteredClips.UpdateLayout();

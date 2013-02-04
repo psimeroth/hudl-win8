@@ -8,10 +8,7 @@
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
-    <Grid caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]" Background="{StaticResource HudlDarkerGray}">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
