@@ -18,6 +18,8 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         private string lastViewedId = null;
 
+        private bool lastViewedLocal = false;
+
         private Task<ClipResponse> loadLastViewed;
         private CutupViewModel lastViewedCutup;
 
@@ -72,6 +74,28 @@ namespace HudlRT.ViewModels
             {
                 lastViewedTimeStamp = value;
                 NotifyOfPropertyChange(() => LastViewedTimeStamp);
+            }
+        }
+
+        private string downloadedCutupSize;
+        public string DownloadedCutupSize
+        {
+            get { return downloadedCutupSize; }
+            set
+            {
+                downloadedCutupSize = value;
+                NotifyOfPropertyChange(() => DownloadedCutupSize);
+            }
+        }
+
+        private string downloadedCutupCount;
+        public string DownloadedCutupCount
+        {
+            get { return downloadedCutupCount; }
+            set
+            {
+                downloadedCutupCount = value;
+                NotifyOfPropertyChange(() => DownloadedCutupCount);
             }
         }
 
@@ -187,8 +211,15 @@ namespace HudlRT.ViewModels
 
         public async void NavigateToSectionPage()
         {
-            UpdateCachedParameter();
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                UpdateCachedParameter();
+                navigationService.NavigateToViewModel<SectionViewModel>();
+            }
+            else
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            }
         }
 
         protected override void OnDeactivate(bool close)
@@ -196,7 +227,7 @@ namespace HudlRT.ViewModels
             base.OnDeactivate(close);
         }
 
-        protected override void OnActivate()
+        protected override async void OnActivate()
         {
             base.OnActivate();
             if (CachedParameter.isInitialized)
@@ -221,6 +252,28 @@ namespace HudlRT.ViewModels
                 PopulateDropDown();
             }
 
+            ColVisibility = "Visible";
+            ProgressRingVisibility = "Collapsed";
+            if (CachedParameter.downloadedCutups == null)
+            {
+                await DownloadAccessor.Instance.GetDownloads();
+            }
+            DownloadedCutupSize = "";
+            DownloadedCutupCount = CachedParameter.downloadedCutups.Count > 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
+            if (CachedParameter.downloadedCutups.Any())
+            {     
+                long totalSize = 0;
+                foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
+                {
+                    if (cVM != null)
+                    {
+                        totalSize += cVM.TotalCutupSize;
+                    }
+                }
+                long megabytes = (long)Math.Ceiling((totalSize / 1048576.0));
+                DownloadedCutupSize = megabytes + " MB";
+            }
+
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
             if (response.ID == null)
             {
@@ -235,14 +288,25 @@ namespace HudlRT.ViewModels
 
                 loadLastViewed = LoadLastViewedCutup();
             }
-
-            ColVisibility = "Visible";
-            ProgressRingVisibility = "Collapsed";
         }
 
         private async Task<ClipResponse> LoadLastViewedCutup()
         {
             lastViewedCutup = new CutupViewModel { CutupId = lastViewedId, Name = LastViewedName };
+            if (CachedParameter.downloadedCutups != null)
+            {
+                foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
+                {
+                    if (cVM.CutupId == lastViewedId)
+                    {
+                        lastViewedCutup.DisplayColumns = cVM.DisplayColumns;
+                        lastViewedCutup.ClipCount = cVM.ClipCount;
+                        lastViewedLocal = true;
+                        return new ClipResponse { clips = cVM.Clips, status = SERVICE_RESPONSE.SUCCESS };
+                    }
+                }
+            }
+            lastViewedLocal = false;
             return await ServiceAccessor.GetCutupClips(lastViewedCutup);
         }
 
@@ -313,6 +377,10 @@ namespace HudlRT.ViewModels
 
                 //populate this/next game
                 
+            }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
             }
             else//could better handle exceptions
             {
@@ -405,6 +473,10 @@ namespace HudlRT.ViewModels
                 }
 
             }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
+            }
             else//could better handle exceptions
             {
                 NextGame = null;
@@ -421,54 +493,82 @@ namespace HudlRT.ViewModels
 
         public void NextCategorySelected(ItemClickEventArgs eventArgs)
         {
-            
-            var category = (Category)eventArgs.ClickedItem;
-            UpdateCachedParameter();
-            CachedParameter.categoryId = category.categoryId;
-            CachedParameter.gameId = NextGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>();
+
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                var category = (Category)eventArgs.ClickedItem;
+                UpdateCachedParameter();
+                CachedParameter.categoryId = category.categoryId;
+                CachedParameter.gameId = NextGame.gameId;
+                navigationService.NavigateToViewModel<SectionViewModel>();
+            }
+            else
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            }
 
         }
 
         public void PreviousCategorySelected(ItemClickEventArgs eventArgs)
         {
 
-            var category = (Category)eventArgs.ClickedItem;
-            UpdateCachedParameter();
-            CachedParameter.categoryId = category.categoryId;
-            CachedParameter.gameId = PreviousGame.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                var category = (Category)eventArgs.ClickedItem;
+                UpdateCachedParameter();
+                CachedParameter.categoryId = category.categoryId;
+                CachedParameter.gameId = PreviousGame.gameId;
+                navigationService.NavigateToViewModel<SectionViewModel>();
+            }
+            else
+            {
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
+            }
 
         }
 
         public async void LastViewedSelected()
         {
-            if (lastViewedId != null)
+            if (ServiceAccessor.ConnectedToInternet() || lastViewedLocal)
             {
-                ProgressRingVisibility = "Visible";
-                
-                ClipResponse response = await loadLastViewed;
-                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                if (lastViewedId != null)
                 {
-                    lastViewedCutup.Clips = response.clips;
-                    UpdateCachedParameter();
-                    CachedParameter.selectedCutup = new Cutup {
-                                                                cutupId = lastViewedCutup.CutupId,
-                                                                clips = lastViewedCutup.Clips,
-                                                                displayColumns = lastViewedCutup.DisplayColumns,
-                                                                clipCount = Convert.ToInt32(lastViewedCutup.ClipCount),
-                                                                name = lastViewedCutup.Name
-                                                            };
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>();
-                }
+                    ProgressRingVisibility = "Visible";
 
-                ProgressRingVisibility = "Collapsed";
+                    ClipResponse response = await loadLastViewed;
+                    if (response.status == SERVICE_RESPONSE.SUCCESS)
+                    {
+                        lastViewedCutup.Clips = response.clips;
+                        UpdateCachedParameter();
+                        CachedParameter.selectedCutup = new Cutup
+                        {
+                            cutupId = lastViewedCutup.CutupId,
+                            clips = lastViewedCutup.Clips,
+                            displayColumns = lastViewedCutup.DisplayColumns,
+                            clipCount = lastViewedCutup.ClipCount,
+                            name = lastViewedCutup.Name
+                        };
+                        navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+                    }
+
+                    ProgressRingVisibility = "Collapsed";
+                }
+                else
+                {
+                    UpdateCachedParameter();
+                    navigationService.NavigateToViewModel<SectionViewModel>();
+                }
             }
             else
             {
-                UpdateCachedParameter();
-                navigationService.NavigateToViewModel<SectionViewModel>();
+                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
             }
+        }
+
+        public void ViewDownloads()
+        {
+            UpdateCachedParameter();
+            navigationService.NavigateToViewModel<DownloadsViewModel>();
         }
 
         

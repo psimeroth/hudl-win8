@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="Hudl.Hudl" Publisher="CN=43D3FB9D-D60C-4D35-8801-085774C462FD" Version="0.6.0.0" />
+  <Identity Name="Hudl.Hudl2" Publisher="CN=43D3FB9D-D60C-4D35-8801-085774C462FD" Version="0.6.0.0" />
   <Properties>
     <DisplayName>Hudl</DisplayName>
     <PublisherDisplayName>Hudl</PublisherDisplayName>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="HudlRT.App">
-      <VisualElements DisplayName="Hudl" Logo="Assets\Hudl_Metro_Logo.png" SmallLogo="Assets\Hudl_Small_Logo.png" Description="HudlRt" ForegroundText="light" BackgroundColor="#000000">
+      <VisualElements DisplayName="Hudl" Logo="Assets\Hudl_Metro_Logo.png" SmallLogo="Assets\Hudl_Small_Logo.png" Description="HudlRt" ForegroundText="light" BackgroundColor="#000000" ToastCapable="true">
         <DefaultTile ShowName="logoOnly" WideLogo="Assets\hudl-logo-big-tile.png" />
         <SplashScreen Image="Assets\hudlsplash.png" />
         <InitialRotationPreference>
@@ -25,7 +25,7 @@
     </Application>
   </Applications>
   <Capabilities>
-    <Capability Name="privateNetworkClientServer"/>
+    <Capability Name="privateNetworkClientServer" />
     <Capability Name="videosLibrary" />
     <Capability Name="internetClient" />
   </Capabilities>

@@ -19,6 +19,7 @@ namespace HudlRT.ViewModels
         private const bool CLIP_LOADING = false;
         private const double OPACITY = 1.0;
 
+        private long _totalCutupSize { get; set; }
         private string _name { get; set; }
         private int _clipCount { get; set; }
         private string _cutupId { get; set; }
@@ -31,6 +32,12 @@ namespace HudlRT.ViewModels
         private Visibility _nameVisibility { get; set; }
         private GridLength _width { get; set; }
         private double _fontSize { get; set; }
+        private Boolean _checkbox { get; set; }
+        private Visibility _downloadedVisibility { get; set; }
+        private Visibility _checkbox_visibility { get; set; }
+        public DateTime downloadedDate { get; set; }
+
+        private string _game_info { get; set; }
 
         public static CutupViewModel FromDTO(CutupDTO cutupDTO)
         {
@@ -61,8 +68,32 @@ namespace HudlRT.ViewModels
             cutup._thumbnailVisibility = FULL_VISIBILITY;
             cutup._width = new GridLength(180);
             cutup._fontSize = FONT_SIZE;
-
+            cutup._checkbox_visibility = Visibility.Collapsed;
+            cutup._downloadedVisibility = Visibility.Collapsed;
+            cutup.Clips = cutupDTO.clips;
+            cutup.TotalCutupSize = cutupDTO.totalFilesSize;
+            cutup.DisplayColumns = cutupDTO.displayColumns;
             return cutup;
+        }
+
+        public Visibility DownloadedVisibility
+        {
+            get { return _downloadedVisibility; }
+            set
+            {
+                _downloadedVisibility = value;
+                NotifyOfPropertyChange(() => DownloadedVisibility);
+            }
+        }
+
+        public Boolean CheckBox
+        {
+            get { return _checkbox; }
+            set
+            {
+                _checkbox = value;
+                NotifyOfPropertyChange(() => CheckBox);
+            }
         }
 
         public string Name
@@ -73,6 +104,39 @@ namespace HudlRT.ViewModels
                 if (value == _name) return;
                 _name = value;
                 NotifyOfPropertyChange(() => Name);
+            }
+        }
+
+        public string GameInfo
+        {
+            get { return _game_info; }
+            set
+            {
+                if (value == _game_info) return;
+                _game_info = value;
+                NotifyOfPropertyChange(() => GameInfo);
+            }
+        }
+
+        public long TotalCutupSize
+        {
+            get { return _totalCutupSize; }
+            set
+            {
+                if (value == _totalCutupSize) return;
+                _totalCutupSize = value;
+                NotifyOfPropertyChange(() => TotalCutupSize);
+            }
+        }
+
+        public Visibility CheckBox_Visibility
+        {
+            get { return _checkbox_visibility; }
+            set
+            {
+                if (value == _checkbox_visibility) return;
+                _checkbox_visibility = value;
+                NotifyOfPropertyChange(() => CheckBox_Visibility);
             }
         }
 

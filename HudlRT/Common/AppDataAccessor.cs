@@ -43,7 +43,7 @@ namespace HudlRT.Common
         public static string USERNAME = "UserName";
         public static string PLAYBACK = "hudl-playbackType";
         public static string PASSWORD = "hudl-password";
-
+        public static string LOGINDATE = "hudl-loginDate";
         public static string SPLASH_X = "hudl-app-splash-x";
         public static string SPLASH_Y = "hudl-app-splash-y";
         public static string SPLASH_HEIGHT = "hudl-app-splash-height";
@@ -87,9 +87,21 @@ namespace HudlRT.Common
             return GetRoamingSetting<string>(USERNAME);
         }
 
+        public static string GetLoginDate()
+        {
+            string username = GetUsername();
+            return GetRoamingSetting<string>(username+LOGINDATE);
+        }
+
         public static void SetUsername(string username)
         {
             SetRoamingSetting<string>(USERNAME, username);
+        }
+
+        public static void SetLoginDate(string loginDate)
+        {
+            string username = GetUsername();
+            SetRoamingSetting<string>(username+LOGINDATE, loginDate);
         }
 
         public static TeamContextResponse GetTeamContext() {

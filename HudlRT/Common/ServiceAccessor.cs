@@ -12,6 +12,7 @@ using HudlRT.Models;
 using Caliburn.Micro;
 using Windows.Networking.Connectivity;
 using HudlRT.ViewModels;
+using HudlRT.Parameters;
 
 namespace HudlRT.Common
 {
@@ -94,7 +95,12 @@ namespace HudlRT.Common
         public static async Task<LoginResponse> Login(string loginArgs)
         {
             //var loginResponse = await ServiceAccessor.MakeApiCallGet("athlete");
-            var loginResponse = await MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
+
+            if (!ConnectedToInternet())
+            {
+                return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
+            var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
             if (!string.IsNullOrEmpty(loginResponse))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
@@ -130,7 +136,7 @@ namespace HudlRT.Common
         public static async Task<TeamResponse> GetTeams()
         {
             var teams = await MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
-            if (!string.IsNullOrEmpty(teams))
+            if (!string.IsNullOrEmpty(teams) && teams != "NoConnection")
             {
                 try
                 {
@@ -147,6 +153,10 @@ namespace HudlRT.Common
                     return new TeamResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (teams == "NoConnection")
+            {
+                return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new TeamResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -156,7 +166,7 @@ namespace HudlRT.Common
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
             var games = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON, teamId, seasonId), true);
-            if (!string.IsNullOrEmpty(games))
+            if (!string.IsNullOrEmpty(games) && games != "NoConnection")
             {
                 try
                 {
@@ -173,6 +183,10 @@ namespace HudlRT.Common
                     return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (games == "NoConnection")
+            {
+                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new GameResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -182,7 +196,7 @@ namespace HudlRT.Common
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
             var categories = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME,gameId), true);
-            if (!string.IsNullOrEmpty(categories))
+            if (!string.IsNullOrEmpty(categories) && categories != "NoConnection")
             {
                 try
                 {
@@ -199,6 +213,10 @@ namespace HudlRT.Common
                     return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (categories == "NoConnection")
+            {
+                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new CategoryResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -208,7 +226,7 @@ namespace HudlRT.Common
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
             var cutups = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY, categoryId), true);
-            if (!string.IsNullOrEmpty(cutups))
+            if (!string.IsNullOrEmpty(cutups) && cutups != "NoConnection")
             {
                 try
                 {
@@ -224,6 +242,10 @@ namespace HudlRT.Common
                 {
                     return new CutupResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
+            }
+            else if (cutups == "NoConnection")
+            {
+                return new CutupResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
             else
             {
@@ -271,7 +293,7 @@ namespace HudlRT.Common
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
             var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, cutup.CutupId.ToString(), "0"), true);
-            if (!string.IsNullOrEmpty(clips))
+            if (!string.IsNullOrEmpty(clips) && clips != "NoConnection")
             {
                 try
                 {
@@ -293,6 +315,10 @@ namespace HudlRT.Common
                     return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (clips == "NoConnection")
+            {
+                return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -310,7 +336,7 @@ namespace HudlRT.Common
             if (!ConnectedToInternet())
             {
                 APIExceptionDialog.ShowNoInternetConnectionDialog();
-                return null;
+                return "NoConnection";
             }
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE + url);
@@ -338,12 +364,6 @@ namespace HudlRT.Common
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallPost(string url, string jsonString, bool showDialog)
         {
-            if (!ConnectedToInternet())
-            {
-                APIExceptionDialog.ShowNoInternetConnectionDialog();
-                return null;
-            }
-
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE_SECURE + url);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);

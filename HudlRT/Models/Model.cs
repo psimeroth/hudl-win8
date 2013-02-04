@@ -147,6 +147,16 @@ namespace HudlRT.Models
         }
     }
 
+    public class Downloads
+    {
+        public BindableCollection<Cutup> cutups { get; set; }
+
+        public Downloads()
+        {
+            cutups = new BindableCollection<Cutup>();
+        }
+    }
+
     public class Cutup
     {
         public string name { get; set; }
@@ -155,6 +165,7 @@ namespace HudlRT.Models
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
         public string thumbnailLocation { get; set; }
+        public long totalFilesSize { get; set; }
         public Cutup()
         {
             clips = new BindableCollection<Clip>();
@@ -176,7 +187,6 @@ namespace HudlRT.Models
         public string clipId { get; set; }
         public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
-        //public Dictionary<string, string> breakdownData { get; set; }
         public string[] breakDownData { get; set; }
 
 
@@ -230,7 +240,7 @@ namespace HudlRT.Models
         public long duration { get; set; }
         public AngleType angleType { get; set; }
         public bool isPreloaded { get; set; }
-        public Windows.Storage.StorageFile preloadFile { get; set; }
+        public string preloadFile { get; set; }
 
         public Angle()
         {
