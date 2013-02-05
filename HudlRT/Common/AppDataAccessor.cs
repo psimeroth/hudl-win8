@@ -21,6 +21,7 @@ namespace HudlRT.Common
         public string name { get; set; }
         public string timeStamp { get; set; }
         public string ID { get; set; }
+        public string thumbnail { get; set; }
     }
 
     public struct SplashScreenResponse
@@ -38,6 +39,7 @@ namespace HudlRT.Common
         public static string LAST_VIEWED_NAME = "hudl-lastViewedCutupName";
         public static string LAST_VIEWED_TIMESTAMP = "hudl-lastViewedCutupTimestamp";
         public static string LAST_VIEWED_ID = "hudl-lastViewedCutupId";
+        public static string LAST_VIEWED_THUMBNAIL = "hudl-lastViewedCutupThumbnail";
         public static string TEAM_ID = "hudl-teamID";
         public static string SEASON_ID = "hudl-seasonID";
         public static string USERNAME = "UserName";
@@ -132,7 +134,7 @@ namespace HudlRT.Common
             LastViewedResponse response = new LastViewedResponse();
             response.name = GetUserRoamingSetting<string>(LAST_VIEWED_NAME);
             response.timeStamp = GetUserRoamingSetting<string>(LAST_VIEWED_TIMESTAMP);
-
+            response.thumbnail = GetUserRoamingSetting<string>(LAST_VIEWED_THUMBNAIL);
             //needed for the change to string id's for api_v2
             try
             {
@@ -145,11 +147,12 @@ namespace HudlRT.Common
             return response;
         }
 
-        public static void SetLastViewed(string name, string time, string ID)
+        public static void SetLastViewed(string name, string time, string ID, string thumbnail)
         {
             SetUserRoamingSetting<string>(LAST_VIEWED_NAME, name);
             SetUserRoamingSetting<string>(LAST_VIEWED_TIMESTAMP, time);
             SetUserRoamingSetting<string>(LAST_VIEWED_ID, ID);
+            SetUserRoamingSetting<string>(LAST_VIEWED_THUMBNAIL, thumbnail);
         }
 
         public static void SetAnglePreference(string angleName, bool value)

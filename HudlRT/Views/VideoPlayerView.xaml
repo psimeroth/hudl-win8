@@ -144,14 +144,30 @@
             </Grid.RowDefinitions>
             <Grid Name="header" Background="{StaticResource HudlDarkGray}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="85"/>
+                    <ColumnDefinition Width="165"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="165"/>
+                    <ColumnDefinition Width="85"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="17,0,0,0" />
-                <TextBlock x:Name="CutupName" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
-                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,20,0" Width="160" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
+                <Button x:Name="btnTogglePlayback" Grid.Column="1" Width="180" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}" HorizontalAlignment="Right"
                          caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
+                <TextBlock x:Name="CutupName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
+                <Grid Grid.Column="3">
+                    <Button x:Name="btnDownload" Visibility="{Binding DownloadButtonVisibility}" Width="180" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="Download"  HorizontalAlignment="Left"
+                         caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
+                    <Grid Grid.Column="2" Visibility="{Binding ProgressGridVisibility}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="165" ></TextBlock>
+                        <ProgressBar Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="165" Foreground="{StaticResource HudlLightBlue}"/>
+                    </Grid>
+                </Grid>
+                <Button x:Name="btnCancel" Visibility="{Binding ProgressGridVisibility}" Grid.Column="4" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="17,0,0,0"
+                         caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
             </Grid>
             <Grid Background="Black" Grid.Row="1" x:Name="Container1">
                 <Grid.RowDefinitions>

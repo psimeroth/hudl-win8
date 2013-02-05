@@ -17,6 +17,7 @@ namespace HudlRT.ViewModels
     {
         private readonly INavigationService navigationService;
         private string lastViewedId = null;
+        private string lastViewedThumbnail = null;
 
         private bool lastViewedLocal = false;
 
@@ -254,10 +255,7 @@ namespace HudlRT.ViewModels
 
             ColVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
-            if (CachedParameter.downloadedCutups == null)
-            {
-                await DownloadAccessor.Instance.GetDownloads();
-            }
+            await DownloadAccessor.Instance.GetDownloads();
             DownloadedCutupSize = CachedParameter.hubViewDownloadsSizeInMB;
             DownloadedCutupCount = CachedParameter.hubViewDownloadsCount;
 
@@ -273,6 +271,7 @@ namespace HudlRT.ViewModels
                 LastViewedName = response.name;
                 LastViewedTimeStamp = "Viewed: " + response.timeStamp;
                 lastViewedId = response.ID;
+                lastViewedThumbnail = response.thumbnail;
 
                 loadLastViewed = LoadLastViewedCutup();
             }
@@ -280,7 +279,7 @@ namespace HudlRT.ViewModels
 
         private async Task<ClipResponse> LoadLastViewedCutup()
         {
-            lastViewedCutup = new CutupViewModel { CutupId = lastViewedId, Name = LastViewedName };
+            lastViewedCutup = new CutupViewModel { CutupId = lastViewedId, Name = LastViewedName, Thumbnail = lastViewedThumbnail };
             if (CachedParameter.downloadedCutups != null)
             {
                 foreach (CutupViewModel cVM in CachedParameter.downloadedCutups)
@@ -534,7 +533,8 @@ namespace HudlRT.ViewModels
                             clips = lastViewedCutup.Clips,
                             displayColumns = lastViewedCutup.DisplayColumns,
                             clipCount = lastViewedCutup.ClipCount,
-                            name = lastViewedCutup.Name
+                            name = lastViewedCutup.Name,
+                            thumbnailLocation = lastViewedCutup.Thumbnail
                         };
                         navigationService.NavigateToViewModel<VideoPlayerViewModel>();
                     }

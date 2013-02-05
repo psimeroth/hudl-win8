@@ -697,6 +697,26 @@
         </Setter>
     </Style>
 
+    <Style x:Key="CancelButtonStyle" TargetType="Button">
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="FontFamily" Value="Segoe UI Symbol"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontSize" Value="38"/>
+        <Setter Property="AutomationProperties.AutomationId" Value="CancelButton"/>
+        <Setter Property="AutomationProperties.Name" Value="Cancel"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid">
+                        <Grid Margin="0,0,-3,0">
+                            <TextBlock x:Name="NormalGlyph" HorizontalAlignment="Right" Text="&#xE10A;" Foreground="#FFEA4949"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <!--
         BackButtonStyle is used to style a Button for use in the title area of a page.  Margins appropriate for
