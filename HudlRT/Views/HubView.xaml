@@ -19,25 +19,25 @@
 
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Back button and page title -->
-        <Grid Grid.Row="0" >
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
-            <Image x:Name="Logo" Grid.Column="1" Margin="0,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
+            <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" Opacity="0"/>
+            <Image x:Name="Logo" Grid.Column="1" Margin="1,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
         </Grid>
 
         <!-- Horizontal scrolling grid used in most view states -->
-        <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsItemClickEnabled="True">
+        <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal"/>
+                    <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
 
@@ -46,13 +46,13 @@
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
                             <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="0">
-                                <TextBlock Text="{Binding Name}" Foreground="Gray" FontSize="25" />
+                                <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlLightGray}" FontSize="25" />
                             </Grid>
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0" />
+                            <VariableSizedWrapGrid Orientation="Vertical" Height="*" Margin="0,0,80,0" />
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
                 </GroupStyle>
