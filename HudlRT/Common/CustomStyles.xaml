@@ -173,16 +173,29 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal"/>
-                                <!--<VisualState x:Name="PointerOver">
+                                <VisualState x:Name="PointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="Background" To="{ StaticResource HudlMediumGrayColor}"/>
+                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="Background" >
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="#E7E7E7" />
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="Background" To="{StaticResource HudlBlueColor}"/>
+                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="Background" >
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlOrange}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="Year" Storyboard.TargetProperty="Foreground" >
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="White" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="SchoolName" Storyboard.TargetProperty="Foreground" >
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="White" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="TeamName" Storyboard.TargetProperty="Foreground" >
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="White" />
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
-                                </VisualState>-->
+                                </VisualState>
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" Storyboard.TargetName="DisabledVisualElement" Storyboard.TargetProperty="Opacity" To=".5"/>
@@ -347,7 +360,7 @@
                         <Popup x:Name="Popup">
                             <Border x:Name="PopupBorder" Background="Transparent" BorderBrush="LightGray" BorderThickness="3" HorizontalAlignment="Stretch">
                                 <Grid>
-                                    <ScrollViewer x:Name="ScrollViewer" Padding="0" Background="Transparent">
+                                    <ScrollViewer x:Name="ScrollViewer" Padding="0" Background="Transparent" VerticalScrollBarVisibility="Hidden">
                                         <ItemsPresenter/>
                                     </ScrollViewer>
                                     <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="1,10,0,0">
