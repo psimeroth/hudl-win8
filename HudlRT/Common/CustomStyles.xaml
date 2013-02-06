@@ -332,8 +332,8 @@
                                     <ControlTemplate TargetType="ToggleButton"/>
                                 </ToggleButton.Template>
                                 <ToggleButton.Content>
-                                    <TextBlock>
-                                        <Run FontFamily="Segoe UI Symbol" Foreground="Gray">&#xE099;</Run>
+                                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,-20,0,0">
+                                        <Run FontFamily="Segoe UI Symbol" Foreground="Gray" FontSize="24">&#xE099;</Run>
                                     </TextBlock>
                                 </ToggleButton.Content>
                             </ToggleButton>
