@@ -56,55 +56,10 @@ namespace HudlRT.ViewModels
                 }
                 Categories = cats;
             }
-            /*else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
-            {
-                navigationService.NavigateToViewModel<DownloadsViewModel>();
-            }*/
             else
             {
                 Categories = null;
             }
         }
-        /*
-        public async Task GetCutupsByCategory(CategoryViewModel category)
-        {
-            CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                Cutups = new BindableCollection<CutupViewModel>();
-                foreach (Cutup cutup in response.cutups)
-                {
-                    Cutups.Add(CutupViewModel.FromCutup(cutup));
-                    Task<ClipResponse> tempResponse = LoadCutup(CutupViewModel.FromCutup(cutup));
-                    CachedCutupCalls.TryAdd(cutup.cutupId, tempResponse);
-                }
-                MarkDownloads();
-                SetDownloadButtonVisibility();
-            }
-            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
-            {
-                navigationService.NavigateToViewModel<DownloadsViewModel>();
-            }
-            var currentViewState = ApplicationView.Value;
-            if (currentViewState == ApplicationViewState.Snapped)
-            {
-                foreach (var cutup in Cutups)
-                {
-                    cutup.Name_Visibility = SNAPPED_VISIBILITY;
-                    cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
-                    cutup.Width = new GridLength(0);
-                    cutup.FontSize = SNAPPED_FONT_SIZE;
-                }
-            }
-            if (Cutups == null || Cutups.Count == 0)
-            {
-                NoEntriesMessage_Visibility = Visibility.Visible;
-            }
-            else
-            {
-                NoEntriesMessage_Visibility = Visibility.Collapsed;
-            }
-        }
-         * */
     }
 }
