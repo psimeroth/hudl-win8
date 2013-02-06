@@ -23,27 +23,51 @@ namespace HudlRT.ViewModels
             private set;
         }
 
+        private BindableCollection<Season> seasonsForDropDown;
+        public BindableCollection<Season> SeasonsDropDown
+        {
+            get { return seasonsForDropDown; }
+            set
+            {
+                seasonsForDropDown = value;
+                NotifyOfPropertyChange(() => SeasonsDropDown);
+            }
+        }
+
+        private Season selectedSeason;
+        public Season SelectedSeason
+        {
+            get { return selectedSeason; }
+            set
+            {
+                selectedSeason = value;
+                NotifyOfPropertyChange(() => SelectedSeason);
+            }
+        }
+
         protected override void OnActivate()
         {
-            base.OnInitialize();
+            base.OnActivate();
             
             CachedParameter.InitializeForFrontend();
-            LargeGameViewModel previous = LargeGameViewModel.FromGame(CachedParameter.hubViewPreviousGame, true);
-            LargeGameViewModel next = LargeGameViewModel.FromGame(CachedParameter.hubViewNextGame, true);
+            GameViewModel previous = GameViewModel.FromGame(CachedParameter.hubViewPreviousGame, true);
+            GameViewModel next = GameViewModel.FromGame(CachedParameter.hubViewNextGame, true);
+            SeasonsDropDown = CachedParameter.seasonsDropDown;
+            SelectedSeason = CachedParameter.seasonSelected;
             previous.isLargeView = true;
             next.isLargeView = true;
-            HubGroupViewModel NextGame = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<LargeGameViewModel>() };
+            HubGroupViewModel NextGame = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
             NextGame.Games.Add(previous);
-            HubGroupViewModel LastGame = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<LargeGameViewModel>() };
+            HubGroupViewModel LastGame = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<GameViewModel>() };
             LastGame.Games.Add(next);
             Groups.Add(NextGame);
             Groups.Add(LastGame);
 
-            HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<LargeGameViewModel>() };
+            HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
             for (int i = 0; i < 5; i++)
             {
-                LargeGameViewModel temp = LargeGameViewModel.FromGame(CachedParameter.hubViewPreviousGame, false);
-                LargeGameViewModel temp2 = LargeGameViewModel.FromGame(CachedParameter.hubViewNextGame, false);
+                GameViewModel temp = GameViewModel.FromGame(CachedParameter.hubViewPreviousGame, false);
+                GameViewModel temp2 = GameViewModel.FromGame(CachedParameter.hubViewNextGame, false);
                 schedule.Games.Add(temp);
                 schedule.Games.Add(temp2);
             }
@@ -53,6 +77,7 @@ namespace HudlRT.ViewModels
 
         public void GameSelected(ItemClickEventArgs eventArgs)
         {
+            CachedParameter.gameId = ((GameViewModel)eventArgs.ClickedItem).GameId;
             navigationService.NavigateToViewModel<SectionViewModel>();
         }
 

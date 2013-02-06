@@ -19,22 +19,47 @@ namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
     {
-        protected override void OnActivate()
-        {
-            base.OnActivate();
-
-        }
-
+        private BindableCollection<CategoryViewModel> _categories;
         public BindableCollection<CategoryViewModel> Categories
         {
-            get;
-            private set;
+            get { return _categories; }
+            set
+            {
+                _categories = value;
+                NotifyOfPropertyChange(() => Categories);
+            }
         }
 
         public SectionViewModel(INavigationService navigationService)
             : base(navigationService)
         {
             Categories = new BindableCollection<CategoryViewModel>();
+        }
+
+        protected override void OnActivate()
+        {
+            base.OnActivate();
+
+            GetGameCategories(CachedParameter.gameId);
+        }
+
+        public async Task GetGameCategories(string gameID)
+        {
+            Categories = null;
+            CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                var cats = new BindableCollection<CategoryViewModel>();
+                foreach (Category category in response.categories)
+                {
+                    cats.Add(CategoryViewModel.FromCategory(category));
+                }
+                Categories = cats;
+            }
+            else
+            {
+                Categories = null;
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ namespace HudlRT.ViewModels
         public string Name { get; set; }
         public string NumClips { get; set; }
         public bool IsDownloaded { get; set; }
+        public string ThumbnailPath { get; set; }
 
         public static CutupViewModel FromCutup(Cutup cutup)
         {
@@ -24,6 +25,7 @@ namespace HudlRT.ViewModels
             cvm.Name = cutup.name;
             cvm.NumClips = cutup.clipCount.ToString();
             cvm.IsDownloaded = false;
+            cvm.ThumbnailPath = cutup.thumbnailLocation;
             return cvm;
         }
     }

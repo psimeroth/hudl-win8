@@ -29,11 +29,11 @@
             <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
             <Image x:Name="Logo" Grid.Column="1" Margin="0,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
         </Grid>
-        
-        <SemanticZoom Grid.Row="1">
-            
-            <SemanticZoom.ZoomedInView>
-                <GridView>
+
+        <!--<SemanticZoom Grid.Row="1">
+
+            <SemanticZoom.ZoomedInView>-->
+        <GridView Grid.Row="1" x:Name="CategoriesGridView" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}">
                     <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel Orientation="Horizontal"/>
@@ -59,8 +59,8 @@
 
                     <GridView.ItemTemplate >
                         <DataTemplate>
-                            <StackPanel Background="{StaticResource HudlLightGray}" Height="600" Width="300" Orientation="Vertical">
-                                <Image></Image>
+                            <StackPanel Background="{StaticResource HudlLightGray}" Height="300" Width="300" Orientation="Vertical">
+                                <Image Source="{Binding ThumbnailPath}" />
                                 <Grid Height="100">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
@@ -68,17 +68,17 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock Text ="{Binding Name}" Grid.Row="0"/>
                                     <TextBlock Text ="{Binding NumClips}" Grid.Row="1"/>
-                                    <Image x:Name="IsDownloaded" HorizontalAlignment="Right" Grid.Row="1" />
+                                    <Image HorizontalAlignment="Right" Grid.Row="1" />
                                 </Grid>
                             </StackPanel>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                     
                 </GridView>
-            </SemanticZoom.ZoomedInView>
-            
-            
-        </SemanticZoom>
+        <!--</SemanticZoom.ZoomedInView>
+
+
+            </SemanticZoom>-->
 
     </Grid>
 

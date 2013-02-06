@@ -13,7 +13,7 @@ namespace HudlRT.Common
     {
         protected override Windows.UI.Xaml.DataTemplate SelectTemplateCore(object item, Windows.UI.Xaml.DependencyObject container)
         {
-            LargeGameViewModel game = item as LargeGameViewModel;
+            GameViewModel game = item as GameViewModel;
 
             if (game.isLargeView)
             {

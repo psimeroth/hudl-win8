@@ -331,11 +331,11 @@
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton"/>
                                 </ToggleButton.Template>
-                                <Path x:Name="BtnArrow" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z " VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Stretch="Uniform" Width="15" >
-                                    <Path.Fill>
-                                        <SolidColorBrush x:Name="BtnArrowColor" Color="{StaticResource HudlOrangeColor}"/>
-                                    </Path.Fill>
-                                </Path>
+                                <ToggleButton.Content>
+                                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,-20,0,0">
+                                        <Run FontFamily="Segoe UI Symbol" Foreground="Gray" FontSize="24">&#xE099;</Run>
+                                    </TextBlock>
+                                </ToggleButton.Content>
                             </ToggleButton>
                             <ContentPresenter x:Name="ContentPresenter" HorizontalAlignment="Right" Margin="0,0,25,0" VerticalAlignment="Center">
                                 <TextBlock />
