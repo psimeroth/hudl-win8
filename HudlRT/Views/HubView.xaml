@@ -1,237 +1,114 @@
 ﻿<common:LayoutAwarePage
+    x:Name="pageRoot"
     x:Class="HudlRT.Views.HubView"
-    IsTabStop="false"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:HudlRT.Views"
     xmlns:common="using:HudlRT.Common"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:caliburn="using:Caliburn.Micro"
-    NavigationCacheMode="Required"
-    mc:Ignorable="d">
-
-    <Page.Resources>
-        <x:String x:Key="Hudl">Hudl</x:String>
-        <TransitionCollection x:Key="PageTransition">
-            <EntranceThemeTransition />
-        </TransitionCollection>
-    </Page.Resources>
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:views="using:HudlRT.ViewModels"
+    NavigationCacheMode="Required">
     
-    <!--Actual Layout-->
-    <Grid x:Name="RootGrid" Background="{StaticResource HudlDarkerGray}">
-        <Grid.Resources>
-            <Storyboard x:Name="FadeOutCol">
-                <DoubleAnimation Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:1" To="0" />
-            </Storyboard>
-        </Grid.Resources>
+    <UserControl.Resources>
+        <CollectionViewSource x:Name="GroupsViewSource" Source="{Binding Groups}" IsSourceGrouped="True" ItemsPath="Games"/>
+        <common:TemplateSelector x:Key="GameTemplateSelector" LargeTemplate="{StaticResource HubPageLargeGamesTemplate}" SmallTemplate="{StaticResource HubPageSmallGamesTemplate}"/>
+    </UserControl.Resources>
+
+    <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--For snapped view-->
-        <Grid x:Name="SnappedView" Grid.Row="1" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Button Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]"
-                    VerticalAlignment="Stretch" Margin="10,20">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE173;" Foreground="{StaticResource HudlOrange}" HorizontalAlignment="Center" />
-                    <TextBlock Text="Video Library" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="LastViewed_Button_Snapped" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]"
-                    VerticalAlignment="Stretch" Margin="10,20">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}" HorizontalAlignment="Center" />
-                    <TextBlock Text="Last Viewed" HorizontalAlignment="Center"/>
-                    <ProgressRing x:Name="snapped_LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" Canvas.ZIndex="1" />
-                </StackPanel>
-            </Button>
-        </Grid>
-        
-        <Grid x:Name="TopTitleGrid" Background="{StaticResource HudlDarkGray}">
-            <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid x:Name="Logo_BackgroundGrid" Margin="20,0,0,0" Background="{StaticResource HudlHeaderGray}" Width="250" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <Border BorderBrush="Black" BorderThickness="1,0,1,1"/>
-            </Grid>
-            <Image x:Name="Logo" VerticalAlignment="Center" Width="150" Source="ms-appx:///Assets/hudl-hi-res-white-small.png" Margin="70,0,0,0" HorizontalAlignment="Left"/>
-
-            <Grid x:Name="ComboBoxGrid" MinWidth ="700" Margin="0,0,15,0" HorizontalAlignment="Right">
-                <ComboBox x:Name="SeasonsDropDown" MinWidth="700" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" Foreground="White" DropDownClosed="ResetComboBoxColor">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock x:Name="SeasonName" Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="25" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </Grid>
-        </Grid>
-       
-        <Grid x:Name="BottomContentGrid" Grid.Row="1" Margin="20">
+        <!-- Back button and page title -->
+        <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
-            <Grid x:Name="Group1_Grid" Grid.Column="0" Transitions="{StaticResource PageTransition}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="3*"/>
-                </Grid.RowDefinitions>
-                <Button x:Name="VideoLibrary_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]" Transitions="{StaticResource PageTransition}" Click="VideoLibraryClicked">
-                    <TextBlock>
-                        <Run Text="&#xE173;" Foreground="{StaticResource HudlOrange}"/> Video Library
-                    </TextBlock>
-                </Button>
-                <Border x:Name="NoGamesGrid" Grid.Row="1" Margin="0,30,0,0" BorderBrush="Black" BorderThickness="2">
-                    <Grid Background="{StaticResource HudlMediumGray}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row ="0" Foreground="White" DataContext ="{Binding SelectedSeason}" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="40" Text= "{Binding name}"/>
-                        <TextBlock Grid.Row ="1" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="40">No Scheduled Entries</TextBlock>
-                    </Grid>
-                </Border>
-                <Grid x:Name="RecentWeeks_Grid" Grid.Row="1" Margin="0,40,0,0" Visibility="{Binding RecentWeeks_GridVisibility}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="30"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid x:Name="Next_Grid" Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="5"/>
-                            <RowDefinition Height="15*"/>
-                        </Grid.RowDefinitions>
-                        <Border BorderBrush="{StaticResource HudlMediumGray}" BorderThickness="0,0,0,2">
-                            <TextBlock x:Name="NextGameHeader_Text" Grid.Row="0" DataContext ="{Binding NextGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
-                        </Border>
-                        <TextBlock x:Name="NextGameHeaderDate_Text" Grid.Row="1" DataContext ="{Binding NextGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                        <ListView Grid.Row="3" x:Name="NextGameCategories"
-                                    caliburn:Message.Attach="[Event ItemClick] = [NextCategorySelected($eventArgs)]"
-                                    Style="{StaticResource Hub_ListViewStyle_Standard}"
-                                    ItemContainerStyle="{StaticResource Hub_ListViewItemStyle_Standard}" 
-                                    SelectedItem="{Binding SelectedCategory}" 
-                                    SelectionChanged="ItemListView_SelectionChanged" 
-                                    PointerPressed="ListViewItemPointerPressed"
-                                    ItemClick="CategorySelected"
-                                  Margin="0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock x:Name="NextWeekCategory_Button" Text="{Binding name}"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
-                    <Grid x:Name="Prev_Grid" Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="5"/>
-                            <RowDefinition Height="15*"/>
-                        </Grid.RowDefinitions>
-                        <Border BorderBrush="{StaticResource HudlMediumGray}" BorderThickness="0,0,0,2">
-                            <TextBlock x:Name="PreviousGameHeader_Text" Grid.Row="0" DataContext ="{Binding PreviousGame}" Text="{Binding opponent}" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}"/>
-                        </Border>
-                        <TextBlock x:Name="PreviousGameHeaderDate_Text" Grid.Row="1" DataContext ="{Binding PreviousGame}" Text="{Binding DisplayDate}" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                        <ListView Grid.Row="3" x:Name="PreviousGameCategories"
-                                  SelectionChanged="ItemListView_SelectionChanged" 
-                                  PointerPressed="ListViewItemPointerPressed" 
-                                  caliburn:Message.Attach="[Event ItemClick] = [PreviousCategorySelected($eventArgs)]"
-                                  Style="{StaticResource Hub_ListViewStyle_Standard}"
-                                  ItemContainerStyle="{StaticResource Hub_ListViewItemStyle_Standard}" 
-                                  SelectedItem="{Binding SelectedCategory}"
-                                  ItemClick="CategorySelected">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock x:Name="PreviousWeekCategory_Button" Text="{Binding name}"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
-                </Grid>
-                
-            </Grid>
-            
-            <Grid x:Name="Group2_Grid" Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="0*"/>
-                </Grid.RowDefinitions>
-                <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]" Transitions="{StaticResource PageTransition}" Click="LastViewedClicked">
-                    <Button.Content>
-                        <Grid Grid.Column="1" Height="575">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="7*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock VerticalAlignment="Center" Margin="0,100,0,0" Grid.Row="0"> <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed</TextBlock>
-                            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
-                            <TextBlock Grid.Row="2" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
-                            <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" Canvas.ZIndex="1" />
-                        </Grid>
-                    </Button.Content>
-
-                </Button>
-                <Button x:Name="Downloads_Button"  Visibility="Collapsed" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol">
-                    <TextBlock>
-                        <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads
-                    </TextBlock>
-                </Button>
-            </Grid>
-        </Grid>            
-
-        <Grid>
-            <Canvas Canvas.ZIndex="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
+            <Image x:Name="Logo" Grid.Column="1" Margin="0,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
         </Grid>
+
+        <!-- Horizontal scrolling grid used in most view states -->
+        <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsItemClickEnabled="True">
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+
+            <GridView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="0">
+                                <TextBlock Text="{Binding Name}" Foreground="Gray" FontSize="25" />
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.Panel>
+                        <ItemsPanelTemplate>
+                            <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0" />
+                        </ItemsPanelTemplate>
+                    </GroupStyle.Panel>
+                </GroupStyle>
+            </GridView.GroupStyle>
+        </GridView>
+        <!-- Vertical scrolling list only used when snapped -->
+        <ListView
+            x:Name="itemListView"
+            AutomationProperties.AutomationId="ItemListView"
+            AutomationProperties.Name="Grouped Items"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Margin="0,0,0,0"
+            Padding="10,0,0,0"
+            ItemsSource="{Binding Source={StaticResource GroupsViewSource}}"
+            ItemTemplate="{StaticResource HubPageSnappedGamesTemplate}"
+            SelectionMode="None"
+            IsSwipeEnabled="false">
+
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Margin="7,7,0,0">
+                                <TextBlock Text="{Binding Name}" Foreground="Gray" FontSize="25" />
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView>
 
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="FullScreenLandscape">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedView" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Filled">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedView" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo_BackgroundGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="FullScreenPortrait">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedView" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
+
+            <!-- Visual states reflect the application's view state -->
+            <VisualStateGroup x:Name="ApplicationViewStates">
+                <VisualState x:Name="FullScreenLandscape"/>
+                <VisualState x:Name="Filled"/>
+
+                <!--
+                    The back button and title have different styles when snapped, and the list representation is substituted
+                    for the grid displayed in all other view states
+                -->
                 <VisualState x:Name="Snapped">
                     <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomContentGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedView" Storyboard.TargetProperty="Visibility">
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="-13,0,0,21" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ComboBoxGrid" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsByCategory" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

@@ -15,44 +15,6 @@ namespace HudlRT.ViewModels
         public string NumPlaylists { get; set; }
         public bool isLargeView { get; set; }
 
-        /*private string _opponent;
-        private string _date;
-        private string _numPlaylists;
-
-
-        public string Opponent
-        {
-            get { return _opponent; }
-            set
-            {
-                if (value == _opponent) return;
-                _opponent = value;
-                NotifyOfPropertyChange(() => Opponent);
-            }
-        }
-
-        public string Date
-        {
-            get { return _date; }
-            set
-            {
-                if (value == _date) return;
-                _date = value;
-                NotifyOfPropertyChange(() => Date);
-            }
-        }
-
-        public string NumPlaylists
-        {
-            get { return _numPlaylists; }
-            set
-            {
-                if (value == _numPlaylists) return;
-                _numPlaylists = value;
-                NotifyOfPropertyChange(() => NumPlaylists);
-            }
-        }*/
-
        public static LargeGameViewModel FromGame(Game game, bool isLarge)
        {
            int numplaylists = 0;

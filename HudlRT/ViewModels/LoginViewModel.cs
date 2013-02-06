@@ -149,7 +149,7 @@ namespace HudlRT.ViewModels
                 {
                     AppDataAccessor.SetPassword(Password);
                 }
-                navigationService.NavigateToViewModel<HubPrototypeViewModel>();
+                navigationService.NavigateToViewModel<HubViewModel>();
             }
             else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
             {
