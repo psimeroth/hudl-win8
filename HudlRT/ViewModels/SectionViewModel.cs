@@ -751,7 +751,7 @@ namespace HudlRT.ViewModels
             DownloadProgressText = "Determining Download Size";
             CachedParameter.currentlyDownloadingCutups = cutupList;
             CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
+            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame);
         }
 
 
@@ -772,7 +772,15 @@ namespace HudlRT.ViewModels
 
         public void ProgressCallback(DownloadOperation obj)
         {
-
+            if (CachedParameter.cts.IsCancellationRequested)
+            {
+                DownloadProgress_Visibility = Visibility.Collapsed;
+                CancelButton_Visibility = Visibility.Collapsed;
+                downloadMode = DownloadMode.Off;
+                //DownloadButton_Visibility = downloadedCutupCount == Cutups.Count ? Visibility.Collapsed : Visibility.Visible;
+                CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
+                DownloadProgress = 0;
+            }
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
             int downloadedCutupCount = 0;

@@ -744,7 +744,7 @@ namespace HudlRT.ViewModels
             List<Cutup> currentCutupList = new List<Cutup> { cutupCopy };
             CachedParameter.currentlyDownloadingCutups = currentCutupList;
             CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadCutups(currentCutupList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected, CachedParameter.cts.Token);
+            DownloadAccessor.Instance.DownloadCutups(currentCutupList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected);
         }
 
         public void CancelButtonClick()

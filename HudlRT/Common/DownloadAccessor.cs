@@ -99,13 +99,22 @@ namespace HudlRT.Common
 
         private async Task<StorageFile> StartDownloadAsync(DownloadOperation downloadOperation)
         {
-            Download = downloadOperation;
-            await downloadOperation.StartAsync().AsTask(CachedParameter.progressCallback);
-            CurrentDownloadedBytes += (long)downloadOperation.Progress.BytesReceived;
-            return (StorageFile)downloadOperation.ResultFile;
+            try
+            {
+                Download = downloadOperation;
+                await downloadOperation.StartAsync().AsTask(CachedParameter.cts.Token, CachedParameter.progressCallback);
+                CurrentDownloadedBytes += (long)downloadOperation.Progress.BytesReceived;
+                return (StorageFile)downloadOperation.ResultFile;
+            }
+            catch (TaskCanceledException)
+            {
+                Downloading = false;
+                CurrentDownloadedBytes = 0;
+                return null;
+            }
         }
 
-        public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g, CancellationToken ct)
+        public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g)
         {
 
             backgroundDownloader = new BackgroundDownloader();
@@ -155,13 +164,6 @@ namespace HudlRT.Common
                     {
                         try
                         {
-                            if (ct.IsCancellationRequested)
-                            {
-                                await DownloadAccessor.Instance.RemoveDownload(cut);
-                                Downloading = false;
-                                CurrentDownloadedBytes = 0;
-                                return;
-                            }
                             var source = new Uri(angle.fileLocation);
                             var files = await fileFolder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
                             var file = files.FirstOrDefault(x => x.Name.Equals(angle.clipAngleId.ToString()));
