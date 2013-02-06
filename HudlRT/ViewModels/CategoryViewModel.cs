@@ -37,5 +37,15 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => Playlists);
             }
         }
+
+        public static CategoryViewModel FromCategory(Category cat)
+        {
+            CategoryViewModel catVM = new CategoryViewModel();
+            catVM.Name = cat.name;
+
+            catVM.Playlists = new BindableCollection<CutupViewModel>();
+
+            return catVM;
+        }
     }
 }

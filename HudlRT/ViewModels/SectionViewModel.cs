@@ -19,16 +19,15 @@ namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
     {
-        protected override void OnActivate()
-        {
-            base.OnActivate();
-
-        }
-
+        private BindableCollection<CategoryViewModel> _categories;
         public BindableCollection<CategoryViewModel> Categories
         {
-            get;
-            private set;
+            get { return _categories; }
+            set
+            {
+                _categories = value;
+                NotifyOfPropertyChange(() => Categories);
+            }
         }
 
         public SectionViewModel(INavigationService navigationService)
@@ -36,5 +35,76 @@ namespace HudlRT.ViewModels
         {
             Categories = new BindableCollection<CategoryViewModel>();
         }
+
+        protected override void OnActivate()
+        {
+            base.OnActivate();
+
+            GetGameCategories(CachedParameter.gameId);
+        }
+
+        public async Task GetGameCategories(string gameID)
+        {
+            Categories = null;
+            CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                var cats = new BindableCollection<CategoryViewModel>();
+                foreach (Category category in response.categories)
+                {
+                    cats.Add(CategoryViewModel.FromCategory(category));
+                }
+                Categories = cats;
+            }
+            /*else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
+            }*/
+            else
+            {
+                Categories = null;
+            }
+        }
+        /*
+        public async Task GetCutupsByCategory(CategoryViewModel category)
+        {
+            CutupResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId.ToString());
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                Cutups = new BindableCollection<CutupViewModel>();
+                foreach (Cutup cutup in response.cutups)
+                {
+                    Cutups.Add(CutupViewModel.FromCutup(cutup));
+                    Task<ClipResponse> tempResponse = LoadCutup(CutupViewModel.FromCutup(cutup));
+                    CachedCutupCalls.TryAdd(cutup.cutupId, tempResponse);
+                }
+                MarkDownloads();
+                SetDownloadButtonVisibility();
+            }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                navigationService.NavigateToViewModel<DownloadsViewModel>();
+            }
+            var currentViewState = ApplicationView.Value;
+            if (currentViewState == ApplicationViewState.Snapped)
+            {
+                foreach (var cutup in Cutups)
+                {
+                    cutup.Name_Visibility = SNAPPED_VISIBILITY;
+                    cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+                    cutup.Width = new GridLength(0);
+                    cutup.FontSize = SNAPPED_FONT_SIZE;
+                }
+            }
+            if (Cutups == null || Cutups.Count == 0)
+            {
+                NoEntriesMessage_Visibility = Visibility.Visible;
+            }
+            else
+            {
+                NoEntriesMessage_Visibility = Visibility.Collapsed;
+            }
+        }
+         * */
     }
 }

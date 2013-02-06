@@ -21,7 +21,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public BindableCollection<LargeGameViewModel> Games
+        public BindableCollection<GameViewModel> Games
         {
             get;
             set;
