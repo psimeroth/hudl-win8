@@ -198,7 +198,13 @@ namespace HudlRT.ViewModels
                 }
             }
             foreach (Clip c in remainingClipsList)
-                FilteredClips.Add(c);
+            {
+                Clips.Add(c);
+                if (!FiltersList.Any())
+                {
+                    FilteredClips.Add(c);
+                }
+            }
         }
 
         private void getAngleNames()
@@ -437,7 +443,7 @@ namespace HudlRT.ViewModels
                 {
                     ColumnHeaderTextBlocks[SelectedFilter.columnId].FontSize = 18;
                 }
-                
+
                 List<Clip> newFilteredClips = new List<Clip>();
                 List<Clip> currentFilteredClips;
 
@@ -492,6 +498,13 @@ namespace HudlRT.ViewModels
                 sortClips(ref newFilteredClips, currentSortFilter);
                 FiltersList.Add(SelectedFilter);
                 applyFilter(newFilteredClips);
+            }
+            else
+            {
+                if (FiltersList.Contains(SelectedFilter))
+                {
+                    RemoveSelectedFilter();
+                }
             }
         }
 
