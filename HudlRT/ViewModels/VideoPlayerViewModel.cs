@@ -556,7 +556,6 @@ namespace HudlRT.ViewModels
             SelectedClipIndex = 0;
             SelectedClip = null;
             SelectedAngle = null;
-            listView.ScrollIntoView(FilteredClips[0], ScrollIntoViewAlignment.Default);
             FilteredClips = new ObservableCollection<Clip>(clips);
 
             if (FilteredClips.Any())
@@ -753,7 +752,6 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
-            listView.ScrollIntoView(FilteredClips[0], ScrollIntoViewAlignment.Default);
             preloadCTS.Cancel();
             DeleteTempData();
             dispRequest.RequestRelease();
