@@ -64,6 +64,21 @@ namespace HudlRT.Parameters
                 isHome = true,
                 opponent = "Wichita east"
             };
+            Team team = new Team()
+            {
+                name = "Varsity Football",
+                school = "Wichita Heights High School",
+                seasons = new BindableCollection<Season>(),
+                teamID = "7"
+            };
+
+            seasonsDropDown = new BindableCollection<Season>()
+            {
+                new Season(){name = "2012 - 2013", games = new BindableCollection<Game>(), owningTeam = team, seasonID = "57083", year = 2012},
+                new Season(){name = "2011 - 2012", games = new BindableCollection<Game>(), owningTeam = team, seasonID = "16874", year = 2011},
+                new Season(){name = "2010 - 2011", games = new BindableCollection<Game>(), owningTeam = team, seasonID = "4898", year = 2010},
+            };
+            seasonSelected = seasonsDropDown.First();
         }
 
         public static void resetCache(){
