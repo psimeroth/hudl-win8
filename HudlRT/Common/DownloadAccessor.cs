@@ -40,6 +40,7 @@ namespace HudlRT.Common
         }
 
         public DownloadOperation Download { get; set; }
+        public BackgroundDownloader backgroundDownloader = new BackgroundDownloader();
         public double DownloadProgress { get; set; }
         public bool Downloading { get; set; }
         public long TotalBytes { get; set; }
@@ -96,16 +97,18 @@ namespace HudlRT.Common
             }
         }
 
-        private async Task<StorageFile> StartDownloadAsync(DownloadOperation downloadOperation, Progress<DownloadOperation> progress)
+        private async Task<StorageFile> StartDownloadAsync(DownloadOperation downloadOperation)
         {
             Download = downloadOperation;
-            await downloadOperation.StartAsync().AsTask(progress);
+            await downloadOperation.StartAsync().AsTask(CachedParameter.progressCallback);
             CurrentDownloadedBytes += (long)downloadOperation.Progress.BytesReceived;
             return (StorageFile)downloadOperation.ResultFile;
         }
 
-        public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g, CancellationToken ct, Progress<DownloadOperation> progressCallBack)
+        public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g, CancellationToken ct)
         {
+
+            backgroundDownloader = new BackgroundDownloader();
             Downloading = true;
             TotalBytes = 0;
             ClipsComplete = 0;
@@ -167,9 +170,8 @@ namespace HudlRT.Common
                             {
                                 //CutupId-ClipId-ClipAngleId
                                 var destinationFile = await fileFolder.CreateFileAsync(cut.cutupId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
-                                var downloader = new BackgroundDownloader();
-                                Download = downloader.CreateDownload(source, destinationFile);
-                                file = await StartDownloadAsync(Download, progressCallBack);
+                                Download = backgroundDownloader.CreateDownload(source, destinationFile);
+                                file = await StartDownloadAsync(Download);
                                 angle.preloadFile = file.Path;
                                 angle.isPreloaded = true;
                                 ClipsComplete++;

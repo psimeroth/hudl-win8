@@ -228,8 +228,10 @@ namespace HudlRT.ViewModels
                     break;
                 }
             }
+            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
             if (DownloadAccessor.Instance.Downloading)
             {
+                LoadActiveDownloadsAsync();
                 ProgressGridVisibility = Visibility.Visible;
                 DownloadButtonVisibility = Visibility.Collapsed;
             }
@@ -245,6 +247,21 @@ namespace HudlRT.ViewModels
                     DownloadButtonVisibility = Visibility.Collapsed;
                 }
             }
+        }
+
+        private async Task LoadActiveDownloadsAsync()
+        {
+            IReadOnlyList<DownloadOperation> downloads = null;
+            downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
+            if (downloads.Count > 0)
+            {
+                //for simplicity we support only one download
+                await ResumeDownloadAsync(downloads.First());
+            }
+        }
+        private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
+        {
+            await downloadOperation.AttachAsync().AsTask(CachedParameter.progressCallback);
         }
 
         private async void initialClipPreload()
@@ -726,8 +743,8 @@ namespace HudlRT.ViewModels
             Cutup cutupCopy = Cutup.Copy(CachedParameter.selectedCutup);
             List<Cutup> currentCutupList = new List<Cutup> { cutupCopy };
             CachedParameter.currentlyDownloadingCutups = currentCutupList;
-            var progress = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadCutups(currentCutupList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected, CachedParameter.cts.Token, progress);
+            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            DownloadAccessor.Instance.DownloadCutups(currentCutupList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected, CachedParameter.cts.Token);
         }
 
         public void CancelButtonClick()
@@ -740,7 +757,7 @@ namespace HudlRT.ViewModels
             DownloadButtonVisibility = Visibility.Collapsed;
         }
 
-        private void ProgressCallback(DownloadOperation obj)
+        public void ProgressCallback(DownloadOperation obj)
         {
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";

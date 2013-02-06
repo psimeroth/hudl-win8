@@ -363,10 +363,11 @@ namespace HudlRT.ViewModels
             {
                 NoEntriesMessage_Visibility = Visibility.Visible;
             }
-
+            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
             if (DownloadAccessor.Instance.Downloading)
             {
                 downloadMode = DownloadMode.Dowloading;
+                LoadActiveDownloadsAsync();         
                 DownloadProgress_Visibility = Visibility.Visible;
                 CancelButton_Visibility = Visibility.Visible;
             }
@@ -749,11 +750,27 @@ namespace HudlRT.ViewModels
             downloadMode = DownloadMode.Dowloading;
             DownloadProgressText = "Determining Download Size";
             CachedParameter.currentlyDownloadingCutups = cutupList;
-            var progress = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token, progress);
+            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            DownloadAccessor.Instance.DownloadCutups(cutupList, SelectedSeason, SelectedGame, CachedParameter.cts.Token);
         }
 
-        private void ProgressCallback(DownloadOperation obj)
+
+        private async Task LoadActiveDownloadsAsync()
+        {
+            IReadOnlyList<DownloadOperation> downloads = null;
+            downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
+            if (downloads.Count > 0)
+            {
+                //for simplicity we support only one download
+                await ResumeDownloadAsync(downloads.First());
+            }
+        }
+        private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
+        {
+            await downloadOperation.AttachAsync().AsTask(CachedParameter.progressCallback);
+        }
+
+        public void ProgressCallback(DownloadOperation obj)
         {
 
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
@@ -766,21 +783,19 @@ namespace HudlRT.ViewModels
                 {
                     foreach (CutupViewModel cutupVM in Cutups)
                     {
-                        downloadFound = false;
                         foreach (Cutup downloadedCutup in CachedParameter.currentlyDownloadingCutups)
                         {
                             if (downloadedCutup.cutupId == cutupVM.CutupId)
                             {
                                 cutupVM.DownloadedVisibility = Visibility.Visible;
                                 cutupVM.CheckBox = false;
-                                downloadFound = true;
                                 downloadedCutupCount++;
                                 break;
                             }
-                        }
-                        if (!downloadFound)
-                        {
-                            cutupVM.DownloadedVisibility = Visibility.Collapsed;
+                            else if (cutupVM.DownloadedVisibility == Visibility.Visible)
+                            {
+                                downloadedCutupCount++;
+                            }
                         }
                     }
                 }
