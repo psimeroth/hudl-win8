@@ -57,12 +57,20 @@ namespace HudlRT.Models
     public class Season : IComparable
     {
         public string name { get; set; }
-        public string FullName 
+        public string SchoolName 
         { 
             get 
             { 
-                return owningTeam.school + " - " + owningTeam.name + " - " + name; 
+                return owningTeam.school; 
             }  
+        }
+
+        public string TeamName
+        {
+            get
+            {
+                return owningTeam.name;
+            }
         }
 
         public string seasonID { get; set; }

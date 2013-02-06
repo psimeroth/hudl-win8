@@ -31,5 +31,9 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
+
+        private void Grid_SizeChanged_1(object sender, SizeChangedEventArgs e)
+        {
+        }
     }
 }

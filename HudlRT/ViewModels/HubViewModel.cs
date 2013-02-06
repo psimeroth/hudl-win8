@@ -23,6 +23,28 @@ namespace HudlRT.ViewModels
             private set;
         }
 
+        private BindableCollection<Season> seasonsForDropDown;
+        public BindableCollection<Season> SeasonsDropDown
+        {
+            get { return seasonsForDropDown; }
+            set
+            {
+                seasonsForDropDown = value;
+                NotifyOfPropertyChange(() => SeasonsDropDown);
+            }
+        }
+
+        private Season selectedSeason;
+        public Season SelectedSeason
+        {
+            get { return selectedSeason; }
+            set
+            {
+                selectedSeason = value;
+                NotifyOfPropertyChange(() => SelectedSeason);
+            }
+        }
+
         protected override void OnActivate()
         {
             base.OnActivate();
@@ -30,6 +52,8 @@ namespace HudlRT.ViewModels
             CachedParameter.InitializeForFrontend();
             GameViewModel previous = GameViewModel.FromGame(CachedParameter.hubViewPreviousGame, true);
             GameViewModel next = GameViewModel.FromGame(CachedParameter.hubViewNextGame, true);
+            SeasonsDropDown = CachedParameter.seasonsDropDown;
+            SelectedSeason = CachedParameter.seasonSelected;
             previous.isLargeView = true;
             next.isLargeView = true;
             HubGroupViewModel NextGame = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
