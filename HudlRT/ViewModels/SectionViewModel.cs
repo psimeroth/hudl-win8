@@ -30,6 +30,28 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<Season> seasonsForDropDown;
+        public BindableCollection<Season> SeasonsDropDown
+        {
+            get { return seasonsForDropDown; }
+            set
+            {
+                seasonsForDropDown = value;
+                NotifyOfPropertyChange(() => SeasonsDropDown);
+            }
+        }
+
+        private Season selectedSeason;
+        public Season SelectedSeason
+        {
+            get { return selectedSeason; }
+            set
+            {
+                selectedSeason = value;
+                NotifyOfPropertyChange(() => SelectedSeason);
+            }
+        }
+
         public SectionViewModel(INavigationService navigationService)
             : base(navigationService)
         {
@@ -39,6 +61,8 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+            SeasonsDropDown = CachedParameter.seasonsDropDown;
+            SelectedSeason = CachedParameter.seasonSelected;
 
             GetGameCategories(CachedParameter.gameId);
         }
