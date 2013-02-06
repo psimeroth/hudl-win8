@@ -162,10 +162,9 @@
     <Style x:Key="ComboBoxItemStyle_Standard" TargetType="ComboBoxItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="5"/>
-        <Setter Property="Height" Value ="60"/>
+        <Setter Property="Height" Value ="80"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="FontSize" Value="24"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -174,16 +173,16 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="PointerOver">
+                                <!--<VisualState x:Name="PointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlMediumGrayColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="Background" To="{ StaticResource HudlMediumGrayColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="Background" To="{StaticResource HudlBlueColor}"/>
                                     </Storyboard>
-                                </VisualState>
+                                </VisualState>-->
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" Storyboard.TargetName="DisabledVisualElement" Storyboard.TargetProperty="Opacity" To=".5"/>
@@ -203,22 +202,17 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Grid Margin="0">
-                            <Border BorderThickness="1" BorderBrush="Black">
-                                <Rectangle x:Name="BackgroundColor" >
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="{StaticResource HudlDarkGrayColor}"/>
-                                    </Rectangle.Fill>
-                                </Rectangle>
+                        <Grid x:Name="BackgroundColor" Background="LightGray">
+                            <Border BorderThickness="0,0,0,1" BorderBrush="Gray" Margin="40,0">
                             </Border>
                         </Grid>
-                        <ContentPresenter
-                              x:Name="contentPresenter"
-                              Content="{TemplateBinding Content}"
-                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              Margin="{TemplateBinding Padding}"/>
+                        <StackPanel Orientation="Vertical" Margin="0,0,22,0">
+                            <TextBlock x:Name="Year" Text="{Binding name}" HorizontalAlignment="Right" FontSize="40" Foreground="Gray" />
+                            <StackPanel Orientation="Horizontal" Margin="0,-10,0,0" HorizontalAlignment="Right">
+                                <TextBlock x:Name="SchoolName" Text="{Binding SchoolName}" FontSize="22" Foreground="Gray" FontWeight="Bold"/>
+                                <TextBlock x:Name="TeamName" Text="{Binding TeamName}" FontSize="22" Foreground="Gray" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
                         <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
                         <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="0" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
                     </Grid>
@@ -332,7 +326,7 @@
                                     <ControlTemplate TargetType="ToggleButton"/>
                                 </ToggleButton.Template>
                                 <ToggleButton.Content>
-                                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,-20,0,0">
+                                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,-20,1,0">
                                         <Run FontFamily="Segoe UI Symbol" Foreground="Gray" FontSize="24">&#xE099;</Run>
                                     </TextBlock>
                                 </ToggleButton.Content>
@@ -351,10 +345,15 @@
                             </Grid>
                         </Border>
                         <Popup x:Name="Popup">
-                            <Border x:Name="PopupBorder" Background="Transparent" BorderBrush="{StaticResource HudlLightGray}" BorderThickness="3" HorizontalAlignment="Stretch">
-                                <ScrollViewer x:Name="ScrollViewer" Padding="0" Background="Transparent">
-                                    <ItemsPresenter/>
-                                </ScrollViewer>
+                            <Border x:Name="PopupBorder" Background="Transparent" BorderBrush="LightGray" BorderThickness="3" HorizontalAlignment="Stretch">
+                                <Grid>
+                                    <ScrollViewer x:Name="ScrollViewer" Padding="0" Background="Transparent">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="1,10,0,0">
+                                        <Run FontFamily="Segoe UI Symbol" Foreground="Gray" FontSize="24">&#xE098;</Run>
+                                    </TextBlock>
+                                </Grid>
                             </Border>
                         </Popup>
                     </Grid>
