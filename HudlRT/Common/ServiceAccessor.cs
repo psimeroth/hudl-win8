@@ -233,7 +233,7 @@ namespace HudlRT.Common
 
         public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(CutupViewModel cutup, int startIndex)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()), true);
+            /*var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()), true);
             var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
             BindableCollection<Clip> clipCollection = new BindableCollection<Clip>();
             if (clipResponseDTO.ClipsList.Clips.Count == 100)
@@ -264,13 +264,13 @@ namespace HudlRT.Common
                     }
                 }
                 return clipCollection;
-            }
-
+            }*/
+            return new BindableCollection<Clip>();
         }
 
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"), true);
+            /*var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"), true);
             if (!string.IsNullOrEmpty(clips))
             {
                 try
@@ -304,7 +304,8 @@ namespace HudlRT.Common
             else
             {
                 return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
-            }
+            }*/
+            return new ClipResponse();
         }
 
         /// <summary>

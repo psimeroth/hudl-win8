@@ -14,27 +14,7 @@ namespace HudlRT.ViewModels
     public class CategoryViewModel : PropertyChangedBase
     {
         private string _name { get; set; }
-        private string _textColor { get; set; }
-        //private BindableCollection<Category> _cutups { get; set; }
-        private string _categoryId { get; set; }
-
-        public static CategoryViewModel FromDTO(CategoryDTO catDTO)
-        {
-            CategoryViewModel cat = new CategoryViewModel();
-            cat._name = catDTO.Name;
-            cat._categoryId = catDTO.CategoryId;
-            cat._textColor = "#E0E0E0";
-            return cat;
-        }
-
-        public static CategoryViewModel FromCategory(Category catModel)
-        {
-            CategoryViewModel cat = new CategoryViewModel();
-            cat._name = catModel.name;
-            cat._categoryId = catModel.categoryId;
-            cat._textColor = "#E0E0E0";
-            return cat;
-        }
+        private BindableCollection<CutupViewModel> _playlists { get; set; }
 
         public string Name
         {
@@ -47,25 +27,14 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public string CategoryId
+        public BindableCollection<CutupViewModel> Playlists
         {
-            get { return _categoryId; }
+            get { return _playlists; }
             set
             {
-                if (value == _categoryId) return;
-                _categoryId = value;
-                NotifyOfPropertyChange(() => CategoryId);
-            }
-        }
-
-        public string TextColor
-        {
-            get { return _textColor; }
-            set
-            {
-                if (value == _textColor) return;
-                _textColor = value;
-                NotifyOfPropertyChange(() => TextColor);
+                if (value == _playlists) return;
+                _playlists = value;
+                NotifyOfPropertyChange(() => Playlists);
             }
         }
     }

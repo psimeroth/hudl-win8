@@ -22,7 +22,7 @@ namespace HudlRT.Parameters
         public static BindableCollection<GameViewModel> sectionViewGames { get; set; }
         public static GameViewModel sectionViewGameSelected { get; set; }
                 
-        public static BindableCollection<CategoryViewModel> sectionViewCategories { get; set; }
+        public static BindableCollection<Category> sectionViewCategories { get; set; }
         public static CategoryViewModel sectionViewCategorySelected { get; set; }
                 
         public static BindableCollection<CutupViewModel> sectionViewCutups { get; set; }
