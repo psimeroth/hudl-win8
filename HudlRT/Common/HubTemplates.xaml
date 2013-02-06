@@ -4,37 +4,41 @@
     xmlns:local="using:HudlRT.Common">
 
     <DataTemplate x:Key="HubPageLargeGamesTemplate">
-        <Grid Background="{StaticResource HudlLightGray}" Width="300">
+        <Grid Background="{StaticResource HudlLightGray}" Height="550" Width="300">
             <Grid.RowDefinitions>
                 <RowDefinition Height="8*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
-            <Image Source="ms-appx:///Assets/agile-hudl-logo-dark.png" Width="250" HorizontalAlignment="Center" Grid.Row="0"/>
+            <Image Source="ms-appx:///Assets/agile-hudl-logo-dark.png" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="Opponent" Text ="{Binding Opponent}" Grid.Row="0"/>
-                <TextBlock x:Name="Date" Text ="{Binding Date}" Grid.Row="1"/>
-                <TextBlock x:Name="NumPlaylists" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1"/>
+                <TextBlock x:Name="Opponent" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" />
+                <TextBlock x:Name="Date" Text ="{Binding Date}" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
+                <TextBlock x:Name="NumPlaylists" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
             </Grid>
         </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
-        <StackPanel Background="{StaticResource HudlLightGray}" Height="295" Width="300" Orientation="Vertical">
-            <Image Source="ms-appx:///Assets/agile-hudl-logo-dark.png" />
-            <Grid Height="100">
+        <Grid Background="{StaticResource HudlLightGray}" Height="253" Width="300">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            <Image Source="ms-appx:///Assets/agile-hudl-logo-dark.png" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
+            <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="Opponent" Text ="{Binding Opponent}" Grid.Row="0"/>
-                <TextBlock x:Name="Date" Text ="{Binding Date}" Grid.Row="1"/>
-                <TextBlock x:Name="NumPlaylists" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1"/>
+                <TextBlock x:Name="Opponent" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" />
+                <TextBlock x:Name="Date" Text ="{Binding Date}" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
+                <TextBlock x:Name="NumPlaylists" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
             </Grid>
-        </StackPanel>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSnappedGamesTemplate">
