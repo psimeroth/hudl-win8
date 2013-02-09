@@ -19,6 +19,7 @@ namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
     {
+        INavigationService navigationService;
         private BindableCollection<CategoryViewModel> _categories;
         public BindableCollection<CategoryViewModel> Categories
         {
@@ -55,6 +56,7 @@ namespace HudlRT.ViewModels
         public SectionViewModel(INavigationService navigationService)
             : base(navigationService)
         {
+            this.navigationService = navigationService;
             Categories = new BindableCollection<CategoryViewModel>();
         }
 
@@ -103,6 +105,13 @@ namespace HudlRT.ViewModels
             {
                 //What should go here?
             }
+        }
+
+        public void PlaylistSelected(ItemClickEventArgs eventArgs)
+        {
+            //CachedParameter.selectedCutup = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistId;
+            //navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+
         }
     }
 }

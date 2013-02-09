@@ -18,12 +18,14 @@ namespace HudlRT.ViewModels
         public string NumClips { get; set; }
         public bool IsDownloaded { get; set; }
         public string ThumbnailPath { get; set; }
+        public string PlaylistId { get; set; }
 
         public static PlaylistViewModel FromPlaylist(Playlist cutup)
         {
             PlaylistViewModel cvm = new PlaylistViewModel();
             cvm.Name = cutup.name;
             cvm.NumClips = cutup.clipCount.ToString();
+            cvm.PlaylistId = cutup.cutupId;
             cvm.IsDownloaded = false;
             if (cutup.thumbnailLocation == null)
             {

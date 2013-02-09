@@ -29,7 +29,7 @@
                 <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
             <Image Source="ms-appx:///Assets/agile-hudl-logo-dark.png" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
-            <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
+            <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
