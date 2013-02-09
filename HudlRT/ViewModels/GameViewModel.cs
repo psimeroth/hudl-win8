@@ -16,13 +16,14 @@ namespace HudlRT.ViewModels
         public bool isLargeView { get; set; }
         public string GameId { get; set; }
 
-        public static GameViewModel FromGame(Game game, bool isLarge)
+        public static GameViewModel FromGame(Game game, bool isLarge = false)
         {
             int numplaylists = 0;
             foreach (Category c in game.categories)
             {
                 numplaylists += c.cutups.Count();
             }
+
             GameViewModel largeVM = new GameViewModel()
             {
                 Opponent = "vs. " + game.opponent,

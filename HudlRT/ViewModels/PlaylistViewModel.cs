@@ -12,20 +12,28 @@ namespace HudlRT.ViewModels
     /// <summary>
     /// Used for binding to a list of cutups
     /// </summary>
-    public class CutupViewModel : PropertyChangedBase
+    public class PlaylistViewModel : PropertyChangedBase
     {
         public string Name { get; set; }
         public string NumClips { get; set; }
         public bool IsDownloaded { get; set; }
         public string ThumbnailPath { get; set; }
 
-        public static CutupViewModel FromCutup(Cutup cutup)
+        public static PlaylistViewModel FromPlaylist(Playlist cutup)
         {
-            CutupViewModel cvm = new CutupViewModel();
+            PlaylistViewModel cvm = new PlaylistViewModel();
             cvm.Name = cutup.name;
             cvm.NumClips = cutup.clipCount.ToString();
             cvm.IsDownloaded = false;
-            cvm.ThumbnailPath = cutup.thumbnailLocation;
+            if (cutup.thumbnailLocation == null)
+            {
+                cvm.ThumbnailPath = "ms-appx:///Assets/agile-hudl-logo-dark.png";
+            }
+            else
+            {
+                cvm.ThumbnailPath = cutup.thumbnailLocation;
+
+            }
             return cvm;
         }
     }

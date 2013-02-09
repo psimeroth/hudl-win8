@@ -47,9 +47,9 @@ namespace HudlRT.Common
         public BindableCollection<Category> categories { get; set; }
     }
 
-    class CutupResponse: Response
+    class PlaylistResponse: Response
     {
-        public BindableCollection<Cutup> cutups { get; set; }
+        public BindableCollection<Playlist> playlists { get; set; }
     }
 
     class ClipResponse: Response
@@ -71,8 +71,10 @@ namespace HudlRT.Common
     class ServiceAccessor
     {
 #if DEBUG
-        private const string URL_BASE = "http://thor7/api/v2/";
-        private const string URL_BASE_SECURE = "https://thor7/api/v2/";
+        //private const string URL_BASE = "http://thor7/api/v2/";
+        //private const string URL_BASE_SECURE = "https://thor7/api/v2/";
+        private const string URL_BASE = "http://staghudl.com/api/v2/";
+        private const string URL_BASE_SECURE = "https://staghudl.com/api/v2/";
 #else
         private const string URL_BASE = "http://www.hudl.com/api/v2/";
         private const string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
@@ -205,7 +207,7 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
+        public static async Task<PlaylistResponse> GetCategoryCutups(string categoryId)
         {
             var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId), true);
             if (!string.IsNullOrEmpty(cutups))
@@ -213,25 +215,25 @@ namespace HudlRT.Common
                 try
                 {
                     var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
-                    BindableCollection<Cutup> cutupCollection = new BindableCollection<Cutup>();
+                    BindableCollection<Playlist> cutupCollection = new BindableCollection<Playlist>();
                     foreach (CutupDTO cutupDTO in obj)
                     {
-                        cutupCollection.Add(Cutup.FromDTO(cutupDTO));
+                        cutupCollection.Add(Playlist.FromDTO(cutupDTO));
                     }
-                    return new CutupResponse { status = SERVICE_RESPONSE.SUCCESS, cutups = cutupCollection };
+                    return new PlaylistResponse { status = SERVICE_RESPONSE.SUCCESS, playlists = cutupCollection };
                 }
                 catch (Exception)
                 {
-                    return new CutupResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
+                    return new PlaylistResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
             else
             {
-                return new CutupResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
+                return new PlaylistResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
 
-        public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(CutupViewModel cutup, int startIndex)
+        public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(PlaylistViewModel cutup, int startIndex)
         {
             /*var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()), true);
             var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
@@ -268,7 +270,7 @@ namespace HudlRT.Common
             return new BindableCollection<Clip>();
         }
 
-        public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
+        public static async Task<ClipResponse> GetCutupClips(PlaylistViewModel cutup)
         {
             /*var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"), true);
             if (!string.IsNullOrEmpty(clips))

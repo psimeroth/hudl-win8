@@ -35,5 +35,10 @@ namespace HudlRT.Views
         private void Grid_SizeChanged_1(object sender, SizeChangedEventArgs e)
         {
         }
+
+        private void SeasonsDropDown_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

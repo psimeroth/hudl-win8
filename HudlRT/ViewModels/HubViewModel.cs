@@ -17,10 +17,15 @@ namespace HudlRT.ViewModels
     {
         INavigationService navigationService;
 
+        private BindableCollection<HubGroupViewModel> _groups;
         public BindableCollection<HubGroupViewModel> Groups
         {
-            get;
-            private set;
+            get { return _groups; }
+            set
+            {
+                _groups = value;
+                NotifyOfPropertyChange(() => Groups);
+            }
         }
 
         private BindableCollection<Season> seasonsForDropDown;
@@ -42,37 +47,132 @@ namespace HudlRT.ViewModels
             {
                 selectedSeason = value;
                 NotifyOfPropertyChange(() => SelectedSeason);
+                CachedParameter.seasonSelected = selectedSeason;
+                PopulateGroups();
             }
         }
 
-        protected override void OnActivate()
+        private BindableCollection<Game> games { get; set; }
+
+        private Game nextGame {get; set;}
+        private Game previousGame { get; set; }
+
+        protected override async void OnInitialize()
         {
-            base.OnActivate();
+            base.OnInitialize();
+
+            CachedParameter.seasonsDropDown = await GetSortedSeasons();
+            CachedParameter.seasonSelected = CachedParameter.seasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? CachedParameter.seasonsDropDown[0];
             
-            CachedParameter.InitializeForFrontend();
-            GameViewModel previous = GameViewModel.FromGame(CachedParameter.hubViewPreviousGame, true);
-            GameViewModel next = GameViewModel.FromGame(CachedParameter.hubViewNextGame, true);
             SeasonsDropDown = CachedParameter.seasonsDropDown;
             SelectedSeason = CachedParameter.seasonSelected;
-            previous.isLargeView = true;
-            next.isLargeView = true;
-            HubGroupViewModel NextGame = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
-            NextGame.Games.Add(previous);
-            HubGroupViewModel LastGame = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<GameViewModel>() };
-            LastGame.Games.Add(next);
-            Groups.Add(NextGame);
-            Groups.Add(LastGame);
+        }
+
+        private async void PopulateGroups()
+        {
+            games = await GetGames();
+            GetNextPreviousGames();
+
+            HubGroupViewModel NextGameVM = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
+            HubGroupViewModel LastGameVM = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<GameViewModel>() };
+
+            if (previousGame != null)
+            {
+                GameViewModel previous = GameViewModel.FromGame(previousGame, true);
+                previous.isLargeView = true;
+                NextGameVM.Games.Add(previous);
+            }
+            if (nextGame != null)
+            {
+                GameViewModel next = GameViewModel.FromGame(nextGame, true);
+                next.isLargeView = true;
+                LastGameVM.Games.Add(next);
+            }
+            BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
+            NewGroups.Add(NextGameVM);
+            NewGroups.Add(LastGameVM);
 
             HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
-            for (int i = 0; i < 5; i++)
+            foreach (Game g in games)
             {
-                GameViewModel temp = GameViewModel.FromGame(CachedParameter.hubViewPreviousGame, false);
-                GameViewModel temp2 = GameViewModel.FromGame(CachedParameter.hubViewNextGame, false);
-                schedule.Games.Add(temp);
-                schedule.Games.Add(temp2);
+                schedule.Games.Add(GameViewModel.FromGame(g));
             }
-            Groups.Add(schedule);
+            NewGroups.Add(schedule);
+            Groups = NewGroups;
+        }
 
+        public void GetNextPreviousGames()
+        {
+            List<Game> sortedGames = new List<Game>();
+            DateTime lastGameDate;
+
+            foreach (Game game in games)
+            {
+                sortedGames.Add(game);
+            }
+            sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
+            if (sortedGames.Count > 0)
+            {
+                lastGameDate = sortedGames[0].date;
+
+
+                if (DateTime.Compare(DateTime.Now, lastGameDate) >= 0)
+                {
+                    nextGame = sortedGames[0];
+                    if (sortedGames.Count >= 2)
+                    {
+                        previousGame = sortedGames[1];
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < sortedGames.Count; i++)
+                    {
+                        if (DateTime.Compare(sortedGames[i].date, DateTime.Now) < 0)
+                        {
+                            if (i == 0)
+                            {
+                                nextGame = sortedGames[i];
+                            }
+                            else
+                            {
+                                nextGame = sortedGames[i - 1];
+                                previousGame = sortedGames[i];
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task<BindableCollection<Game>> GetGames()
+        {
+            GameResponse response = await ServiceAccessor.GetGames(CachedParameter.seasonSelected.owningTeam.teamID.ToString(), CachedParameter.seasonSelected.seasonID.ToString());
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                return response.games;
+            }
+            return null;
+        }
+
+        public async Task<BindableCollection<Season>> GetSortedSeasons()
+        {
+            TeamResponse response = await ServiceAccessor.GetTeams();
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                CachedParameter.teams = response.teams;
+                CachedParameter.seasonsDropDown = new BindableCollection<Season>();
+                foreach (Team team in CachedParameter.teams)
+                {
+                    foreach (Season season in team.seasons)
+                    {
+                        CachedParameter.seasonsDropDown.Add(season);
+                    }
+                }
+                return new BindableCollection<Season>(CachedParameter.seasonsDropDown.OrderByDescending(season => season.year));
+            }
+            return null;
         }
 
         public void GameSelected(ItemClickEventArgs eventArgs)

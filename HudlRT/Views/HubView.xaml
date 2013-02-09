@@ -98,7 +98,7 @@
             Padding="10,0,0,0"
             ItemsSource="{Binding Source={StaticResource GroupsViewSource}}"
             ItemTemplate="{StaticResource HubPageSnappedGamesTemplate}"
-            SelectionMode="None"
+            SelectionMode="Single"
             IsSwipeEnabled="false">
 
             <ListView.GroupStyle>

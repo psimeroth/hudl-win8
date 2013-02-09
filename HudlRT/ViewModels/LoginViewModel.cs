@@ -144,7 +144,11 @@ namespace HudlRT.ViewModels
             LoginResponse response = await ServiceAccessor.Login(loginArgs);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                AppDataAccessor.SetUsername(UserName);
+                if (AppDataAccessor.GetUsername() != userName)
+                {
+                    AppDataAccessor.SetUsername(UserName);
+                    CachedParameter.resetCache();
+                }
                 if (RememberMe)
                 {
                     AppDataAccessor.SetPassword(Password);

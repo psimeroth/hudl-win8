@@ -58,9 +58,9 @@ namespace HudlRT.ViewModels
             Categories = new BindableCollection<CategoryViewModel>();
         }
 
-        protected override void OnActivate()
+        protected override void OnInitialize()
         {
-            base.OnActivate();
+            base.OnInitialize();
             SeasonsDropDown = CachedParameter.seasonsDropDown;
             SelectedSeason = CachedParameter.seasonSelected;
 
@@ -73,16 +73,35 @@ namespace HudlRT.ViewModels
             CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                var cats = new BindableCollection<CategoryViewModel>();
+                BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
                 foreach (Category category in response.categories)
                 {
-                    cats.Add(CategoryViewModel.FromCategory(category));
+                    CategoryViewModel cat = CategoryViewModel.FromCategory(category);
+                    cats.Add(cat);
+                    await AddPlaylistsForCategory(cat);
                 }
                 Categories = cats;
             }
             else
             {
                 Categories = null;
+            }
+        }
+
+        public async Task AddPlaylistsForCategory(CategoryViewModel category)
+        {
+            PlaylistResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                category.Playlists = new BindableCollection<PlaylistViewModel>();
+                foreach (Playlist playlist in response.playlists)
+                {
+                    category.Playlists.Add(PlaylistViewModel.FromPlaylist(playlist));
+                }
+            }
+            else
+            {
+                //What should go here?
             }
         }
     }

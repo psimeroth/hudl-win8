@@ -14,8 +14,7 @@ namespace HudlRT.Parameters
         public static bool isInitialized = false;
         public static string categoryId { get; set; }
         public static string gameId { get; set; }
-        public static BindableCollection<Season> seasonsDropDown { get; set; }
-        public static Season seasonSelected { get; set; }
+        
         public static Game hubViewNextGame { get; set; }
         public static Game hubViewPreviousGame { get; set; }
                 
@@ -25,13 +24,20 @@ namespace HudlRT.Parameters
         public static BindableCollection<Category> sectionViewCategories { get; set; }
         public static CategoryViewModel sectionViewCategorySelected { get; set; }
                 
-        public static BindableCollection<CutupViewModel> sectionViewCutups { get; set; }
+        public static BindableCollection<PlaylistViewModel> sectionViewCutups { get; set; }
                 
-        public static CutupViewModel sectionViewCutupSelected { get; set; }
+        public static PlaylistViewModel sectionViewCutupSelected { get; set; }
                 
         public static BindableCollection<Clip> videoPageClips { get; set; }
                 
-        public static Cutup selectedCutup { get; set; }
+        public static Playlist selectedCutup { get; set; }
+
+
+        //new shit starts here
+        public static BindableCollection<Season> seasonsDropDown { get; set; }
+        public static BindableCollection<Team> teams { get; set; }
+        public static Season seasonSelected { get; set; }
+        //public static BindableCollection<Game> games {get;set;}
 
 
         public static void InitializeForFrontend(){
@@ -41,9 +47,9 @@ namespace HudlRT.Parameters
             {
                 categories = new BindableCollection<Category>()
                 {
-                    new Category(){categoryId = "4102838", cutups = new BindableCollection<Cutup>(), name ="Game Footage"},
-                    new Category(){categoryId = "4102839", cutups = new BindableCollection<Cutup>(), name ="Practice"},
-                    new Category(){categoryId = "4102840", cutups = new BindableCollection<Cutup>(), name ="Opponent Scout"}
+                    new Category(){categoryId = "4102838", cutups = new BindableCollection<Playlist>(), name ="Game Footage"},
+                    new Category(){categoryId = "4102839", cutups = new BindableCollection<Playlist>(), name ="Practice"},
+                    new Category(){categoryId = "4102840", cutups = new BindableCollection<Playlist>(), name ="Opponent Scout"}
                 },
                 date = new DateTime(634865184000000000),
                 gameId = "881301",
@@ -55,9 +61,9 @@ namespace HudlRT.Parameters
             {
                 categories = new BindableCollection<Category>()
                 {
-                    new Category(){categoryId = "4102818", cutups = new BindableCollection<Cutup>(), name ="Game Footage"},
-                    new Category(){categoryId = "4102819", cutups = new BindableCollection<Cutup>(), name ="Practice"},
-                    new Category(){categoryId = "4102820", cutups = new BindableCollection<Cutup>(), name ="Opponent Scout"}
+                    new Category(){categoryId = "4102818", cutups = new BindableCollection<Playlist>(), name ="Game Footage"},
+                    new Category(){categoryId = "4102819", cutups = new BindableCollection<Playlist>(), name ="Practice"},
+                    new Category(){categoryId = "4102820", cutups = new BindableCollection<Playlist>(), name ="Opponent Scout"}
                 },
                 date = new DateTime(634859136000000000),
                 gameId = "881296",

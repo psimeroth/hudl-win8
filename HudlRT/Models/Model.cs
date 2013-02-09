@@ -150,12 +150,12 @@ namespace HudlRT.Models
     public class Category
     {
         public string name { get; set; }
-        public BindableCollection<Cutup> cutups { get; set; }
+        public BindableCollection<Playlist> cutups { get; set; }
         public string categoryId { get; set; }
 
         public Category()
         {
-            cutups = new BindableCollection<Cutup>();
+            cutups = new BindableCollection<Playlist>();
         }
 
         public static Category FromDTO(CategoryDTO categoryDTO)
@@ -167,7 +167,7 @@ namespace HudlRT.Models
         }
     }
 
-    public class Cutup
+    public class Playlist
     {
         public string name { get; set; }
         public int clipCount { get; set; }
@@ -175,14 +175,14 @@ namespace HudlRT.Models
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
         public string thumbnailLocation { get; set; }
-        public Cutup()
+        public Playlist()
         {
             clips = new BindableCollection<Clip>();
         }
 
-        public static Cutup FromDTO(CutupDTO cutupDTO)
+        public static Playlist FromDTO(CutupDTO cutupDTO)
         {
-            Cutup cutup = new Cutup();
+            Playlist cutup = new Playlist();
             cutup.cutupId = cutupDTO.PlaylistId;
             cutup.clipCount = cutupDTO.ClipCount;
             cutup.name = cutupDTO.Name;
