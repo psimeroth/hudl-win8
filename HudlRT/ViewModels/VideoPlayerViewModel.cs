@@ -198,7 +198,13 @@ namespace HudlRT.ViewModels
                 }
             }
             foreach (Clip c in remainingClipsList)
-                FilteredClips.Add(c);
+            {
+                Clips.Add(c);
+                if (!FiltersList.Any())
+                {
+                    FilteredClips.Add(c);
+                }
+            }
         }
 
         private void getAngleNames()
@@ -437,7 +443,7 @@ namespace HudlRT.ViewModels
                 {
                     ColumnHeaderTextBlocks[SelectedFilter.columnId].FontSize = 18;
                 }
-                
+
                 List<Clip> newFilteredClips = new List<Clip>();
                 List<Clip> currentFilteredClips;
 
@@ -493,6 +499,13 @@ namespace HudlRT.ViewModels
                 FiltersList.Add(SelectedFilter);
                 applyFilter(newFilteredClips);
             }
+            else
+            {
+                if (FiltersList.Contains(SelectedFilter))
+                {
+                    RemoveSelectedFilter();
+                }
+            }
         }
 
         public void RemoveSelectedFilter()
@@ -543,7 +556,6 @@ namespace HudlRT.ViewModels
             SelectedClipIndex = 0;
             SelectedClip = null;
             SelectedAngle = null;
-            listView.ScrollIntoView(FilteredClips[0], ScrollIntoViewAlignment.Default);
             FilteredClips = new ObservableCollection<Clip>(clips);
 
             if (FilteredClips.Any())
@@ -740,7 +752,6 @@ namespace HudlRT.ViewModels
 
         public void GoBack()
         {
-            listView.ScrollIntoView(FilteredClips[0], ScrollIntoViewAlignment.Default);
             preloadCTS.Cancel();
             DeleteTempData();
             dispRequest.RequestRelease();
