@@ -127,11 +127,11 @@ namespace HudlRT.ViewModels
 #if DEBUG
             if (Password == null || Password == "")
             {
-                Password = "rightmeow!";
+                Password = DebugConfig.PASSWORD;
             }
             if (UserName == null || UserName == "")
             {
-                UserName = "windows8";
+                UserName = DebugConfig.USERNAME;
             }
 
 #endif

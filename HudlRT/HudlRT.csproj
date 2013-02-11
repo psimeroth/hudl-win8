@@ -109,6 +109,7 @@
     </Compile>
     <Compile Include="Common\AppDataAccessor.cs" />
     <Compile Include="Common\CharmsData.cs" />
+    <Compile Include="Common\Class1.cs" />
     <Compile Include="Common\DownloadAccessor.cs" />
     <Compile Include="Common\VideoPlayerListView.cs" />
     <Compile Include="Common\LayoutAwarePage.cs" />
