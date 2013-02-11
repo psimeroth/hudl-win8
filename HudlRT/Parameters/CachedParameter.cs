@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Networking.BackgroundTransfer;
 
 namespace HudlRT.Parameters
 {
@@ -44,6 +45,10 @@ namespace HudlRT.Parameters
         public static string hubViewDownloadsCount { get; set; }
         
         public static string hubViewDownloadsSizeInMB { get; set; }
+
+        public static List<Cutup> currentlyDownloadingCutups { get; set; }
+
+        public static Progress<DownloadOperation> progressCallback { get; set; }
         
 
         public static void resetCache(){

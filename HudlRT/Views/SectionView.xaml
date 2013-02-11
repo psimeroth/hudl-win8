@@ -132,7 +132,7 @@
                     <TextBlock Grid.Row="0" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Bottom" FontSize="20" Text="{Binding DownloadProgressText}" > </TextBlock>
                     <ProgressBar Grid.Row="1" x:Name="Download_ProgressBar"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="275" Foreground="{StaticResource HudlLightBlue}"/>
                 </Grid>
-                <Button x:Name="Cancel_Download" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="10,0,0,0" Visibility="{Binding CancelButton_Visibility}">Cancel</Button>
+                <Button x:Name="Cancel_Download" Grid.Column="3" Style="{StaticResource Section_ButtonStyle_Standard}" Margin="0,0,0,0" Visibility="{Binding CancelButton_Visibility}">Cancel</Button>
             </Grid>
             <!--End DownloadsGrid-->
         </Grid>

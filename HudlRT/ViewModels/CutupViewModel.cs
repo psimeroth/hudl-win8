@@ -70,7 +70,21 @@ namespace HudlRT.ViewModels
             cutup._fontSize = FONT_SIZE;
             cutup._checkbox_visibility = Visibility.Collapsed;
             cutup._downloadedVisibility = Visibility.Collapsed;
-            cutup.Clips = cutupDTO.clips;
+            //BindableCollection<Clip> clips = new BindableCollection<Clip>();
+            //foreach (Clip c in cutupDTO.clips)
+            //{
+            //    Clip clip = new Clip {  breakDownData = c.breakDownData, clipId = c.clipId, order = c.order};
+            //    BindableCollection<Angle> angles = new BindableCollection<Angle>();
+            //    foreach (Angle a in c.angles)
+            //    {
+            //        Angle angle = new Angle {  angleName = a.angleName, angleType = null, clipAngleId = a.clipAngleId, duration = a.duration, fileLocation = a.fileLocation, isPreloaded = a.isPreloaded, preloadFile = a.preloadFile, thumbnailLocation = a.thumbnailLocation};
+            //        angles.Add(angle);
+            //    }
+            //    clip.angles = angles;
+            //    clips.Add(clip);
+            //}
+            //cutup._clips = clips;
+            cutup._clips = cutupDTO.clips;
             cutup.TotalCutupSize = cutupDTO.totalFilesSize;
             cutup.DisplayColumns = cutupDTO.displayColumns;
             return cutup;

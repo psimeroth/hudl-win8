@@ -191,7 +191,7 @@ namespace HudlRT.ViewModels
             var cutup = (CutupViewModel)eventArgs.ClickedItem;
             if (!deleting)
             {     
-                CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name };
+                CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name, thumbnailLocation = cutup.Thumbnail };
                 CachedParameter.sectionViewCutupSelected = cutup;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>();
             }

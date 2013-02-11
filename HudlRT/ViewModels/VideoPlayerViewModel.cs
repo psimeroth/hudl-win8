@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
@@ -29,6 +30,51 @@ namespace HudlRT.ViewModels
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
         private List<Clip> Clips { get; set; }
+
+        private double downloadProgress;
+        public double DownloadProgress
+        {
+            get { return downloadProgress; }
+            set
+            {
+                downloadProgress = value;
+                NotifyOfPropertyChange(() => DownloadProgress);
+            }
+        }
+
+        private Visibility downloadButtonVisibility;
+        public Visibility DownloadButtonVisibility
+        {
+            get { return downloadButtonVisibility; }
+            set
+            {
+                downloadButtonVisibility = value;
+                NotifyOfPropertyChange(() => DownloadButtonVisibility);
+            }
+        }
+
+        private Visibility progressGridVisibility;
+        public Visibility ProgressGridVisibility
+        {
+            get { return progressGridVisibility; }
+            set
+            {
+                progressGridVisibility = value;
+                NotifyOfPropertyChange(() => ProgressGridVisibility);
+            }
+        }
+
+        private string downloadProgressText { get; set; }
+        public string DownloadProgressText
+        {
+            get { return downloadProgressText; }
+            set
+            {
+                downloadProgressText = value;
+                NotifyOfPropertyChange(() => DownloadProgressText);
+            }
+        }
+
         private ObservableCollection<Clip> filteredClips;
         public ObservableCollection<Clip> FilteredClips
         {
@@ -131,7 +177,7 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
 
-            AppDataAccessor.SetLastViewed(CachedParameter.selectedCutup.name, DateTime.Now.ToString("g"), CachedParameter.selectedCutup.cutupId);
+            AppDataAccessor.SetLastViewed(CachedParameter.selectedCutup.name, DateTime.Now.ToString("g"), CachedParameter.selectedCutup.cutupId, CachedParameter.selectedCutup.thumbnailLocation);
             Clips = CachedParameter.selectedCutup.clips.ToList();
             
             FilteredClips = new ObservableCollection<Clip>(Clips);
@@ -172,6 +218,50 @@ namespace HudlRT.ViewModels
             preloadCTS = new CancellationTokenSource();
             preloadCT = preloadCTS.Token;
             initialClipPreload();
+
+            bool downloadFound = false;
+            foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
+            {
+                if (downloadedCutup.CutupId == CachedParameter.selectedCutup.cutupId)
+                {
+                    downloadFound = true;
+                    break;
+                }
+            }
+            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            if (DownloadAccessor.Instance.Downloading)
+            {
+                LoadActiveDownloadsAsync();
+                ProgressGridVisibility = Visibility.Visible;
+                DownloadButtonVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ProgressGridVisibility = Visibility.Collapsed;
+                if (!downloadFound)
+                {
+                    DownloadButtonVisibility = Visibility.Visible;
+                }
+                else
+                {
+                    DownloadButtonVisibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private async Task LoadActiveDownloadsAsync()
+        {
+            IReadOnlyList<DownloadOperation> downloads = null;
+            downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
+            if (downloads.Count > 0)
+            {
+                //for simplicity we support only one download
+                await ResumeDownloadAsync(downloads.First());
+            }
+        }
+        private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
+        {
+            await downloadOperation.AttachAsync().AsTask(CachedParameter.progressCallback);
         }
 
         private async void initialClipPreload()
@@ -653,6 +743,43 @@ namespace HudlRT.ViewModels
             playbackType = (PlaybackType)(((int)playbackType + 1) % Enum.GetNames(typeof(PlaybackType)).Length);
             setToggleButtonContent();
             AppDataAccessor.SetPlaybackType((int)playbackType);
+        }
+
+        private void DownloadButtonClick()
+        {
+            ProgressGridVisibility = Visibility.Visible;
+            DownloadButtonVisibility = Visibility.Collapsed;
+            DownloadProgress = 0;
+            CachedParameter.cts = new CancellationTokenSource();
+            DownloadProgressText = "Determining Size";
+            Cutup cutupCopy = Cutup.Copy(CachedParameter.selectedCutup);
+            List<Cutup> currentCutupList = new List<Cutup> { cutupCopy };
+            CachedParameter.currentlyDownloadingCutups = currentCutupList;
+            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            DownloadAccessor.Instance.DownloadCutups(currentCutupList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected);
+        }
+
+        public void CancelButtonClick()
+        {
+            if (DownloadAccessor.Instance.Downloading)
+            {
+                CachedParameter.cts.Cancel();
+            }
+            ProgressGridVisibility = Visibility.Collapsed;
+            DownloadButtonVisibility = Visibility.Collapsed;
+        }
+
+        public void ProgressCallback(DownloadOperation obj)
+        {
+            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
+            DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
+            int downloadedCutupCount = 0;
+            if (DownloadProgress == 100)
+            {
+                ProgressGridVisibility = Visibility.Collapsed;
+                CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
+                DownloadProgress = 0;
+            }
         }
 
         private void setToggleButtonContent()

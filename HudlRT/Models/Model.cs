@@ -171,6 +171,32 @@ namespace HudlRT.Models
             clips = new BindableCollection<Clip>();
         }
 
+        public static Cutup Copy(Cutup toCopy)
+        {
+            Cutup cutup = new Cutup();
+            cutup.cutupId = toCopy.cutupId;
+            cutup.clipCount = toCopy.clipCount;
+            cutup.name = toCopy.name;
+            cutup.thumbnailLocation = toCopy.thumbnailLocation;
+            cutup.displayColumns = toCopy.displayColumns;
+            cutup.totalFilesSize = toCopy.totalFilesSize;
+            BindableCollection<Clip> clips = new BindableCollection<Clip>();
+            foreach (Clip c in toCopy.clips)
+            {
+                Clip clip = new Clip { breakDownData = c.breakDownData, clipId = c.clipId, order = c.order };
+                BindableCollection<Angle> angles = new BindableCollection<Angle>();
+                foreach (Angle a in c.angles)
+                {
+                    Angle angle = new Angle { angleName = a.angleName, angleType = null, clipAngleId = a.clipAngleId, duration = a.duration, fileLocation = a.fileLocation, isPreloaded = a.isPreloaded, preloadFile = a.preloadFile, thumbnailLocation = a.thumbnailLocation };
+                    angles.Add(angle);
+                }
+                clip.angles = angles;
+                clips.Add(clip);
+            }
+            cutup.clips = clips;
+            return cutup;
+        }
+
         public static Cutup FromDTO(CutupDTO cutupDTO)
         {
             Cutup cutup = new Cutup();
