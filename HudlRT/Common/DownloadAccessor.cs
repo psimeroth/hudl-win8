@@ -110,6 +110,11 @@ namespace HudlRT.Common
             {
                 Downloading = false;
                 CurrentDownloadedBytes = 0;
+                foreach (Cutup downloadedCutup in CachedParameter.currentlyDownloadingCutups)
+                {
+                    RemoveDownload(downloadedCutup);//may not have even started downloading this cutup when this is called
+                }
+                CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
                 return null;
             }
         }

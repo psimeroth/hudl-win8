@@ -778,7 +778,6 @@ namespace HudlRT.ViewModels
                 CancelButton_Visibility = Visibility.Collapsed;
                 downloadMode = DownloadMode.Off;
                 //DownloadButton_Visibility = downloadedCutupCount == Cutups.Count ? Visibility.Collapsed : Visibility.Visible;
-                CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
                 DownloadProgress = 0;
             }
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
