@@ -56,14 +56,13 @@ namespace HudlRT.Views
         bool isGridCollapsed = false;
         private TranslateTransform dragTranslation;
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
-        private bool isPaused { get; set; }
-        private bool isStopped { get; set; }
         private long keyPressLength = 225;
         private DispatcherTimer rewindTimer { get; set; }
         private ScrollViewer filteredListScrollViewer { get; set; }
         private bool isFastRewind { get; set; }
         private Stopwatch rewindStopwatch { get; set; }
         private bool videoLoadRetry = true;
+        private VideoPlayerState playerState { get; set; }
 
         public VideoPlayerView()
         {
@@ -99,6 +98,8 @@ namespace HudlRT.Views
             rewindTimer = new DispatcherTimer();
             rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             rewindTimer.Tick += rewindTimerTick;
+
+            playerState = VideoPlayerState.Paused;
         }
 
         /// <summary>
@@ -392,6 +393,18 @@ namespace HudlRT.Views
             FullscreenToggle();
         }
 
+        private void btn_release(object sender, RoutedEventArgs e)
+        {
+            if(playerState == VideoPlayerState.Paused)
+            {
+                btnPause_Click(null, null);
+            }
+            else
+            {
+                btnPlay_Click(null, null);
+            }
+        }
+
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
             rewindTimer.Stop();
@@ -401,6 +414,7 @@ namespace HudlRT.Views
                 videoMediaElement.PlaybackRate = 1.0;
             }
 
+            playerState = VideoPlayerState.Playing;
             videoMediaElement.Play();
 
             // Here we need to collapse and expand both full and non full screen buttons
@@ -410,6 +424,8 @@ namespace HudlRT.Views
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
+            rewindTimer.Stop();
+            playerState = VideoPlayerState.Paused;
             videoMediaElement.Pause();
             // Here we need to collapse and expand both full and non full screen buttons
             setPlayVisible();
@@ -417,6 +433,8 @@ namespace HudlRT.Views
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
+            rewindTimer.Stop();
+            playerState = VideoPlayerState.Paused;
             videoMediaElement.Stop();
             setPlayVisible();
             setPrevVisible();
@@ -483,7 +501,7 @@ namespace HudlRT.Views
                 {
                     if (e.VirtualKey == Windows.System.VirtualKey.Down)
                     {
-                        if (isPaused)
+                        if (playerState == VideoPlayerState.Paused)
                         {
                             btnPlay_Click(null, null);
                         }
@@ -516,15 +534,7 @@ namespace HudlRT.Views
                 }
                 else
                 {
-                    if (isStopped)
-                    {
-                        setPlayVisible();
-                        isStopped = false;
-                    }
-                    else
-                    {
-                        btnPlay_Click(null, null);
-                    }
+                    btn_release(null, null);
                 }
                 keyPressTimer.Reset();
             }
@@ -534,7 +544,6 @@ namespace HudlRT.Views
         {
             if (e.VirtualKey == Windows.System.VirtualKey.Down)
             {
-                isPaused = btnPause.Visibility == Visibility.Visible ? false : true;
                 btnSlowForward_Click(null, null);
                 keyPressTimer.Start();
                 e.Handled = true;
@@ -572,6 +581,8 @@ namespace HudlRT.Views
                 videoLoadRetry = true;
             }
 
+            playerState = VideoPlayerState.Playing;
+
             videoMediaElement.DefaultPlaybackRate = 1.0;
             videoMediaElement.PlaybackRate = 1.0;
             setPauseVisible();
@@ -582,8 +593,7 @@ namespace HudlRT.Views
         {
             if (videoMediaElement.Position.Ticks < (videoMediaElement.Duration.Ticks / 3) && videoMediaElement.Position != new TimeSpan(0))
             {
-                videoMediaElement.Stop();
-                isStopped = true;
+                btn_release(null, null);
             }
             else
             {
@@ -617,7 +627,6 @@ namespace HudlRT.Views
 
         private void videoMediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
-
             if (btnPlay.Visibility == Visibility.Collapsed)
             {
                 btnPause_Click(null, null);
@@ -810,5 +819,11 @@ namespace HudlRT.Views
                 VideoGrid.Margin = new Thickness(0, 0, 0, 0);
             }
         }
+    }
+
+    public enum VideoPlayerState
+    {
+        Playing = 0,
+        Paused = 1
     }
 }

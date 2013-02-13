@@ -483,7 +483,14 @@ namespace HudlRT.ViewModels
         public void ResetClip()
         {
             Angle firstAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
-            SelectedAngle = (firstAngle != null && firstAngle.isPreloaded) ? new Angle(firstAngle.clipAngleId, firstAngle.preloadFile) : new Angle(firstAngle.clipAngleId, firstAngle.fileLocation);
+            if (firstAngle != null)
+            {
+                SelectedAngle = (firstAngle.isPreloaded) ? new Angle(firstAngle.clipAngleId, firstAngle.preloadFile) : new Angle(firstAngle.clipAngleId, firstAngle.fileLocation);
+            }
+            else
+            {
+                SelectedAngle = firstAngle;
+            }
         }
 
         public void AngleFilter()

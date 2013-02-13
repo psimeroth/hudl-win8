@@ -133,6 +133,14 @@ namespace HudlRT.Common
             foreach (Cutup cut in cutups)
             {
                 cutupTotalSize = 0;
+                if (cut.clipCount != cut.clips.Count)
+                {
+                    List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalCutupClips(cut.cutupId, cut.clips.Count);
+                    foreach (Clip c in remainingClipsList)
+                    {
+                        cut.clips.Add(c);
+                    }
+                }
                 foreach (Clip c in cut.clips)
                 {
                     foreach (Angle angle in c.angles)
@@ -187,6 +195,7 @@ namespace HudlRT.Common
                         catch (Exception e)
                         {
                             RemoveDownload(cut);
+                            Downloading = false;
                             return;
                         }
                     }
