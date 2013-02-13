@@ -300,7 +300,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.7.0.0">
+    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.8.0.5">
       <Name>Microsoft Player Framework</Name>
     </SDKReference>
   </ItemGroup>

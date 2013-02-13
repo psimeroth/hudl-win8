@@ -61,7 +61,6 @@ namespace HudlRT.Views
         private ScrollViewer filteredListScrollViewer { get; set; }
         private bool isFastRewind { get; set; }
         private Stopwatch rewindStopwatch { get; set; }
-        private bool videoLoadRetry = true;
         private VideoPlayerState playerState { get; set; }
 
         public VideoPlayerView()
@@ -117,6 +116,7 @@ namespace HudlRT.Views
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
+            vm.setVideoMediaElement(videoMediaElement);
         }
 
         private void initializeGrid()
@@ -570,17 +570,6 @@ namespace HudlRT.Views
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
-            if (videoLoadRetry)
-            {
-                videoMediaElement.Retry();
-                videoLoadRetry = false;
-                return;
-            }
-            else
-            {
-                videoLoadRetry = true;
-            }
-
             playerState = VideoPlayerState.Playing;
 
             videoMediaElement.DefaultPlaybackRate = 1.0;
@@ -591,18 +580,11 @@ namespace HudlRT.Views
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
-            if (videoMediaElement.Position.Ticks < (videoMediaElement.Duration.Ticks / 3) && videoMediaElement.Position != new TimeSpan(0))
-            {
-                btn_release(null, null);
-            }
-            else
-            {
-                setPlayVisible();
-                setPrevVisible();
+            setPlayVisible();
+            setPrevVisible();
 
-                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                vm.NextClip(NextAngleEvent.mediaEnded);
-            }
+            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+            vm.NextClip(NextAngleEvent.mediaEnded);
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -710,11 +692,11 @@ namespace HudlRT.Views
             rewindStopwatch.Stop();
             if (isFastRewind)
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds * 2)));
+                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds * 4)));
             }
             else
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds / 2)));
+                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds)));
             }
             
             rewindStopwatch.Reset();
