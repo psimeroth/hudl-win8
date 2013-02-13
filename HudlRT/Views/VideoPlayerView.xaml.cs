@@ -61,6 +61,7 @@ namespace HudlRT.Views
         private ScrollViewer filteredListScrollViewer { get; set; }
         private bool isFastRewind { get; set; }
         private Stopwatch rewindStopwatch { get; set; }
+        private TimeSpan rewindPosition { get; set; }
         private VideoPlayerState playerState { get; set; }
 
         public VideoPlayerView()
@@ -451,6 +452,7 @@ namespace HudlRT.Views
 
         private void btnFastReverse_Click(object sender, RoutedEventArgs e)
         {
+            rewindPosition = videoMediaElement.Position;
             isFastRewind = true;
             rewindStopwatch = new Stopwatch();
             videoMediaElement.Pause();
@@ -460,6 +462,7 @@ namespace HudlRT.Views
 
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
         {
+            rewindPosition = videoMediaElement.Position;
             isFastRewind = false;
             rewindStopwatch = new Stopwatch();
             videoMediaElement.Pause();
@@ -695,13 +698,14 @@ namespace HudlRT.Views
             rewindStopwatch.Stop();
             if (isFastRewind)
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds * 4)));
+                rewindPosition = rewindPosition.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds * 2)));
             }
             else
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds)));
+                rewindPosition = rewindPosition.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds / 2)));
             }
-            
+            videoMediaElement.Position = rewindPosition;
+
             rewindStopwatch.Reset();
             rewindStopwatch.Start();
         }
