@@ -35,7 +35,7 @@
     <SolidColorBrush x:Key="HudlAppBar" Color="{StaticResource HudlAppBarColor}" />
     
     <!--St-st-st-styles-->
-    <!--Naming convention: Page_ItemStyle_Specific (e.g. Section_TextBlockStyle_Cutups). 
+    <!--Naming convention: Page_ItemStyle_Specific (e.g. Section_TextBlockStyle_Playlists). 
     If the style is not related to any one page, omit the page portion while naming the style.-->
     <Style x:Key="ButtonStyle_Standard" TargetType="Button">
         <Setter Property="Foreground" Value="White"/>

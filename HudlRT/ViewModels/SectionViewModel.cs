@@ -20,6 +20,8 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         INavigationService navigationService;
+        public string Parameter { get; set; }       //Passed in from hub page - contains the game Id.
+        private string _gameId;     //Used to tell if the page needs to be reloaded
         private BindableCollection<CategoryViewModel> _categories;
         public BindableCollection<CategoryViewModel> Categories
         {
@@ -66,11 +68,23 @@ namespace HudlRT.ViewModels
             SeasonsDropDown = CachedParameter.seasonsDropDown;
             SelectedSeason = CachedParameter.seasonSelected;
 
-            GetGameCategories(CachedParameter.gameId);
+        }
+
+        protected override void OnActivate()
+        {
+            //To insure the data shown is fetched if coming from the hub page to a new game
+            //But that it doesn't fetch the data again if coming back from the video page.
+            if (Parameter != _gameId)
+            {
+                _gameId = Parameter;
+                GetGameCategories(_gameId);
+            }
+            base.OnActivate();
         }
 
         public async Task GetGameCategories(string gameID)
         {
+            //if(CachedParameter.gameId == )
             Categories = null;
             CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
@@ -78,7 +92,7 @@ namespace HudlRT.ViewModels
                 BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
                 foreach (Category category in response.categories)
                 {
-                    CategoryViewModel cat = CategoryViewModel.FromCategory(category);
+                    CategoryViewModel cat = new CategoryViewModel(category);
                     cats.Add(cat);
                     await AddPlaylistsForCategory(cat);
                 }
@@ -92,13 +106,14 @@ namespace HudlRT.ViewModels
 
         public async Task AddPlaylistsForCategory(CategoryViewModel category)
         {
-            PlaylistResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId);
+            PlaylistResponse response = await ServiceAccessor.GetCategoryPlaylists(category.CategoryModel.categoryId);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 category.Playlists = new BindableCollection<PlaylistViewModel>();
                 foreach (Playlist playlist in response.playlists)
                 {
-                    category.Playlists.Add(PlaylistViewModel.FromPlaylist(playlist));
+                    category.Playlists.Add(new PlaylistViewModel(playlist));
+                    AddClipsAndHeadersForPlaylist(playlist);
                 }
             }
             else
@@ -107,10 +122,24 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public async Task AddClipsAndHeadersForPlaylist(Playlist playlist)
+        {
+            playlist.clips = new BindableCollection<Clip>();
+            ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(playlist.playlistId);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                playlist.clips = response.clips;
+                playlist.displayColumns = response.DisplayColumns;
+            }
+            else
+            {
+            }
+        }
+
         public void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
-            //CachedParameter.selectedCutup = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistId;
-            //navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+            CachedParameter.selectedPlaylist = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel;
+            navigationService.NavigateToViewModel<VideoPlayerViewModel>();
 
         }
     }

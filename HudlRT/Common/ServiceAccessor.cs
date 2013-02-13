@@ -61,6 +61,7 @@ namespace HudlRT.Common
 
     class ClipResponse: Response
     {
+        public string[] DisplayColumns { get; set; }
         public BindableCollection<Clip> clips { get; set; }
     }
 
@@ -81,7 +82,7 @@ namespace HudlRT.Common
         {
             InitResponse response = new InitResponse();
             response.status = SERVICE_RESPONSE.NO_CONNECTION;
-            try
+    try
             {
                 var fileName = "debug.config";
                 var folder = ApplicationData.Current.LocalFolder;
@@ -108,7 +109,7 @@ namespace HudlRT.Common
         public const string URL_SERVICE_GET_SCHEDULE = "teams/{0}/schedule";//returns games
         public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games
         public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/{0}/categories";//returns categories
-        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns cutups
+        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns playlists
         public const string URL_SERVICE_GET_CLIPS = "playlists/{0}/clips?startIndex={1}";//returns clips
 
         public static bool ConnectedToInternet()
@@ -248,27 +249,27 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<PlaylistResponse> GetCategoryCutups(string categoryId)
+        public static async Task<PlaylistResponse> GetCategoryPlaylists(string categoryId)
         {
-            var cutups = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY, categoryId), true);
-            if (!string.IsNullOrEmpty(cutups) && cutups != "NoConnection")
+            var playlists = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY, categoryId), true);
+            if (!string.IsNullOrEmpty(playlists) && playlists != "NoConnection")
             {
                 try
                 {
-                    var obj = JsonConvert.DeserializeObject<List<CutupDTO>>(cutups);
-                    BindableCollection<Playlist> cutupCollection = new BindableCollection<Playlist>();
-                    foreach (CutupDTO cutupDTO in obj)
+                    var obj = JsonConvert.DeserializeObject<List<PlaylistDTO>>(playlists);
+                    BindableCollection<Playlist> playlistCollection = new BindableCollection<Playlist>();
+                    foreach (PlaylistDTO playlistDTO in obj)
                     {
-                        cutupCollection.Add(Playlist.FromDTO(cutupDTO));
+                        playlistCollection.Add(Playlist.FromDTO(playlistDTO));
                     }
-                    return new PlaylistResponse { status = SERVICE_RESPONSE.SUCCESS, playlists = cutupCollection };
+                    return new PlaylistResponse { status = SERVICE_RESPONSE.SUCCESS, playlists = playlistCollection };
                 }
                 catch (Exception)
                 {
                     return new PlaylistResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
-            else if (cutups == "NoConnection")
+            else if (playlists == "NoConnection")
             {
                 return new PlaylistResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
@@ -278,9 +279,9 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<List<Clip>> GetAdditionalCutupClips(string cutupID, int startIndex)
+        public static async Task<List<Clip>> GetAdditionalPlaylistClips(string playlistID, int startIndex)
         {
-            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, cutupID, startIndex.ToString()), true);
+            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, playlistID, startIndex.ToString()), true);
             var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
             List<Clip> clipCollection = new List<Clip>();
             if (clipResponseDTO.ClipsList.Clips.Count == 100)
@@ -293,7 +294,7 @@ namespace HudlRT.Common
                         clipCollection.Add(c);
                     }
                 }
-                var additionalClips = await GetAdditionalCutupClips(cutupID, startIndex + 100);
+                var additionalClips = await GetAdditionalPlaylistClips(playlistID, startIndex + 100);
                 foreach (Clip c in additionalClips)
                 {
                     clipCollection.Add(c);
@@ -314,9 +315,9 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<ClipResponse> GetCutupClips(string cutupId)
+        public static async Task<ClipResponse> GetPlaylistClipsAndHeaders(string playlistId)
         {
-            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, cutupId, "0"), true);
+            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, playlistId, "0"), true);
             if (!string.IsNullOrEmpty(clips) && clips != "NoConnection")
             {
                 try
@@ -331,7 +332,7 @@ namespace HudlRT.Common
                             clipCollection.Add(c);
                         }
                     }
-                    return new ClipResponse { status = SERVICE_RESPONSE.SUCCESS, clips = clipCollection };
+                    return new ClipResponse { status = SERVICE_RESPONSE.SUCCESS, clips = clipCollection, DisplayColumns = obj.DisplayColumns };
                 }
                 catch (Exception e)
                 {
@@ -346,7 +347,6 @@ namespace HudlRT.Common
             {
                 return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
-            return new ClipResponse();
         }
 
         /// <summary>
