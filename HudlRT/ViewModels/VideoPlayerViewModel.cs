@@ -373,8 +373,8 @@ namespace HudlRT.ViewModels
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
+                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked));
+                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
             }
             else
             {
@@ -436,7 +436,7 @@ namespace HudlRT.ViewModels
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
+                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
             }
         }
 
@@ -499,7 +499,7 @@ namespace HudlRT.ViewModels
 
             int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
             PreloadClips(preloadCT, filteredAngles.Where(angle => angle.isPreloaded == false));
-            PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
+            PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
 
             //If the current angle has been filtered out, reset the clip to the first unfiltered angle, or null
             if (SelectedAngle != null)
@@ -842,7 +842,7 @@ namespace HudlRT.ViewModels
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             foreach (Angle angle in angles)
             {
-                if (!ct.IsCancellationRequested)
+                if (!ct.IsCancellationRequested && !angle.isPreloaded)
                 {
                     try
                     {
