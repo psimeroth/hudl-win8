@@ -78,13 +78,13 @@ namespace HudlRT.ViewModels
 
             if (previousGame != null)
             {
-                GameViewModel previous = GameViewModel.FromGame(previousGame, true);
+                GameViewModel previous = new GameViewModel(previousGame, true);
                 previous.isLargeView = true;
                 NextGameVM.Games.Add(previous);
             }
             if (nextGame != null)
             {
-                GameViewModel next = GameViewModel.FromGame(nextGame, true);
+                GameViewModel next = new GameViewModel(nextGame, true);
                 next.isLargeView = true;
                 LastGameVM.Games.Add(next);
             }
@@ -95,7 +95,7 @@ namespace HudlRT.ViewModels
             HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
             foreach (Game g in games)
             {
-                schedule.Games.Add(GameViewModel.FromGame(g));
+                schedule.Games.Add(new GameViewModel(g));
             }
             NewGroups.Add(schedule);
             Groups = NewGroups;
@@ -177,8 +177,9 @@ namespace HudlRT.ViewModels
 
         public void GameSelected(ItemClickEventArgs eventArgs)
         {
-            CachedParameter.gameId = ((GameViewModel)eventArgs.ClickedItem).GameId;
-            navigationService.NavigateToViewModel<SectionViewModel>();
+            string parameter = ((GameViewModel)eventArgs.ClickedItem).GameModel.gameId;
+            //CachedParameter.gameId = ((GameViewModel)eventArgs.ClickedItem).GameModel.gameId;
+            navigationService.NavigateToViewModel<SectionViewModel>(parameter);
         }
 
         public HubViewModel(INavigationService navigationService)
