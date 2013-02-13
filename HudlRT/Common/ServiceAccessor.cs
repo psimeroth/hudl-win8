@@ -71,10 +71,8 @@ namespace HudlRT.Common
     class ServiceAccessor
     {
 #if DEBUG
-        //private const string URL_BASE = "http://thor7/api/v2/";
-        //private const string URL_BASE_SECURE = "https://thor7/api/v2/";
-        private const string URL_BASE = "http://staghudl.com/api/v2/";
-        private const string URL_BASE_SECURE = "https://staghudl.com/api/v2/";
+        private const string URL_BASE = DebugConfig.URL_BASE;
+        private const string URL_BASE_SECURE = DebugConfig.URL_BASE_SECURE;
 #else
         private const string URL_BASE = "http://www.hudl.com/api/v2/";
         private const string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
