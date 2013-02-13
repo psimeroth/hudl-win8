@@ -759,11 +759,9 @@ namespace HudlRT.ViewModels
 
         private async Task LoadActiveDownloadsAsync()
         {
-            IReadOnlyList<DownloadOperation> downloads = null;
-            downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
+            IReadOnlyList<DownloadOperation> downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
             if (downloads.Count > 0)
             {
-                //for simplicity we support only one download
                 await ResumeDownloadAsync(downloads.First());
             }
         }
@@ -774,20 +772,11 @@ namespace HudlRT.ViewModels
 
         public void ProgressCallback(DownloadOperation obj)
         {
-            if (CachedParameter.cts.IsCancellationRequested)
-            {
-                DownloadProgress_Visibility = Visibility.Collapsed;
-                CancelButton_Visibility = Visibility.Collapsed;
-                downloadMode = DownloadMode.Off;
-                //DownloadButton_Visibility = downloadedCutupCount == Cutups.Count ? Visibility.Collapsed : Visibility.Visible;
-                DownloadProgress = 0;
-            }
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
             int downloadedCutupCount = 0;
             if (DownloadProgress == 100)
             {
-                bool downloadFound = false;
                 if (Cutups != null)
                 {
                     foreach (CutupViewModel cutupVM in Cutups)
