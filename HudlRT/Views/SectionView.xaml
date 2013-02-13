@@ -25,7 +25,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition x:Name="ComboBoxColumn" Width="2*" />
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
             <Image x:Name="Logo" Grid.Column="1" Margin="0,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
