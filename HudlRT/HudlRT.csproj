@@ -109,8 +109,7 @@
     </Compile>
     <Compile Include="Common\AppDataAccessor.cs" />
     <Compile Include="Common\CharmsData.cs" />
-	<Compile Include="Common\TemplateSelector.cs" />
-    <Compile Include="Common\Class1.cs" />
+    <Compile Include="Common\TemplateSelector.cs" />
     <Compile Include="Common\DownloadAccessor.cs" />
     <Compile Include="Common\VideoPlayerListView.cs" />
     <Compile Include="Common\LayoutAwarePage.cs" />
@@ -210,7 +209,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-	<Page Include="Common\HubTemplates.xaml">
+    <Page Include="Common\HubTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

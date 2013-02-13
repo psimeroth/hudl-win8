@@ -123,18 +123,12 @@ namespace HudlRT.ViewModels
 
         public async void LoginAttempt()
         {
-            // Get the username and password from the view
 #if DEBUG
-            if (Password == null || Password == "")
-            {
-                Password = DebugConfig.PASSWORD;
-            }
-            if (UserName == null || UserName == "")
-            {
-                UserName = DebugConfig.USERNAME;
-            }
-
+            // Get the debug urls from a config file
+            await ServiceAccessor.Init();
 #endif
+
+            // Get the username and password from the view
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
 
             // Show the user a call is being made in the background

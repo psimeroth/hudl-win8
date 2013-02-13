@@ -71,9 +71,27 @@ namespace HudlRT.Common
     /// </summary>
     class ServiceAccessor
     {
+        public static async Task Init()
+        {
 #if DEBUG
-        private const string URL_BASE = DebugConfig.URL_BASE;
-        private const string URL_BASE_SECURE = DebugConfig.URL_BASE_SECURE;
+            try
+            {
+                var fileName = "debug_config.xml";
+                var folder = ApplicationData.Current.LocalFolder;
+                var file = await folder.GetFileAsync(fileName);
+                var readthis = await FileIO.ReadTextAsync(file);
+                string[] data = readthis.Split('|');
+
+                URL_BASE = data[0];
+                URL_BASE_SECURE = data[1];
+            }
+            catch (Exception ex) { }
+#endif
+        }
+
+#if DEBUG
+        private static string URL_BASE = "mystery";
+        private static string URL_BASE_SECURE = "mystery";
 #else
         private const string URL_BASE = "http://www.hudl.com/api/v2/";
         private const string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
