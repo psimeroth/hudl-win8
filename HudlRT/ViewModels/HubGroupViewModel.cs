@@ -21,10 +21,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private BindableCollection<GameViewModel> _games;
+
         public BindableCollection<GameViewModel> Games
         {
-            get;
-            set;
+            get { return _games; }
+            set
+            {
+                if (value == _games) return;
+                _games = value;
+                NotifyOfPropertyChange(() => Games);
+            }
         }
 
     }
