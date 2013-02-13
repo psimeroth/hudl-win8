@@ -37,6 +37,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="28"/>
         <Setter Property="Padding" Value="10"/>
+        <Setter Property="Height" Value="90"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
     <Style x:Key="Hub_ListViewStyle_Standard" TargetType="ListView" >

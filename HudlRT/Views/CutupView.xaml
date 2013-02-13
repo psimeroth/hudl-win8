@@ -12,13 +12,27 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="{Binding Width}" />
         <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="50"/>
         <ColumnDefinition Width="100" />
       </Grid.ColumnDefinitions>
-        <Image Source="{Binding Thumbnail}" Opacity="{Binding Opacity}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" MaxHeight="125" MaxWidth="125" Visibility="{Binding Thumbnail_Visibility}"/>
+        <Image Grid.Column="0" Source="{Binding Thumbnail}" Opacity="{Binding Opacity}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" MaxHeight="125" MaxWidth="125" Visibility="{Binding Thumbnail_Visibility}"/>
         <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,0,0">
-            <TextBlock Style="{StaticResource Section_TextBlockStyle_Title}" x:Name="Name" Margin="0,0,0,-10" FontSize="{Binding FontSize}" />
-            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" x:Name="ClipCountDisplay" Margin="0,-10,0,0" Visibility="{Binding Name_Visibility}" />
+            <TextBlock Style="{StaticResource Section_TextBlockStyle_Title}" x:Name="Name" Margin="0,0,0,-10" FontSize="{Binding FontSize}"/>
+            <TextBlock Style="{StaticResource Section_TextBlockStyle_Standard}" Margin="0,-10,0,0" Visibility="{Binding Name_Visibility}">
+                <Run Text="{Binding GameInfo}"/><Run Text="{Binding ClipCountDisplay}"/>
+            </TextBlock>
         </StackPanel>
-    <Image Source="ms-appx:///Assets/selectArrow.png" Height="100" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,20,0" HorizontalAlignment="Right"/>
+        <CheckBox x:Name="CheckBox" Visibility="{Binding CheckBox_Visibility}" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-25,-25,0,0" caliburn:Message.Attach="[Event Click] = [CheckBoxSelected()]">
+            <CheckBox.RenderTransform>
+                <ScaleTransform ScaleX="2" ScaleY="2"/>
+            </CheckBox.RenderTransform>
+        </CheckBox>
+        <TextBlock Grid.Column="2" Margin="-5,38,0,0" Visibility="{Binding DownloadedVisibility}">
+            <Run FontFamily="Segoe UI Symbol" Text="&#xE19C;" Foreground="{StaticResource HudlLightGray}"/>
+            <TextBlock.RenderTransform>
+                <ScaleTransform ScaleX="3.5" ScaleY="3.5"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+        <Image Source="ms-appx:///Assets/selectArrow.png" Height="100" Grid.Column="3" VerticalAlignment="Center" Margin="0,0,20,0" HorizontalAlignment="Right"/>
     </Grid>
 </UserControl>

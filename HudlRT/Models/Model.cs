@@ -167,6 +167,16 @@ namespace HudlRT.Models
         }
     }
 
+    public class Downloads
+    {
+        public BindableCollection<Playlist> cutups { get; set; }
+
+        public Downloads()
+        {
+            cutups = new BindableCollection<Playlist>();
+        }
+    }
+
     public class Playlist
     {
         public string name { get; set; }
@@ -175,9 +185,30 @@ namespace HudlRT.Models
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
         public string thumbnailLocation { get; set; }
+        public long totalFilesSize { get; set; }
         public Playlist()
         {
             clips = new BindableCollection<Clip>();
+        }
+
+        public static Playlist Copy(Playlist toCopy)
+        {
+            Playlist cutup = new Playlist { cutupId = toCopy.cutupId, clipCount = toCopy.clipCount, name = toCopy.name, thumbnailLocation = toCopy.thumbnailLocation, displayColumns = toCopy.displayColumns, totalFilesSize = toCopy.totalFilesSize };
+            BindableCollection<Clip> clips = new BindableCollection<Clip>();
+            foreach (Clip c in toCopy.clips)
+            {
+                Clip clip = new Clip { breakDownData = c.breakDownData, clipId = c.clipId, order = c.order };
+                BindableCollection<Angle> angles = new BindableCollection<Angle>();
+                foreach (Angle a in c.angles)
+                {
+                    Angle angle = new Angle { angleName = a.angleName, angleType = null, clipAngleId = a.clipAngleId, duration = a.duration, fileLocation = a.fileLocation, isPreloaded = a.isPreloaded, preloadFile = a.preloadFile, thumbnailLocation = a.thumbnailLocation };
+                    angles.Add(angle);
+                }
+                clip.angles = angles;
+                clips.Add(clip);
+            }
+            cutup.clips = clips;
+            return cutup;
         }
 
         public static Playlist FromDTO(CutupDTO cutupDTO)
@@ -196,7 +227,6 @@ namespace HudlRT.Models
         public string clipId { get; set; }
         public long order { get; set; }
         public BindableCollection<Angle> angles { get; set; }
-        //public Dictionary<string, string> breakdownData { get; set; }
         public string[] breakDownData { get; set; }
 
 
@@ -250,7 +280,7 @@ namespace HudlRT.Models
         public long duration { get; set; }
         public AngleType angleType { get; set; }
         public bool isPreloaded { get; set; }
-        public Windows.Storage.StorageFile preloadFile { get; set; }
+        public string preloadFile { get; set; }
 
         public Angle()
         {
@@ -320,7 +350,6 @@ namespace HudlRT.Models
 
         public void checkBox(bool isChecked, Windows.UI.Xaml.RoutedEventArgs eventArgs)
         {
-            IsChecked = isChecked;
             viewModel.AngleFilter();
         }
     }

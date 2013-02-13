@@ -109,8 +109,9 @@
     </Compile>
     <Compile Include="Common\AppDataAccessor.cs" />
     <Compile Include="Common\CharmsData.cs" />
+	<Compile Include="Common\TemplateSelector.cs" />
     <Compile Include="Common\Class1.cs" />
-    <Compile Include="Common\TemplateSelector.cs" />
+    <Compile Include="Common\DownloadAccessor.cs" />
     <Compile Include="Common\VideoPlayerListView.cs" />
     <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
@@ -121,7 +122,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\PlaylistViewModel.cs" />
+    <Compile Include="ViewModels\DownloadsViewModel.cs" />
     <Compile Include="ViewModels\FeatureDisabledViewModel.cs" />
+    <Compile Include="ViewModels\FilterCriteriaViewModel.cs" />
+    <Compile Include="ViewModels\FilterViewModel.cs" />
     <Compile Include="ViewModels\GameViewModel.cs" />
     <Compile Include="ViewModels\HubGroupViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -134,6 +138,9 @@
     </Compile>
     <Compile Include="Views\CutupView.xaml.cs">
       <DependentUpon>CutupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DownloadsView.xaml.cs">
+      <DependentUpon>DownloadsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FeatureDisabledView.xaml.cs">
       <DependentUpon>FeatureDisabledView.xaml</DependentUpon>
@@ -203,20 +210,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Common\HubTemplates.xaml">
+	<Page Include="Common\HubTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Common\DownloadStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Common\SectionStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Common\VideoPlayerTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Common\VideoPlayerStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Common\SectionStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -242,6 +253,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CutupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DownloadsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -289,6 +304,9 @@
     <Reference Include="Windows.UI.Interactivity, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Caliburn.Micro\Windows.UI.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="WinRTXamlToolkit">
+      <HintPath>packages\winrtxamltoolkit.1.3.5.3\lib\netcore45\WinRTXamlToolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup />
