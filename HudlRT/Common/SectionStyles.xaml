@@ -7,7 +7,7 @@
         <ResourceDictionary Source="ms-appx:///Common/CustomStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <!--Naming convention: Page_ItemStyle_Specific (e.g. Section_TextBlockStyle_Cutups). 
+    <!--Naming convention: Page_ItemStyle_Specific (e.g. Section_TextBlockStyle_Playlists). 
     If the style is not related to any one page, omit the page portion while naming the style.-->
     <Style x:Key="Section_ListViewItemStyle_Collapse" TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
@@ -606,7 +606,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="Section_ListViewItemStyle_Cutups" TargetType="ListViewItem">
+    <Style x:Key="Section_ListViewItemStyle_Playlists" TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
         <Setter Property="FontSize" Value="{StaticResource ControlContentThemeFontSize}"/>
         <Setter Property="Background" Value="Transparent"/>

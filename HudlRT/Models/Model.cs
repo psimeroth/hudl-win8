@@ -150,12 +150,12 @@ namespace HudlRT.Models
     public class Category
     {
         public string name { get; set; }
-        public BindableCollection<Playlist> cutups { get; set; }
+        public BindableCollection<Playlist> playlists { get; set; }
         public string categoryId { get; set; }
 
         public Category()
         {
-            cutups = new BindableCollection<Playlist>();
+            playlists = new BindableCollection<Playlist>();
         }
 
         public static Category FromDTO(CategoryDTO categoryDTO)
@@ -169,11 +169,11 @@ namespace HudlRT.Models
 
     public class Downloads
     {
-        public BindableCollection<Playlist> cutups { get; set; }
+        public BindableCollection<Playlist> playlists { get; set; }
 
         public Downloads()
         {
-            cutups = new BindableCollection<Playlist>();
+            playlists = new BindableCollection<Playlist>();
         }
     }
 
@@ -181,7 +181,7 @@ namespace HudlRT.Models
     {
         public string name { get; set; }
         public int clipCount { get; set; }
-        public string cutupId { get; set; }
+        public string playlistId { get; set; }
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
         public string thumbnailLocation { get; set; }
@@ -193,7 +193,7 @@ namespace HudlRT.Models
 
         public static Playlist Copy(Playlist toCopy)
         {
-            Playlist cutup = new Playlist { cutupId = toCopy.cutupId, clipCount = toCopy.clipCount, name = toCopy.name, thumbnailLocation = toCopy.thumbnailLocation, displayColumns = toCopy.displayColumns, totalFilesSize = toCopy.totalFilesSize };
+            Playlist playlist = new Playlist { playlistId = toCopy.playlistId, clipCount = toCopy.clipCount, name = toCopy.name, thumbnailLocation = toCopy.thumbnailLocation, displayColumns = toCopy.displayColumns, totalFilesSize = toCopy.totalFilesSize };
             BindableCollection<Clip> clips = new BindableCollection<Clip>();
             foreach (Clip c in toCopy.clips)
             {
@@ -207,18 +207,18 @@ namespace HudlRT.Models
                 clip.angles = angles;
                 clips.Add(clip);
             }
-            cutup.clips = clips;
-            return cutup;
+            playlist.clips = clips;
+            return playlist;
         }
 
-        public static Playlist FromDTO(CutupDTO cutupDTO)
+        public static Playlist FromDTO(PlaylistDTO playlistDTO)
         {
-            Playlist cutup = new Playlist();
-            cutup.cutupId = cutupDTO.PlaylistId;
-            cutup.clipCount = cutupDTO.ClipCount;
-            cutup.name = cutupDTO.Name;
-            cutup.thumbnailLocation = cutupDTO.Thumbnailpath;
-            return cutup;
+            Playlist playlist = new Playlist();
+            playlist.playlistId = playlistDTO.PlaylistId;
+            playlist.clipCount = playlistDTO.ClipCount;
+            playlist.name = playlistDTO.Name;
+            playlist.thumbnailLocation = playlistDTO.Thumbnailpath;
+            return playlist;
         }
     }
 

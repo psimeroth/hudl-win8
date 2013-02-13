@@ -10,33 +10,49 @@ using Windows.UI.Xaml;
 namespace HudlRT.ViewModels
 {
     /// <summary>
-    /// Used for binding to a list of cutups
+    /// Used for binding to a list of playlists
     /// </summary>
     public class PlaylistViewModel : PropertyChangedBase
     {
-        public string Name { get; set; }
-        public string NumClips { get; set; }
-        public bool IsDownloaded { get; set; }
-        public string ThumbnailPath { get; set; }
-        public string PlaylistId { get; set; }
-
-        public static PlaylistViewModel FromPlaylist(Playlist cutup)
+        public Playlist PlaylistModel { get; set; }
+        public string Name
         {
-            PlaylistViewModel cvm = new PlaylistViewModel();
-            cvm.Name = cutup.name;
-            cvm.NumClips = cutup.clipCount.ToString();
-            cvm.PlaylistId = cutup.cutupId;
-            cvm.IsDownloaded = false;
-            if (cutup.thumbnailLocation == null)
+            get
             {
-                cvm.ThumbnailPath = "ms-appx:///Assets/agile-hudl-logo-dark.png";
+                return PlaylistModel.name;
             }
-            else
+        }
+        public string NumClips
+        {
+            get
             {
-                cvm.ThumbnailPath = cutup.thumbnailLocation;
+                return PlaylistModel.clipCount + " Clips";
+            }
+        }
+        public bool IsDownloaded { 
+            get
+            {
+                return false;
+            }
+        }
+        public string ThumbnailPath
+        {
+            get
+            {
+                if (PlaylistModel.thumbnailLocation == null)
+                {
+                    return "ms-appx:///Assets/agile-hudl-logo-dark.png";
+                }
+                else
+                {
+                    return PlaylistModel.thumbnailLocation;
+                }
+            }
+        }
 
-            }
-            return cvm;
+        public PlaylistViewModel(Playlist playlist)
+        {
+            PlaylistModel = playlist;
         }
     }
 }

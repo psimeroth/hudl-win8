@@ -13,20 +13,19 @@ namespace HudlRT.ViewModels
     /// </summary>
     public class CategoryViewModel : PropertyChangedBase
     {
-        public string CategoryId { get; set; }
-
-        private string _name { get; set; }
+        public Category CategoryModel { get; set; }
+        //private string _name { get; set; }
         private BindableCollection<PlaylistViewModel> _playlists { get; set; }
 
         public string Name
         {
-            get { return _name; }
-            set
+            get { return CategoryModel.name; }
+            /*set
             {
                 if (value == _name) return;
                 _name = value;
                 NotifyOfPropertyChange(() => Name);
-            }
+            }*/
         }
 
         public BindableCollection<PlaylistViewModel> Playlists
@@ -40,15 +39,10 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public static CategoryViewModel FromCategory(Category cat)
+        public CategoryViewModel(Category cat)
         {
-            CategoryViewModel catVM = new CategoryViewModel();
-            catVM.Name = cat.name;
-            catVM.CategoryId = cat.categoryId;
-
-            catVM.Playlists = new BindableCollection<PlaylistViewModel>();
-
-            return catVM;
+            CategoryModel = cat;            
+            Playlists = new BindableCollection<PlaylistViewModel>();
         }
     }
 }
