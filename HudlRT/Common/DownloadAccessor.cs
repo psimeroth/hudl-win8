@@ -90,6 +90,7 @@ namespace HudlRT.Common
             {
                 var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.cutupId.ToString());
                 folder.DeleteAsync();
+                cutup.IsDownloaded = false;
             }
             catch (Exception)
             {
@@ -200,6 +201,7 @@ namespace HudlRT.Common
                         }
                     }
                 }
+                cut.IsDownloaded = true;
                 CutupViewModel cutupForSave = CutupViewModel.FromCutup(cut);
                 cutupForSave.downloadedDate = DateTime.Now;
                 cutupForSave.GameInfo = g.Date + " - " + g.Opponent + ": ";

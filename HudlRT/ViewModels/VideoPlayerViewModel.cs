@@ -193,7 +193,7 @@ namespace HudlRT.ViewModels
                     listView.SelectedItem = SelectedClip;
                 }
             }
-            if (ServiceAccessor.ConnectedToInternet())
+            if (ServiceAccessor.ConnectedToInternet() && !CachedParameter.selectedCutup.IsDownloaded)
             {
                 getMoreClips();
             }
@@ -282,7 +282,7 @@ namespace HudlRT.ViewModels
 
         private async void getMoreClips()
         {
-            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalCutupClips(CachedParameter.selectedCutup.cutupId, 100);
+            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalCutupClips(CachedParameter.selectedCutup.cutupId, CachedParameter.selectedCutup.clips.Count);
             foreach (Clip clip in remainingClipsList)
             {
                 foreach (Angle angle in clip.angles)
