@@ -92,7 +92,7 @@ namespace HudlRT.ViewModels
 
         public async Task AddPlaylistsForCategory(CategoryViewModel category)
         {
-            PlaylistResponse response = await ServiceAccessor.GetCategoryCutups(category.CategoryId);
+            PlaylistResponse response = await ServiceAccessor.GetCategoryPlaylists(category.CategoryId);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 category.Playlists = new BindableCollection<PlaylistViewModel>();
@@ -109,7 +109,7 @@ namespace HudlRT.ViewModels
 
         public void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
-            //CachedParameter.selectedCutup = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistId;
+            //CachedParameter.selectedPlaylist = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistId;
             //navigationService.NavigateToViewModel<VideoPlayerViewModel>();
 
         }

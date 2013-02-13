@@ -21,7 +21,7 @@ namespace HudlRT.ViewModels
             int numplaylists = 0;
             foreach (Category c in game.categories)
             {
-                numplaylists += c.cutups.Count();
+                numplaylists += c.playlists.Count();
             }
 
             GameViewModel largeVM = new GameViewModel()

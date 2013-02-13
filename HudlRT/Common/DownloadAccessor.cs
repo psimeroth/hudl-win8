@@ -50,7 +50,7 @@ namespace HudlRT.Common
 
         //public async Task<BindableCollection<PlaylistViewModel>> GetDownloads()
         //{
-        //    BindableCollection<PlaylistViewModel> cutups = new BindableCollection<PlaylistViewModel>();
+        //    BindableCollection<PlaylistViewModel> playlists = new BindableCollection<PlaylistViewModel>();
         //    var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
         //    Downloads downloads = new Downloads();
         //    long totalSize = 0;
@@ -62,33 +62,33 @@ namespace HudlRT.Common
         //            {
         //                StorageFile model = await folder.GetFileAsync("DownloadsModel");
         //                string text = await Windows.Storage.FileIO.ReadTextAsync(model);
-        //                PlaylistViewModel cutupVM = JsonConvert.DeserializeObject<PlaylistViewModel>(text);
-        //                cutupVM.Width = new GridLength(180);
-        //                if (cutupVM != null)
+        //                PlaylistViewModel playlistVM = JsonConvert.DeserializeObject<PlaylistViewModel>(text);
+        //                playlistVM.Width = new GridLength(180);
+        //                if (playlistVM != null)
         //                {
-        //                    totalSize += cutupVM.TotalCutupSize;
-        //                    cutups.Add(cutupVM);
+        //                    totalSize += playlistVM.TotalPlaylistSize;
+        //                    playlists.Add(playlistVM);
         //                }
         //            }
         //            catch (Exception) { }
         //        }
         //    }
             
-        //    //return SortCutupsByDownloadedDate(cutups);
-        //    BindableCollection<PlaylistViewModel> sortedCutups = new BindableCollection<PlaylistViewModel>(cutups.OrderByDescending(c => c.downloadedDate));
-        //    CachedParameter.downloadedCutups = sortedCutups;
+        //    //return SortPlaylistsByDownloadedDate(playlists);
+        //    BindableCollection<PlaylistViewModel> sortedPlaylists = new BindableCollection<PlaylistViewModel>(playlists.OrderByDescending(c => c.downloadedDate));
+        //    CachedParameter.downloadedPlaylists = sortedPlaylists;
 
-        //    CachedParameter.hubViewDownloadsCount = CachedParameter.downloadedCutups.Count != 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
+        //    CachedParameter.hubViewDownloadsCount = CachedParameter.downloadedPlaylists.Count != 1 ? CachedParameter.downloadedPlaylists.Count + " Playlists" : CachedParameter.downloadedPlaylists.Count + " Playlist";
         //    long megabytes = (long)Math.Ceiling((totalSize / 1048576.0));
-        //    CachedParameter.hubViewDownloadsSizeInMB = CachedParameter.downloadedCutups.Count > 0 ? megabytes + " MB" : "";
-        //    return sortedCutups;
+        //    CachedParameter.hubViewDownloadsSizeInMB = CachedParameter.downloadedPlaylists.Count > 0 ? megabytes + " MB" : "";
+        //    return sortedPlaylists;
         //}
 
-        //private async Task RemoveDownload(Playlist cutup)
+        //private async Task RemoveDownload(Playlist playlist)
         //{
         //    try
         //    {
-        //        var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.cutupId.ToString());
+        //        var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + playlist.playlistId.ToString());
         //        folder.DeleteAsync();
         //    }
         //    catch (Exception)
@@ -110,16 +110,16 @@ namespace HudlRT.Common
         //    {
         //        Downloading = false;
         //        CurrentDownloadedBytes = 0;
-        //        foreach (Cutup downloadedCutup in CachedParameter.currentlyDownloadingCutups)
+        //        foreach (Playlist downloadedPlaylist in CachedParameter.currentlyDownloadingPlaylists)
         //        {
-        //            RemoveDownload(downloadedCutup);//may not have even started downloading this cutup when this is called
+        //            RemoveDownload(downloadedPlaylist);//may not have even started downloading this playlist when this is called
         //        }
-        //        CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
+        //        CachedParameter.currentlyDownloadingPlaylists = new List<Playlist>();
         //        return null;
         //    }
         //}
 
-        //public async Task DownloadCutups(List<Cutup> cutups, Season s, GameViewModel g)
+        //public async Task DownloadPlaylists(List<Playlist> playlists, Season s, GameViewModel g)
         //{
 
         //    backgroundDownloader = new BackgroundDownloader();
@@ -128,11 +128,11 @@ namespace HudlRT.Common
         //    ClipsComplete = 0;
         //    CurrentDownloadedBytes = 0;
         //    TotalClips = 0;
-        //    long cutupTotalSize = 0;
+        //    long playlistTotalSize = 0;
         //    var httpClient = new System.Net.Http.HttpClient();
-        //    foreach (Cutup cut in cutups)
+        //    foreach (Playlist cut in playlists)
         //    {
-        //        cutupTotalSize = 0;
+        //        playlistTotalSize = 0;
         //        foreach (Clip c in cut.clips)
         //        {
         //            foreach (Angle angle in c.angles)
@@ -141,17 +141,17 @@ namespace HudlRT.Common
         //                var httpRequestMessage = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Head, uri);
         //                var response = await httpClient.SendAsync(httpRequestMessage);
         //                var angleSize = response.Content.Headers.ContentLength;
-        //                cutupTotalSize += (long)angleSize;
+        //                playlistTotalSize += (long)angleSize;
         //                TotalBytes += (long)angleSize;
         //                TotalClips++;
         //            }
         //        }
-        //        cut.totalFilesSize = cutupTotalSize;
+        //        cut.totalFilesSize = playlistTotalSize;
         //    }
 
-        //    foreach (Cutup cut in cutups)
+        //    foreach (Playlist cut in playlists)
         //    {
-        //        var fileFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername() + cut.cutupId.ToString(), Windows.Storage.CreationCollisionOption.OpenIfExists);
+        //        var fileFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername() + cut.playlistId.ToString(), Windows.Storage.CreationCollisionOption.OpenIfExists);
 
         //        //save thumbnail
         //        var sourceThumb = new Uri(cut.thumbnailLocation);
@@ -175,8 +175,8 @@ namespace HudlRT.Common
 
         //                    if (file == null)
         //                    {
-        //                        //CutupId-ClipId-ClipAngleId
-        //                        var destinationFile = await fileFolder.CreateFileAsync(cut.cutupId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
+        //                        //PlaylistId-ClipId-ClipAngleId
+        //                        var destinationFile = await fileFolder.CreateFileAsync(cut.playlistId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
         //                        Download = backgroundDownloader.CreateDownload(source, destinationFile);
         //                        file = await StartDownloadAsync(Download);
         //                        angle.preloadFile = file.Path;
@@ -191,12 +191,12 @@ namespace HudlRT.Common
         //                }
         //            }
         //        }
-        //        CutupViewModel cutupForSave = CutupViewModel.FromCutup(cut);
-        //        cutupForSave.downloadedDate = DateTime.Now;
-        //        cutupForSave.GameInfo = g.Date + " - " + g.Opponent + ": ";
-        //        string updatedModel = JsonConvert.SerializeObject(cutupForSave);
+        //        PlaylistViewModel playlistForSave = PlaylistViewModel.FromPlaylist(cut);
+        //        playlistForSave.downloadedDate = DateTime.Now;
+        //        playlistForSave.GameInfo = g.Date + " - " + g.Opponent + ": ";
+        //        string updatedModel = JsonConvert.SerializeObject(playlistForSave);
         //        await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
-        //        CachedParameter.downloadedCutups.Add(cutupForSave);
+        //        CachedParameter.downloadedPlaylists.Add(playlistForSave);
                 
         //    }
         //    DownloadComplete_Notification();

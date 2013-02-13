@@ -121,7 +121,7 @@ namespace HudlRT.Views
 
         private void initializeGrid()
         {
-            string[] displayColumns = CachedParameter.selectedCutup.displayColumns;
+            string[] displayColumns = CachedParameter.selectedPlaylist.displayColumns;
             var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
             string columnDefinitions = "";
             string rowText = "";

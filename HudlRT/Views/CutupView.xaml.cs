@@ -16,9 +16,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace HudlRT.Views
 {
-    public sealed partial class CutupView : UserControl
+    public sealed partial class PlaylistView : UserControl
     {
-        public CutupView()
+        public PlaylistView()
         {
             this.InitializeComponent();
         }

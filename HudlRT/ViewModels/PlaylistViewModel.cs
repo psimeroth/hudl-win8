@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 namespace HudlRT.ViewModels
 {
     /// <summary>
-    /// Used for binding to a list of cutups
+    /// Used for binding to a list of playlists
     /// </summary>
     public class PlaylistViewModel : PropertyChangedBase
     {
@@ -20,20 +20,20 @@ namespace HudlRT.ViewModels
         public string ThumbnailPath { get; set; }
         public string PlaylistId { get; set; }
 
-        public static PlaylistViewModel FromPlaylist(Playlist cutup)
+        public static PlaylistViewModel FromPlaylist(Playlist playlist)
         {
             PlaylistViewModel cvm = new PlaylistViewModel();
-            cvm.Name = cutup.name;
-            cvm.NumClips = cutup.clipCount.ToString();
-            cvm.PlaylistId = cutup.cutupId;
+            cvm.Name = playlist.name;
+            cvm.NumClips = playlist.clipCount.ToString();
+            cvm.PlaylistId = playlist.playlistId;
             cvm.IsDownloaded = false;
-            if (cutup.thumbnailLocation == null)
+            if (playlist.thumbnailLocation == null)
             {
                 cvm.ThumbnailPath = "ms-appx:///Assets/agile-hudl-logo-dark.png";
             }
             else
             {
-                cvm.ThumbnailPath = cutup.thumbnailLocation;
+                cvm.ThumbnailPath = playlist.thumbnailLocation;
 
             }
             return cvm;

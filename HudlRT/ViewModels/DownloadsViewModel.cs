@@ -27,14 +27,14 @@ namespace HudlRT.ViewModels
         private readonly INavigationService navigationService;
         //private Boolean deleting = false;
         //public Parameter Parameter;
-        //private BindableCollection<PlaylistViewModel> _cutups { get; set; }
-        //public BindableCollection<PlaylistViewModel> Cutups
+        //private BindableCollection<PlaylistViewModel> _playlists { get; set; }
+        //public BindableCollection<PlaylistViewModel> Playlists
         //{
-        //    get { return _cutups; }
+        //    get { return _playlists; }
         //    set
         //    {
-        //        _cutups = value;
-        //        NotifyOfPropertyChange(() => Cutups);
+        //        _playlists = value;
+        //        NotifyOfPropertyChange(() => Playlists);
         //    }
         //}
 
@@ -139,66 +139,66 @@ namespace HudlRT.ViewModels
 
         //    SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
-        //    Cutups = new BindableCollection<PlaylistViewModel>();
+        //    Playlists = new BindableCollection<PlaylistViewModel>();
         //    CancelButton_Visibility = Visibility.Collapsed;
         //    ConfirmButton_Visibility = Visibility.Collapsed;
         //    NoDownloadsVisibility = Visibility.Collapsed;
         //    Progress_Visibility = Visibility.Collapsed;
         //    await GetDownloads();
 
-        //    if (Cutups != null)
+        //    if (Playlists != null)
         //    {
         //        var currentViewState = ApplicationView.Value;
         //        if (currentViewState == ApplicationViewState.Snapped)
         //        {
-        //            foreach (var cutup in Cutups)
+        //            foreach (var playlist in Playlists)
         //            {
-        //                cutup.Name_Visibility = SNAPPED_VISIBILITY;
-        //                cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
-        //                cutup.Width = new GridLength(0);
-        //                cutup.FontSize = SNAPPED_FONT_SIZE;
+        //                playlist.Name_Visibility = SNAPPED_VISIBILITY;
+        //                playlist.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+        //                playlist.Width = new GridLength(0);
+        //                playlist.FontSize = SNAPPED_FONT_SIZE;
         //            }
         //        }
         //        else
         //        {
-        //            foreach (var cutup in Cutups)
+        //            foreach (var playlist in Playlists)
         //            {
-        //                cutup.Name_Visibility = FULL_VISIBILITY;
-        //                cutup.Thumbnail_Visibility = FULL_VISIBILITY;
-        //                cutup.Width = new GridLength(180);
-        //                cutup.FontSize = FONT_SIZE;
+        //                playlist.Name_Visibility = FULL_VISIBILITY;
+        //                playlist.Thumbnail_Visibility = FULL_VISIBILITY;
+        //                playlist.Width = new GridLength(180);
+        //                playlist.FontSize = FONT_SIZE;
         //            }
         //        }
         //    }
         //}
 
-        //private void Cutups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        //private void Playlists_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         //{
-        //    NoDownloadsVisibility = Cutups.Any() ? Visibility.Collapsed : Visibility.Visible;
-        //    Cutups = new BindableCollection<CutupViewModel>(Cutups.OrderByDescending(c => c.downloadedDate));
+        //    NoDownloadsVisibility = Playlists.Any() ? Visibility.Collapsed : Visibility.Visible;
+        //    Playlists = new BindableCollection<PlaylistViewModel>(Playlists.OrderByDescending(c => c.downloadedDate));
         //    long totalsize = 0;
         //    long totalClips = 0;
-        //    foreach (PlaylistViewModel c in Cutups)
+        //    foreach (PlaylistViewModel c in Playlists)
         //    {
-        //        totalsize += c.TotalCutupSize;
+        //        totalsize += c.TotalPlaylistSize;
         //        totalClips += c.ClipCount;
         //    }
         //    long megabytes = (long)Math.Ceiling((totalsize / 1048576.0));
-        //    Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
+        //    Download_Contents = "Playlists: " + Playlists.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
         //}
 
-        //public async void CutupSelected(ItemClickEventArgs eventArgs)
+        //public async void PlaylistSelected(ItemClickEventArgs eventArgs)
         //{
-        //    var cutup = (PlaylistViewModel)eventArgs.ClickedItem;
+        //    var playlist = (PlaylistViewModel)eventArgs.ClickedItem;
         //    if (!deleting)
         //    {     
-        //        CachedParameter.selectedCutup = new Cutup { cutupId = cutup.CutupId, clips = cutup.Clips, displayColumns = cutup.DisplayColumns, clipCount = cutup.ClipCount, name = cutup.Name, thumbnailLocation = cutup.Thumbnail };
-        //        CachedParameter.sectionViewCutupSelected = cutup;
+        //        CachedParameter.selectedPlaylist = new Playlist { playlistId = playlist.PlaylistId, clips = playlist.Clips, displayColumns = playlist.DisplayColumns, clipCount = playlist.ClipCount, name = playlist.Name, thumbnailLocation = playlist.Thumbnail };
+        //        CachedParameter.sectionViewPlaylistSelected = playlist;
         //        navigationService.NavigateToViewModel<VideoPlayerViewModel>();
         //    }
         //    else
         //    {
-        //        cutup.CheckBox = !cutup.CheckBox;
+        //        playlist.CheckBox = !playlist.CheckBox;
         //        CheckBoxSelected();
         //    }
         //}
@@ -206,9 +206,9 @@ namespace HudlRT.ViewModels
         //public void CheckBoxSelected()
         //{
         //    bool checkFound = false;
-        //    foreach (PlaylistViewModel cutupVM in Cutups)
+        //    foreach (PlaylistViewModel playlistVM in Playlists)
         //    {
-        //        if (cutupVM.CheckBox)
+        //        if (playlistVM.CheckBox)
         //        {
         //            checkFound = true;
         //            ConfirmButton_Visibility = Visibility.Visible;
@@ -245,10 +245,10 @@ namespace HudlRT.ViewModels
         //    deleting = true;
         //    DeleteButton_Visibility = Visibility.Collapsed;
         //    CancelButton_Visibility = Visibility.Visible;
-        //    foreach (PlaylistViewModel cutupVM in Cutups)
+        //    foreach (PlaylistViewModel playlistVM in Playlists)
         //    {
-        //        cutupVM.CheckBox_Visibility = Visibility.Visible;
-        //        if (cutupVM.CheckBox)
+        //        playlistVM.CheckBox_Visibility = Visibility.Visible;
+        //        if (playlistVM.CheckBox)
         //        {
         //            ConfirmButton_Visibility = Visibility.Visible;
         //        }
@@ -261,30 +261,30 @@ namespace HudlRT.ViewModels
         //    DeleteButton_Visibility = Visibility.Visible;
         //    CancelButton_Visibility = Visibility.Collapsed;
         //    ConfirmButton_Visibility = Visibility.Collapsed;
-        //    foreach (PlaylistViewModel cutupVM in Cutups)
+        //    foreach (PlaylistViewModel playlistVM in Playlists)
         //    {
-        //        cutupVM.CheckBox_Visibility = Visibility.Collapsed;
-        //        cutupVM.CheckBox = false;
+        //        playlistVM.CheckBox_Visibility = Visibility.Collapsed;
+        //        playlistVM.CheckBox = false;
         //    }
         //}
 
         //public async void Confirm_Delete()
         //{
-        //    PlaylistViewModel[] copy = new PlaylistViewModel[Cutups.Count];
-        //    Cutups.CopyTo(copy, 0);
-        //    foreach (PlaylistViewModel cutupVM in copy)
+        //    PlaylistViewModel[] copy = new PlaylistViewModel[Playlists.Count];
+        //    Playlists.CopyTo(copy, 0);
+        //    foreach (PlaylistViewModel playlistVM in copy)
         //    {
-        //        if (cutupVM.CheckBox)
+        //        if (playlistVM.CheckBox)
         //        {
-        //            await RemoveDownload(cutupVM);
-        //            Cutups.Remove(cutupVM);
+        //            await RemoveDownload(playlistVM);
+        //            Playlists.Remove(playlistVM);
         //        }
         //    }
 
         //    CancelButton_Visibility = Visibility.Collapsed;
         //    ConfirmButton_Visibility = Visibility.Collapsed;
         //    var totalClips = 0;
-        //    if (!Cutups.Any())
+        //    if (!Playlists.Any())
         //    {
         //        DeleteButton_Visibility = Visibility.Collapsed;
         //        NoDownloadsVisibility = Visibility.Visible;
@@ -293,22 +293,22 @@ namespace HudlRT.ViewModels
         //    {
         //        DeleteButton_Visibility = Visibility.Visible;
         //        NoDownloadsVisibility = Visibility.Collapsed;
-        //        foreach (PlaylistViewModel cutupVM in Cutups)
+        //        foreach (PlaylistViewModel playlistVM in Playlists)
         //        {
-        //            cutupVM.CheckBox_Visibility = Visibility.Collapsed;
-        //            totalClips += cutupVM.ClipCount;
+        //            playlistVM.CheckBox_Visibility = Visibility.Collapsed;
+        //            totalClips += playlistVM.ClipCount;
         //        }
         //    }
         //    long totalsize = 0;
-        //    foreach (PlaylistViewModel c in Cutups)
+        //    foreach (PlaylistViewModel c in Playlists)
         //    {
-        //        totalsize += c.TotalCutupSize;
+        //        totalsize += c.TotalPlaylistSize;
         //    }
         //    long megabytes = (long)Math.Ceiling((totalsize / 1048576.0));
-        //    Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
+        //    Download_Contents = "Playlists: " + Playlists.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
 
-        //    CachedParameter.hubViewDownloadsCount = CachedParameter.downloadedCutups.Count != 1 ? CachedParameter.downloadedCutups.Count + " Cutups" : CachedParameter.downloadedCutups.Count + " Cutup";
-        //    CachedParameter.hubViewDownloadsSizeInMB = CachedParameter.downloadedCutups.Count > 0 ? megabytes + " MB" : " 0 MB";
+        //    CachedParameter.hubViewDownloadsCount = CachedParameter.downloadedPlaylists.Count != 1 ? CachedParameter.downloadedPlaylists.Count + " Playlists" : CachedParameter.downloadedPlaylists.Count + " Playlist";
+        //    CachedParameter.hubViewDownloadsSizeInMB = CachedParameter.downloadedPlaylists.Count > 0 ? megabytes + " MB" : " 0 MB";
 
         //}
 
@@ -317,35 +317,35 @@ namespace HudlRT.ViewModels
         //{
         //    long totalsize = 0;
         //    var totalClips = 0;
-        //    Cutups = await DownloadAccessor.Instance.GetDownloads();
-        //    if (!Cutups.Any())
+        //    Playlists = await DownloadAccessor.Instance.GetDownloads();
+        //    if (!Playlists.Any())
         //    {
         //        DeleteButton_Visibility = Visibility.Collapsed;
         //        NoDownloadsVisibility = Visibility.Visible;
         //    }
-        //    foreach (PlaylistViewModel cVM in Cutups)
+        //    foreach (PlaylistViewModel cVM in Playlists)
         //    {
-        //        totalsize += cVM.TotalCutupSize;
+        //        totalsize += cVM.TotalPlaylistSize;
         //        totalClips += cVM.ClipCount;
         //    }
         //    long megabytes = (totalsize / (1048576));
-        //    if (Cutups.Count > 0 && megabytes < 1)
+        //    if (Playlists.Count > 0 && megabytes < 1)
         //    {
         //        megabytes = 1;
         //    }
-        //    Download_Contents = "Cutups: " + Cutups.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
-        //    Cutups.CollectionChanged += Cutups_CollectionChanged;
+        //    Download_Contents = "Playlists: " + Playlists.Count + " | Clips: " + totalClips + " | Size: " + megabytes + " MB";
+        //    Playlists.CollectionChanged += Playlists_CollectionChanged;
         //}
 
-        //private async Task RemoveDownload(PlaylistViewModel cutup)
+        //private async Task RemoveDownload(PlaylistViewModel playlist)
         //{
         //    try
         //    {
-        //        var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + cutup.CutupId.ToString());
+        //        var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + playlist.PlaylistId.ToString());
         //        try
         //        {
         //            folder.DeleteAsync();
-        //            CachedParameter.downloadedCutups.Remove(cutup);
+        //            CachedParameter.downloadedPlaylists.Remove(playlist);
         //        }
         //        catch (Exception) { }
         //    }
@@ -357,27 +357,27 @@ namespace HudlRT.ViewModels
 
         //public void OnWindowSizeChanged()
         //{
-        //    if (Cutups != null)
+        //    if (Playlists != null)
         //    {
         //        var currentViewState = ApplicationView.Value;
         //        if (currentViewState == ApplicationViewState.Snapped)
         //        {
-        //            foreach (var cutup in Cutups)
+        //            foreach (var playlist in Playlists)
         //            {
-        //                cutup.Name_Visibility = SNAPPED_VISIBILITY;
-        //                cutup.Thumbnail_Visibility = SNAPPED_VISIBILITY;
-        //                cutup.Width = new GridLength(0);
-        //                cutup.FontSize = SNAPPED_FONT_SIZE;
+        //                playlist.Name_Visibility = SNAPPED_VISIBILITY;
+        //                playlist.Thumbnail_Visibility = SNAPPED_VISIBILITY;
+        //                playlist.Width = new GridLength(0);
+        //                playlist.FontSize = SNAPPED_FONT_SIZE;
         //            }
         //        }
         //        else
         //        {
-        //            foreach (var cutup in Cutups)
+        //            foreach (var playlist in Playlists)
         //            {
-        //                cutup.Name_Visibility = FULL_VISIBILITY;
-        //                cutup.Thumbnail_Visibility = FULL_VISIBILITY;
-        //                cutup.Width = new GridLength(180);
-        //                cutup.FontSize = FONT_SIZE;
+        //                playlist.Name_Visibility = FULL_VISIBILITY;
+        //                playlist.Thumbnail_Visibility = FULL_VISIBILITY;
+        //                playlist.Width = new GridLength(180);
+        //                playlist.FontSize = FONT_SIZE;
         //            }
         //        }
         //    }

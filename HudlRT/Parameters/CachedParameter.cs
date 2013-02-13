@@ -27,13 +27,13 @@ namespace HudlRT.Parameters
         public static BindableCollection<Category> sectionViewCategories { get; set; }
         public static CategoryViewModel sectionViewCategorySelected { get; set; }
                 
-        public static BindableCollection<PlaylistViewModel> sectionViewCutups { get; set; }
+        public static BindableCollection<PlaylistViewModel> sectionViewPlaylists { get; set; }
                 
-        public static PlaylistViewModel sectionViewCutupSelected { get; set; }
+        public static PlaylistViewModel sectionViewPlaylistSelected { get; set; }
                 
         public static BindableCollection<Clip> videoPageClips { get; set; }
                 
-        public static Playlist selectedCutup { get; set; }
+        public static Playlist selectedPlaylist { get; set; }
 
 
         //new shit starts here
@@ -42,7 +42,7 @@ namespace HudlRT.Parameters
         public static Season seasonSelected { get; set; }
         //public static BindableCollection<Game> games {get;set;}
 
-        public static BindableCollection<PlaylistViewModel> downloadedCutups { get; set; }
+        public static BindableCollection<PlaylistViewModel> downloadedPlaylists { get; set; }
 
         public static CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -52,7 +52,7 @@ namespace HudlRT.Parameters
         
         public static string hubViewDownloadsSizeInMB { get; set; }
 
-        public static List<PlaylistViewModel> currentlyDownloadingCutups { get; set; }
+        public static List<PlaylistViewModel> currentlyDownloadingPlaylists { get; set; }
 
         public static Progress<DownloadOperation> progressCallback { get; set; }
         
@@ -64,9 +64,9 @@ namespace HudlRT.Parameters
             {
                 categories = new BindableCollection<Category>()
                 {
-                    new Category(){categoryId = "4102838", cutups = new BindableCollection<Playlist>(), name ="Game Footage"},
-                    new Category(){categoryId = "4102839", cutups = new BindableCollection<Playlist>(), name ="Practice"},
-                    new Category(){categoryId = "4102840", cutups = new BindableCollection<Playlist>(), name ="Opponent Scout"}
+                    new Category(){categoryId = "4102838", playlists = new BindableCollection<Playlist>(), name ="Game Footage"},
+                    new Category(){categoryId = "4102839", playlists = new BindableCollection<Playlist>(), name ="Practice"},
+                    new Category(){categoryId = "4102840", playlists = new BindableCollection<Playlist>(), name ="Opponent Scout"}
                 },
                 date = new DateTime(634865184000000000),
                 gameId = "881301",
@@ -78,9 +78,9 @@ namespace HudlRT.Parameters
             {
                 categories = new BindableCollection<Category>()
                 {
-                    new Category(){categoryId = "4102818", cutups = new BindableCollection<Playlist>(), name ="Game Footage"},
-                    new Category(){categoryId = "4102819", cutups = new BindableCollection<Playlist>(), name ="Practice"},
-                    new Category(){categoryId = "4102820", cutups = new BindableCollection<Playlist>(), name ="Opponent Scout"}
+                    new Category(){categoryId = "4102818", playlists = new BindableCollection<Playlist>(), name ="Game Footage"},
+                    new Category(){categoryId = "4102819", playlists = new BindableCollection<Playlist>(), name ="Practice"},
+                    new Category(){categoryId = "4102820", playlists = new BindableCollection<Playlist>(), name ="Opponent Scout"}
                 },
                 date = new DateTime(634859136000000000),
                 gameId = "881296",
@@ -116,11 +116,11 @@ namespace HudlRT.Parameters
             sectionViewGameSelected = null;
             sectionViewCategories = null;
             sectionViewCategorySelected = null;
-            sectionViewCutups = null;
-            sectionViewCutupSelected = null;
+            sectionViewPlaylists = null;
+            sectionViewPlaylistSelected = null;
             videoPageClips = null;
-            selectedCutup = null;
-            downloadedCutups = null;
+            selectedPlaylist = null;
+            downloadedPlaylists = null;
         }
     }
 }
