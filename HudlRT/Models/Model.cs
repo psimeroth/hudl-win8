@@ -173,13 +173,7 @@ namespace HudlRT.Models
 
         public static Cutup Copy(Cutup toCopy)
         {
-            Cutup cutup = new Cutup();
-            cutup.cutupId = toCopy.cutupId;
-            cutup.clipCount = toCopy.clipCount;
-            cutup.name = toCopy.name;
-            cutup.thumbnailLocation = toCopy.thumbnailLocation;
-            cutup.displayColumns = toCopy.displayColumns;
-            cutup.totalFilesSize = toCopy.totalFilesSize;
+            Cutup cutup = new Cutup { cutupId = toCopy.cutupId, clipCount = toCopy.clipCount, name = toCopy.name, thumbnailLocation = toCopy.thumbnailLocation, displayColumns = toCopy.displayColumns, totalFilesSize = toCopy.totalFilesSize};
             BindableCollection<Clip> clips = new BindableCollection<Clip>();
             foreach (Clip c in toCopy.clips)
             {
