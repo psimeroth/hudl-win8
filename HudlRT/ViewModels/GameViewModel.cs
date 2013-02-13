@@ -22,27 +22,32 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return GameModel.DisplayDate;
+                return !isLastViewed ? GameModel.DisplayDate : "Viewed: " + GameModel.DisplayDate;
             }
         }
         public string NumPlaylists
         {
-            get;
-            set;
+            get
+            {
+                return !isLastViewed ? numplaylists + " playlists" : "";
+            }
         }
         public bool isLargeView { get; set; }
+        public bool isLastViewed { get; set; }
         public Game GameModel {get; set; }
+        private int numplaylists = 0;
 
-        public GameViewModel(Game game, bool isLarge = false)
+        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false)
         {
             GameModel = game;
             isLargeView = isLarge;
+            isLastViewed = isLastviewed;
             int numplaylists = 0;
             foreach (Category c in game.categories)
             {
                 numplaylists += c.playlists.Count();
             }
-            NumPlaylists = numplaylists + " playlists";
+            
         }
     }
 }
