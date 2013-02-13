@@ -95,7 +95,7 @@ namespace HudlRT.Views
             Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
 
             rewindTimer = new DispatcherTimer();
-            rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             rewindTimer.Tick += rewindTimerTick;
 
             playerState = VideoPlayerState.Paused;
@@ -542,29 +542,32 @@ namespace HudlRT.Views
 
         private void VideoPage_KeyDown(object sender, Windows.UI.Core.KeyEventArgs e)
         {
-            if (e.VirtualKey == Windows.System.VirtualKey.Down)
+            if (!e.KeyStatus.WasKeyDown)
             {
-                btnSlowForward_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
-            }
-            else if (e.VirtualKey == Windows.System.VirtualKey.Up)
-            {
-                btnSlowReverse_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
-            }
-            else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
-            {
-                btnFastForward_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
-            }
-            else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
-            {
-                btnFastReverse_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
+                if (e.VirtualKey == Windows.System.VirtualKey.Down)
+                {
+                    btnSlowForward_Click(null, null);
+                    keyPressTimer.Start();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+                {
+                    btnSlowReverse_Click(null, null);
+                    keyPressTimer.Start();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+                {
+                    btnFastForward_Click(null, null);
+                    keyPressTimer.Start();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
+                {
+                    btnFastReverse_Click(null, null);
+                    keyPressTimer.Start();
+                    e.Handled = true;
+                }
             }
         }
 
