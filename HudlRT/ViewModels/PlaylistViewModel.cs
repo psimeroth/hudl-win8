@@ -1,4 +1,4 @@
-﻿using Caliburn.Micro;
+using Caliburn.Micro;
 using HudlRT.Models;
 using System;
 using System.Collections.Generic;
@@ -14,29 +14,45 @@ namespace HudlRT.ViewModels
     /// </summary>
     public class PlaylistViewModel : PropertyChangedBase
     {
-        public string Name { get; set; }
-        public string NumClips { get; set; }
-        public bool IsDownloaded { get; set; }
-        public string ThumbnailPath { get; set; }
-        public string PlaylistId { get; set; }
-
-        public static PlaylistViewModel FromPlaylist(Playlist playlist)
+        public Playlist PlaylistModel { get; set; }
+        public string Name
         {
-            PlaylistViewModel cvm = new PlaylistViewModel();
-            cvm.Name = playlist.name;
-            cvm.NumClips = playlist.clipCount.ToString();
-            cvm.PlaylistId = playlist.playlistId;
-            cvm.IsDownloaded = false;
-            if (playlist.thumbnailLocation == null)
+            get
             {
-                cvm.ThumbnailPath = "ms-appx:///Assets/agile-hudl-logo-dark.png";
+                return PlaylistModel.name;
             }
-            else
+        }
+        public string NumClips
+        {
+            get
             {
-                cvm.ThumbnailPath = playlist.thumbnailLocation;
+                return PlaylistModel.clipCount + " Clips";
+            }
+        }
+        public bool IsDownloaded { 
+            get
+            {
+                return false;
+            }
+        }
+        public string ThumbnailPath
+        {
+            get
+            {
+                if (PlaylistModel.thumbnailLocation == null)
+                {
+                    return "ms-appx:///Assets/agile-hudl-logo-dark.png";
+                }
+                else
+                {
+                    return PlaylistModel.thumbnailLocation;
+                }
+            }
+        }
 
-            }
-            return cvm;
+        public PlaylistViewModel(Playlist playlist)
+        {
+            PlaylistModel = playlist;
         }
     }
 }

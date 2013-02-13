@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,6 +55,7 @@ namespace HudlRT.Common
 
     class ClipResponse: Response
     {
+        public string[] DisplayColumns { get; set; }
         public BindableCollection<Clip> clips { get; set; }
     }
 
@@ -74,7 +75,7 @@ namespace HudlRT.Common
         public static async Task Init()
         {
 #if DEBUG
-            try
+    try
             {
                 var fileName = "debug_config.xml";
                 var folder = ApplicationData.Current.LocalFolder;
@@ -307,7 +308,7 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<ClipResponse> GetPlaylistClips(string playlistId)
+        public static async Task<ClipResponse> GetPlaylistClipsAndHeaders(string playlistId)
         {
             var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, playlistId, "0"), true);
             if (!string.IsNullOrEmpty(clips) && clips != "NoConnection")
@@ -324,7 +325,7 @@ namespace HudlRT.Common
                             clipCollection.Add(c);
                         }
                     }
-                    return new ClipResponse { status = SERVICE_RESPONSE.SUCCESS, clips = clipCollection };
+                    return new ClipResponse { status = SERVICE_RESPONSE.SUCCESS, clips = clipCollection, DisplayColumns = obj.DisplayColumns };
                 }
                 catch (Exception e)
                 {
@@ -339,7 +340,6 @@ namespace HudlRT.Common
             {
                 return new ClipResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
-            return new ClipResponse();
         }
 
         /// <summary>
