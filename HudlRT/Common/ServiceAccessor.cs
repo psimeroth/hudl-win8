@@ -29,6 +29,12 @@ namespace HudlRT.Common
         public string Password { get; set; }
     }
 
+    class InitResponse : Response
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
     class LoginResponse: Response
     {
     }
@@ -71,12 +77,13 @@ namespace HudlRT.Common
     /// </summary>
     class ServiceAccessor
     {
-        public static async Task Init()
+        public static async Task<InitResponse> Init()
         {
-#if DEBUG
+            InitResponse response = new InitResponse();
+            response.status = SERVICE_RESPONSE.NO_CONNECTION;
             try
             {
-                var fileName = "debug_config.xml";
+                var fileName = "debug.config";
                 var folder = ApplicationData.Current.LocalFolder;
                 var file = await folder.GetFileAsync(fileName);
                 var readthis = await FileIO.ReadTextAsync(file);
@@ -84,18 +91,18 @@ namespace HudlRT.Common
 
                 URL_BASE = data[0];
                 URL_BASE_SECURE = data[1];
+
+                response.status = SERVICE_RESPONSE.SUCCESS;
+                response.Username = data[2];
+                response.Password = data[3];
             }
-            catch (Exception ex) { }
-#endif
+            catch { }
+            return response;
         }
 
-#if DEBUG
-        private static string URL_BASE = "mystery";
-        private static string URL_BASE_SECURE = "mystery";
-#else
-        private const string URL_BASE = "http://www.hudl.com/api/v2/";
-        private const string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
-#endif
+        private static string URL_BASE = "http://www.hudl.com/api/v2/";
+        private static string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
+
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
         public const string URL_SERVICE_GET_SCHEDULE = "teams/{0}/schedule";//returns games
