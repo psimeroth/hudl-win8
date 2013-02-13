@@ -30,7 +30,7 @@
         </Grid>
         <!--End TopTitleGrid-->
 
-        <ListView x:Name="Cutups" Grid.Row="1" Margin="20,3,20,0" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
+        <ListView x:Name="Cutups" Grid.Row="1" Margin="20,20,20,0" caliburn:Message.Attach="[Event ItemClick] = [CutupSelected($eventArgs)]" SelectionChanged="ListViewSelectionChanged" PointerPressed="ListViewItemPointerPressed"
                               ItemContainerStyle="{StaticResource Downloads_ListViewItemStyle_Standard}" Style="{StaticResource Downloads_ListViewStyle_Standard}">
         </ListView>
 
