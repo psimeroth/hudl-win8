@@ -193,7 +193,10 @@ namespace HudlRT.ViewModels
                     listView.SelectedItem = SelectedClip;
                 }
             }
-            getMoreClips();
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                getMoreClips();
+            }
 
             GridHeaders = CachedParameter.selectedCutup.displayColumns;
             CutupName = CachedParameter.selectedCutup.name;
