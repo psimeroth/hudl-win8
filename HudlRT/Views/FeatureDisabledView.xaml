@@ -49,15 +49,15 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="WelcomeHeader" Grid.Row="0" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,60,0,0">
+                <TextBlock x:Name="WelcomeHeader" Grid.Row="0" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,60,0,0" TextWrapping="Wrap">
                     Welcome to Hudl for Windows 8!
                 </TextBlock>
-                <TextBlock x:Name="WelcomeText" Grid.Row="2" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
+                <TextBlock x:Name="WelcomeText" Grid.Row="2" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0" >
                     The application is currently a closed beta,
                     but thanks for stopping by! Check back soon
                     to see the whole app in action.
                 </TextBlock>
-                <TextBlock x:Name="ParticipateHeader" Grid.Row="3" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,40,0,0">
+                <TextBlock x:Name="ParticipateHeader" Grid.Row="3" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,40,0,0" TextWrapping="Wrap">
                     Want to Participate?
                 </TextBlock>
                 <TextBlock x:Name="ParticipateText" Grid.Row="4" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
