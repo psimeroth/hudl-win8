@@ -71,13 +71,13 @@
 
                     <GridView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Background="{StaticResource HudlLightGray}" Height="246" Width="350">
+                            <Grid Background="{StaticResource HudlLightGray}" Height="240" Width="325">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="7*"/>
-                                    <RowDefinition Height="4*"/>
+                                    <RowDefinition Height="5*"/>
                                 </Grid.RowDefinitions>
-                                <Image Grid.Row="0" Source="{Binding ThumbnailPath}" Width="350" HorizontalAlignment="Center" />
-                                <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
+                                <Image Grid.Row="0" Source="{Binding ThumbnailPath}" Width="300" HorizontalAlignment="Center" />
+                                <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition />

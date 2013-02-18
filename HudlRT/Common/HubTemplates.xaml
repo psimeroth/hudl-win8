@@ -23,10 +23,10 @@
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
-        <Grid Background="{StaticResource HudlLightGray}" Height="246" Width="350">
+        <Grid Background="{StaticResource HudlLightGray}" Height="240" Width="325">
             <Grid.RowDefinitions>
                 <RowDefinition Height="7*"/>
-                <RowDefinition Height="5*"/>
+                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">

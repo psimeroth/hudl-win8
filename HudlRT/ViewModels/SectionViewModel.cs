@@ -48,6 +48,7 @@ namespace HudlRT.ViewModels
             {
                 _gameId = Parameter;
                 GetGameCategories(_gameId);
+
             }
             base.OnActivate();
         }
