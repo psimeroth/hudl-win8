@@ -1,11 +1,14 @@
 ﻿using Caliburn.Micro;
+using HudlRT.Common;
 using HudlRT.Models;
 using HudlRT.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Windows.Networking.BackgroundTransfer;
 
 namespace HudlRT.Parameters
 {
@@ -33,6 +36,20 @@ namespace HudlRT.Parameters
                 
         public static Cutup selectedCutup { get; set; }
 
+        public static BindableCollection<CutupViewModel> downloadedCutups { get; set; }
+
+        public static CancellationTokenSource cts = new CancellationTokenSource();
+
+        public static bool noConnection = false;
+
+        public static string hubViewDownloadsCount { get; set; }
+        
+        public static string hubViewDownloadsSizeInMB { get; set; }
+
+        public static List<Cutup> currentlyDownloadingCutups { get; set; }
+
+        public static Progress<DownloadOperation> progressCallback { get; set; }
+        
 
         public static void resetCache(){
             isInitialized = false;
@@ -50,7 +67,7 @@ namespace HudlRT.Parameters
             sectionViewCutupSelected = null;
             videoPageClips = null;
             selectedCutup = null;
-
+            downloadedCutups = null;
         }
     }
 }

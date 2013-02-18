@@ -46,7 +46,7 @@
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlueColor}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlLightBlueTransparentColor}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -119,7 +119,7 @@
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="HintGlyphBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="contentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlackButtonHover}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedForegroundThemeBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -134,7 +134,7 @@
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectedBorder"/>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="HintGlyphBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="contentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlackButtonHover}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedForegroundThemeBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -277,9 +277,8 @@
     <Style x:Key="Section_ListViewItemStyle_Standard" TargetType="ListViewItem">
         <Setter Property="Height" Value="144"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Margin" Value="0,2,0,2" />
+        <Setter Property="Margin" Value="0,0,0,4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListViewItem">
@@ -294,7 +293,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueTransparentColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -314,7 +313,7 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Grid>
-                            <Border BorderThickness="1" BorderBrush="Black" Opacity="1">
+                            <Border BorderThickness="0" BorderBrush="{StaticResource HudlMediumGray}" Opacity="1">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
                                         <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">
@@ -339,7 +338,7 @@
         </Setter>
     </Style>
     <Style x:Key="Section_ListViewItemStyle_GameList" TargetType="ListViewItem" BasedOn="{StaticResource Section_ListViewItemStyle_Standard}">
-        <Setter Property="Height" Value="75"/>
+        <Setter Property="Height" Value="70"/>
     </Style>
     <Style x:Key="Section_GridViewItemStyle_Standard" TargetType="GridViewItem">
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
@@ -351,8 +350,8 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="2,0,2,0" />
-        <Setter Property="Height" Value="70" />
+        <Setter Property="Margin" Value="0,0,4,0" />
+        <Setter Property="MinHeight" Value="70" />
         <Setter Property="Width" Value="250" />
         <Setter Property="Template">
             <Setter.Value>
@@ -378,7 +377,7 @@
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlueColor}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlLightBlueTransparentColor}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -451,7 +450,7 @@
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="HintGlyphBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="contentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlackButtonHover}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedForegroundThemeBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -466,7 +465,7 @@
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectedBorder"/>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="HintGlyphBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="contentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlackButtonHover}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedForegroundThemeBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -582,7 +581,7 @@
                                     <Rectangle x:Name="PointerOverBorder" Fill="#AA000000" IsHitTestVisible="False" Margin="0"/>
                                     <Rectangle x:Name="FocusVisual" IsHitTestVisible="False" Opacity="0" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="2"/>
                                     <Rectangle x:Name="SelectionBackground" Fill="{StaticResource HudlBlackButton}" Margin="0" Opacity="0"/>
-                                    <Border x:Name="ContentBorder" BorderBrush="Black" BorderThickness="1" Background="{TemplateBinding Background}" Margin="0">
+                                    <Border x:Name="ContentBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="0">
                                         <Grid>
                                             <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                                             <TextBlock x:Name="PlaceholderTextBlock" Foreground="{x:Null}" IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Opacity="0" Text="Xg" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -706,7 +705,7 @@
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="HintGlyphBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="contentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlackButtonHover}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedForegroundThemeBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -721,7 +720,7 @@
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SelectedBorder"/>
                                         <DoubleAnimation Duration="0" To=".5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="HintGlyphBorder"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="contentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlBlackButtonHover}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ListViewItemSelectedForegroundThemeBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -891,16 +890,65 @@
         <Setter Property="Padding" Value="0,10"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
-    <Style x:Key="Section_ButtonStyle_Standard" TargetType="Button" BasedOn="{StaticResource ButtonStyle_Standard}">
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="FontSize" Value="30"/>
-        <Setter Property="Padding" Value="10"/>
-        <Setter Property="Margin" Value="0"/>
-    </Style>
-    <Style x:Key="Section_ButtonStyle_Downloads" TargetType="Button" BasedOn="{StaticResource Section_ButtonStyle_Standard}">
-        <Setter Property="FontSize" Value="30"/>
-        <Setter Property="Padding" Value="0"/>
+
+    <Style x:Key="Section_ButtonStyle_Standard" TargetType="Button">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlBlackButtonHoverColor}"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlLightBlueColor}"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="DisabledVisualElement" Storyboard.TargetProperty="Opacity" To=".5"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Focused">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="1"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unfocused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid Margin="2">
+                            <Border BorderThickness="1" BorderBrush="Black">
+                                <Rectangle x:Name="BackgroundColor" >
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">
+                                        </SolidColorBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Border>
+                        </Grid>
+                        <ContentPresenter
+                              x:Name="contentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              Margin="{TemplateBinding Padding}"/>
+                        <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
+                        <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

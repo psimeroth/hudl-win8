@@ -3,6 +3,7 @@
     IsTabStop="false"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HudlRT.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:common="using:HudlRT.Common"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -34,6 +35,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Button Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [Action NavigateToSectionPage()]"
                     VerticalAlignment="Stretch" Margin="10,20">
@@ -49,6 +51,15 @@
                     <TextBlock Text="Last Viewed" HorizontalAlignment="Center"/>
                     <ProgressRing x:Name="snapped_LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" Canvas.ZIndex="1" />
                 </StackPanel>
+            </Button>
+            <Button x:Name="Downloads_Button_Snapped" Grid.Row="2" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [ViewDownloads()]" 
+                    Margin="10,20" VerticalAlignment="Stretch">
+                <Button.Content>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE19C;" Foreground="{StaticResource HudlOrange}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Downloads" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Button.Content>
             </Button>
         </Grid>
         
@@ -159,32 +170,40 @@
                 </Grid>
                 
             </Grid>
-            
-            <Grid x:Name="Group2_Grid" Grid.Column="2">
+
+            <Grid x:Name="Group2_Grid" Grid.Column="2" Transitions="{StaticResource PageTransition}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
-                    <RowDefinition Height="0*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="LastViewed_Button" Grid.Row="0" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [LastViewedSelected()]" Transitions="{StaticResource PageTransition}" Click="LastViewedClicked">
                     <Button.Content>
-                        <Grid Grid.Column="1" Height="575">
+                        <Grid Grid.Column="1" Height="120">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="7*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="2*"/>
                             </Grid.RowDefinitions>
-                            <TextBlock VerticalAlignment="Center" Margin="0,100,0,0" Grid.Row="0"> <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed</TextBlock>
-                            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
-                            <TextBlock Grid.Row="2" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
+                            <TextBlock VerticalAlignment="Center" Margin="0,0,0,10" Grid.Row="0"> <Run Text="&#xE1A6;" Foreground="{StaticResource HudlOrange}"/> Last Viewed</TextBlock>
+                            <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="18" Text="{Binding LastViewedName}"/>
+                            <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="18" Text="{Binding LastViewedTimeStamp}"/>
                             <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" Height="150" Width="150" Foreground="{StaticResource HudlLightBlue}" Margin="0, -200, 0, 0" Canvas.ZIndex="1" />
                         </Grid>
                     </Button.Content>
-
                 </Button>
-                <Button x:Name="Downloads_Button"  Visibility="Collapsed" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol">
-                    <TextBlock>
-                        <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads
-                    </TextBlock>
+                <Button x:Name="Downloads_Button" Margin="0,10,0,0" Grid.Row="1" Style="{StaticResource Hub_ButtonStyle_Standard}" FontFamily="Segoe UI Symbol" caliburn:Message.Attach="[Event Click] = [ViewDownloads()]">
+                    <Button.Content>
+                        <Grid Grid.Column="1" Height="120">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="7*"/>
+                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="2*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock VerticalAlignment="Center" Margin="0,0,0,10" Grid.Row="0"> <Run Text="&#xE19C;" Foreground="{StaticResource HudlOrange}"/> Downloads </TextBlock>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="18" Text="{Binding DownloadedCutupCount}"/>
+                            <TextBlock Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="18" Text="{Binding DownloadedCutupSize}"/>
+                        </Grid>
+                    </Button.Content>
                 </Button>
             </Grid>
         </Grid>            

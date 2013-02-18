@@ -85,6 +85,57 @@
             <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
         </StackPanel>
 
+        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="False">
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PaneThemeTransition />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+            <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" BorderThickness="2" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" x:Name="RootPopupBorder">
+                <ContentControl DataContext="{Binding SelectedFilter}">
+                    <Grid x:Name="FilterGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="346" Height="425">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="65" />
+                            <RowDefinition x:Name="FiltersListRow" Height="220" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border BorderBrush="Black" Background="{StaticResource HudlLightBlue}" BorderThickness="0,0,0,2" Grid.Row="0" />
+                        <TextBlock Text="{Binding ColumnHeaderName}" FontSize="28" Grid.Row="0" Foreground="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,0"/>
+                        <StackPanel Orientation="Vertical" Grid.Row="1">
+                            <TextBlock Text="Sort" FontSize="24" Margin="10,0,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="30,0,0,0">
+                                <RadioButton x:Name="AscBtn" Content="Asc" IsChecked="{Binding IsAscendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 0)]" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                                <RadioButton x:Name="DscBtn" Content="Dsc" IsChecked="{Binding IsDescendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 1)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                                <RadioButton x:Name="NoneBtn" Content="None" IsChecked="{Binding IsNoneChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 2)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="1" />
+                        <StackPanel Orientation="Vertical" Grid.Row="2">
+                            <TextBlock Text="Filter" FontSize="24" Margin="10,0,0,0"/>
+                            <ListView x:Name="FiltersList" Height="200" Width="340"  ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                        <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="2" />
+                        <Grid x:Name="FilterButtonsGrid" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="346" Margin="2,0,5,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button Content="Apply" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" FontSize="20" Grid.Column="0" Style="{StaticResource VideoPlayer_ButtonStyle_Standard}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="3,3,3,3"/>
+                            <Button x:Name="RemoveFilterBtn" Content="Remove" HorizontalAlignment="Stretch" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Style="{StaticResource VideoPlayer_ButtonStyle_Standard}" FontSize="20" Grid.Column="1" VerticalAlignment="Stretch" Margin="0,3,3,3"/>
+                            <Button x:Name="CloseBtn"  Content="Close" Click="closeSettingsPopupClicked" FontSize="20" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource VideoPlayer_ButtonStyle_Standard}" Margin="0,3,3,3"/>
+                        </Grid>
+                    </Grid>
+                </ContentControl>
+            </Border>
+        </Popup>
+
         <Grid x:Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
@@ -93,14 +144,29 @@
             </Grid.RowDefinitions>
             <Grid Name="header" Background="{StaticResource HudlDarkGray}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="85"/>
+                    <ColumnDefinition Width="165"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="250"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="17,0,0,0" />
-                <TextBlock x:Name="CutupName" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
-                <Button x:Name="btnTogglePlayback" Grid.Column="2" Margin="0,0,20,0" Width="160" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}"  HorizontalAlignment="Right"
+                <Button x:Name="btnTogglePlayback" Grid.Column="1" Width="180" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="{Binding ToggleButtonContent}" HorizontalAlignment="Center"
                          caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
+                <TextBlock x:Name="CutupName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
+                <Grid Grid.Column="3">
+                    <Button x:Name="btnDownload" Visibility="{Binding DownloadButtonVisibility}" Width="230" Height="40" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Content="Download Playlist"  HorizontalAlignment="Left"
+                         caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
+                    <Grid Grid.Column="2" Visibility="{Binding ProgressGridVisibility}" Margin="0,5,0,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="165" ></TextBlock>
+                        <ProgressBar Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="165" Foreground="{StaticResource HudlLightBlue}"/>
+                    </Grid>
+                </Grid>
+                <Button x:Name="btnCancel" Visibility="{Binding ProgressGridVisibility}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,17,0"
+                         caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
             </Grid>
             <Grid Background="Black" Grid.Row="1" x:Name="Container1">
                 <Grid.RowDefinitions>
@@ -116,15 +182,15 @@
                     <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,18,45,0">
                         <Button x:Name="btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                                     Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20"
-                                    PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click">
+                                    PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
                             <Button.Projection>
                                 <PlaneProjection RotationY="180"/>
                             </Button.Projection>
                         </Button>
                         <Button x:Name="btnSlowReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" 
-                                    Content="&#xE016;" FontSize="30" PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
+                                    Content="&#xE016;" FontSize="30" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                         <Button x:Name="btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
-                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click" />
+                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
                         <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"
                                     Visibility="Collapsed"/>
                         <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
@@ -133,9 +199,9 @@
                     </StackPanel>
                     <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" Margin="45,18,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
                         <Button x:Name="btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
-                                    Content="&#xE102;&#xE102;" FontSize="20" PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
+                                    Content="&#xE102;&#xE102;" FontSize="20" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                         <Button x:Name="btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
-                                    Content="&#xE017;" FontSize="30" PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
+                                    Content="&#xE017;" FontSize="30" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                         <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"
                                     caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
                         <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30"/>
@@ -152,17 +218,15 @@
                 </Grid.RowDefinitions>
                 <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                     <Border BorderBrush="Black" BorderThickness="0,0,0,2">
-                        <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False"
-                          ManipulationMode="All" >
+                        <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False" 
+                          ManipulationMode="All">
                         </Grid>
                     </Border>
                 </ScrollViewer>
-                <ScrollViewer x:Name="gridScroll" HorizontalScrollBarVisibility="Hidden" ZoomMode="Disabled" Grid.Row="1" Margin="0">
-                    <common:VideoPlayerListView x:Name="Clips"  HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
-                            ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" ScrollViewer.BringIntoViewOnFocusChange="True">
+                <common:VideoPlayerListView x:Name="FilteredClips" Grid.Row="1" HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
+                            ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" VirtualizingStackPanel.VirtualizationMode="Recycling" ScrollViewer.BringIntoViewOnFocusChange="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollMode="Enabled">
+                </common:VideoPlayerListView>
 
-                    </common:VideoPlayerListView>
-                </ScrollViewer>
             </Grid>
 
         </Grid>
@@ -214,14 +278,14 @@
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-25,0,0,-7" Orientation="Vertical" Width="150" Background="Transparent">
                 <Button x:Name="full_btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                         Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"
-                        PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click">
+                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
                     <Button.Projection>
                         <PlaneProjection RotationY="180"/>
                     </Button.Projection>
                 </Button>
                 <Button x:Name="full_btnSlowReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" 
                         Content="&#xE016;" FontSize="30" HorizontalAlignment="Center"
-                        PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
+                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                 <Button x:Name="full_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
                         caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" />
                 <Button x:Name="full_btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center"
@@ -236,10 +300,10 @@
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-25,-7" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                         Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"
-                        PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
+                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                 <Button x:Name="full_btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}"
                         Content="&#xE017;" FontSize="30" HorizontalAlignment="Center"
-                        PointerReleased="btnPlay_Click" PointerCanceled="btnPlay_Click" PointerCaptureLost="btnPlay_Click"/>
+                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                 <Button x:Name="full_btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name=""
                         caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
                 <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlLightBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
@@ -279,6 +343,9 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SortFilterPopup" Storyboard.TargetProperty="Width" >
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="346" />
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="FullScreenPortrait">
@@ -297,6 +364,8 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Foreground="White" FontSize="24" Padding="10,0,5,0" Grid.Column="0">
                     Angles:
@@ -310,7 +379,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Margin="0,0,10,0" FontSize="16" Foreground="White"/>
+                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Margin="0,0,10,0" FontSize="16" Foreground="White"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

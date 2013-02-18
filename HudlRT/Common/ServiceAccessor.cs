@@ -12,6 +12,7 @@ using HudlRT.Models;
 using Caliburn.Micro;
 using Windows.Networking.Connectivity;
 using HudlRT.ViewModels;
+using HudlRT.Parameters;
 
 namespace HudlRT.Common
 {
@@ -71,19 +72,19 @@ namespace HudlRT.Common
     class ServiceAccessor
     {
 #if DEBUG
-        private const string URL_BASE = "http://thor7/api/v2/";
-        private const string URL_BASE_SECURE = "https://thor7/api/v2/";
+        private const string URL_BASE = DebugConfig.URL_BASE;
+        private const string URL_BASE_SECURE = DebugConfig.URL_BASE_SECURE;
 #else
         private const string URL_BASE = "http://www.hudl.com/api/v2/";
         private const string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
 #endif
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
-        public const string URL_SERVICE_GET_SCHEDULE = "teams/#/schedule";//returns games
-        public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/#/schedule?season=%";//returns games
-        public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/#/categories";//returns categories
-        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/#/playlists";//returns cutups
-        public const string URL_SERVICE_GET_CLIPS = "playlists/#/clips?startIndex=%";//returns clips
+        public const string URL_SERVICE_GET_SCHEDULE = "teams/{0}/schedule";//returns games
+        public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games
+        public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/{0}/categories";//returns categories
+        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns cutups
+        public const string URL_SERVICE_GET_CLIPS = "playlists/{0}/clips?startIndex={1}";//returns clips
 
         public static bool ConnectedToInternet()
         {
@@ -94,6 +95,11 @@ namespace HudlRT.Common
         public static async Task<LoginResponse> Login(string loginArgs)
         {
             //var loginResponse = await ServiceAccessor.MakeApiCallGet("athlete");
+
+            if (!ConnectedToInternet())
+            {
+                return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
             if (!string.IsNullOrEmpty(loginResponse))
             {
@@ -129,8 +135,8 @@ namespace HudlRT.Common
 
         public static async Task<TeamResponse> GetTeams()
         {
-            var teams = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
-            if (!string.IsNullOrEmpty(teams))
+            var teams = await MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
+            if (!string.IsNullOrEmpty(teams) && teams != "NoConnection")
             {
                 try
                 {
@@ -147,6 +153,10 @@ namespace HudlRT.Common
                     return new TeamResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (teams == "NoConnection")
+            {
+                return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new TeamResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -155,8 +165,8 @@ namespace HudlRT.Common
 
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
-            var games = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON.Replace("#", teamId).Replace("%", seasonId), true);
-            if (!string.IsNullOrEmpty(games))
+            var games = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON, teamId, seasonId), true);
+            if (!string.IsNullOrEmpty(games) && games != "NoConnection")
             {
                 try
                 {
@@ -173,6 +183,10 @@ namespace HudlRT.Common
                     return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (games == "NoConnection")
+            {
+                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new GameResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -181,8 +195,8 @@ namespace HudlRT.Common
 
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
-            var categories = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME.Replace("#", gameId), true);
-            if (!string.IsNullOrEmpty(categories))
+            var categories = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME,gameId), true);
+            if (!string.IsNullOrEmpty(categories) && categories != "NoConnection")
             {
                 try
                 {
@@ -199,6 +213,10 @@ namespace HudlRT.Common
                     return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (categories == "NoConnection")
+            {
+                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new CategoryResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
@@ -207,8 +225,8 @@ namespace HudlRT.Common
 
         public static async Task<CutupResponse> GetCategoryCutups(string categoryId)
         {
-            var cutups = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY.Replace("#", categoryId), true);
-            if (!string.IsNullOrEmpty(cutups))
+            var cutups = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY, categoryId), true);
+            if (!string.IsNullOrEmpty(cutups) && cutups != "NoConnection")
             {
                 try
                 {
@@ -225,17 +243,21 @@ namespace HudlRT.Common
                     return new CutupResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
+            else if (cutups == "NoConnection")
+            {
+                return new CutupResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+            }
             else
             {
                 return new CutupResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
 
-        public static async Task<BindableCollection<Clip>> GetAdditionalCutupClips(CutupViewModel cutup, int startIndex)
+        public static async Task<List<Clip>> GetAdditionalCutupClips(string cutupID, int startIndex)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", startIndex.ToString()), true);
+            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, cutupID, startIndex.ToString()), true);
             var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-            BindableCollection<Clip> clipCollection = new BindableCollection<Clip>();
+            List<Clip> clipCollection = new List<Clip>();
             if (clipResponseDTO.ClipsList.Clips.Count == 100)
             {
                 foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
@@ -246,7 +268,7 @@ namespace HudlRT.Common
                         clipCollection.Add(c);
                     }
                 }
-                var additionalClips = await GetAdditionalCutupClips(cutup, startIndex+100);
+                var additionalClips = await GetAdditionalCutupClips(cutupID, startIndex + 100);
                 foreach (Clip c in additionalClips)
                 {
                     clipCollection.Add(c);
@@ -270,8 +292,8 @@ namespace HudlRT.Common
 
         public static async Task<ClipResponse> GetCutupClips(CutupViewModel cutup)
         {
-            var clips = await ServiceAccessor.MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_CLIPS.Replace("#", cutup.CutupId.ToString()).Replace("%", "0"), true);
-            if (!string.IsNullOrEmpty(clips))
+            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, cutup.CutupId.ToString(), "0"), true);
+            if (!string.IsNullOrEmpty(clips) && clips != "NoConnection")
             {
                 try
                 {
@@ -286,20 +308,16 @@ namespace HudlRT.Common
                             clipCollection.Add(c);
                         }
                     }
-                    if (clipCollection.Count == 100)
-                    {
-                        var additionalClips = await GetAdditionalCutupClips(cutup, 100);
-                        foreach (Clip c in additionalClips)
-                        {
-                            clipCollection.Add(c);
-                        }
-                    }
                     return new ClipResponse { status = SERVICE_RESPONSE.SUCCESS, clips = clipCollection };
                 }
                 catch (Exception e)
                 {
                     return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
+            }
+            else if (clips == "NoConnection")
+            {
+                return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
             else
             {
@@ -317,8 +335,8 @@ namespace HudlRT.Common
         {
             if (!ConnectedToInternet())
             {
-                APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
-                return null;
+                APIExceptionDialog.ShowNoInternetConnectionDialog();
+                return "NoConnection";
             }
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE + url);
@@ -330,7 +348,7 @@ namespace HudlRT.Common
             {
                 if (!response.IsSuccessStatusCode)
                 {
-                    APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
+                    APIExceptionDialog.ShowStatusCodeExceptionDialog(response.StatusCode.ToString(), uri.ToString());
                     return null;
                 }
             }
@@ -346,12 +364,6 @@ namespace HudlRT.Common
         /// <returns>The string response returned from the API call.</returns>
         public static async Task<string> MakeApiCallPost(string url, string jsonString, bool showDialog)
         {
-            if (!ConnectedToInternet())
-            {
-            APIExceptionDialog.ShowNoInternetConnectionDialog(null, null);
-            return null;
-            }
-
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE_SECURE + url);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
@@ -362,7 +374,7 @@ namespace HudlRT.Common
             //response.StatusCode 404 500 401
             if(!response.IsSuccessStatusCode)
             {
-                APIExceptionDialog.ShowStatusCodeExceptionDialog(null, null, response.StatusCode.ToString(), uri.ToString());
+                APIExceptionDialog.ShowStatusCodeExceptionDialog(response.StatusCode.ToString(), uri.ToString());
                 return null;
             }
             return await response.Content.ReadAsStringAsync();

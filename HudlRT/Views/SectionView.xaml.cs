@@ -98,14 +98,18 @@ namespace HudlRT.Views
 
         private void Cutup_Selected(object sender, ItemClickEventArgs e)
         {
-            Cutups.IsEnabled = false;
-            Schedule.IsEnabled = false;
-            Categories.IsEnabled = false;
-            GoBack.IsEnabled = false;
-            SeasonsDropDown.IsEnabled = false;
-            SeasonsDropDown.Opacity = FADED_OPAQUE;
-            Logo.Opacity = FADED_OPAQUE;
-            ProgressRing.Visibility = Visibility.Visible;
+            SectionViewModel vm = (SectionViewModel)this.DataContext;
+            if (vm.downloadMode == SectionViewModel.DownloadMode.Off || vm.downloadMode == SectionViewModel.DownloadMode.Dowloading)
+            {
+                Cutups.IsEnabled = false;
+                Schedule.IsEnabled = false;
+                Categories.IsEnabled = false;
+                GoBack.IsEnabled = false;
+                SeasonsDropDown.IsEnabled = false;
+                SeasonsDropDown.Opacity = FADED_OPAQUE;
+                Logo.Opacity = FADED_OPAQUE;
+                ProgressRing.Visibility = Visibility.Visible;
+            }
         }
     }
 }

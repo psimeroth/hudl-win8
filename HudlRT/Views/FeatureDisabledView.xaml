@@ -10,10 +10,7 @@
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
-    <Grid x:Name="RootGrid">
-        <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="ms-appx:///Assets/medium_BG_Tiled.png" />
-        </Grid.Background>
+    <Grid x:Name="RootGrid" Background="{StaticResource HudlDarkerGray}">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
@@ -26,10 +23,10 @@
         </StackPanel>
 
 
-        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10">
+        <Grid x:Name="TopTitleGrid" Margin="0,0,0,10" Background="{StaticResource HudlDarkGray}">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" Background="{StaticResource WhiteToClearGradient}"/>
-            <Grid Margin="65,0,0,0" Background="{StaticResource HudlBlackButton}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid Grid.Column="1" Height="60" VerticalAlignment="Top" />
+            <Grid Margin="65,0,0,0" Background="{StaticResource HudlHeaderGray}"  Grid.Column="1" Width="250" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border BorderBrush="Black" BorderThickness="1,0,1,0"/>
             </Grid>
             <Grid Grid.Column="1" Height="50" VerticalAlignment="Center">
@@ -52,15 +49,15 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="WelcomeHeader" Grid.Row="0" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,60,0,0">
+                <TextBlock x:Name="WelcomeHeader" Grid.Row="0" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,60,0,0" TextWrapping="Wrap">
                     Welcome to Hudl for Windows 8!
                 </TextBlock>
-                <TextBlock x:Name="WelcomeText" Grid.Row="2" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
+                <TextBlock x:Name="WelcomeText" Grid.Row="2" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0" >
                     The application is currently a closed beta,
                     but thanks for stopping by! Check back soon
                     to see the whole app in action.
                 </TextBlock>
-                <TextBlock x:Name="ParticipateHeader" Grid.Row="3" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,40,0,0">
+                <TextBlock x:Name="ParticipateHeader" Grid.Row="3" Foreground="White" FontSize="36" FontWeight="ExtraBlack" Margin="20,40,0,0" TextWrapping="Wrap">
                     Want to Participate?
                 </TextBlock>
                 <TextBlock x:Name="ParticipateText" Grid.Row="4" Foreground="White" FontSize="26" TextWrapping="Wrap" Margin="30,0,0,0">
