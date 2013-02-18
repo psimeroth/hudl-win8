@@ -133,9 +133,10 @@ namespace HudlRT.ViewModels
             CharmsData.navigationService = navigationService;
         }
 
-        //protected override async void OnActivate()
-        //{
-        //    base.OnActivate();
+        protected override void OnActivate()
+        {
+           base.OnActivate();
+           SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
         //    SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
@@ -170,7 +171,7 @@ namespace HudlRT.ViewModels
         //            }
         //        }
         //    }
-        //}
+        }
 
         //private void Playlists_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         //{

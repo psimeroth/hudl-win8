@@ -81,11 +81,12 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
             if (response.ID != null)
             {
-                Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };
+                Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };//this is actually a playlist - not a game
                 GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, true);
                 lastViewed.ThumbNail = response.thumbnail;
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
@@ -227,7 +228,7 @@ namespace HudlRT.ViewModels
             return null;
         }
 
-        public void GameSelected(ItemClickEventArgs eventArgs)
+        public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
             string parameter = gameViewModel.GameModel.gameId;
@@ -239,7 +240,9 @@ namespace HudlRT.ViewModels
             }
             else
             {
-
+                ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
+                Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.ThumbNail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
             }
             
         }
@@ -250,7 +253,6 @@ namespace HudlRT.ViewModels
             Groups = new BindableCollection<HubGroupViewModel>();
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
     }
 }

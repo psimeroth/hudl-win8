@@ -27,6 +27,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        public Playlist Parameter { get; set; }       //Passed in from hub page - contains the game Id.
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
         private List<Clip> Clips { get; set; }
@@ -177,8 +178,8 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
 
-            AppDataAccessor.SetLastViewed(CachedParameter.selectedPlaylist.name, DateTime.Now.ToString("g"), CachedParameter.selectedPlaylist.playlistId, CachedParameter.selectedPlaylist.thumbnailLocation);
-            Clips = CachedParameter.selectedPlaylist.clips.ToList();
+            AppDataAccessor.SetLastViewed(Parameter.name, DateTime.Now.ToString("g"), Parameter.playlistId, Parameter.thumbnailLocation);
+            Clips = Parameter.clips.ToList();
             
             FilteredClips = new ObservableCollection<Clip>(Clips);
             if (FilteredClips.Any())
@@ -195,8 +196,8 @@ namespace HudlRT.ViewModels
             }
             getMoreClips();
 
-            GridHeaders = CachedParameter.selectedPlaylist.displayColumns;
-            PlaylistName = CachedParameter.selectedPlaylist.name;
+            GridHeaders = Parameter.displayColumns;
+            PlaylistName = Parameter.name;
 
             int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
             if (playbackTypeResult == null)
@@ -222,7 +223,7 @@ namespace HudlRT.ViewModels
             bool downloadFound = false;
             //foreach (PlaylistViewModel downloadedPlaylist in CachedParameter.downloadedPlaylists)
             //{
-            //    if (downloadedPlaylist.PlaylistId == CachedParameter.selectedPlaylist.playlistId)
+            //    if (downloadedPlaylist.PlaylistId == Parameter.playlistId)
             //    {
             //        downloadFound = true;
             //        break;
@@ -279,7 +280,7 @@ namespace HudlRT.ViewModels
 
         private async void getMoreClips()
         {
-            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalPlaylistClips(CachedParameter.selectedPlaylist.playlistId, 100);
+            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalPlaylistClips(Parameter.playlistId, 100);
             foreach (Clip clip in remainingClipsList)
             {
                 foreach (Angle angle in clip.angles)
@@ -300,7 +301,7 @@ namespace HudlRT.ViewModels
         private void getAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in CachedParameter.selectedPlaylist.clips)
+            foreach (Clip clip in Parameter.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -315,7 +316,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in CachedParameter.selectedPlaylist.clips)
+            foreach (Clip clip in Parameter.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -723,7 +724,7 @@ namespace HudlRT.ViewModels
                     filterCriteria.Add(new FilterCriteriaViewModel(id, criteria));
                 }
 
-                filter = new FilterViewModel(id, CachedParameter.selectedPlaylist.displayColumns[id], SortType.None, filterCriteria, this);
+                filter = new FilterViewModel(id, Parameter.displayColumns[id], SortType.None, filterCriteria, this);
             }
             else
             {
@@ -759,7 +760,7 @@ namespace HudlRT.ViewModels
         //    DownloadProgress = 0;
         //    CachedParameter.cts = new CancellationTokenSource();
         //    DownloadProgressText = "Determining Size";
-        //    Playlist playlistCopy = Playlist.Copy(CachedParameter.selectedPlaylist);
+        //    Playlist playlistCopy = Playlist.Copy(Parameter);
         //    List<Playlist> currentPlaylistList = new List<Playlist> { playlistCopy };
         //    CachedParameter.currentlyDownloadingPlaylists = currentPlaylistList;
         //    CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
