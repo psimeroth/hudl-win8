@@ -4,7 +4,7 @@
     xmlns:local="using:HudlRT.Common">
 
     <DataTemplate x:Key="HubPageLargeGamesTemplate">
-        <Grid Background="#464A4A" Height="518" Width="350">
+        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="518" Width="350">
             <Grid.RowDefinitions>
                 <RowDefinition Height="9*"/>
                 <RowDefinition Height="2*"/>
@@ -23,7 +23,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
-        <Grid Background="{StaticResource HudlLightGray}" Height="240" Width="325">
+        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="240" Width="325">
             <Grid.RowDefinitions>
                 <RowDefinition Height="7*"/>
                 <RowDefinition Height="4*"/>
