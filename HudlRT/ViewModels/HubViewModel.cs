@@ -81,6 +81,7 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
             if (response.ID != null)
@@ -253,7 +254,6 @@ namespace HudlRT.ViewModels
             Groups = new BindableCollection<HubGroupViewModel>();
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
     }
 }

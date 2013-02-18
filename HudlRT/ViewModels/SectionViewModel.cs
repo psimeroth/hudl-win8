@@ -42,6 +42,7 @@ namespace HudlRT.ViewModels
 
         protected override void OnActivate()
         {
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
             if (Parameter != _gameId)
