@@ -71,6 +71,7 @@ namespace HudlRT.ViewModels
         private async void PopulateGroups()
         {
             games = await GetGames();
+
             GetNextPreviousGames();
 
             HubGroupViewModel NextGameVM = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
@@ -79,6 +80,7 @@ namespace HudlRT.ViewModels
             if (previousGame != null)
             {
                 GameViewModel previous = new GameViewModel(previousGame, true);
+                previous.FetchThumbnailsAndPlaylistCounts();
                 previous.isLargeView = true;
                 NextGameVM.Games.Add(previous);
             }
@@ -86,8 +88,10 @@ namespace HudlRT.ViewModels
             {
                 GameViewModel next = new GameViewModel(nextGame, true);
                 next.isLargeView = true;
+                next.FetchThumbnailsAndPlaylistCounts();
                 LastGameVM.Games.Add(next);
             }
+
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
             NewGroups.Add(NextGameVM);
             NewGroups.Add(LastGameVM);
@@ -95,7 +99,9 @@ namespace HudlRT.ViewModels
             HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
             foreach (Game g in games)
             {
-                schedule.Games.Add(new GameViewModel(g));
+                GameViewModel gamevm = new GameViewModel(g);
+                gamevm.FetchThumbnailsAndPlaylistCounts();
+                schedule.Games.Add(gamevm);
             }
             NewGroups.Add(schedule);
             Groups = NewGroups;
@@ -151,6 +157,7 @@ namespace HudlRT.ViewModels
             GameResponse response = await ServiceAccessor.GetGames(CachedParameter.seasonSelected.owningTeam.teamID.ToString(), CachedParameter.seasonSelected.seasonID.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
+                
                 return response.games;
             }
             return null;
