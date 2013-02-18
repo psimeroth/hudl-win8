@@ -1,4 +1,4 @@
-﻿using Caliburn.Micro;
+using Caliburn.Micro;
 using HudlRT.Common;
 using HudlRT.Models;
 using HudlRT.Parameters;

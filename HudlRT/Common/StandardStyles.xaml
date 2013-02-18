@@ -682,7 +682,7 @@
                 <ControlTemplate TargetType="Button">
                     <Grid x:Name="RootGrid">
                         <Grid Margin="-1,-16,0,0">
-                            <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" Foreground="{StaticResource HudlGrayButton}"/>
+                            <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" Foreground="{StaticResource HudlMediumGray}"/>
                             <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="60" Margin="-1,-3,0,0"/>
                             <TextBlock x:Name="CancelGlyph" Text="&#xE0A4;" FontFamily="Segoe UI Symbol" Foreground="Black" Margin="10,24,0,0" FontSize="25"/>
                             <TextBlock x:Name="CancelGlyph_Pressed" Text="&#xE0A4;" Foreground="{StaticResource BackButtonPressedForegroundThemeBrush}" Opacity="0" Margin="10,24,0,0" FontSize="25"/>
