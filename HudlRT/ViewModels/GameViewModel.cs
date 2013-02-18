@@ -39,7 +39,7 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return !isLastViewed ? _numPlaylists + " playlists" : "";
+                return !isLastViewed ? _numPlaylists : "";
             }
             set
             {
@@ -73,11 +73,12 @@ namespace HudlRT.ViewModels
             GameModel = game;
             isLargeView = isLarge;
             isLastViewed = isLastviewed;
-            ThumbNail = "ms-appx:///Assets/agile-hudl-logo-dark.png";
+            ThumbNail = "ms-appx:///Assets/agile-hudl-logo-light.png";
             ImageWidth = 400;
         }
 
-        public async void FetchThumbnailsAndPlaylistCounts()
+        public async void FetchThumbnailsAndPlaylistCounts() 
+
         {
             CategoryResponse response = await ServiceAccessor.GetGameCategories(GameModel.gameId);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
@@ -94,10 +95,10 @@ namespace HudlRT.ViewModels
                         {
                             numLists += cat.playlists.Count();
                             //Populate the thumbnail on the hub
-                            if (ThumbNail == "ms-appx:///Assets/agile-hudl-logo-dark.png")
+                            if (ThumbNail == "ms-appx:///Assets/agile-hudl-logo-light.png")
                             {
                                 ThumbNail = cat.playlists[0].thumbnailLocation;
-                                ImageWidth = 555;
+                                ImageWidth = 565;
                             }
                         }
                     }

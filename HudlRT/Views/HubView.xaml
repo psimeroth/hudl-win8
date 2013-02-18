@@ -17,30 +17,29 @@
         <common:TemplateSelector x:Key="GameTemplateSelector" LargeTemplate="{StaticResource HubPageLargeGamesTemplate}" SmallTemplate="{StaticResource HubPageSmallGamesTemplate}"/>
     </UserControl.Resources>
 
-    <Grid Background="White" SizeChanged="Grid_SizeChanged_1">
+    <Grid Background="{StaticResource HudlGrayGradient}" SizeChanged="Grid_SizeChanged_1">
         <Grid.RowDefinitions>
-            <RowDefinition Height="90"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Back button and page title -->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition x:Name="ComboBoxColumn" Width="2*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" Opacity="0"/>
-            <Image x:Name="Logo" Grid.Column="1" Margin="1,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
-            <Grid x:Name="ComboBoxGrid" MinWidth ="700" Margin="0,0,15,0" HorizontalAlignment="Right" Grid.Column="2">
-                <ComboBox x:Name="SeasonsDropDown" MinWidth="700" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" Foreground="Black" Margin="0,0,20,0">
+            <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
+            <Grid x:Name="ComboBoxGrid" MinWidth ="500" Margin="0,0,15,0" HorizontalAlignment="Right" Grid.Column="2">
+                <ComboBox x:Name="SeasonsDropDown" MinWidth="500" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" Foreground="Black" Margin="0,20,20,0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical">
-                                <TextBlock x:Name="Year" Text="{Binding name}" HorizontalAlignment="Right" FontSize="40" Foreground="Gray" FontWeight="Light"/>
+                                <TextBlock x:Name="Year" Text="{Binding name}" HorizontalAlignment="Right" FontSize="40" Foreground="{StaticResource HudlMediumGray}" FontWeight="Light"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,-10,0,0">
-                                    <TextBlock x:Name="SchoolName" Text="{Binding SchoolName}" FontSize="22" Foreground="LightGray" FontWeight="Bold"/>
-                                    <TextBlock x:Name="TeamName" Text="{Binding TeamName}" FontSize="22" Foreground="LightGray" FontWeight="Light" Margin="10,0,0,0"/>
+                                    <TextBlock x:Name="SchoolName" Text="{Binding SchoolName}" FontSize="22" Foreground="{StaticResource HudlMediumDarkGray}" FontWeight="Bold"/>
+                                    <TextBlock x:Name="TeamName" Text="{Binding TeamName}" FontSize="22" Foreground="{StaticResource HudlMediumDarkGray}" FontWeight="Light" Margin="10,0,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>
@@ -50,10 +49,10 @@
         </Grid>
 
         <!-- Horizontal scrolling grid used in most view states -->
-        <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50" SelectionMode="None">
+        <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal" Margin="70,0"/>
+                    <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
             
@@ -68,8 +67,8 @@
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-                            <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="0">
-                                <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlLightGray}" Style="{StaticResource GridViewGroupName}"/>
+                            <Grid Margin="0">
+                                <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlMediumDarkGray}" Style="{StaticResource GridViewGroupName}"/>
                             </Grid>
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
