@@ -10,9 +10,9 @@
     <Color x:Key="HudlMediumDarkGrayColor">#939C9C</Color>
     <Color x:Key="HudlDarkGrayColor">#171919</Color>
 
-    <LinearGradientBrush x:Key="HudlGrayToWhiteGradient" EndPoint="0.5,1.5" StartPoint="0.5,0">
-        <GradientStop Color="{StaticResource HudlMediumDarkGrayColor}" Offset="1" />
-        <GradientStop  Color="White"/>
+    <LinearGradientBrush x:Key="HudlGrayGradient" EndPoint="0.5,1" StartPoint="0.5,0.75">
+        <GradientStop Color="Black" Offset="1"/>
+        <GradientStop Color="{StaticResource HudlDarkGrayColor}"/>
     </LinearGradientBrush>
     
     <!--BRUSHES!!!!!-->

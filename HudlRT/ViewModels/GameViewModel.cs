@@ -62,7 +62,7 @@ namespace HudlRT.ViewModels
             GameModel = game;
             isLargeView = isLarge;
             isLastViewed = isLastviewed;
-            ThumbNail = "ms-appx:///Assets/agile-hudl-logo-dark.png";
+            ThumbNail = "ms-appx:///Assets/agile-hudl-logo-light.png";
         }
 
         public async void FetchThumbnailsAndPlaylistCounts()

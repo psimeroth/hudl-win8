@@ -14,7 +14,7 @@
         <CollectionViewSource x:Name="CategoriesViewSource" Source="{Binding Categories}" IsSourceGrouped="True" ItemsPath="Playlists" />
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource HudlGrayToWhiteGradient}">
+    <Grid Background="{StaticResource HudlGrayGradient}">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>

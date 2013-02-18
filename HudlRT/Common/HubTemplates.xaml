@@ -4,13 +4,13 @@
     xmlns:local="using:HudlRT.Common">
 
     <DataTemplate x:Key="HubPageLargeGamesTemplate">
-        <Grid Background="{StaticResource HudlLightGray}" Height="518" Width="350">
+        <Grid Background="#464A4A" Height="518" Width="350">
             <Grid.RowDefinitions>
                 <RowDefinition Height="8*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
-            <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
+            <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
