@@ -42,9 +42,7 @@ namespace HudlRT.Parameters
         public static Season seasonSelected { get; set; }
         //public static BindableCollection<Game> games {get;set;}
 
-        public static BindableCollection<PlaylistViewModel> downloadedPlaylists { get; set; }
-
-        public static CancellationTokenSource cts = new CancellationTokenSource();
+        
 
         public static bool noConnection = false;
 
@@ -55,6 +53,10 @@ namespace HudlRT.Parameters
         public static List<PlaylistViewModel> currentlyDownloadingPlaylists { get; set; }
 
         public static Progress<DownloadOperation> progressCallback { get; set; }
+
+        public static BindableCollection<PlaylistViewModel> downloadedPlaylists { get; set; }
+
+        public static CancellationTokenSource cts = new CancellationTokenSource();
         
 
         public static void InitializeForFrontend(){
