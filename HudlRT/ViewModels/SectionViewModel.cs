@@ -42,12 +42,14 @@ namespace HudlRT.ViewModels
 
         protected override void OnActivate()
         {
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
             if (Parameter != _gameId)
             {
                 _gameId = Parameter;
                 GetGameCategories(_gameId);
+
             }
             base.OnActivate();
         }
@@ -108,8 +110,7 @@ namespace HudlRT.ViewModels
 
         public void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
-            CachedParameter.selectedPlaylist = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel;
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+            navigationService.NavigateToViewModel<VideoPlayerViewModel>(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
 
         }
     }

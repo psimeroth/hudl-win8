@@ -47,7 +47,7 @@ namespace HudlRT.ViewModels
             {
                 selectedSeason = value;
                 NotifyOfPropertyChange(() => SelectedSeason);
-                CachedParameter.seasonSelected = selectedSeason;
+                AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
                 PopulateGroups();
             }
         }
@@ -64,28 +64,45 @@ namespace HudlRT.ViewModels
         {
             base.OnInitialize();
 
-            CachedParameter.seasonsDropDown = await GetSortedSeasons();
-            CachedParameter.seasonSelected = CachedParameter.seasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? CachedParameter.seasonsDropDown[0];
-            
-            SeasonsDropDown = CachedParameter.seasonsDropDown;
-            SelectedSeason = CachedParameter.seasonSelected;
+            SeasonsDropDown = await GetSortedSeasons();
+            string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
+
+            if (savedSeasonId != null)
+            {
+                SelectedSeason = SeasonsDropDown.Where(u => u.seasonID == savedSeasonId).FirstOrDefault();
+            }
+            else
+            {
+                SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
+                AppDataAccessor.SetTeamContext(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
+            }
         }
 
         protected override void OnActivate()
         {
             base.OnActivate();
+            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
             if (response.ID != null)
             {
-                Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };
+                Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };//this is actually a playlist - not a game
                 GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, true);
                 lastViewed.Thumbnail = response.thumbnail;
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
                 LastViewedVM.Games.Add(lastViewed);
                 if (Groups.Count >= 3)
                 {
-                    Groups[2] = LastViewedVM;
+                    
+                    HubGroupViewModel oldLastViewed = Groups.Where(u => u.Name == "Last Viewed").FirstOrDefault();
+                    if (oldLastViewed != null)
+                    {
+                        Groups[Groups.IndexOf(oldLastViewed)] = LastViewedVM;
+                    }
+                    else
+                    {
+                        Groups.Insert(2, LastViewedVM);
+                    }
                 }
             }
         }
@@ -183,7 +200,7 @@ namespace HudlRT.ViewModels
 
         public async Task<BindableCollection<Game>> GetGames()
         {
-            GameResponse response = await ServiceAccessor.GetGames(CachedParameter.seasonSelected.owningTeam.teamID.ToString(), CachedParameter.seasonSelected.seasonID.ToString());
+            GameResponse response = await ServiceAccessor.GetGames(SelectedSeason.owningTeam.teamID.ToString(), SelectedSeason.seasonID.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 
@@ -197,21 +214,21 @@ namespace HudlRT.ViewModels
             TeamResponse response = await ServiceAccessor.GetTeams();
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                CachedParameter.teams = response.teams;
-                CachedParameter.seasonsDropDown = new BindableCollection<Season>();
-                foreach (Team team in CachedParameter.teams)
+                BindableCollection<Team> teams = response.teams;
+                BindableCollection<Season> seasons = new BindableCollection<Season>();
+                foreach (Team team in teams)
                 {
                     foreach (Season season in team.seasons)
                     {
-                        CachedParameter.seasonsDropDown.Add(season);
+                        seasons.Add(season);
                     }
                 }
-                return new BindableCollection<Season>(CachedParameter.seasonsDropDown.OrderByDescending(season => season.year));
+                return new BindableCollection<Season>(seasons.OrderByDescending(s => s.year));
             }
             return null;
         }
 
-        public void GameSelected(ItemClickEventArgs eventArgs)
+        public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
             string parameter = gameViewModel.GameModel.gameId;
@@ -223,7 +240,9 @@ namespace HudlRT.ViewModels
             }
             else
             {
-
+                ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
+                Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.ThumbNail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
             }
             
         }
@@ -234,7 +253,6 @@ namespace HudlRT.ViewModels
             Groups = new BindableCollection<HubGroupViewModel>();
             this.navigationService = navigationService;
             CharmsData.navigationService = navigationService;
-            SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
         }
     }
 }
