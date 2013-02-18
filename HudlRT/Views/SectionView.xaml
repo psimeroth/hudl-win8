@@ -82,7 +82,7 @@
                                         <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                    <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0"/>
+                                    <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
                                     <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
                                     <Image HorizontalAlignment="Right" Grid.Row="1" />
                                 </Grid>

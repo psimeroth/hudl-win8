@@ -109,8 +109,7 @@ namespace HudlRT.ViewModels
 
         public void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
-            CachedParameter.selectedPlaylist = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel;
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+            navigationService.NavigateToViewModel<VideoPlayerViewModel>(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
 
         }
     }
