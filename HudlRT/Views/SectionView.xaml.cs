@@ -27,6 +27,7 @@ namespace HudlRT.Views
         public SectionView()
         {
             this.InitializeComponent();
+            CategoriesGridView.SelectionMode = ListViewSelectionMode.Multiple;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
