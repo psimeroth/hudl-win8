@@ -14,7 +14,7 @@
         <CollectionViewSource x:Name="CategoriesViewSource" Source="{Binding Categories}" IsSourceGrouped="True" ItemsPath="Playlists" />
     </UserControl.Resources>
 
-    <Grid Background="White">
+    <Grid Background="{StaticResource HudlGrayToWhiteGradient}">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
@@ -23,20 +23,20 @@
         <!-- Back button and page title -->
         <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
-            <Image x:Name="Logo" Grid.Column="1" Margin="0,0,0,-7" VerticalAlignment="Bottom" Width="150" Source="ms-appx:///Assets/agile-hudl-logo-dark.png" HorizontalAlignment="Left"/>
+            <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
         </Grid>
 
         <SemanticZoom Grid.Row="1">
 
             <SemanticZoom.ZoomedInView>
-                <GridView Grid.Row="1" x:Name="CategoriesGridView"  SelectionMode="Single" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
+                <GridView Grid.Row="1" x:Name="CategoriesGridView" SelectionMode="None" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
                     <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel Orientation="Horizontal" Margin="70,0"/>
+                            <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
                         </ItemsPanelTemplate>
                     </GridView.ItemsPanel>
                 
@@ -51,8 +51,8 @@
                         <GroupStyle>
                             <GroupStyle.HeaderTemplate>
                                 <DataTemplate>
-                                    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Margin="0">
-                                    <TextBlock Text="{Binding Name}" Foreground="Gray" Style="{StaticResource GridViewGroupName}" />
+                                    <Grid Margin="0">
+                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlMediumDarkGray}" Style="{StaticResource GridViewGroupName}" />
                                     </Grid>
                                 </DataTemplate>
                             </GroupStyle.HeaderTemplate>
@@ -69,23 +69,23 @@
                         </GroupStyle>
                     </GridView.GroupStyle>
 
-                    <GridView.ItemTemplate >
+                    <GridView.ItemTemplate>
                         <DataTemplate>
-                        <Grid Background="{StaticResource HudlLightGray}" Height="246" Width="350" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="7*"/>
-                                <RowDefinition Height="4*"/>
-                            </Grid.RowDefinitions>
-                            <Image Grid.Row="0" Source="{Binding ThumbnailPath}" Width="350" HorizontalAlignment="Center" />
-                            <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
+                            <Grid Background="{StaticResource HudlLightGray}" Height="246" Width="350">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
+                                    <RowDefinition Height="7*"/>
+                                    <RowDefinition Height="4*"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0"/>
-                                <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
-                                <Image HorizontalAlignment="Right" Grid.Row="1" />
-                            </Grid>
+                                <Image Grid.Row="0" Source="{Binding ThumbnailPath}" Width="350" HorizontalAlignment="Center" />
+                                <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0"/>
+                                    <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
+                                    <Image HorizontalAlignment="Right" Grid.Row="1" />
+                                </Grid>
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
