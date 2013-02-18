@@ -13,9 +13,9 @@ namespace HudlRT.ViewModels
     {
         private string _thumbNail;
         private string _numPlaylists;
-        public bool isLargeView { get; set; }
+        public bool IsLargeView { get; set; }
         public Game GameModel { get; set; }
-        public bool isLastViewed { get; set; }
+        public bool IsLastViewed { get; set; }
 
 
         public string Opponent
@@ -30,7 +30,7 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return !isLastViewed ? GameModel.DisplayDate : "Viewed: " + GameModel.DisplayDate;
+                return !IsLastViewed ? GameModel.DisplayDate : "Viewed: " + GameModel.DisplayDate;
             }
         }
 
@@ -38,7 +38,7 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return !isLastViewed ? _numPlaylists + " playlists" : "";
+                return !IsLastViewed ? _numPlaylists + " playlists" : "";
             }
             set
             {
@@ -47,22 +47,22 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public string ThumbNail
+        public string Thumbnail
         {
             get { return _thumbNail; }
             set
             {
                 _thumbNail = value ;
-                NotifyOfPropertyChange(() => ThumbNail);
+                NotifyOfPropertyChange(() => Thumbnail);
             }
         }
 
         public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false)
         {
             GameModel = game;
-            isLargeView = isLarge;
-            isLastViewed = isLastviewed;
-            ThumbNail = "ms-appx:///Assets/agile-hudl-logo-dark.png";
+            IsLargeView = isLarge;
+            IsLastViewed = isLastviewed;
+            Thumbnail = "ms-appx:///Assets/agile-hudl-logo-dark.png";
         }
 
         public async void FetchThumbnailsAndPlaylistCounts()
@@ -82,9 +82,9 @@ namespace HudlRT.ViewModels
                         {
                             numLists += cat.playlists.Count();
                             //Populate the thumbnail on the hub
-                            if (ThumbNail == "ms-appx:///Assets/agile-hudl-logo-dark.png")
+                            if (Thumbnail == "ms-appx:///Assets/agile-hudl-logo-dark.png")
                             {
-                                ThumbNail = cat.playlists[0].thumbnailLocation;
+                                Thumbnail = cat.playlists[0].thumbnailLocation;
                             }
                         }
                     }

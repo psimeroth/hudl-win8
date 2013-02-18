@@ -9,7 +9,7 @@
                 <RowDefinition Height="8*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
+            <Image Source="{Binding Thumbnail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Height="100" Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -28,7 +28,7 @@
                 <RowDefinition Height="7*"/>
                 <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
+            <Image Source="{Binding Thumbnail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
