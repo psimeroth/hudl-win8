@@ -85,7 +85,16 @@ namespace HudlRT.ViewModels
                 LastViewedVM.Games.Add(lastViewed);
                 if (Groups.Count >= 3)
                 {
-                    Groups[2] = LastViewedVM;
+                    
+                    HubGroupViewModel oldLastViewed = Groups.Where(u => u.Name == "Last Viewed").FirstOrDefault();
+                    if (oldLastViewed != null)
+                    {
+                        Groups[Groups.IndexOf(oldLastViewed)] = LastViewedVM;
+                    }
+                    else
+                    {
+                        Groups.Insert(2, LastViewedVM);
+                    }
                 }
             }
         }
