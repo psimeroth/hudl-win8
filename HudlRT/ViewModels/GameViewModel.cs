@@ -15,7 +15,7 @@ namespace HudlRT.ViewModels
         private string _numPlaylists;
         public bool isLargeView { get; set; }
         public Game GameModel { get; set; }
-
+        public bool isLastViewed { get; set; }
 
 
         public string Opponent
@@ -30,13 +30,16 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return GameModel.DisplayDate;
+                return !isLastViewed ? GameModel.DisplayDate : "Viewed: " + GameModel.DisplayDate;
             }
         }
 
         public string NumPlaylists
         {
-            get { return _numPlaylists; }
+            get
+            {
+                return !isLastViewed ? _numPlaylists + " playlists" : "";
+            }
             set
             {
                 _numPlaylists = value + " playlists";
@@ -54,10 +57,11 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public GameViewModel(Game game, bool isLarge = false)
+        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false)
         {
             GameModel = game;
             isLargeView = isLarge;
+            isLastViewed = isLastviewed;
             ThumbNail = "ms-appx:///Assets/agile-hudl-logo-dark.png";
         }
 
