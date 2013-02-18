@@ -6,16 +6,16 @@
     <DataTemplate x:Key="HubPageLargeGamesTemplate">
         <Grid Background="{StaticResource HudlLightGray}" Height="518" Width="350">
             <Grid.RowDefinitions>
-                <RowDefinition Height="8*"/>
+                <RowDefinition Height="9*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
-            <Grid Height="150" Background="{StaticResource HudlOrange}" Grid.Row="1">
+            <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="Opponent" VerticalAlignment="Bottom" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" TextWrapping="Wrap" />
+                <TextBlock x:Name="Opponent" VerticalAlignment="Bottom" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" TextTrimming="WordEllipsis"/>
                 <TextBlock x:Name="Date" VerticalAlignment="Top" Text ="{Binding Date}" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
                 <TextBlock x:Name="NumPlaylists" VerticalAlignment="Top" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
             </Grid>
@@ -23,10 +23,10 @@
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
-        <Grid Background="{StaticResource HudlLightGray}" Height="246" Width="350">
+        <Grid Background="{StaticResource HudlLightGray}" Height="240" Width="325">
             <Grid.RowDefinitions>
                 <RowDefinition Height="7*"/>
-                <RowDefinition Height="5*"/>
+                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">

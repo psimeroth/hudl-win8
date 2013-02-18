@@ -49,6 +49,7 @@ namespace HudlRT.ViewModels
             {
                 _gameId = Parameter;
                 GetGameCategories(_gameId);
+
             }
             base.OnActivate();
         }
@@ -109,8 +110,7 @@ namespace HudlRT.ViewModels
 
         public void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
-            CachedParameter.selectedPlaylist = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel;
-            navigationService.NavigateToViewModel<VideoPlayerViewModel>();
+            navigationService.NavigateToViewModel<VideoPlayerViewModel>(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
 
         }
     }
