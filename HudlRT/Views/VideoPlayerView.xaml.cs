@@ -63,6 +63,8 @@ namespace HudlRT.Views
         private Stopwatch rewindStopwatch { get; set; }
         private TimeSpan rewindPosition { get; set; }
         private VideoPlayerState playerState { get; set; }
+        private DispatcherTimer rewindKeyPressTimer { get; set; }
+        private Windows.UI.Core.KeyEventArgs rewindKey { get; set; }
 
         public VideoPlayerView()
         {
@@ -98,8 +100,12 @@ namespace HudlRT.Views
             rewindTimer = new DispatcherTimer();
             rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             rewindTimer.Tick += rewindTimerTick;
-
+            rewindStopwatch = new Stopwatch();
             playerState = VideoPlayerState.Paused;
+
+            rewindKeyPressTimer = new DispatcherTimer();
+            rewindKeyPressTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            rewindKeyPressTimer.Tick += rewindKeyPressTimerTick;
         }
 
         /// <summary>
@@ -425,6 +431,7 @@ namespace HudlRT.Views
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
+            rewindStopwatch.Stop();
             rewindTimer.Stop();
             playerState = VideoPlayerState.Paused;
             videoMediaElement.Pause();
@@ -434,6 +441,7 @@ namespace HudlRT.Views
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
+            rewindStopwatch.Stop();
             rewindTimer.Stop();
             playerState = VideoPlayerState.Paused;
             videoMediaElement.Stop();
@@ -454,7 +462,7 @@ namespace HudlRT.Views
         {
             rewindPosition = videoMediaElement.Position;
             isFastRewind = true;
-            rewindStopwatch = new Stopwatch();
+            rewindStopwatch.Reset();
             videoMediaElement.Pause();
             rewindStopwatch.Start();
             rewindTimer.Start();
@@ -464,7 +472,7 @@ namespace HudlRT.Views
         {
             rewindPosition = videoMediaElement.Position;
             isFastRewind = false;
-            rewindStopwatch = new Stopwatch();
+            rewindStopwatch.Reset();
             videoMediaElement.Pause();
             rewindStopwatch.Start();
             rewindTimer.Start();
@@ -516,7 +524,8 @@ namespace HudlRT.Views
                     }
                     else if (e.VirtualKey == Windows.System.VirtualKey.Up)
                     {
-                        rewindTimer.Stop();
+                        rewindKeyPressTimer.Stop();
+                        btn_release(null, null);
                         VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
                         vm.ResetClip();
                         e.Handled = true;
@@ -529,7 +538,8 @@ namespace HudlRT.Views
                     }
                     else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
                     {
-                        rewindTimer.Stop();
+                        rewindKeyPressTimer.Stop();
+                        btn_release(null, null);
                         VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
                         vm.GoToPreviousClip();
                         e.Handled = true;
@@ -547,6 +557,7 @@ namespace HudlRT.Views
         {
             if (!e.KeyStatus.WasKeyDown)
             {
+                rewindKeyPressTimer.Stop();
                 if (e.VirtualKey == Windows.System.VirtualKey.Down)
                 {
                     btnSlowForward_Click(null, null);
@@ -555,8 +566,9 @@ namespace HudlRT.Views
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Up)
                 {
-                    btnSlowReverse_Click(null, null);
+                    rewindKey = e;
                     keyPressTimer.Start();
+                    rewindKeyPressTimer.Start();
                     e.Handled = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
@@ -567,10 +579,31 @@ namespace HudlRT.Views
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
                 {
-                    btnFastReverse_Click(null, null);
+                    rewindKey = e;
                     keyPressTimer.Start();
+                    rewindKeyPressTimer.Start();
                     e.Handled = true;
                 }
+            }
+        }
+
+        void rewindKeyPressTimerTick(object sender, object e)
+        {
+            if (keyPressTimer.ElapsedMilliseconds > keyPressLength && !rewindKey.KeyStatus.IsKeyReleased)
+            {
+                if (rewindKey.VirtualKey == Windows.System.VirtualKey.Up)
+                {
+                    btnSlowReverse_Click(null, null);
+                } 
+                else if (rewindKey.VirtualKey == Windows.System.VirtualKey.Left || rewindKey.VirtualKey == Windows.System.VirtualKey.PageUp)
+                {
+                    btnFastReverse_Click(null, null);
+                }
+                rewindKeyPressTimer.Stop();
+            }
+            else if (keyPressTimer.ElapsedMilliseconds > keyPressLength)
+            {
+                rewindKeyPressTimer.Stop();
             }
         }
 
