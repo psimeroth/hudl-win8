@@ -1,4 +1,4 @@
-﻿using Caliburn.Micro;
+using Caliburn.Micro;
 using HudlRT.Common;
 using HudlRT.Models;
 using HudlRT.Parameters;
@@ -33,41 +33,11 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private BindableCollection<Season> seasonsForDropDown;
-        public BindableCollection<Season> SeasonsDropDown
-        {
-            get { return seasonsForDropDown; }
-            set
-            {
-                seasonsForDropDown = value;
-                NotifyOfPropertyChange(() => SeasonsDropDown);
-            }
-        }
-
-        private Season selectedSeason;
-        public Season SelectedSeason
-        {
-            get { return selectedSeason; }
-            set
-            {
-                selectedSeason = value;
-                NotifyOfPropertyChange(() => SelectedSeason);
-            }
-        }
-
         public SectionViewModel(INavigationService navigationService)
             : base(navigationService)
         {
             this.navigationService = navigationService;
             Categories = new BindableCollection<CategoryViewModel>();
-        }
-
-        protected override void OnInitialize()
-        {
-            base.OnInitialize();
-            SeasonsDropDown = CachedParameter.seasonsDropDown;
-            SelectedSeason = CachedParameter.seasonSelected;
-
         }
 
         protected override void OnActivate()

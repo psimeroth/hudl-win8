@@ -221,7 +221,7 @@
         </Setter>
     </Style>
     
-    <Style x:Key="VideoPlayer_ButtonStyle_Standard" BasedOn="{StaticResource ButtonStyle_Standard}" TargetType="Button">
+    <Style x:Key="VideoPlayer_ButtonStyle_Standard" TargetType="Button">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="5"/>
         <Setter Property="Template">
@@ -233,7 +233,7 @@
                                 <VisualState x:Name="Normal"/>
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlBlackButtonHoverColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlDarkGrayColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
@@ -261,7 +261,7 @@
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
-                                        <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}">
+                                        <SolidColorBrush Color="Black">
                                         </SolidColorBrush>
                                     </Rectangle.Fill>
                                 </Rectangle>
@@ -318,7 +318,7 @@
                                 </VisualState>
                                 <VisualState x:Name="UnselectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlBlackButtonHoverColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlDarkGrayColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
@@ -357,7 +357,7 @@
                                 <Grid>
                                     <Rectangle x:Name="default">
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="{StaticResource HudlBlackButtonColor}" />
+                                            <SolidColorBrush Color="Black"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <Rectangle x:Name="BackgroundColor" Opacity="0" >

@@ -80,6 +80,7 @@ namespace HudlRT.ViewModels
             {
                 Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };
                 GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, true);
+                lastViewed.ThumbNail = response.thumbnail;
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
                 LastViewedVM.Games.Add(lastViewed);
                 if (Groups.Count >= 3)
@@ -93,6 +94,7 @@ namespace HudlRT.ViewModels
         private async void PopulateGroups()
         {
             games = await GetGames();
+
             GetNextPreviousGames();
             NextGameVM.Games = new BindableCollection<GameViewModel>();
             LastGameVM.Games = new BindableCollection<GameViewModel>();
@@ -100,18 +102,17 @@ namespace HudlRT.ViewModels
             if (previousGame != null)
             {
                 GameViewModel previous = new GameViewModel(previousGame, true);
-                //previous.isLargeView = true;
+                previous.FetchThumbnailsAndPlaylistCounts();
+                previous.isLargeView = true;
                 NextGameVM.Games.Add(previous);
             }
             if (nextGame != null)
             {
                 GameViewModel next = new GameViewModel(nextGame, true);
                 //next.isLargeView = true;
+                next.FetchThumbnailsAndPlaylistCounts();
                 LastGameVM.Games.Add(next);
             }
-
-
-            
 
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
             NewGroups.Add(NextGameVM);
@@ -127,7 +128,9 @@ namespace HudlRT.ViewModels
             HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
             foreach (Game g in games)
             {
-                schedule.Games.Add(new GameViewModel(g));
+                GameViewModel gamevm = new GameViewModel(g);
+                gamevm.FetchThumbnailsAndPlaylistCounts();
+                schedule.Games.Add(gamevm);
             }
             NewGroups.Add(schedule);
             Groups = NewGroups;
@@ -183,6 +186,7 @@ namespace HudlRT.ViewModels
             GameResponse response = await ServiceAccessor.GetGames(CachedParameter.seasonSelected.owningTeam.teamID.ToString(), CachedParameter.seasonSelected.seasonID.ToString());
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
+                
                 return response.games;
             }
             return null;
@@ -209,9 +213,19 @@ namespace HudlRT.ViewModels
 
         public void GameSelected(ItemClickEventArgs eventArgs)
         {
-            string parameter = ((GameViewModel)eventArgs.ClickedItem).GameModel.gameId;
+            GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
+            string parameter = gameViewModel.GameModel.gameId;
+            
             //CachedParameter.gameId = ((GameViewModel)eventArgs.ClickedItem).GameModel.gameId;
-            navigationService.NavigateToViewModel<SectionViewModel>(parameter);
+            if (!gameViewModel.isLastViewed)
+            {
+                navigationService.NavigateToViewModel<SectionViewModel>(parameter);
+            }
+            else
+            {
+
+            }
+            
         }
 
         public HubViewModel(INavigationService navigationService)
