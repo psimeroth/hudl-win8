@@ -38,7 +38,7 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return !isLastViewed ? _numPlaylists + " playlists" : "";
+                return !isLastViewed ? _numPlaylists : "";
             }
             set
             {
