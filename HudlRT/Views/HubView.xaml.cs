@@ -26,6 +26,7 @@ namespace HudlRT.Views
         public HubView()
         {
             this.InitializeComponent();
+            ItemsByCategory.SelectionMode = ListViewSelectionMode.Multiple;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

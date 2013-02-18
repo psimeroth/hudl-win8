@@ -49,7 +49,7 @@
         </Grid>
 
         <!-- Horizontal scrolling grid used in most view states -->
-        <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
+        <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50" SelectionMode="None">
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
