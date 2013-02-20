@@ -49,7 +49,16 @@ namespace HudlRT.ViewModels
                 }
             }
         }
-
+        private Visibility downloadedIcon_Visibility;
+        public Visibility DownloadedIcon_Visibility
+        {
+            get { return downloadedIcon_Visibility; }
+            set
+            {
+                downloadedIcon_Visibility = value;
+                NotifyOfPropertyChange(() => DownloadedIcon_Visibility);
+            }
+        }
         public PlaylistViewModel(Playlist playlist)
         {
             PlaylistModel = playlist;
