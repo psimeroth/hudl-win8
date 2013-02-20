@@ -404,5 +404,23 @@ namespace HudlRT.Common
             }
             return await response.Content.ReadAsStringAsync();
         }
+
+        public static async Task<string> MakeApiCallLog(string url, string jsonString)
+        {
+            var httpClient = new HttpClient();
+            Uri uri = new Uri(URL_BASE + url);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+            httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
+            httpRequestMessage.Content = new StringContent(jsonString);
+            httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            var response = await httpClient.SendAsync(httpRequestMessage);
+            //response.StatusCode 404 500 401
+            if (!response.IsSuccessStatusCode)
+            {
+                APIExceptionDialog.ShowStatusCodeExceptionDialog(response.StatusCode.ToString(), uri.ToString());
+                return null;
+            }
+            return await response.Content.ReadAsStringAsync();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using HudlRT.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -274,18 +275,24 @@ namespace HudlRT.Common
             settings.NullValueHandling = NullValueHandling.Ignore;
         }
 
-        public void LogLastViewedClick()
+        public void LogLastViewedClick(Playlist playlist)
         {
             LogEntry entry = new LogEntry();
             entry.Function = Function.Click;
             entry.Operation = Operation.Cutup;
             entry.Error = null;
-            entry.Method = "Last Viewed Button Clicked.";
+            entry.Method = "LastViewed - ";
             entry.ErrorLevel = ErrorLevel.Info;
+            entry.AttributesDictionary = new Dictionary<string, object>();
+
+            entry.AttributesDictionary.Add("name", playlist.name);
+            entry.AttributesDictionary.Add("playlistId", playlist.playlistId);
+            entry.AttributesDictionary.Add("clickedOn", DateTime.Now);
+
             entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
             entry.AttributesDictionary = null;
 
-            ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry), false);
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
     }
 }
