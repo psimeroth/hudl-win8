@@ -63,7 +63,7 @@ namespace HudlRT.ViewModels
         protected override async void OnInitialize()
         {
             base.OnInitialize();
-
+            await DownloadAccessor.Instance.GetDownloads();
             SeasonsDropDown = await GetSortedSeasons();
             string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
 

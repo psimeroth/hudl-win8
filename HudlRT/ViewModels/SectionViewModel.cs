@@ -200,6 +200,7 @@ namespace HudlRT.ViewModels
                 }
                 playlistsToBeDownloaded.Add(playVM.PlaylistModel);
             }
+            DownloadProgressText = "Determining Download Size";
             DownloadAccessor.Instance.cts = new CancellationTokenSource();
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = playlistsToBeDownloaded;
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
