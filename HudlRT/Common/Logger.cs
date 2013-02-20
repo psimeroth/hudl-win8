@@ -251,8 +251,8 @@ namespace HudlRT.Common
 
         public class LogEntry
         {
-            public Function Function { get; set; }
-            public Operation Operation { get; set; }
+            public Function Func { get; set; }
+            public Operation Op { get; set; }
             public string Error { get; set; }
             public string Method { get; set; }
             public ErrorLevel ErrorLevel { get; set; }
@@ -275,13 +275,13 @@ namespace HudlRT.Common
             settings.NullValueHandling = NullValueHandling.Ignore;
         }
 
-        public void LogLastViewedClick(Playlist playlist)
+        public async void LogLastViewedClick(Playlist playlist)
         {
             LogEntry entry = new LogEntry();
-            entry.Function = Function.Click;
-            entry.Operation = Operation.Cutup;
+            entry.Func = Function.Click;
+            entry.Op = Operation.Cutup;
             entry.Error = null;
-            entry.Method = "LastViewed - ";
+            entry.Method = "LastViewed";
             entry.ErrorLevel = ErrorLevel.Info;
             entry.AttributesDictionary = new Dictionary<string, object>();
 
@@ -293,6 +293,26 @@ namespace HudlRT.Common
             entry.AttributesDictionary = null;
 
             ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+        }
+
+        public async void LastWeekClick(Game game)
+        {
+        }
+
+        public async void NextWeekClick(Game game)
+        {
+        }
+
+        public async void RemoteUse()
+        {
+        }
+
+        public async void GameSelected(Game game)
+        {
+        }
+
+        public async void PlaylistViewed(Playlist playlist)
+        {
         }
     }
 }
