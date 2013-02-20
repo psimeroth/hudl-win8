@@ -100,7 +100,7 @@
             SelectionMode="Single"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]" PointerPressed="itemListView_PointerPressed">
+            caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]">
      
             <ListView.GroupStyle>
                 <GroupStyle>
