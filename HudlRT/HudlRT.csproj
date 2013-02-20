@@ -181,6 +181,8 @@
     <Content Include="Assets\hudl-hi-res-white-small.png" />
     <Content Include="Assets\hudl-logo-big-tile.png" />
     <Content Include="Assets\hudl-metro-orange.png" />
+    <Content Include="Assets\hudl-metro-orange-large.png" />
+    <Content Include="Assets\hudl-splash.png" />
     <Content Include="Assets\hudlsplash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />

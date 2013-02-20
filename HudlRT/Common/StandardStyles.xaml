@@ -12,8 +12,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ms-appx:///Common/CustomStyles.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
     <!-- Non-brush values that vary across themes -->
-
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <x:String x:Key="BackButtonGlyph">&#xE071;</x:String>
@@ -104,7 +107,9 @@
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
 
-    <Style x:Key="ItemTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BaselineTextStyle}"/>
+    <Style x:Key="ItemTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BaselineTextStyle}">
+        <Setter Property="Foreground" Value="{StaticResource HudlMediumGray}"/>
+    </Style>
 
     <Style x:Key="BodyTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BaselineTextStyle}">
         <Setter Property="FontWeight" Value="SemiLight"/>
@@ -112,7 +117,7 @@
 
     <Style x:Key="CaptionTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BaselineTextStyle}">
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="{StaticResource ApplicationSecondaryForegroundThemeBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource HudlMediumDarkGray}"/>
     </Style>
 
     <!-- Button styles -->
