@@ -9,7 +9,7 @@
                 <RowDefinition Height="9*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding ThumbNail}" MinWidth="{Binding ImageWidth}" HorizontalAlignment="Center" Grid.Row="0"/>
+            <Image Source="{Binding Thumbnail}" MinWidth="{Binding ImageWidth}" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
