@@ -23,13 +23,13 @@ namespace HudlRT.Common
 {
     public sealed class DownloadAccessor
     {
-        public static List<Playlist> currentlyDownloadingPlaylists { get; set; }
+        public List<Playlist> currentlyDownloadingPlaylists { get; set; }
 
-        public static Progress<DownloadOperation> progressCallback { get; set; }
+        public Progress<DownloadOperation> progressCallback { get; set; }
 
-        public static BindableCollection<Playlist> downloadedPlaylists { get; set; }
+        public BindableCollection<Playlist> downloadedPlaylists { get; set; }
 
-        public static CancellationTokenSource cts = new CancellationTokenSource();
+        public CancellationTokenSource cts = new CancellationTokenSource();
         
         
         private static readonly Lazy<DownloadAccessor> downloader = new Lazy<DownloadAccessor>(() => new DownloadAccessor());

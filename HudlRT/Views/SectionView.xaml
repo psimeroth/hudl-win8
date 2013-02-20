@@ -96,7 +96,7 @@
     </Grid>
 
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGray}" BorderThickness="0,3,0,0" IsOpen="{Binding AppBarOpen}">
+        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGray}" BorderThickness="0,3,0,0" IsOpen="{Binding AppBarOpen, Mode=TwoWay}" IsSticky="True">
             <StackPanel Name="AppBar" Background="{StaticResource HudlDarkGray}">
                 <Button x:Name="btnDownload" Visibility="{Binding DownloadButton_Visibility}" Width="230" Height="40" FontSize="20" Content="Download Playlists" VerticalAlignment="Bottom"
                         HorizontalAlignment="Right" caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
