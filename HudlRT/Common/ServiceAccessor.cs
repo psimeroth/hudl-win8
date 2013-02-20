@@ -105,6 +105,7 @@ namespace HudlRT.Common
         private static string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
 
         public const string URL_SERVICE_LOGIN = "login";
+        public const string URL_SERVICE_LOG = "log";
         public const string URL_SERVICE_GET_TEAMS = "teams";
         public const string URL_SERVICE_GET_SCHEDULE = "teams/{0}/schedule";//returns games
         public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games

@@ -241,7 +241,8 @@ namespace HudlRT.ViewModels
             else
             {
                 ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
-                Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.ThumbNail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
+                Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.Thumbnail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
+                Logger.Instance.LogLastViewedClick();
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
             }
             
