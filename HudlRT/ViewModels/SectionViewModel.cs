@@ -22,6 +22,40 @@ namespace HudlRT.ViewModels
         INavigationService navigationService;
         public string Parameter { get; set; }       //Passed in from hub page - contains the game Id.
         private string _gameId;     //Used to tell if the page needs to be reloaded
+
+        private bool appBarOpen;
+        public bool AppBarOpen
+        {
+            get { return appBarOpen; }
+            set
+            {
+                appBarOpen = value;
+                NotifyOfPropertyChange(() => AppBarOpen);
+            }
+        }
+
+        private Visibility downloading_Visibility;
+        public Visibility Downloading_Visibility
+        {
+            get { return downloading_Visibility; }
+            set
+            {
+                downloading_Visibility = value;
+                NotifyOfPropertyChange(() => Downloading_Visibility);
+            }
+        }
+
+        private Visibility downloadButton_Visibility;
+        public Visibility DownloadButton_Visibility
+        {
+            get { return downloadButton_Visibility; }
+            set
+            {
+                downloadButton_Visibility = value;
+                NotifyOfPropertyChange(() => DownloadButton_Visibility);
+            }
+        }
+
         private BindableCollection<CategoryViewModel> _categories;
         public BindableCollection<CategoryViewModel> Categories
         {
