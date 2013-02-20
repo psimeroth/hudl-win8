@@ -86,12 +86,13 @@ namespace HudlRT.Common
             return sortedPlaylists;
         }
 
-        private async Task RemoveDownload(Playlist playlist)
+        public async Task RemoveDownload(Playlist playlist)
         {
             try
             {
                 var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + playlist.playlistId.ToString());
-                folder.DeleteAsync();
+                await folder.DeleteAsync();
+                downloadedPlaylists.Remove(playlist);
             }
             catch (Exception)
             {

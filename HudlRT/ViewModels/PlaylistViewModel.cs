@@ -59,9 +59,23 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => DownloadedIcon_Visibility);
             }
         }
+
+        private bool isSelectable;
+        public bool IsSelectable
+        {
+            get { return isSelectable; }
+            set
+            {
+                isSelectable = value;
+                NotifyOfPropertyChange(() => IsSelectable);
+            }
+        }
+
         public PlaylistViewModel(Playlist playlist)
         {
             PlaylistModel = playlist;
+            DownloadedIcon_Visibility = Visibility.Collapsed;
+            IsSelectable = false;
         }
     }
 }
