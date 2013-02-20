@@ -14,7 +14,7 @@
         <CollectionViewSource x:Name="CategoriesViewSource" Source="{Binding Categories}" IsSourceGrouped="True" ItemsPath="Playlists" />
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource HudlGrayToWhiteGradient}">
+    <Grid Background="{StaticResource HudlGrayGradient}">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
@@ -39,13 +39,6 @@
                             <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
                         </ItemsPanelTemplate>
                     </GridView.ItemsPanel>
-                
-                    <GridView.ItemContainerStyle>
-                        <Style TargetType="GridViewItem">
-                            <!-- Puts space between grid view items-->
-                            <Setter Property="Margin" Value="8,8,8,8" />
-                        </Style>
-                    </GridView.ItemContainerStyle>
 
                     <GridView.GroupStyle>
                         <GroupStyle>
@@ -89,11 +82,42 @@
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
-                    
-                 </GridView>
+
+                    <GridView.ItemContainerStyle>
+                        <Style TargetType="GridViewItem">
+                            <!-- Puts space between grid view items-->
+                            <Setter Property="Margin" Value="8,8,8,8" />
+                        </Style>
+                    </GridView.ItemContainerStyle>
+
+                </GridView>
             </SemanticZoom.ZoomedInView>
         </SemanticZoom>
-
     </Grid>
+
+    <common:LayoutAwarePage.BottomAppBar>
+        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGray}" BorderThickness="0,3,0,0" IsOpen="{Binding AppBarOpen}">
+            <StackPanel Name="AppBar" Background="{StaticResource HudlDarkGray}">
+                <Button x:Name="btnDownload" Visibility="{Binding DownloadButton_Visibility}" Width="230" Height="40" FontSize="20" Content="Download Playlists" VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right" caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
+                <Grid Visibility="{Binding Downloading_Visibility}" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="165"/>
+                    <ProgressBar Grid.Row="1" Grid.Column="2" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="165" Foreground="{StaticResource HudlBlue}"/>
+                    <Button x:Name="btnCancel" Grid.RowSpan="2" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,17,0"
+                        caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
+                </Grid>
+            </StackPanel>
+        </AppBar>
+    </common:LayoutAwarePage.BottomAppBar>
 
 </common:LayoutAwarePage>
