@@ -54,6 +54,14 @@ namespace HudlRT.ViewModels
             base.OnActivate();
         }
 
+        private void CategoriesGridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            GridView catgegoriesGrid = (GridView)sender;
+            var playlistsSelected = catgegoriesGrid.SelectedItems;
+
+            var playlistsAdded = e.AddedItems;
+        }
+
         public async Task GetGameCategories(string gameID)
         {
             //if(CachedParameter.gameId == )
