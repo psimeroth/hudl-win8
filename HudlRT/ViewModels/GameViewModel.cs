@@ -97,8 +97,11 @@ namespace HudlRT.ViewModels
                             //Populate the thumbnail on the hub
                             if (Thumbnail == "ms-appx:///Assets/agile-hudl-logo-light.png")
                             {
-                                Thumbnail = cat.playlists[0].thumbnailLocation;
-                                ImageWidth = 565;
+                                if (cat.playlists[0].thumbnailLocation != null)
+                                {
+                                    Thumbnail = cat.playlists[0].thumbnailLocation;
+                                    ImageWidth = 565;
+                                }
                             }
                         }
                     }

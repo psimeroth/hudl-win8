@@ -111,6 +111,9 @@ namespace HudlRT.ViewModels
         private async void PopulateGroups()
         {
             games = await GetGames();
+            //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
+            previousGame = null;
+            nextGame = null;
 
             GetNextPreviousGames();
             NextGameVM.Games = new BindableCollection<GameViewModel>();
@@ -132,8 +135,14 @@ namespace HudlRT.ViewModels
             }
 
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
-            NewGroups.Add(NextGameVM);
-            NewGroups.Add(LastGameVM);
+            if(NextGameVM.Games.Count() > 0)
+            {
+                NewGroups.Add(NextGameVM);
+            }
+            if (LastGameVM.Games.Count() > 0)
+            {
+                NewGroups.Add(LastGameVM);
+            }
 
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
             if (response.ID != null)
@@ -149,7 +158,10 @@ namespace HudlRT.ViewModels
                 gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
                 schedule.Games.Add(gamevm);
             }
-            NewGroups.Add(schedule);
+            if (schedule.Games.Count > 0)
+            {
+                NewGroups.Add(schedule);
+            }
             Groups = NewGroups;
         }
 

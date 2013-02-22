@@ -56,62 +56,23 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(string gameID)
         {
-            //if(CachedParameter.gameId == )
             Categories = null;
             BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
-            BindableCollection<Category> categories = new BindableCollection<Category>();
-            if (Parameter.categories == null)
+            foreach (Category c in Parameter.categories)
             {
-                CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
-                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                CategoryViewModel cat = new CategoryViewModel(c);
+                foreach (Playlist p in c.playlists)
                 {
-                    categories = response.categories;
+                    PlaylistViewModel pvm = new PlaylistViewModel(p);
+                    cat.Playlists.Add(pvm);
+                    AddClipsAndHeadersForPlaylist(p);
                 }
-            }
-            else
-            {
-                categories = Parameter.categories;
-                foreach (Category c in Parameter.categories)
+                if (c.playlists != null && c.playlists.Count() != 0)
                 {
-                    CategoryViewModel cat = new CategoryViewModel(c);
-                    foreach (Playlist p in c.playlists)
-                    {
-                        PlaylistViewModel pvm = new PlaylistViewModel(p);
-                        cat.Playlists.Add(pvm);
-                    }
-                    if (c.playlists != null && c.playlists.Count() != 0)
-                    {
-                        cats.Add(cat);
-                    }
-                }
-                Categories = cats;
-                return;
-            }
-                foreach (Category category in categories)
-                {
-                    CategoryViewModel cat = new CategoryViewModel(category);
                     cats.Add(cat);
-                    //await AddPlaylistsForCategory(cat);
-                }
-                Categories = cats;
-        }
-
-        public async Task AddPlaylistsForCategory(CategoryViewModel category)
-        {
-            PlaylistResponse response = await ServiceAccessor.GetCategoryPlaylists(category.CategoryModel.categoryId);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                category.Playlists = new BindableCollection<PlaylistViewModel>();
-                foreach (Playlist playlist in response.playlists)
-                {
-                    category.Playlists.Add(new PlaylistViewModel(playlist));
-                    AddClipsAndHeadersForPlaylist(playlist);
                 }
             }
-            else
-            {
-                //What should go here?
-            }
+            Categories = cats;
         }
 
         public async Task AddClipsAndHeadersForPlaylist(Playlist playlist)
