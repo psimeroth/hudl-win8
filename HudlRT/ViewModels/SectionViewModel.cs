@@ -20,7 +20,7 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         INavigationService navigationService;
-        public string Parameter { get; set; }       //Passed in from hub page - contains the game Id.
+        public Game Parameter { get; set; }       //Passed in from hub page - contains the game selected.
         private string _gameId;     //Used to tell if the page needs to be reloaded
         private BindableCollection<CategoryViewModel> _categories;
         public BindableCollection<CategoryViewModel> Categories
@@ -45,9 +45,9 @@ namespace HudlRT.ViewModels
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
-            if (Parameter != _gameId)
+            if (Parameter.gameId != _gameId)
             {
-                _gameId = Parameter;
+                _gameId = Parameter.gameId;
                 GetGameCategories(_gameId);
 
             }
@@ -58,22 +58,42 @@ namespace HudlRT.ViewModels
         {
             //if(CachedParameter.gameId == )
             Categories = null;
-            CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
+            BindableCollection<Category> categories = new BindableCollection<Category>();
+            if (Parameter.categories == null)
             {
-                BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
-                foreach (Category category in response.categories)
+                CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
+                if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
-                    CategoryViewModel cat = new CategoryViewModel(category);
-                    cats.Add(cat);
-                    await AddPlaylistsForCategory(cat);
+                    categories = response.categories;
                 }
-                Categories = cats;
             }
             else
             {
-                Categories = null;
+                categories = Parameter.categories;
+                foreach (Category c in Parameter.categories)
+                {
+                    CategoryViewModel cat = new CategoryViewModel(c);
+                    foreach (Playlist p in c.playlists)
+                    {
+                        PlaylistViewModel pvm = new PlaylistViewModel(p);
+                        cat.Playlists.Add(pvm);
+                    }
+                    if (c.playlists != null && c.playlists.Count() != 0)
+                    {
+                        cats.Add(cat);
+                    }
+                }
+                Categories = cats;
+                return;
             }
+                foreach (Category category in categories)
+                {
+                    CategoryViewModel cat = new CategoryViewModel(category);
+                    cats.Add(cat);
+                    //await AddPlaylistsForCategory(cat);
+                }
+                Categories = cats;
         }
 
         public async Task AddPlaylistsForCategory(CategoryViewModel category)

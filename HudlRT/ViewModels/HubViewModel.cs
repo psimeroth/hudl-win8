@@ -119,7 +119,7 @@ namespace HudlRT.ViewModels
             if (previousGame != null)
             {
                 GameViewModel previous = new GameViewModel(previousGame, true);
-                previous.FetchThumbnailsAndPlaylistCounts();
+                previous.FetchPlaylists =  previous.FetchThumbnailsAndPlaylistCounts();
                 previous.IsLargeView = true;
                 NextGameVM.Games.Add(previous);
             }
@@ -127,7 +127,7 @@ namespace HudlRT.ViewModels
             {
                 GameViewModel next = new GameViewModel(nextGame, true);
                 //next.isLargeView = true;
-                next.FetchThumbnailsAndPlaylistCounts();
+                next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
                 LastGameVM.Games.Add(next);
             }
 
@@ -146,7 +146,7 @@ namespace HudlRT.ViewModels
             foreach (Game g in games)
             {
                 GameViewModel gamevm = new GameViewModel(g);
-                gamevm.FetchThumbnailsAndPlaylistCounts();
+                gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
                 schedule.Games.Add(gamevm);
             }
             NewGroups.Add(schedule);
@@ -231,11 +231,11 @@ namespace HudlRT.ViewModels
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
-            string parameter = gameViewModel.GameModel.gameId;
+            Game parameter = gameViewModel.GameModel;
             
-            //CachedParameter.gameId = ((GameViewModel)eventArgs.ClickedItem).GameModel.gameId;
             if (!gameViewModel.IsLastViewed)
             {
+                await gameViewModel.FetchPlaylists;
                 navigationService.NavigateToViewModel<SectionViewModel>(parameter);
             }
             else
