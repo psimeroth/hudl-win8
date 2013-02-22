@@ -228,6 +228,13 @@ namespace HudlRT.ViewModels
             return null;
         }
 
+        private void SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            GridView categoriesGrid = (GridView)sender;
+            categoriesGrid.SelectedIndex = -1;
+
+        }
+
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
@@ -240,9 +247,17 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
-                Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.ThumbNail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
+                Playlist downloadedPlaylist = DownloadAccessor.Instance.downloadedPlaylists.Where(u => u.playlistId == gameViewModel.GameModel.gameId).FirstOrDefault();
+                if (downloadedPlaylist != null)
+                {
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(downloadedPlaylist);
+                }
+                else
+                {
+                    ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
+                    Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.ThumbNail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
+                }
             }
             
         }

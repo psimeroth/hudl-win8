@@ -114,6 +114,7 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
+            
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
@@ -123,7 +124,11 @@ namespace HudlRT.ViewModels
                 GetGameCategories(_gameId);
 
             }
-            
+            if (DownloadAccessor.Instance.Downloading)
+            {
+                Downloading_Visibility = Visibility.Visible;
+                AppBarOpen = true;
+            }
         }
 
         public async Task GetGameCategories(string gameID)
@@ -204,6 +209,16 @@ namespace HudlRT.ViewModels
                 await DownloadAccessor.Instance.RemoveDownload(playVM.PlaylistModel);
             }
             MarkDownloadedPlaylists();
+            categoriesGrid.SelectedItem = null;
+            AppBarOpen = false;
+        }
+
+        public void CancelButtonClick()
+        {
+            if (DownloadAccessor.Instance.Downloading)
+            {
+                DownloadAccessor.Instance.cts.Cancel();
+            }
             categoriesGrid.SelectedItem = null;
             AppBarOpen = false;
         }

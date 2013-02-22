@@ -184,7 +184,19 @@ namespace HudlRT.Models
         public string playlistId { get; set; }
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
-        public string thumbnailLocation { get; set; }
+        public string downloadedThumbnailLocation { get; set; }
+        private string thumnaillocation;
+        public string thumbnailLocation
+        {
+            get
+            {
+                return downloadedThumbnailLocation != null ? downloadedThumbnailLocation : thumnaillocation;
+            }
+            set
+            {
+                thumnaillocation = value;
+            }
+        }
         public long totalFilesSize { get; set; }
         public DateTime downloadedDate { get; set; }
         public Playlist()

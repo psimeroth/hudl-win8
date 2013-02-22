@@ -90,9 +90,21 @@ namespace HudlRT.Common
         {
             try
             {
+                playlist.downloadedThumbnailLocation = null;
+                foreach (Clip c in playlist.clips)
+                {
+                    foreach (Angle a in c.angles)
+                    {
+                        a.isPreloaded = false;
+                    }
+                }
                 var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + playlist.playlistId.ToString());
                 await folder.DeleteAsync();
-                downloadedPlaylists.Remove(playlist);
+                Playlist dlPlaylist = downloadedPlaylists.Where(u => u.playlistId == playlist.playlistId).FirstOrDefault();
+                if(dlPlaylist != null)
+                {
+                    downloadedPlaylists.Remove(dlPlaylist);
+                }
             }
             catch (Exception)
             {
@@ -163,7 +175,7 @@ namespace HudlRT.Common
                 var downloadThumb = downloaderThumb.CreateDownload(sourceThumb, destinationFileThumb);
                 var downloadOperationThumb = await downloadThumb.StartAsync();
                 var fileThumb = (StorageFile)downloadOperationThumb.ResultFile;
-                pl.thumbnailLocation = fileThumb.Path.Replace("\\", "/");
+                pl.downloadedThumbnailLocation = fileThumb.Path.Replace("\\", "/");
 
                 StorageFile downloadModel = await fileFolder.CreateFileAsync("DownloadsModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
                 foreach (Clip c in pl.clips)
