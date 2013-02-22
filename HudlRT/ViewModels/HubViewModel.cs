@@ -88,7 +88,7 @@ namespace HudlRT.ViewModels
             {
                 Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };//this is actually a playlist - not a game
                 GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, true);
-                lastViewed.ThumbNail = response.thumbnail;
+                lastViewed.Thumbnail = response.thumbnail;
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
                 LastViewedVM.Games.Add(lastViewed);
                 if (Groups.Count >= 3)
@@ -120,7 +120,7 @@ namespace HudlRT.ViewModels
             {
                 GameViewModel previous = new GameViewModel(previousGame, true);
                 previous.FetchThumbnailsAndPlaylistCounts();
-                previous.isLargeView = true;
+                previous.IsLargeView = true;
                 NextGameVM.Games.Add(previous);
             }
             if (nextGame != null)
@@ -241,7 +241,7 @@ namespace HudlRT.ViewModels
             string parameter = gameViewModel.GameModel.gameId;
             
             //CachedParameter.gameId = ((GameViewModel)eventArgs.ClickedItem).GameModel.gameId;
-            if (!gameViewModel.isLastViewed)
+            if (!gameViewModel.IsLastViewed)
             {
                 navigationService.NavigateToViewModel<SectionViewModel>(parameter);
             }
@@ -255,7 +255,7 @@ namespace HudlRT.ViewModels
                 else
                 {
                     ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
-                    Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.ThumbNail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
+                    Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.Thumbnail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
                 }
             }

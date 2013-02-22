@@ -141,9 +141,12 @@ namespace HudlRT.ViewModels
                 BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
                 foreach (Category category in response.categories)
                 {
-                    CategoryViewModel cat = new CategoryViewModel(category);
-                    cats.Add(cat);
-                    await AddPlaylistsForCategory(cat);
+                        CategoryViewModel cat = new CategoryViewModel(category);
+                        await AddPlaylistsForCategory(cat);
+                        if (cat.Playlists != null && cat.Playlists.Count() != 0)
+                        {
+                            cats.Add(cat);
+                        }
                 }
                 Categories = cats;
                 MarkDownloadedPlaylists();

@@ -15,7 +15,7 @@ namespace HudlRT.Common
         {
             GameViewModel game = item as GameViewModel;
 
-            if (game.isLargeView)
+            if (game.IsLargeView)
             {
                 return  this.LargeTemplate;
             }
