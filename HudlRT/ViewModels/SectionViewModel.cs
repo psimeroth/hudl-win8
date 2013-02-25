@@ -63,9 +63,12 @@ namespace HudlRT.ViewModels
                 CategoryViewModel cat = new CategoryViewModel(c);
                 foreach (Playlist p in c.playlists)
                 {
-                    PlaylistViewModel pvm = new PlaylistViewModel(p);
-                    cat.Playlists.Add(pvm);
-                    AddClipsAndHeadersForPlaylist(p);
+                        CategoryViewModel cat = new CategoryViewModel(category);
+                        await AddPlaylistsForCategory(cat);
+                        if (cat.Playlists != null && cat.Playlists.Count() != 0)
+                        {
+                            cats.Add(cat);
+                        }
                 }
                 if (c.playlists != null && c.playlists.Count() != 0)
                 {
