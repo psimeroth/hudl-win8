@@ -60,7 +60,6 @@ namespace HudlRT.Common
         public async Task<BindableCollection<Playlist>> GetDownloads()
         {
             BindableCollection<Playlist> playlists = new BindableCollection<Playlist>();
-            Downloads downloads = new Downloads();
             long totalSize = 0;
             var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
             if(userFolder != null)
@@ -86,6 +85,19 @@ namespace HudlRT.Common
             return playlists;
         }
 
+        public async Task<BindableCollection<Season>> GetDownloadsModel()
+        {
+            BindableCollection<Season> seasons = new BindableCollection<Season>();
+            try
+            {
+                StorageFile model = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFileAsync("CompleteModel");
+                string text = await Windows.Storage.FileIO.ReadTextAsync(model);
+                seasons = JsonConvert.DeserializeObject<BindableCollection<Season>>(text);
+            }
+            catch (Exception) { }
+            return seasons;
+        }
+
         public async Task RemoveDownload(Playlist playlist)
         {
             try
@@ -98,7 +110,6 @@ namespace HudlRT.Common
                         a.isPreloaded = false;
                     }
                 }
-                //var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + playlist.playlistId.ToString());
                 var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
                 var playlistFolder = await userFolder.GetFolderAsync(playlist.playlistId);
                 await playlistFolder.DeleteAsync();
@@ -136,7 +147,7 @@ namespace HudlRT.Common
             }
         }
 
-        public async Task DownloadPlaylists(List<Playlist> playlists)//list of playlists, game, season
+        public async Task DownloadPlaylists(List<Playlist> playlists, Season seasonAndGame)//list of playlists,  season(with game)
         {
             currentlyDownloadingPlaylists = playlists;
             backgroundDownloader = new BackgroundDownloader();
@@ -179,8 +190,6 @@ namespace HudlRT.Common
                 var downloadOperationThumb = await downloadThumb.StartAsync();
                 var fileThumb = (StorageFile)downloadOperationThumb.ResultFile;
                 pl.downloadedThumbnailLocation = fileThumb.Path.Replace("\\", "/");
-
-                StorageFile downloadModel = await fileFolder.CreateFileAsync("DownloadsModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
                 foreach (Clip c in pl.clips)
                 {
                     foreach (Angle angle in c.angles)
@@ -209,12 +218,56 @@ namespace HudlRT.Common
                         }
                     }
                 }
+                StorageFile downloadModel = await fileFolder.CreateFileAsync("DownloadsModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
                 pl.downloadedDate = DateTime.Now;
                 string updatedModel = JsonConvert.SerializeObject(pl);
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
                 downloadedPlaylists.Add(pl);
 
             }
+            Game selectedGame = seasonAndGame.games.FirstOrDefault();
+            Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, isHome = selectedGame.isHome, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() }; 
+            foreach (Category c in selectedGame.categories)
+            {
+                foreach (Playlist plFromSelectedGame in c.playlists)
+                {
+                    foreach (Playlist plFromParameter in playlists)
+                    {
+                        if (plFromSelectedGame.playlistId == plFromParameter.playlistId)
+                        {
+                            Category foundCat = newGameWithOnlyDownloads.categories.Where(u => u.categoryId == c.categoryId).FirstOrDefault();
+                            if (foundCat == null)
+                            {
+                                newGameWithOnlyDownloads.categories.Add(new Category { categoryId = c.categoryId, name = c.name, playlists = c.playlists });
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            foreach (Category c in newGameWithOnlyDownloads.categories)
+            {
+                BindableCollection<Playlist> newPlaylists = new BindableCollection<Playlist>();
+                foreach (Playlist pl in c.playlists)
+                {
+                    bool found = playlists.Any(u => u.playlistId == pl.playlistId);
+                    if (found)
+                    {
+                        newPlaylists.Add(pl);
+                    }
+                }
+                c.playlists = newPlaylists;
+            }
+            seasonAndGame.games[0] = newGameWithOnlyDownloads;//model to be saved
+            BindableCollection<Season> modelToSave = new BindableCollection<Season>();
+            modelToSave.Add(seasonAndGame);
+            seasonAndGame.owningTeam.seasons = null;
+
+            StorageFile completeModelFile = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFileAsync("CompleteModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
+            string complete = JsonConvert.SerializeObject(modelToSave);
+            await Windows.Storage.FileIO.WriteTextAsync(completeModelFile, complete);
+
             DownloadComplete_Notification();
             Downloading = false;
             CurrentDownloadedBytes = 0;

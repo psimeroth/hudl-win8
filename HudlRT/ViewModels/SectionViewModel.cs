@@ -22,7 +22,8 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         INavigationService navigationService;
-        public Game Parameter { get; set; }       //Passed in from hub page - contains the game selected.
+        public Season Parameter { get; set; }       //Passed in from hub page - contains the game selected.
+        public Game gameSelected { get; set; }
         private string _gameId;     //Used to tell if the page needs to be reloaded
         GridView categoriesGrid;
         List<Object> playlistsSelected;
@@ -118,9 +119,10 @@ namespace HudlRT.ViewModels
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
-            if (Parameter.gameId != _gameId)
+            gameSelected = Parameter.games.FirstOrDefault();
+            if (gameSelected.gameId != _gameId)
             {
-                _gameId = Parameter.gameId;
+                _gameId = gameSelected.gameId;
                 GetGameCategories(_gameId);
             }
             DeleteButton_Visibility = Visibility.Collapsed;
@@ -137,7 +139,7 @@ namespace HudlRT.ViewModels
         {
             Categories = null;
             BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
-            foreach (Category c in Parameter.categories)
+            foreach (Category c in gameSelected.categories)
             {
                 CategoryViewModel cat = new CategoryViewModel(c);
                 foreach (Playlist p in c.playlists)
@@ -230,7 +232,7 @@ namespace HudlRT.ViewModels
             DownloadAccessor.Instance.cts = new CancellationTokenSource();
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = playlistsToBeDownloaded;
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded);//TODO need to deep copy here
+            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded, Parameter);//TODO need to deep copy here
 
         }
 

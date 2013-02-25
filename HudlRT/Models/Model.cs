@@ -110,7 +110,6 @@ namespace HudlRT.Models
         public bool isHome { get; set; }
         public BindableCollection<Category> categories { get; set; }
         public string gameId { get; set; }
-
         public string DisplayDate
         {
             get

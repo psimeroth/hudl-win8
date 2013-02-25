@@ -64,6 +64,7 @@ namespace HudlRT.ViewModels
         {
             base.OnInitialize();
             await DownloadAccessor.Instance.GetDownloads();
+            BindableCollection<Season> downloadModel = await DownloadAccessor.Instance.GetDownloadsModel();
             SeasonsDropDown = await GetSortedSeasons();
             string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
 
@@ -250,7 +251,10 @@ namespace HudlRT.ViewModels
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
-            Game parameter = gameViewModel.GameModel;
+            Season parameter = SelectedSeason;
+            parameter.games = new BindableCollection<Game>();
+            parameter.games.Add(gameViewModel.GameModel);
+            //Game parameter = gameViewModel.GameModel;
             
             if (!gameViewModel.IsLastViewed)
             {
