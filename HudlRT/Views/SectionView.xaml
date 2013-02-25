@@ -72,7 +72,7 @@
 
                         <GridView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Background="{StaticResource HudlLightGray}" Height="240" Width="325">
+                                <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="240" Width="325">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="7*"/>
                                         <RowDefinition Height="5*"/>
