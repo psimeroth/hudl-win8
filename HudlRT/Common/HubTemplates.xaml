@@ -9,7 +9,7 @@
                 <RowDefinition Height="9*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0" IsRightTapEnabled="False"/>
+            <Image Source="{Binding Thumbnail}" MinWidth="{Binding ImageWidth}" HorizontalAlignment="Center" Grid.Row="0" IsRightTapEnabled="False"/>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1" IsRightTapEnabled="False">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -28,7 +28,7 @@
                 <RowDefinition Height="7*"/>
                 <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding ThumbNail}" Width="300" HorizontalAlignment="Center" Grid.Row="0" IsRightTapEnabled="False"/>
+            <Image Source="{Binding Thumbnail}" MinHeight="263" HorizontalAlignment="Center" Grid.Row="0" IsRightTapEnabled="False"/>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1" IsRightTapEnabled="False">
                 <Grid.RowDefinitions>
                     <RowDefinition />
