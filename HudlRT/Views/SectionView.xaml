@@ -14,60 +14,61 @@
         <CollectionViewSource x:Name="CategoriesViewSource" Source="{Binding Categories}" IsSourceGrouped="True" ItemsPath="Playlists" />
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource HudlGrayGradient}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <Grid Background="{StaticResource HudlGrayGradient}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <!-- Back button and page title -->
-        <Grid Grid.Row="0" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
-            <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
-        </Grid>
+            <!-- Back button and page title -->
+            <Grid Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
+                <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
+            </Grid>
 
-        <SemanticZoom Grid.Row="1">
-
-            <SemanticZoom.ZoomedInView>
-                <GridView Grid.Row="1" x:Name="CategoriesGridView" SelectionMode="None" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
-                    <GridView.ItemsPanel>
-                        <ItemsPanelTemplate>
+            <SemanticZoom Grid.Row="1">
+            
+                <SemanticZoom.ZoomedInView>
+                    <GridView Grid.Row="1" x:Name="CategoriesGridView" SelectionMode="None" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">          
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
                             <VirtualizingStackPanel Orientation="Horizontal" Margin="90,0"/>
-                        </ItemsPanelTemplate>
-                    </GridView.ItemsPanel>
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>
                 
-                    <GridView.ItemContainerStyle>
-                        <Style TargetType="GridViewItem">
-                            <!-- Puts space between grid view items-->
-                            <Setter Property="Margin" Value="8,8,8,8" />
-                        </Style>
-                    </GridView.ItemContainerStyle>
+                        <GridView.ItemContainerStyle>
+                            <Style TargetType="GridViewItem">
+                                <!-- Puts space between grid view items-->
+                                <Setter Property="Margin" Value="8,8,8,8" />
+                            </Style>
+                        </GridView.ItemContainerStyle>
 
-                    <GridView.GroupStyle>
-                        <GroupStyle>
-                            <GroupStyle.HeaderTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0">
-                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlMediumDarkGray}" Style="{StaticResource GridViewGroupName}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </GroupStyle.HeaderTemplate>
-                            <GroupStyle.Panel>
-                                <ItemsPanelTemplate>
-                                    <VariableSizedWrapGrid Orientation="Vertical" />
-                                </ItemsPanelTemplate>
-                            </GroupStyle.Panel>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="GroupItem">
-                                    <Setter Property="Margin" Value="0,0,60,0" />
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
-                    </GridView.GroupStyle>
+                        <GridView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0">
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlMediumDarkGray}" Style="{StaticResource GridViewGroupName}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                                <GroupStyle.Panel>
+                                    <ItemsPanelTemplate>
+                                        <VariableSizedWrapGrid Orientation="Vertical" />
+                                    </ItemsPanelTemplate>
+                                </GroupStyle.Panel>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="GroupItem">
+                                        <Setter Property="Margin" Value="0,0,60,0" />
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </GridView.GroupStyle>
 
                     <GridView.ItemTemplate>
                         <DataTemplate>
@@ -79,21 +80,116 @@
                                 <Image Grid.Row="0" Source="{Binding ThumbnailPath}" Width="300" HorizontalAlignment="Center" />
                                 <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
+                                        <RowDefinition Height="7*"/>
+                                        <RowDefinition Height="5*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
-                                    <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
-                                    <Image HorizontalAlignment="Right" Grid.Row="1" />
+                                    <Image Grid.Row="0" Source="{Binding ThumbnailPath}" MinHeight="263" HorizontalAlignment="Center" />
+                                    <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
+                                        <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
+                                        <Image HorizontalAlignment="Right" Grid.Row="1" />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
                     
-                 </GridView>
-            </SemanticZoom.ZoomedInView>
-        </SemanticZoom>
+                     </GridView>
+                </SemanticZoom.ZoomedInView>
+            </SemanticZoom>
 
+            <!-- Vertical scrolling list only used when snapped -->
+            <ListView
+                x:Name="itemListView"
+                AutomationProperties.AutomationId="ItemListView"
+                AutomationProperties.Name="Grouped Items"
+                Grid.Row="1"
+                Visibility="Collapsed"
+                Margin="0,0,0,0"
+                Padding="10,0,0,0"
+                ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}"
+                SelectionMode="Single"
+                IsSwipeEnabled="false"
+                IsItemClickEnabled="True"
+                caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
+                                <Image Source="{Binding ThumbnailPath}" Stretch="UniformToFill"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch">
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource ItemTextStyle}" MaxHeight="40"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding NumClips}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <Grid Margin="7,7,0,0">
+                                    <TextBlock Text="{Binding Name}" Foreground="Gray" FontSize="25" />
+                                </Grid>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+
+            <VisualStateManager.VisualStateGroups>
+
+                <!-- Visual states reflect the application's view state -->
+                <VisualStateGroup x:Name="ApplicationViewStates">
+                    <VisualState x:Name="FullScreenLandscape"/>
+                    <VisualState x:Name="Filled"/>
+
+                    <!--
+                        The back button and title have different styles when snapped, and the list representation is substituted
+                        for the grid displayed in all other view states
+                    -->
+                    <VisualState x:Name="Snapped">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CategoriesGridView" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}" />
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="40" />
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="-30,0,0,30" />
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+
+        </Grid>
+
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" />
     </Grid>
 
 </common:LayoutAwarePage>

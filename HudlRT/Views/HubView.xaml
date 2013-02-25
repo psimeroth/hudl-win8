@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:views="using:HudlRT.ViewModels"
-    NavigationCacheMode="Required">
+    NavigationCacheMode="Disabled">
     
     <UserControl.Resources>
         <CollectionViewSource x:Name="GroupsViewSource" Source="{Binding Groups}" IsSourceGrouped="True" ItemsPath="Games"/>
@@ -79,7 +79,7 @@
                     </GroupStyle.ContainerStyle>
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid Orientation="Vertical" />
+                            <VariableSizedWrapGrid Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
                 </GroupStyle>
@@ -98,8 +98,10 @@
             ItemsSource="{Binding Source={StaticResource GroupsViewSource}}"
             ItemTemplate="{StaticResource HubPageSnappedGamesTemplate}"
             SelectionMode="Single"
-            IsSwipeEnabled="false">
-
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True"
+            caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]">
+     
             <ListView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -140,6 +142,12 @@
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ComboBoxColumn" Storyboard.TargetProperty="Width">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="40" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="-80,0,0,30" />
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

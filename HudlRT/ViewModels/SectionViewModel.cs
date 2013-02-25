@@ -20,7 +20,7 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         INavigationService navigationService;
-        public string Parameter { get; set; }       //Passed in from hub page - contains the game Id.
+        public Game Parameter { get; set; }       //Passed in from hub page - contains the game selected.
         private string _gameId;     //Used to tell if the page needs to be reloaded
         private BindableCollection<CategoryViewModel> _categories;
         public BindableCollection<CategoryViewModel> Categories
@@ -30,6 +30,17 @@ namespace HudlRT.ViewModels
             {
                 _categories = value;
                 NotifyOfPropertyChange(() => Categories);
+            }
+        }
+
+        private string _noPlaylistText;
+        public string NoPlaylistText
+        {
+            get { return _noPlaylistText; }
+            set
+            {
+                _noPlaylistText = value;
+                NotifyOfPropertyChange(() => NoPlaylistText);
             }
         }
 
@@ -45,9 +56,9 @@ namespace HudlRT.ViewModels
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
-            if (Parameter != _gameId)
+            if (Parameter.gameId != _gameId)
             {
-                _gameId = Parameter;
+                _gameId = Parameter.gameId;
                 GetGameCategories(_gameId);
 
             }
@@ -56,41 +67,31 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(string gameID)
         {
-            //if(CachedParameter.gameId == )
             Categories = null;
-            CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
+            foreach (Category c in Parameter.categories)
             {
-                BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
-                foreach (Category category in response.categories)
+                CategoryViewModel cat = new CategoryViewModel(c);
+                foreach (Playlist p in c.playlists)
                 {
-                    CategoryViewModel cat = new CategoryViewModel(category);
+                    PlaylistViewModel pvm = new PlaylistViewModel(p);
+                    cat.Playlists.Add(pvm);
+                    AddClipsAndHeadersForPlaylist(p);
+                }
+                if (c.playlists != null && c.playlists.Count() != 0)
+                {
                     cats.Add(cat);
-                    await AddPlaylistsForCategory(cat);
                 }
-                Categories = cats;
             }
-            else
-            {
-                Categories = null;
-            }
-        }
+            Categories = cats;
 
-        public async Task AddPlaylistsForCategory(CategoryViewModel category)
-        {
-            PlaylistResponse response = await ServiceAccessor.GetCategoryPlaylists(category.CategoryModel.categoryId);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            if (Categories.Count == 0)
             {
-                category.Playlists = new BindableCollection<PlaylistViewModel>();
-                foreach (Playlist playlist in response.playlists)
-                {
-                    category.Playlists.Add(new PlaylistViewModel(playlist));
-                    AddClipsAndHeadersForPlaylist(playlist);
-                }
+                NoPlaylistText = "There are no playlists for this schedule entry";
             }
             else
             {
-                //What should go here?
+                NoPlaylistText = "";
             }
         }
 
