@@ -18,6 +18,7 @@ using System.Threading;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
 using System.ComponentModel;
+using System.IO;
 
 namespace HudlRT.Common
 {
@@ -46,6 +47,8 @@ namespace HudlRT.Common
             ClipsComplete = 0;
             CurrentDownloadedBytes = 0;
             TotalClips = 0;
+            downloadedPlaylists = new BindableCollection<Playlist>();
+            currentlyDownloadingPlaylists = new List<Playlist>();
         }
 
         public DownloadOperation Download { get; set; }
@@ -60,8 +63,16 @@ namespace HudlRT.Common
         public async Task<BindableCollection<Playlist>> GetDownloads()
         {
             BindableCollection<Playlist> playlists = new BindableCollection<Playlist>();
+            StorageFolder userFolder;
             long totalSize = 0;
-            var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
+            try
+            {
+                userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
+            }
+            catch (FileNotFoundException e)
+            {
+                return playlists;
+            }
             if(userFolder != null)
             {
                 var playlistFolders = await userFolder.GetFoldersAsync();
@@ -88,13 +99,25 @@ namespace HudlRT.Common
         public async Task<BindableCollection<Season>> GetDownloadsModel()
         {
             BindableCollection<Season> seasons = new BindableCollection<Season>();
+            StorageFolder userFolder;
             try
             {
-                StorageFile model = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFileAsync("CompleteModel");
-                string text = await Windows.Storage.FileIO.ReadTextAsync(model);
-                seasons = JsonConvert.DeserializeObject<BindableCollection<Season>>(text);
+                userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
             }
-            catch (Exception) { }
+            catch (FileNotFoundException e)
+            {
+                return seasons;
+            }
+            if (userFolder != null)
+            {
+                try
+                {
+                    StorageFile model = await userFolder.GetFileAsync("CompleteModel");
+                    string text = await Windows.Storage.FileIO.ReadTextAsync(model);
+                    seasons = JsonConvert.DeserializeObject<BindableCollection<Season>>(text);
+                }
+                catch (Exception) { }
+            }
             return seasons;
         }
 
@@ -123,6 +146,46 @@ namespace HudlRT.Common
             {
                 //should only fail if the folder does not exist - meaning its already deleted
             }
+            await RemoveDownloadFromModel(playlist);
+        }
+
+        public async Task RemoveDownloadFromModel(Playlist playlist)
+        {
+            BindableCollection<Season> currentModel = await GetDownloadsModel();
+            BindableCollection<Season> newModel = currentModel;
+            foreach (Season s in currentModel)
+            {
+                BindableCollection<Game> newGames = s.games;
+                foreach (Game g in s.games)
+                {
+                    BindableCollection<Category> newCategories = g.categories;
+                    foreach (Category c in g.categories)
+                    {
+                        BindableCollection<Playlist> newPlaylists = c.playlists;
+                        Playlist foundPL = c.playlists.Where(u => u.playlistId == playlist.playlistId).FirstOrDefault();
+                        if (foundPL != null)
+                        {
+                            newPlaylists.Remove(foundPL);
+                            if (newPlaylists.Count == 0)
+                            {
+                                newCategories.Remove(c);
+                                break;
+                            }
+                        }
+                    }
+                    g.categories = newCategories;
+                    if (g.categories.Count == 0)
+                    {
+                        newGames.Remove(g);
+                    }
+                }
+                s.games = newGames;
+                if (s.games.Count == 0)
+                {
+                    newModel.Remove(s);
+                }
+            }
+
         }
 
         private async Task<StorageFile> StartDownloadAsync(DownloadOperation downloadOperation)
@@ -176,12 +239,11 @@ namespace HudlRT.Common
                 }
                 cut.totalFilesSize = playlistTotalSize;
             }
-
+            var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername(), Windows.Storage.CreationCollisionOption.OpenIfExists);
             foreach (Playlist pl in playlists)
             {
-                var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername(), Windows.Storage.CreationCollisionOption.OpenIfExists);
+                
                 var fileFolder = await userFolder.CreateFolderAsync(pl.playlistId, Windows.Storage.CreationCollisionOption.OpenIfExists);
-
                 //save thumbnail
                 var sourceThumb = new Uri(pl.thumbnailLocation);
                 var destinationFileThumb = await fileFolder.CreateFileAsync("Thumbnail.jpg", CreationCollisionOption.ReplaceExisting);
@@ -260,12 +322,49 @@ namespace HudlRT.Common
                 c.playlists = newPlaylists;
             }
             seasonAndGame.games[0] = newGameWithOnlyDownloads;//model to be saved
-            BindableCollection<Season> modelToSave = new BindableCollection<Season>();
-            modelToSave.Add(seasonAndGame);
             seasonAndGame.owningTeam.seasons = null;
 
-            StorageFile completeModelFile = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFileAsync("CompleteModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
-            string complete = JsonConvert.SerializeObject(modelToSave);
+            BindableCollection<Season> currentDownloadsCompleteModel = await GetDownloadsModel();
+            bool seasonFound = false;
+            foreach (Season s in currentDownloadsCompleteModel)
+            {
+                if(s.seasonID == seasonAndGame.seasonID)//found the season we need to merge
+                {
+                    seasonFound = true;
+                    Game g = s.games.Where(u => u.gameId == newGameWithOnlyDownloads.gameId).FirstOrDefault();
+                    if (g != null)
+                    {
+                        BindableCollection<Category> newCategories = g.categories;                    
+                        foreach (Category newCat in newGameWithOnlyDownloads.categories)//gameToBeAdded could have multiple new categories and playlists
+                        {
+                            Category fromCurrent = g.categories.Where(u => u.categoryId == newCat.categoryId).FirstOrDefault();
+                            if (fromCurrent == null)
+                            {
+                                g.categories.Add(newCat);
+                            }
+                            else
+                            {
+                                foreach (Playlist p in newCat.playlists)
+                                {
+                                    fromCurrent.playlists.Add(p);
+                                }
+                            }
+                        }
+                        
+                    }
+                    else
+                    {
+                        s.games.Add(newGameWithOnlyDownloads);
+                    }
+                }
+            }
+            if (!seasonFound)
+            {
+                currentDownloadsCompleteModel.Add(seasonAndGame);
+            }
+
+            StorageFile completeModelFile = await userFolder.CreateFileAsync("CompleteModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
+            string complete = JsonConvert.SerializeObject(currentDownloadsCompleteModel);
             await Windows.Storage.FileIO.WriteTextAsync(completeModelFile, complete);
 
             DownloadComplete_Notification();
