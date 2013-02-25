@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:views="using:HudlRT.ViewModels"
-    NavigationCacheMode="Required">
+    NavigationCacheMode="Disabled">
     
     <UserControl.Resources>
         <CollectionViewSource x:Name="GroupsViewSource" Source="{Binding Groups}" IsSourceGrouped="True" ItemsPath="Games"/>
@@ -79,7 +79,7 @@
                     </GroupStyle.ContainerStyle>
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid Orientation="Vertical" />
+                            <VariableSizedWrapGrid Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
                 </GroupStyle>
