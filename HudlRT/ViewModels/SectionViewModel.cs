@@ -122,8 +122,10 @@ namespace HudlRT.ViewModels
             {
                 _gameId = Parameter;
                 GetGameCategories(_gameId);
-
             }
+            DeleteButton_Visibility = Visibility.Collapsed;
+            DownloadButton_Visibility = Visibility.Collapsed;
+            Downloading_Visibility = Visibility.Collapsed;
             if (DownloadAccessor.Instance.Downloading)
             {
                 Downloading_Visibility = Visibility.Visible;
@@ -338,7 +340,6 @@ namespace HudlRT.ViewModels
         {
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
-            int downloadedCutupCount = 0;
             if (DownloadProgress == 100)
             {
                 if (Categories != null)

@@ -60,16 +60,17 @@ namespace HudlRT.Common
         public async Task<BindableCollection<Playlist>> GetDownloads()
         {
             BindableCollection<Playlist> playlists = new BindableCollection<Playlist>();
-            var downloadFolders = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFoldersAsync();
             Downloads downloads = new Downloads();
             long totalSize = 0;
-            foreach (StorageFolder folder in downloadFolders)
+            var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
+            if(userFolder != null)
             {
-                if (folder.Name.Contains(AppDataAccessor.GetUsername()))
+                var playlistFolders = await userFolder.GetFoldersAsync();
+                foreach (StorageFolder pFolder in playlistFolders)
                 {
                     try
                     {
-                        StorageFile model = await folder.GetFileAsync("DownloadsModel");
+                        StorageFile model = await pFolder.GetFileAsync("DownloadsModel");
                         string text = await Windows.Storage.FileIO.ReadTextAsync(model);
                         Playlist playlist = JsonConvert.DeserializeObject<Playlist>(text);
                         if (playlist != null)
@@ -81,9 +82,8 @@ namespace HudlRT.Common
                     catch (Exception) { }
                 }
             }
-            BindableCollection<Playlist> sortedPlaylists = new BindableCollection<Playlist>(playlists.OrderByDescending(c => c.downloadedDate));
-            downloadedPlaylists = sortedPlaylists;
-            return sortedPlaylists;
+            downloadedPlaylists = playlists;
+            return playlists;
         }
 
         public async Task RemoveDownload(Playlist playlist)
@@ -98,8 +98,10 @@ namespace HudlRT.Common
                         a.isPreloaded = false;
                     }
                 }
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + playlist.playlistId.ToString());
-                await folder.DeleteAsync();
+                //var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername() + playlist.playlistId.ToString());
+                var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
+                var playlistFolder = await userFolder.GetFolderAsync(playlist.playlistId);
+                await playlistFolder.DeleteAsync();
                 Playlist dlPlaylist = downloadedPlaylists.Where(u => u.playlistId == playlist.playlistId).FirstOrDefault();
                 if(dlPlaylist != null)
                 {
@@ -134,7 +136,7 @@ namespace HudlRT.Common
             }
         }
 
-        public async Task DownloadPlaylists(List<Playlist> playlists)
+        public async Task DownloadPlaylists(List<Playlist> playlists)//list of playlists, game, season
         {
             currentlyDownloadingPlaylists = playlists;
             backgroundDownloader = new BackgroundDownloader();
@@ -166,7 +168,8 @@ namespace HudlRT.Common
 
             foreach (Playlist pl in playlists)
             {
-                var fileFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername() + pl.playlistId.ToString(), Windows.Storage.CreationCollisionOption.OpenIfExists);
+                var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername(), Windows.Storage.CreationCollisionOption.OpenIfExists);
+                var fileFolder = await userFolder.CreateFolderAsync(pl.playlistId, Windows.Storage.CreationCollisionOption.OpenIfExists);
 
                 //save thumbnail
                 var sourceThumb = new Uri(pl.thumbnailLocation);
