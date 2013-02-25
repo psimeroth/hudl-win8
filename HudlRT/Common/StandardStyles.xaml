@@ -151,7 +151,7 @@
                         <Rectangle
                             x:Name="FocusVisualBlack"
                             IsHitTestVisible="False"
-                            Stroke="{StaticResource FocusVisualBlackStrokeThemeBrush}"
+                            Stroke="{StaticResource HudlOrange}"
                             StrokeEndLineCap="Square"
                             StrokeDashArray="1,1"
                             Opacity="0"

@@ -41,7 +41,7 @@ namespace HudlRT.ViewModels
             {
                 if (PlaylistModel.thumbnailLocation == null)
                 {
-                    return "ms-appx:///Assets/hudl-metro-orange-large.png";
+                    return "ms-appx:///Assets/hudl-mark-gray.png";
                 }
                 else
                 {

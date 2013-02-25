@@ -62,7 +62,7 @@ namespace HudlRT.ViewModels
             GameModel = game;
             isLargeView = isLarge;
             isLastViewed = isLastviewed;
-            ThumbNail = "ms-appx:///Assets/hudl-metro-orange-large.png";
+            ThumbNail = "ms-appx:///Assets/hudl-mark-gray.png";
         }
 
         public async void FetchThumbnailsAndPlaylistCounts()
@@ -82,7 +82,7 @@ namespace HudlRT.ViewModels
                         {
                             numLists += cat.playlists.Count();
                             //Populate the thumbnail on the hub
-                            if (ThumbNail == "ms-appx:///Assets/hudl-metro-orange-large.png")
+                            if (ThumbNail == "ms-appx:///Assets/hudl-mark-gray.png")
                             {
                                 ThumbNail = cat.playlists[0].thumbnailLocation;
                             }
