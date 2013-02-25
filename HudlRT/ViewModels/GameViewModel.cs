@@ -13,11 +13,11 @@ namespace HudlRT.ViewModels
     {
         private string _thumbNail;
         private string _numPlaylists;
-        public bool IsLargeView { get; set; }
         private double _imageWidth;
-        public Game GameModel { get; set; }
+        public bool IsLargeView { get; set; }
         public bool IsLastViewed { get; set; }
-
+        public Game GameModel { get; set; }
+        public Task FetchPlaylists { get; set; }
 
         public string Opponent
         {
@@ -85,7 +85,7 @@ namespace HudlRT.ViewModels
             
         }
 
-        public async void FetchThumbnailsAndPlaylistCounts() 
+        public async Task FetchThumbnailsAndPlaylistCounts() 
 
         {
             CategoryResponse response = await ServiceAccessor.GetGameCategories(GameModel.gameId);
@@ -105,8 +105,11 @@ namespace HudlRT.ViewModels
                             //Populate the thumbnail on the hub
                             if (Thumbnail == "ms-appx:///Assets/agile-hudl-logo-light.png")
                             {
-                                Thumbnail = cat.playlists[0].thumbnailLocation;
-                                ImageWidth = 565;
+                                if (cat.playlists[0].thumbnailLocation != null)
+                                {
+                                    Thumbnail = cat.playlists[0].thumbnailLocation;
+                                    ImageWidth = 565;
+                                }
                             }
                         }
                     }
@@ -115,6 +118,5 @@ namespace HudlRT.ViewModels
                 NumPlaylists = numLists.ToString();
             }
         }
-
     }
 }

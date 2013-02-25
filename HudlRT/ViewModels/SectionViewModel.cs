@@ -22,7 +22,7 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         INavigationService navigationService;
-        public string Parameter { get; set; }       //Passed in from hub page - contains the game Id.
+        public Game Parameter { get; set; }       //Passed in from hub page - contains the game selected.
         private string _gameId;     //Used to tell if the page needs to be reloaded
         GridView categoriesGrid;
         List<Object> playlistsSelected;
@@ -118,9 +118,9 @@ namespace HudlRT.ViewModels
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
-            if (Parameter != _gameId)
+            if (Parameter.gameId != _gameId)
             {
-                _gameId = Parameter;
+                _gameId = Parameter.gameId;
                 GetGameCategories(_gameId);
             }
             DeleteButton_Visibility = Visibility.Collapsed;
@@ -135,46 +135,24 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(string gameID)
         {
-            //if(CachedParameter.gameId == )
             Categories = null;
-            CategoryResponse response = await ServiceAccessor.GetGameCategories(gameID);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
+            foreach (Category c in Parameter.categories)
             {
-                BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
-                foreach (Category category in response.categories)
+                CategoryViewModel cat = new CategoryViewModel(c);
+                foreach (Playlist p in c.playlists)
                 {
-                        CategoryViewModel cat = new CategoryViewModel(category);
-                        await AddPlaylistsForCategory(cat);
-                        if (cat.Playlists != null && cat.Playlists.Count() != 0)
-                        {
-                            cats.Add(cat);
-                        }
+                    PlaylistViewModel pvm = new PlaylistViewModel(p);
+                    cat.Playlists.Add(pvm);
+                    AddClipsAndHeadersForPlaylist(p);
                 }
-                Categories = cats;
-                MarkDownloadedPlaylists();
-            }
-            else
-            {
-                Categories = null;
-            }
-        }
-
-        public async Task AddPlaylistsForCategory(CategoryViewModel category)
-        {
-            PlaylistResponse response = await ServiceAccessor.GetCategoryPlaylists(category.CategoryModel.categoryId);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                category.Playlists = new BindableCollection<PlaylistViewModel>();
-                foreach (Playlist playlist in response.playlists)
+                if (c.playlists != null && c.playlists.Count() != 0)
                 {
-                    category.Playlists.Add(new PlaylistViewModel(playlist));
-                    AddClipsAndHeadersForPlaylist(playlist);
+                    cats.Add(cat);
                 }
             }
-            else
-            {
-                //What should go here?
-            }
+            Categories = cats;
+            MarkDownloadedPlaylists();
         }
 
         public async Task AddClipsAndHeadersForPlaylist(Playlist playlist)
