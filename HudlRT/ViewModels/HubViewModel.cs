@@ -124,14 +124,14 @@ namespace HudlRT.ViewModels
                 GameViewModel previous = new GameViewModel(previousGame, true);
                 previous.FetchPlaylists =  previous.FetchThumbnailsAndPlaylistCounts();
                 previous.IsLargeView = true;
-                NextGameVM.Games.Add(previous);
+                LastGameVM.Games.Add(previous);
             }
             if (nextGame != null)
             {
                 GameViewModel next = new GameViewModel(nextGame, true);
                 //next.isLargeView = true;
                 next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
-                LastGameVM.Games.Add(next);
+                NextGameVM.Games.Add(next);
             }
 
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
@@ -168,45 +168,32 @@ namespace HudlRT.ViewModels
         public void GetNextPreviousGames()
         {
             List<Game> sortedGames = new List<Game>();
-            DateTime lastGameDate;
 
-            foreach (Game game in games)
-            {
-                sortedGames.Add(game);
-            }
+            sortedGames.AddRange(games);
             sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
+
             if (sortedGames.Count > 0)
             {
-                lastGameDate = sortedGames[0].date;
-
-
-                if (DateTime.Compare(DateTime.Now, lastGameDate) >= 0)
+                if (DateTime.Compare(DateTime.Now, sortedGames[sortedGames.Count - 1].date) <= 0)
                 {
-                    nextGame = sortedGames[0];
-                    if (sortedGames.Count >= 2)
-                    {
-                        previousGame = sortedGames[1];
-                    }
+                    nextGame = sortedGames[sortedGames.Count - 1];
+                    previousGame = null;
+                }
+                else if (DateTime.Compare(DateTime.Now, sortedGames[0].date) >= 0)
+                {
+                    nextGame = null;
+                    previousGame = sortedGames[0];
                 }
                 else
                 {
-                    for (int i = 0; i < sortedGames.Count; i++)
-                    {
-                        if (DateTime.Compare(sortedGames[i].date, DateTime.Now) < 0)
-                        {
-                            if (i == 0)
-                            {
-                                nextGame = sortedGames[i];
-                            }
-                            else
-                            {
-                                nextGame = sortedGames[i - 1];
-                                previousGame = sortedGames[i];
-                            }
-                            break;
-                        }
-                    }
+                    nextGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) < 0).LastOrDefault();
+                    previousGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) > 0).FirstOrDefault();
                 }
+            }
+            else
+            {
+                nextGame = null;
+                previousGame = null;
             }
         }
 
