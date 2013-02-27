@@ -388,5 +388,24 @@ namespace HudlRT.Common
             var toast = new ToastNotification(toastXml);
             ToastNotificationManager.CreateToastNotifier().Show(toast);
         }
+
+        public async Task<bool> DeleteTempData()
+        {
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
+
+            foreach (StorageFile file in files)
+            {
+                try
+                {
+                    await file.DeleteAsync();
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+            return true;
+        }
     }
 }

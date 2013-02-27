@@ -272,7 +272,6 @@ namespace HudlRT.ViewModels
 
         private async void initialClipPreload()
         {
-            await DeleteTempData(); //Make sure there are no left over temp files (from app crash, etc)
             if (FilteredClips.Any())
             {
                 PreloadClips(preloadCT, FilteredClips[0].angles.Where(angle => angle.angleType.IsChecked));
@@ -877,29 +876,12 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async Task<bool> DeleteTempData()
-        {
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-            var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
-
-            foreach (StorageFile file in files)
-            {
-                try
-                {
-                    await file.DeleteAsync();
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
-            return true;
-        }
+        
 
         public void GoBack()
         {
             preloadCTS.Cancel();
-            DeleteTempData();
+            //DeleteTempData();
             dispRequest.RequestRelease();
             dispRequest = null;
             saveAnglePreferences();

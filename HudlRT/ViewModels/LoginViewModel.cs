@@ -96,7 +96,7 @@ namespace HudlRT.ViewModels
         protected override void OnInitialize()
         {
             CachedParameter.resetCache();
-
+            DownloadAccessor.Instance.DeleteTempData();
             base.OnInitialize();
 
             ButtonText = "Login";

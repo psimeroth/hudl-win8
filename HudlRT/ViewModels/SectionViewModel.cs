@@ -157,7 +157,8 @@ namespace HudlRT.ViewModels
                 {
                     PlaylistViewModel pvm = new PlaylistViewModel(p);
                     cat.Playlists.Add(pvm);
-                    AddClipsAndHeadersForPlaylist(p);
+                    pvm.FetchClips = pvm.FetchClipsAndHeaders();
+                    //AddClipsAndHeadersForPlaylist(p);
                 }
                 if (c.playlists != null && c.playlists.Count() != 0)
                 {
@@ -196,9 +197,10 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public void PlaylistSelected(ItemClickEventArgs eventArgs)
+        public async void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
-            Playlist playlistClicked = ((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel;
+            PlaylistViewModel vmClicked = (PlaylistViewModel)eventArgs.ClickedItem;
+            Playlist playlistClicked = vmClicked.PlaylistModel;
             Playlist matchingDownload = DownloadAccessor.Instance.downloadedPlaylists.Where(u => u.playlistId == playlistClicked.playlistId).FirstOrDefault();
             if (matchingDownload != null)
             {
@@ -206,6 +208,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
+                await vmClicked.FetchClips;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(playlistClicked);
             }
             
