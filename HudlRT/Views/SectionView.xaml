@@ -7,7 +7,7 @@
     xmlns:caliburn="using:Caliburn.Micro"
     x:Class="HudlRT.Views.SectionView"
     IsTabStop="false"
-    NavigationCacheMode="Required"
+    NavigationCacheMode="Disabled"
     mc:Ignorable="d">
 
     <UserControl.Resources>
