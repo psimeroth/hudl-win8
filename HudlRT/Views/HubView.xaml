@@ -18,7 +18,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid Background="{StaticResource HudlGrayGradient}" SizeChanged="Grid_SizeChanged_1">
+        <Grid Background="{StaticResource HudlGrayGradient}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="*"/>
@@ -33,7 +33,7 @@
                 </Grid.ColumnDefinitions>
                 <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
                 <Grid x:Name="ComboBoxGrid" MinWidth ="500" Margin="0,0,15,0" HorizontalAlignment="Right" Grid.Column="2">
-                    <ComboBox x:Name="SeasonsDropDown" MinWidth="500" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" Foreground="Black" Margin="0,20,20,0">
+                    <ComboBox x:Name="SeasonsDropDown" MinWidth="500" IsEnabled="{Binding PageIsEnabled}" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" Foreground="Black" Margin="0,20,20,0">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
@@ -50,7 +50,7 @@
             </Grid>
 
             <!-- Horizontal scrolling grid used in most view states -->
-            <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]; [Event SelectionChanged] = [SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
+            <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" IsEnabled="{Binding PageIsEnabled}" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]; [Event SelectionChanged] = [SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
@@ -101,6 +101,7 @@
                 SelectionMode="Single"
                 IsSwipeEnabled="false"
                 IsItemClickEnabled="True"
+                IsEnabled="{Binding PageIsEnabled}"
                 caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]">
      
                 <ListView.GroupStyle>
@@ -117,6 +118,7 @@
             </ListView>
         </Grid>
 
+        <ProgressRing Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoScheduleEntriesText}" />
 
         <VisualStateManager.VisualStateGroups>
