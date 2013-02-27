@@ -23,7 +23,7 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return "vs. " + GameModel.opponent;
+                return GameModel.opponent;
             }
         }
 
