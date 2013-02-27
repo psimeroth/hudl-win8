@@ -257,7 +257,7 @@
         </Grid>
 
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
-            <Grid Background="#AA000000" Height="50" Width="Auto" VerticalAlignment="Top">
+            <Grid Background="#AA333333" Height="50" Width="Auto" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[0]}"/>
                     <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[0]}" />
@@ -272,7 +272,7 @@
                 </StackPanel>
             </Grid>
 
-            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
 
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-25,0,0,-7" Orientation="Vertical" Width="150" Background="Transparent">
                 <Button x:Name="full_btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
@@ -294,7 +294,7 @@
                                     Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
 
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-25,-7" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
