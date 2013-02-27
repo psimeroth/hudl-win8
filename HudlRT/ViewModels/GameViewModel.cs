@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
@@ -18,6 +19,18 @@ namespace HudlRT.ViewModels
         public bool IsLastViewed { get; set; }
         public Game GameModel { get; set; }
         public Task FetchPlaylists { get; set; }
+        private Visibility playButtonVisibility;
+        public Visibility PlayButtonVisibility
+        {
+            get
+            {
+                return IsLastViewed ? Visibility.Visible : Visibility.Collapsed;
+            }
+            set
+            {
+                playButtonVisibility = value;
+            }
+        }
 
         public string Opponent
         {

@@ -10,6 +10,10 @@
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding Thumbnail}" MinWidth="{Binding ImageWidth}" HorizontalAlignment="Center" Grid.Row="0"/>
+            <Grid Visibility="{Binding PlayButtonVisibility}">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,12,0,0"><Run FontSize="60" FontFamily="Segoe UI Symbol" Text="&#xE102;" Foreground="{StaticResource HudlOrange}"></Run></TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="120" FontFamily="Segoe UI Symbol" Text="&#x2B58;" Foreground="{StaticResource HudlOrange}"></Run></TextBlock>
+            </Grid>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -25,7 +29,7 @@
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
         <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="240" Width="325">
             <Grid.RowDefinitions>
-                <RowDefinition Height="7*"/>
+                <RowDefinition Height="9*"/>
                 <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding Thumbnail}" MinHeight="263" HorizontalAlignment="Center" Grid.Row="0"/>
