@@ -466,6 +466,8 @@ namespace HudlRT.Views
             videoMediaElement.Pause();
             rewindStopwatch.Start();
             rewindTimer.Start();
+            setPauseVisible();
+            setStopVisibile();
         }
 
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
@@ -476,6 +478,7 @@ namespace HudlRT.Views
             videoMediaElement.Pause();
             rewindStopwatch.Start();
             rewindTimer.Start();
+            setPauseVisible();
         }
 
         private void btnSlowForward_Click(object sender, RoutedEventArgs e)
