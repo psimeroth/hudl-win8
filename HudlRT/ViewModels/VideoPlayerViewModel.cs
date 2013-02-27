@@ -840,7 +840,7 @@ namespace HudlRT.ViewModels
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             foreach (Angle angle in angles)
             {
-                if (!ct.IsCancellationRequested)
+                if (!ct.IsCancellationRequested && !angle.isPreloaded)
                 {
                     try
                     {

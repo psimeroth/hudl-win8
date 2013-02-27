@@ -33,15 +33,15 @@
                 </Grid>
 
                 <SemanticZoom Grid.Row="1">
-            
+
                     <SemanticZoom.ZoomedInView>
-                        <GridView Grid.Row="1" x:Name="CategoriesGridView" SelectionMode="None" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">          
+                        <GridView Grid.Row="1" x:Name="CategoriesGridView" SelectionMode="Multiple" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]; [Event SelectionChanged] = [CategoriesGridView_SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
                             <GridView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
                                 </ItemsPanelTemplate>
                             </GridView.ItemsPanel>
-                
+
                             <GridView.ItemContainerStyle>
                                 <Style TargetType="GridViewItem">
                                     <!-- Puts space between grid view items-->
@@ -54,7 +54,7 @@
                                     <GroupStyle.HeaderTemplate>
                                         <DataTemplate>
                                             <Grid Margin="0">
-                                            <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlMediumDarkGray}" Style="{StaticResource GridViewGroupName}" />
+                                                <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlMediumDarkGray}" Style="{StaticResource GridViewGroupName}" />
                                             </Grid>
                                         </DataTemplate>
                                     </GroupStyle.HeaderTemplate>
@@ -86,13 +86,17 @@
                                             </Grid.RowDefinitions>
                                             <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
                                             <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
-                                            <Image HorizontalAlignment="Right" Grid.Row="1" />
+                                            <Grid Grid.Row="1" HorizontalAlignment="Right" Visibility="{Binding DownloadedIcon_Visibility}">
+                                                <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlDarkGrayAccent}" FontFamily="Segoe UI Symbol" FontSize="45" Text="&#xE188;"/>
+                                                <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="35" Text="&#xE188;"/>
+                                                <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlOrange}" FontFamily="Segoe UI Symbol" FontSize="25" Text="&#xE0E7;"/>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </GridView.ItemTemplate>
-                    
-                         </GridView>
+
+                        </GridView>
                     </SemanticZoom.ZoomedInView>
                 </SemanticZoom>
 
@@ -134,7 +138,7 @@
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-            
+
                     <ListView.GroupStyle>
                         <GroupStyle>
                             <GroupStyle.HeaderTemplate>
@@ -184,5 +188,35 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
+
+    <common:LayoutAwarePage.BottomAppBar>
+        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGray}" BorderThickness="0,3,0,0" IsOpen="{Binding AppBarOpen, Mode=TwoWay}" IsSticky="True">
+            <StackPanel Name="AppBar" Background="{StaticResource HudlDarkGray}">
+                <Grid>
+                    <Button x:Name="btnDownload" Visibility="{Binding DownloadButton_Visibility}" Width="230" Height="40" FontSize="20" Content="Download Playlist(s)" VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right" caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
+
+                    <Button x:Name="deleteDownload" Visibility="{Binding DeleteButton_Visibility}" Width="230" Height="40" FontSize="20" Content="Delete Download(s)" VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left" caliburn:Message.Attach="[Event Click] = [Action DeleteButtonClick()]"/>
+                </Grid>
+                <Grid Visibility="{Binding Downloading_Visibility}" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="165"/>
+                    <ProgressBar Grid.Row="1" Grid.Column="2" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="165" Foreground="{StaticResource HudlBlue}"/>
+                    <Button x:Name="btnCancel" Grid.RowSpan="2" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,17,0"
+                        caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
+                </Grid>
+            </StackPanel>
+        </AppBar>
+    </common:LayoutAwarePage.BottomAppBar>
 
 </common:LayoutAwarePage>
