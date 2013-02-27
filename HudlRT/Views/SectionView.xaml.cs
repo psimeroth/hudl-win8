@@ -24,92 +24,19 @@ namespace HudlRT.Views
     /// </summary>
     public sealed partial class SectionView : LayoutAwarePage
     {
-        private double FULL_OPAQUE = 1;
-        private double FADED_OPAQUE = 0.5;
-
-        private int selectedIndex { get; set; }
-        private bool rightClicked { get; set; }
-
         public SectionView()
         {
             this.InitializeComponent();
+            CategoriesGridView.SelectionMode = ListViewSelectionMode.Multiple;
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.  The Parameter
-        /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Cutups.IsEnabled = true;
-            Schedule.IsEnabled = true;
-            Categories.IsEnabled = true;
-            GoBack.IsEnabled = true;
-            SeasonsDropDown.IsEnabled = true;
-            SeasonsDropDown.Opacity = FULL_OPAQUE;
-            Logo.Opacity = FULL_OPAQUE;
-            ProgressRing.Visibility = Visibility.Collapsed;
         }
 
-        private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
+        private void CategoriesGridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
-            ListView l = (ListView)sender;
-            selectedIndex = l.SelectedIndex;
-            rightClicked = true;
-            e.Handled = true;
-        }
-
-        private void ListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (rightClicked)
-            {
-                ListView l = (ListView)sender;
-                l.SelectedIndex = selectedIndex;
-                rightClicked = false;
-            }
-            Schedule.ScrollIntoView(Schedule.SelectedItem);
-        }
-
-        private void GridViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            GridView l = (GridView)sender;
-            selectedIndex = l.SelectedIndex;
-            rightClicked = true;
-            e.Handled = true;
-        }
-
-        private void GridViewSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (rightClicked)
-            {
-                GridView l = (GridView)sender;
-                l.SelectedIndex = selectedIndex;
-                rightClicked = false;
-            }
-            Schedule.ScrollIntoView(Schedule.SelectedItem);
-        }
-
-        private void ResetComboBoxColor(object sender, object e)
-        {
-            SectionViewModel vm = (SectionViewModel)this.DataContext;
-            vm.SeasonSelected(SeasonsDropDown.SelectedItem);
-        }
-
-        private void Cutup_Selected(object sender, ItemClickEventArgs e)
-        {
-            SectionViewModel vm = (SectionViewModel)this.DataContext;
-            if (vm.downloadMode == SectionViewModel.DownloadMode.Off || vm.downloadMode == SectionViewModel.DownloadMode.Dowloading)
-            {
-                Cutups.IsEnabled = false;
-                Schedule.IsEnabled = false;
-                Categories.IsEnabled = false;
-                GoBack.IsEnabled = false;
-                SeasonsDropDown.IsEnabled = false;
-                SeasonsDropDown.Opacity = FADED_OPAQUE;
-                Logo.Opacity = FADED_OPAQUE;
-                ProgressRing.Visibility = Visibility.Visible;
-            }
+            string s = "sdfs";
         }
     }
 }

@@ -36,10 +36,10 @@ namespace HudlRT.Common
     {
         public static string AUTH_TOKEN = "hudl-authtoken";
         public static string USER_ID = "userId";
-        public static string LAST_VIEWED_NAME = "hudl-lastViewedCutupName";
-        public static string LAST_VIEWED_TIMESTAMP = "hudl-lastViewedCutupTimestamp";
-        public static string LAST_VIEWED_ID = "hudl-lastViewedCutupId";
-        public static string LAST_VIEWED_THUMBNAIL = "hudl-lastViewedCutupThumbnail";
+        public static string LAST_VIEWED_NAME = "hudl-lastViewedPlaylistName";
+        public static string LAST_VIEWED_TIMESTAMP = "hudl-lastViewedPlaylistTimestamp";
+        public static string LAST_VIEWED_ID = "hudl-lastViewedPlaylistId";
+        public static string LAST_VIEWED_THUMBNAIL = "hudl-lastViewedPlaylistThumbnail";
         public static string TEAM_ID = "hudl-teamID";
         public static string SEASON_ID = "hudl-seasonID";
         public static string USERNAME = "UserName";

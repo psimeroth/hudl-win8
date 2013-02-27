@@ -7,39 +7,25 @@
         <ResourceDictionary Source="ms-appx:///Common/CustomStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <!--Naming convention: Page_ItemStyle_Specific (e.g. Section_TextBlockStyle_Cutups). 
+    <!--Naming convention: Page_ItemStyle_Specific (e.g. Section_TextBlockStyle_Playlists). 
     If the style is not related to any one page, omit the page portion while naming the style.-->
+    <Style x:Key="GridViewGroupName" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource HudlDarkGray}"/>
+        <Setter Property="FontSize" Value="40"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="Padding" Value="11,0"/>
+    </Style>
     <Style x:Key="Hub_TextBlockStyle_WeekHeader" TargetType="TextBlock" >
-        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontSize" Value="26"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Margin" Value="0"/>
-        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Padding" Value="20,0"/>
     </Style>
     <Style x:Key="Hub_TextBlockStyle_WeekHeaderDate" TargetType="TextBlock" BasedOn="{StaticResource Hub_TextBlockStyle_WeekHeader}">
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Light"/>
     </Style>
-    <Style x:Key="Hub_ButtonStyle_Standard" TargetType="Button" BasedOn="{StaticResource ButtonStyle_Standard}">
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="FontSize" Value="40"/>
-        <Setter Property="Margin" Value="0"/>
-    </Style>
-    <Style x:Key="Hub_ListViewItemStyle_Standard" TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemStyle_Standard}">
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="FontSize" Value="28"/>
-        <Setter Property="Padding" Value="10"/>
-        <Setter Property="Height" Value="90"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-    </Style>
-    <Style x:Key="Hub_ListViewStyle_Standard" TargetType="ListView" >
-        <Setter Property="FontSize" Value="28"/>
-        <Setter Property="IsSwipeEnabled" Value="false"/>
-        <Setter Property="IsItemClickEnabled" Value="True"/>
-        <Setter Property="IsDoubleTapEnabled" Value="False"/>
-        <Setter Property="IsHoldingEnabled" Value="False"/>
-        <Setter Property="IsRightTapEnabled" Value="False"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-    </Style>
+    
 </ResourceDictionary>

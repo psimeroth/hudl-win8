@@ -116,19 +116,19 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             videoMediaElement.Width = Window.Current.Bounds.Width - 300;
-
-            initializeGrid();
-
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+            initializeGrid(vm.Parameter);
+
+            
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
             vm.setVideoMediaElement(videoMediaElement);
         }
 
-        private void initializeGrid()
+        private void initializeGrid(Playlist playlist)
         {
-            string[] displayColumns = CachedParameter.selectedCutup.displayColumns;
+            string[] displayColumns = playlist.displayColumns;
             var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
             string columnDefinitions = "";
             string rowText = "";

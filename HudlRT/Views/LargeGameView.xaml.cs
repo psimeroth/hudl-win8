@@ -12,15 +12,17 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace HudlRT.Views
 {
-    public sealed partial class PlaylistView : UserControl
+    /// <summary>
+    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class LargeGameView : UserControl
     {
-        public PlaylistView()
+        public LargeGameView()
         {
             this.InitializeComponent();
         }
+
     }
 }

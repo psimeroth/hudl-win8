@@ -61,7 +61,7 @@ namespace HudlRT.Models
         public string Name { get; set; }
     }
 
-    public class CutupDTO
+    public class PlaylistDTO
     {
         public string PlaylistId { get; set; }
         public string CategoryID { get; set; }

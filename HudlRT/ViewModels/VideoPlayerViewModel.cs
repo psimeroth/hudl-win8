@@ -27,6 +27,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        public Playlist Parameter { get; set; }       //Passed in from hub page - contains the game Id.
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
         private List<Clip> Clips { get; set; }
@@ -109,14 +110,14 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => GridHeaders);
             }
         }
-        private string cutupName;
-        public string CutupName
+        private string playlistName;
+        public string PlaylistName
         {
-            get { return cutupName; }
+            get { return playlistName; }
             set
             {
-                cutupName = value;
-                NotifyOfPropertyChange(() => CutupName);
+                playlistName = value;
+                NotifyOfPropertyChange(() => PlaylistName);
             }
         }
         private Clip selectedClip;
@@ -181,8 +182,8 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
 
-            AppDataAccessor.SetLastViewed(CachedParameter.selectedCutup.name, DateTime.Now.ToString("g"), CachedParameter.selectedCutup.cutupId, CachedParameter.selectedCutup.thumbnailLocation);
-            Clips = CachedParameter.selectedCutup.clips.ToList();
+            AppDataAccessor.SetLastViewed(Parameter.name, DateTime.Now.ToString("g"), Parameter.playlistId, Parameter.thumbnailLocation);
+            Clips = Parameter.clips.ToList();
             
             FilteredClips = new ObservableCollection<Clip>(Clips);
             if (FilteredClips.Any())
@@ -197,13 +198,11 @@ namespace HudlRT.ViewModels
                     listView.SelectedItem = SelectedClip;
                 }
             }
-            if (ServiceAccessor.ConnectedToInternet() && !CachedParameter.selectedCutup.IsDownloaded)
-            {
-                getMoreClips();
-            }
 
-            GridHeaders = CachedParameter.selectedCutup.displayColumns;
-            CutupName = CachedParameter.selectedCutup.name;
+            getMoreClips();
+
+            GridHeaders = Parameter.displayColumns;
+            PlaylistName = Parameter.name;
 
             int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
             if (playbackTypeResult == null)
@@ -227,33 +226,33 @@ namespace HudlRT.ViewModels
             initialClipPreload();
 
             bool downloadFound = false;
-            foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
-            {
-                if (downloadedCutup.CutupId == CachedParameter.selectedCutup.cutupId)
-                {
-                    downloadFound = true;
-                    break;
-                }
-            }
-            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            if (DownloadAccessor.Instance.Downloading)
-            {
-                LoadActiveDownloadsAsync();
-                ProgressGridVisibility = Visibility.Visible;
-                DownloadButtonVisibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ProgressGridVisibility = Visibility.Collapsed;
-                if (!downloadFound)
-                {
-                    DownloadButtonVisibility = Visibility.Visible;
-                }
-                else
-                {
-                    DownloadButtonVisibility = Visibility.Collapsed;
-                }
-            }
+            //foreach (PlaylistViewModel downloadedPlaylist in CachedParameter.downloadedPlaylists)
+            //{
+            //    if (downloadedPlaylist.PlaylistId == Parameter.playlistId)
+            //    {
+            //        downloadFound = true;
+            //        break;
+            //    }
+            //}
+            //CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            //if (DownloadAccessor.Instance.Downloading)
+            //{
+            //    LoadActiveDownloadsAsync();
+            //    ProgressGridVisibility = Visibility.Visible;
+            //    DownloadButtonVisibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    ProgressGridVisibility = Visibility.Collapsed;
+            //    if (!downloadFound)
+            //    {
+            //        DownloadButtonVisibility = Visibility.Visible;
+            //    }
+            //    else
+            //    {
+            //        DownloadButtonVisibility = Visibility.Collapsed;
+            //    }
+            //}
         }
 
         private async Task LoadActiveDownloadsAsync()
@@ -286,7 +285,7 @@ namespace HudlRT.ViewModels
 
         private async void getMoreClips()
         {
-            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalCutupClips(CachedParameter.selectedCutup.cutupId, CachedParameter.selectedCutup.clips.Count);
+            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalPlaylistClips(Parameter.playlistId, 100);
             foreach (Clip clip in remainingClipsList)
             {
                 foreach (Angle angle in clip.angles)
@@ -307,7 +306,7 @@ namespace HudlRT.ViewModels
         private void getAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in CachedParameter.selectedCutup.clips)
+            foreach (Clip clip in Parameter.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -322,7 +321,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in CachedParameter.selectedCutup.clips)
+            foreach (Clip clip in Parameter.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -525,7 +524,7 @@ namespace HudlRT.ViewModels
         {
             if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Any())
             {
-                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlBlue"];
 
                 if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
                 {
@@ -730,7 +729,7 @@ namespace HudlRT.ViewModels
                     filterCriteria.Add(new FilterCriteriaViewModel(id, criteria));
                 }
 
-                filter = new FilterViewModel(id, CachedParameter.selectedCutup.displayColumns[id], SortType.None, filterCriteria, this);
+                filter = new FilterViewModel(id, Parameter.displayColumns[id], SortType.None, filterCriteria, this);
             }
             else
             {
@@ -759,42 +758,42 @@ namespace HudlRT.ViewModels
             AppDataAccessor.SetPlaybackType((int)playbackType);
         }
 
-        private void DownloadButtonClick()
-        {
-            ProgressGridVisibility = Visibility.Visible;
-            DownloadButtonVisibility = Visibility.Collapsed;
-            DownloadProgress = 0;
-            CachedParameter.cts = new CancellationTokenSource();
-            DownloadProgressText = "Determining Size";
-            Cutup cutupCopy = Cutup.Copy(CachedParameter.selectedCutup);
-            List<Cutup> currentCutupList = new List<Cutup> { cutupCopy };
-            CachedParameter.currentlyDownloadingCutups = currentCutupList;
-            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadCutups(currentCutupList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected);
-        }
+        //private void DownloadButtonClick()
+        //{
+        //    ProgressGridVisibility = Visibility.Visible;
+        //    DownloadButtonVisibility = Visibility.Collapsed;
+        //    DownloadProgress = 0;
+        //    CachedParameter.cts = new CancellationTokenSource();
+        //    DownloadProgressText = "Determining Size";
+        //    Playlist playlistCopy = Playlist.Copy(Parameter);
+        //    List<Playlist> currentPlaylistList = new List<Playlist> { playlistCopy };
+        //    CachedParameter.currentlyDownloadingPlaylists = currentPlaylistList;
+        //    CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+        //    DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected);
+        //}
 
-        public void CancelButtonClick()
-        {
-            if (DownloadAccessor.Instance.Downloading)
-            {
-                CachedParameter.cts.Cancel();
-            }
-            ProgressGridVisibility = Visibility.Collapsed;
-            DownloadButtonVisibility = Visibility.Collapsed;
-        }
+        //public void CancelButtonClick()
+        //{
+        //    if (DownloadAccessor.Instance.Downloading)
+        //    {
+        //        CachedParameter.cts.Cancel();
+        //    }
+        //    ProgressGridVisibility = Visibility.Collapsed;
+        //    DownloadButtonVisibility = Visibility.Collapsed;
+        //}
 
-        public void ProgressCallback(DownloadOperation obj)
-        {
-            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
-            DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
-            int downloadedCutupCount = 0;
-            if (DownloadProgress == 100)
-            {
-                ProgressGridVisibility = Visibility.Collapsed;
-                CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
-                DownloadProgress = 0;
-            }
-        }
+        //public void ProgressCallback(DownloadOperation obj)
+        //{
+        //    DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
+        //    DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
+        //    int downloadedPlaylistCount = 0;
+        //    if (DownloadProgress == 100)
+        //    {
+        //        ProgressGridVisibility = Visibility.Collapsed;
+        //        CachedParameter.currentlyDownloadingPlaylists = new List<Playlist>();
+        //        DownloadProgress = 0;
+        //    }
+        //}
 
         private void setToggleButtonContent()
         {
