@@ -86,7 +86,7 @@ namespace HudlRT.ViewModels
             GameModel = game;
             IsLargeView = isLarge;
             IsLastViewed = isLastviewed;
-            Thumbnail = "ms-appx:///Assets/agile-hudl-logo-light.png";
+            Thumbnail = "ms-appx:///Assets/hudl-mark-gray.png";
             if (IsLastViewed)
             {
                 ImageWidth = 565;
@@ -116,7 +116,7 @@ namespace HudlRT.ViewModels
                             {
                                 numLists += cat.playlists.Count();
                                 //Populate the thumbnail on the hub
-                                if (Thumbnail == "ms-appx:///Assets/agile-hudl-logo-light.png")
+                                if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
                                 {
                                     if (cat.playlists[0].thumbnailLocation != null)
                                     {

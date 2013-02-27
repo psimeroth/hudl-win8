@@ -61,7 +61,7 @@ namespace HudlRT.ViewModels
             {
                 if (PlaylistModel.thumbnailLocation == null)
                 {
-                    return "ms-appx:///Assets/agile-hudl-logo-light.png";
+                    return "ms-appx:///Assets/hudl-mark-gray.png";
                 }
                 else
                 {

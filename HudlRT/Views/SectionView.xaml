@@ -104,7 +104,7 @@
                     Margin="0,0,0,0"
                     Padding="10,0,0,0"
                     ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}"
-                    SelectionMode="Single"
+                    SelectionMode="None"
                     IsSwipeEnabled="false"
                     IsItemClickEnabled="True"
                     IsEnabled="{Binding PageIsEnabled}"
@@ -147,7 +147,7 @@
                     </ListView.GroupStyle>
                 </ListView>
             </Grid>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" FontFamily="Segoe UI Semilight"/>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" FontFamily="Segoe UI Semilight"  TextWrapping="Wrap"/>
         <ProgressRing Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
         <VisualStateManager.VisualStateGroups>
 
