@@ -42,13 +42,13 @@
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSnappedGamesTemplate">
-        <Grid Margin="5" Background="{StaticResource HudlDarkGrayAccent}" Width="275" IsRightTapEnabled="False">
+        <Grid Margin="5" Width="275" IsRightTapEnabled="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60" IsRightTapEnabled="False">
-                <Image Source="{Binding Image}" Stretch="UniformToFill" IsRightTapEnabled="False"/>
+            <Border Background="Transparent" Width="60" Height="60" IsRightTapEnabled="False">
+                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" IsRightTapEnabled="False"/>
             </Border>
             <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch" IsRightTapEnabled="False">
                 <TextBlock Text="{Binding Opponent}" Style="{StaticResource ItemTextStyle}" TextTrimming="WordEllipsis" TextWrapping="NoWrap" MaxHeight="40" IsRightTapEnabled="False"/>
