@@ -27,14 +27,14 @@
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="backButton" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
+                    <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
                     <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
                 </Grid>
 
-                <SemanticZoom Grid.Row="1">
+            <SemanticZoom Grid.Row="1" IsEnabled="{Binding PageIsEnabled}">
 
                     <SemanticZoom.ZoomedInView>
-                        <GridView Grid.Row="1" x:Name="CategoriesGridView" SelectionMode="Multiple" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]; [Event SelectionChanged] = [CategoriesGridView_SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
+                    <GridView Grid.Row="1" x:Name="CategoriesGridView" SelectionMode="Multiple" IsEnabled="{Binding PageIsEnabled}" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]; [Event SelectionChanged] = [CategoriesGridView_SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
                             <GridView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
@@ -112,6 +112,7 @@
                     SelectionMode="Single"
                     IsSwipeEnabled="false"
                     IsItemClickEnabled="True"
+                    IsEnabled="{Binding PageIsEnabled}"
                     caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]">
 
                     <ListView.ItemTemplate>
@@ -151,7 +152,7 @@
                     </ListView.GroupStyle>
                 </ListView>
             </Grid>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" />
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" FontFamily="Segoe UI Semilight"/>
         <ProgressRing Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
         <VisualStateManager.VisualStateGroups>
 

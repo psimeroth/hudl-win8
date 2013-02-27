@@ -67,7 +67,7 @@
 
                 <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Bottom" Height="30" FontSize="25"  Foreground="Orange" Margin="0,5,0,0"/>
             </StackPanel>
-            <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" HorizontalAlignment="Center" Height="75" Width="75" Foreground="{StaticResource HudlBlue}" />
+            <ProgressRing x:Name="LoginProgressRing" Visibility="{Binding ProgressRingVisibility}" IsActive="True" HorizontalAlignment="Center" Height="150" Width="150" Foreground="{StaticResource HudlBlue}" />
         </StackPanel>
 
         <VisualStateManager.VisualStateGroups>
