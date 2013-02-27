@@ -519,7 +519,7 @@ namespace HudlRT.ViewModels
         {
             if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Any())
             {
-                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlBlue"];
 
                 if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
                 {

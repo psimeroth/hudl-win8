@@ -67,32 +67,26 @@ namespace HudlRT.ViewModels
             if (ServiceAccessor.ConnectedToInternet())
             {
                 SeasonsDropDown = await GetSortedSeasons();
-                string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
-
-                if (savedSeasonId != null)
-                {
-                    SelectedSeason = SeasonsDropDown.Where(u => u.seasonID == savedSeasonId).FirstOrDefault();
-                }
-                else
-                {
-                    SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
-                    AppDataAccessor.SetTeamContext(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
-                }
             }
             else
             {
-                SeasonsDropDown = await DownloadAccessor.Instance.GetDownloadsModel();
-                if (SeasonsDropDown.Any())
-                {
-                    SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
-                }
-                else
-                {
-                    //show message here if no downloads
-                }
-                
+                SeasonsDropDown = await DownloadAccessor.Instance.GetDownloadsModel();  
             }
-            
+            string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
+
+            if (savedSeasonId != null && SeasonsDropDown.Any())
+            {
+                SelectedSeason = SeasonsDropDown.Where(u => u.seasonID == savedSeasonId).FirstOrDefault() ?? SeasonsDropDown[0];
+            }
+            else
+            {
+                SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
+                AppDataAccessor.SetTeamContext(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
+            }
+            if (!SeasonsDropDown.Any())
+            {
+                //show message here if no downloads
+            }
             
         }
 

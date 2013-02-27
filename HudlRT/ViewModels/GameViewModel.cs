@@ -74,7 +74,7 @@ namespace HudlRT.ViewModels
             IsLargeView = isLarge;
             IsLastViewed = isLastviewed;
             Thumbnail = "ms-appx:///Assets/agile-hudl-logo-light.png";
-            if (isLastviewed)
+            if (IsLastViewed)
             {
                 ImageWidth = 565;
             }
@@ -82,7 +82,6 @@ namespace HudlRT.ViewModels
             {
                 ImageWidth = 350;
             }
-            
         }
 
         public async Task FetchThumbnailsAndPlaylistCounts() 
