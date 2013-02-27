@@ -519,7 +519,7 @@ namespace HudlRT.ViewModels
         {
             if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Any())
             {
-                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlBlue"];
 
                 if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
                 {
@@ -573,7 +573,7 @@ namespace HudlRT.ViewModels
                     {
                         if (!currentSortFilter.FilterCriteria.Any(c => c.IsChecked))
                         {
-                            ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+                            ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlMediumDarkGray"];
                             if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
                             {
                                 ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.RemoveAt(1);
@@ -608,7 +608,7 @@ namespace HudlRT.ViewModels
 
         public void RemoveSelectedFilter()
         {
-            ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+            ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlMediumDarkGray"];
             if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
             {
                 ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.RemoveAt(1);
