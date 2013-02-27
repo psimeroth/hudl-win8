@@ -147,7 +147,7 @@
                     </ListView.GroupStyle>
                 </ListView>
             </Grid>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" />
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" TextWrapping="Wrap"/>
         <ProgressRing Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
         <VisualStateManager.VisualStateGroups>
 
