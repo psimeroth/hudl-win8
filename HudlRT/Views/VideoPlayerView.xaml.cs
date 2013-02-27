@@ -61,8 +61,10 @@ namespace HudlRT.Views
         private ScrollViewer filteredListScrollViewer { get; set; }
         private bool isFastRewind { get; set; }
         private Stopwatch rewindStopwatch { get; set; }
-        private bool videoLoadRetry = true;
+        private TimeSpan rewindPosition { get; set; }
         private VideoPlayerState playerState { get; set; }
+        private DispatcherTimer rewindKeyPressTimer { get; set; }
+        private Windows.UI.Core.KeyEventArgs rewindKey { get; set; }
 
         public VideoPlayerView()
         {
@@ -96,10 +98,14 @@ namespace HudlRT.Views
             Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
 
             rewindTimer = new DispatcherTimer();
-            rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            rewindTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             rewindTimer.Tick += rewindTimerTick;
-
+            rewindStopwatch = new Stopwatch();
             playerState = VideoPlayerState.Paused;
+
+            rewindKeyPressTimer = new DispatcherTimer();
+            rewindKeyPressTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            rewindKeyPressTimer.Tick += rewindKeyPressTimerTick;
         }
 
         /// <summary>
@@ -117,6 +123,7 @@ namespace HudlRT.Views
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
+            vm.setVideoMediaElement(videoMediaElement);
         }
 
         private void initializeGrid(Playlist playlist)
@@ -424,6 +431,7 @@ namespace HudlRT.Views
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
+            rewindStopwatch.Stop();
             rewindTimer.Stop();
             playerState = VideoPlayerState.Paused;
             videoMediaElement.Pause();
@@ -433,6 +441,7 @@ namespace HudlRT.Views
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
+            rewindStopwatch.Stop();
             rewindTimer.Stop();
             playerState = VideoPlayerState.Paused;
             videoMediaElement.Stop();
@@ -451,8 +460,9 @@ namespace HudlRT.Views
 
         private void btnFastReverse_Click(object sender, RoutedEventArgs e)
         {
+            rewindPosition = videoMediaElement.Position;
             isFastRewind = true;
-            rewindStopwatch = new Stopwatch();
+            rewindStopwatch.Reset();
             videoMediaElement.Pause();
             rewindStopwatch.Start();
             rewindTimer.Start();
@@ -460,8 +470,9 @@ namespace HudlRT.Views
 
         private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
         {
+            rewindPosition = videoMediaElement.Position;
             isFastRewind = false;
-            rewindStopwatch = new Stopwatch();
+            rewindStopwatch.Reset();
             videoMediaElement.Pause();
             rewindStopwatch.Start();
             rewindTimer.Start();
@@ -513,7 +524,8 @@ namespace HudlRT.Views
                     }
                     else if (e.VirtualKey == Windows.System.VirtualKey.Up)
                     {
-                        rewindTimer.Stop();
+                        rewindKeyPressTimer.Stop();
+                        btn_release(null, null);
                         VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
                         vm.ResetClip();
                         e.Handled = true;
@@ -526,7 +538,8 @@ namespace HudlRT.Views
                     }
                     else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
                     {
-                        rewindTimer.Stop();
+                        rewindKeyPressTimer.Stop();
+                        btn_release(null, null);
                         VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
                         vm.GoToPreviousClip();
                         e.Handled = true;
@@ -542,45 +555,60 @@ namespace HudlRT.Views
 
         private void VideoPage_KeyDown(object sender, Windows.UI.Core.KeyEventArgs e)
         {
-            if (e.VirtualKey == Windows.System.VirtualKey.Down)
+            if (!e.KeyStatus.WasKeyDown)
             {
-                btnSlowForward_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
+                rewindKeyPressTimer.Stop();
+                if (e.VirtualKey == Windows.System.VirtualKey.Down)
+                {
+                    btnSlowForward_Click(null, null);
+                    keyPressTimer.Start();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+                {
+                    rewindKey = e;
+                    keyPressTimer.Start();
+                    rewindKeyPressTimer.Start();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+                {
+                    btnFastForward_Click(null, null);
+                    keyPressTimer.Start();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
+                {
+                    rewindKey = e;
+                    keyPressTimer.Start();
+                    rewindKeyPressTimer.Start();
+                    e.Handled = true;
+                }
             }
-            else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+        }
+
+        void rewindKeyPressTimerTick(object sender, object e)
+        {
+            if (keyPressTimer.ElapsedMilliseconds > keyPressLength && !rewindKey.KeyStatus.IsKeyReleased)
             {
-                btnSlowReverse_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
+                if (rewindKey.VirtualKey == Windows.System.VirtualKey.Up)
+                {
+                    btnSlowReverse_Click(null, null);
+                } 
+                else if (rewindKey.VirtualKey == Windows.System.VirtualKey.Left || rewindKey.VirtualKey == Windows.System.VirtualKey.PageUp)
+                {
+                    btnFastReverse_Click(null, null);
+                }
+                rewindKeyPressTimer.Stop();
             }
-            else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+            else if (keyPressTimer.ElapsedMilliseconds > keyPressLength)
             {
-                btnFastForward_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
-            }
-            else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
-            {
-                btnFastReverse_Click(null, null);
-                keyPressTimer.Start();
-                e.Handled = true;
+                rewindKeyPressTimer.Stop();
             }
         }
 
         void videoElement_MediaOpened(object sender, RoutedEventArgs e)
         {
-            if (videoLoadRetry)
-            {
-                videoMediaElement.Retry();
-                videoLoadRetry = false;
-                return;
-            }
-            else
-            {
-                videoLoadRetry = true;
-            }
-
             playerState = VideoPlayerState.Playing;
 
             videoMediaElement.DefaultPlaybackRate = 1.0;
@@ -591,18 +619,11 @@ namespace HudlRT.Views
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
         {
-            if (videoMediaElement.Position.Ticks < (videoMediaElement.Duration.Ticks / 3) && videoMediaElement.Position != new TimeSpan(0))
-            {
-                btn_release(null, null);
-            }
-            else
-            {
-                setPlayVisible();
-                setPrevVisible();
+            setPlayVisible();
+            setPrevVisible();
 
-                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                vm.NextClip(NextAngleEvent.mediaEnded);
-            }
+            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+            vm.NextClip(NextAngleEvent.mediaEnded);
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -710,13 +731,14 @@ namespace HudlRT.Views
             rewindStopwatch.Stop();
             if (isFastRewind)
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds * 2)));
+                rewindPosition = rewindPosition.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds * 2)));
             }
             else
             {
-                videoMediaElement.Position = videoMediaElement.Position.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds / 2)));
+                rewindPosition = rewindPosition.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(rewindStopwatch.ElapsedMilliseconds / 2)));
             }
-            
+            videoMediaElement.Position = rewindPosition;
+
             rewindStopwatch.Reset();
             rewindStopwatch.Start();
         }
