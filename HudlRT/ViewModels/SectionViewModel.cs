@@ -28,6 +28,28 @@ namespace HudlRT.ViewModels
         GridView categoriesGrid;
         List<Object> playlistsSelected;
 
+        private Visibility _progressRingVisibility;
+        public Visibility ProgressRingVisibility
+        {
+            get { return _progressRingVisibility; }
+            set
+            {
+                _progressRingVisibility = value;
+                NotifyOfPropertyChange(() => ProgressRingVisibility);
+            }
+        }
+
+        private bool _progressRingIsActive;
+        public bool ProgressRingIsActive
+        {
+            get { return _progressRingIsActive; }
+            set
+            {
+                _progressRingIsActive = value;
+                NotifyOfPropertyChange(() => ProgressRingIsActive);
+            }
+        }
+
         private string _noPlaylistText;
         public string NoPlaylistText
         {
@@ -36,6 +58,17 @@ namespace HudlRT.ViewModels
             {
                 _noPlaylistText = value;
                 NotifyOfPropertyChange(() => NoPlaylistText);
+            }
+        }
+
+        private bool _pageIsEnabled;
+        public bool PageIsEnabled
+        {
+            get { return _pageIsEnabled; }
+            set
+            {
+                _pageIsEnabled = value;
+                NotifyOfPropertyChange(() => PageIsEnabled);
             }
         }
 
@@ -131,6 +164,18 @@ namespace HudlRT.ViewModels
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
             gameSelected = Parameter.games.FirstOrDefault();
+
+            PageIsEnabled = true;
+
+            ProgressRingVisibility = Visibility.Collapsed;
+            ProgressRingIsActive = false;
+
+            if (Categories.Count == 0 && (NoPlaylistText == "" || NoPlaylistText == null))
+            {
+                ProgressRingVisibility = Visibility.Visible;
+                ProgressRingIsActive = true;
+            }
+
             if (gameSelected.gameId != _gameId)
             {
                 _gameId = gameSelected.gameId;
@@ -170,6 +215,8 @@ namespace HudlRT.ViewModels
             {
                 cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = null });
             }
+            ProgressRingVisibility = Visibility.Collapsed;
+            ProgressRingIsActive = false;
 
             Categories = cats;
             MarkDownloadedPlaylists();
@@ -203,6 +250,10 @@ namespace HudlRT.ViewModels
 
         public async void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
+            ProgressRingIsActive = true;
+            ProgressRingVisibility = Visibility.Visible;
+            PageIsEnabled = false;
+
             PlaylistViewModel vmClicked = (PlaylistViewModel)eventArgs.ClickedItem;
             Playlist playlistClicked = vmClicked.PlaylistModel;
             Playlist matchingDownload = DownloadAccessor.Instance.downloadedPlaylists.Where(u => u.playlistId == playlistClicked.playlistId).FirstOrDefault();

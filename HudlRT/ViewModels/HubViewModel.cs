@@ -10,6 +10,7 @@ using Windows.Storage;
 using Windows.UI.ApplicationSettings;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
@@ -47,6 +48,39 @@ namespace HudlRT.ViewModels
             {
                 seasonsForDropDown = value;
                 NotifyOfPropertyChange(() => SeasonsDropDown);
+            }
+        }
+
+        private bool _pageIsEnabled;
+        public bool PageIsEnabled
+        {
+            get { return _pageIsEnabled; }
+            set
+            {
+                _pageIsEnabled = value;
+                NotifyOfPropertyChange(() => PageIsEnabled);
+            }
+        }
+
+        private Visibility _progressRingVisibility;
+        public Visibility ProgressRingVisibility
+        {
+            get { return _progressRingVisibility; }
+            set
+            {
+                _progressRingVisibility = value;
+                NotifyOfPropertyChange(() => ProgressRingVisibility);
+            }
+        }
+
+        private bool _progressRingIsActive;
+        public bool ProgressRingIsActive
+        {
+            get { return _progressRingIsActive; }
+            set
+            {
+                _progressRingIsActive = value;
+                NotifyOfPropertyChange(() => ProgressRingIsActive);
             }
         }
 
@@ -106,6 +140,8 @@ namespace HudlRT.ViewModels
             base.OnActivate();
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
+            PageIsEnabled = true;
+
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
             if (response.ID != null && ServiceAccessor.ConnectedToInternet())
             {
@@ -114,6 +150,13 @@ namespace HudlRT.ViewModels
                 lastViewed.Thumbnail = response.thumbnail;
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
                 LastViewedVM.Games.Add(lastViewed);
+
+                if (Groups.Count == 0 && (NoScheduleEntriesText == null || NoScheduleEntriesText == ""))
+                {
+                    ProgressRingVisibility = Visibility.Visible;
+                    ProgressRingIsActive = true;
+                }
+
                 if (Groups.Count >= 3)
                 {
                     
@@ -196,6 +239,9 @@ namespace HudlRT.ViewModels
             {
                 NewGroups.Add(schedule);
             }
+
+            ProgressRingVisibility = Visibility.Collapsed;
+            ProgressRingIsActive = false;
 
             if (NewGroups.Count == 0)
             {
@@ -284,6 +330,10 @@ namespace HudlRT.ViewModels
 
         public async void GameSelected(ItemClickEventArgs eventArgs)
         {
+            PageIsEnabled = false;
+            ProgressRingIsActive = true;
+            ProgressRingVisibility = Visibility.Visible;
+
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
             Season parameter = SelectedSeason;
             parameter.games = new BindableCollection<Game>();
