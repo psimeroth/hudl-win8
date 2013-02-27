@@ -31,8 +31,8 @@ namespace HudlRT.Common
         public BindableCollection<Playlist> downloadedPlaylists { get; set; }
 
         public CancellationTokenSource cts = new CancellationTokenSource();
-        
-        
+
+
         private static readonly Lazy<DownloadAccessor> downloader = new Lazy<DownloadAccessor>(() => new DownloadAccessor());
 
         public static DownloadAccessor Instance
@@ -73,7 +73,7 @@ namespace HudlRT.Common
             {
                 return playlists;
             }
-            if(userFolder != null)
+            if (userFolder != null)
             {
                 var playlistFolders = await userFolder.GetFoldersAsync();
                 foreach (StorageFolder pFolder in playlistFolders)
@@ -138,7 +138,7 @@ namespace HudlRT.Common
                 var playlistFolder = await userFolder.GetFolderAsync(playlist.playlistId);
                 await playlistFolder.DeleteAsync();
                 Playlist dlPlaylist = downloadedPlaylists.Where(u => u.playlistId == playlist.playlistId).FirstOrDefault();
-                if(dlPlaylist != null)
+                if (dlPlaylist != null)
                 {
                     downloadedPlaylists.Remove(dlPlaylist);
                 }
@@ -249,7 +249,7 @@ namespace HudlRT.Common
             var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername(), Windows.Storage.CreationCollisionOption.OpenIfExists);
             foreach (Playlist pl in playlists)
             {
-                
+
                 var fileFolder = await userFolder.CreateFolderAsync(pl.playlistId, Windows.Storage.CreationCollisionOption.OpenIfExists);
                 //save thumbnail
                 var sourceThumb = new Uri(pl.thumbnailLocation);
@@ -295,7 +295,7 @@ namespace HudlRT.Common
 
             }
             Game selectedGame = seasonAndGame.games.FirstOrDefault();
-            Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, isHome = selectedGame.isHome, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() }; 
+            Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, isHome = selectedGame.isHome, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() };
             foreach (Category c in selectedGame.categories)
             {
                 foreach (Playlist plFromSelectedGame in c.playlists)
@@ -335,13 +335,13 @@ namespace HudlRT.Common
             bool seasonFound = false;
             foreach (Season s in currentDownloadsCompleteModel)
             {
-                if(s.seasonID == seasonAndGame.seasonID)//found the season we need to merge
+                if (s.seasonID == seasonAndGame.seasonID)//found the season we need to merge
                 {
                     seasonFound = true;
                     Game g = s.games.Where(u => u.gameId == newGameWithOnlyDownloads.gameId).FirstOrDefault();
                     if (g != null)
                     {
-                        BindableCollection<Category> newCategories = g.categories;                    
+                        BindableCollection<Category> newCategories = g.categories;
                         foreach (Category newCat in newGameWithOnlyDownloads.categories)//gameToBeAdded could have multiple new categories and playlists
                         {
                             Category fromCurrent = g.categories.Where(u => u.categoryId == newCat.categoryId).FirstOrDefault();
@@ -357,7 +357,7 @@ namespace HudlRT.Common
                                 }
                             }
                         }
-                        
+
                     }
                     else
                     {
