@@ -705,6 +705,19 @@ namespace HudlRT.Views
             FiltersList.Height = 200;
         }
 
+        private void btnExpandGrid_Click_NoAnimation(object sender, RoutedEventArgs e)
+        {
+            videoContainer.Height = 350;
+            videoMediaElement.Height = 350;
+            mainGrid_Row2.Height = new GridLength(375);
+            Container1_Row1.Height = new GridLength(375);
+            isGridCollapsed = false;
+            SortFilterPopup.IsOpen = false;
+            FilterGrid.Height = 425;
+            FiltersListRow.Height = new GridLength(220);
+            FiltersList.Height = 200;
+        }
+
         private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
         {
             Storyboard sb = (Storyboard)RootGrid.Resources["CollapseGridAnimation"];
@@ -762,7 +775,7 @@ namespace HudlRT.Views
                 }
                 else if (isGridCollapsed)
                 {
-                    btnExpandGrid_Click(null, null);
+                    btnExpandGrid_Click_NoAnimation(null, null);
                     videoContainer.Width = Window.Current.Bounds.Width - 300;
                     videoMediaElement.Width = Window.Current.Bounds.Width - 300;
                 }
@@ -803,6 +816,7 @@ namespace HudlRT.Views
                 }
                 previousStateIsSnapped = false;
                 previousVideoStateIsFullScreen = false;
+                btnExpandGrid_Click_NoAnimation(null, null);
             }
             else if (currentViewState == ApplicationViewState.Snapped)
             {
