@@ -153,14 +153,14 @@ namespace HudlRT.ViewModels
                     GameViewModel previous = new GameViewModel(previousGame, true);
                     previous.FetchPlaylists = previous.FetchThumbnailsAndPlaylistCounts();
                     previous.IsLargeView = true;
-                    NextGameVM.Games.Add(previous);
+                    LastGameVM.Games.Add(previous);
                 }
                 if (nextGame != null)
                 {
                     GameViewModel next = new GameViewModel(nextGame, true);
                     //next.isLargeView = true;
                     next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
-                    LastGameVM.Games.Add(next);
+                    NextGameVM.Games.Add(next);
                 }
 
 
