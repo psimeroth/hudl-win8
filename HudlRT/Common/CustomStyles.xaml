@@ -253,7 +253,7 @@
                                 <VisualState x:Name="Normal"/>
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlDarkGrayAccentColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="Black"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
@@ -281,7 +281,7 @@
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
-                                        <SolidColorBrush Color="Black">
+                                        <SolidColorBrush Color="{StaticResource HudlDarkGrayAccentColor}">
                                         </SolidColorBrush>
                                     </Rectangle.Fill>
                                 </Rectangle>
