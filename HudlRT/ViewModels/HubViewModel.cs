@@ -124,7 +124,7 @@ namespace HudlRT.ViewModels
                     }
                     else
                     {
-                        Groups.Insert(2, LastViewedVM);
+                        Groups.Insert(1, LastViewedVM);
                     }
                 }
             }
@@ -140,6 +140,7 @@ namespace HudlRT.ViewModels
             //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
             previousGame = null;
             nextGame = null;
+            HubGroupViewModel FirstEntryVM = new HubGroupViewModel() { Name = null, Games = new BindableCollection<GameViewModel>() };
 
             if (ServiceAccessor.ConnectedToInternet())
             {
@@ -158,11 +159,16 @@ namespace HudlRT.ViewModels
                 if (nextGame != null)
                 {
                     GameViewModel next = new GameViewModel(nextGame, true);
-                    //next.isLargeView = true;
+                    next.IsLargeView = true;
                     next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
                     NextGameVM.Games.Add(next);
                 }
 
+                LastViewedResponse response = AppDataAccessor.GetLastViewed();
+                if (response.ID != null)
+                {
+                    NewGroups.Add(LastViewedVM);
+                }
 
                 if (NextGameVM.Games.Count() > 0)
                 {
@@ -173,11 +179,6 @@ namespace HudlRT.ViewModels
                     NewGroups.Add(LastGameVM);
                 }
 
-                LastViewedResponse response = AppDataAccessor.GetLastViewed();
-                if (response.ID != null)
-                {
-                    NewGroups.Add(LastViewedVM);
-                }
             }
             else
             {
@@ -195,16 +196,20 @@ namespace HudlRT.ViewModels
             {
                 NewGroups.Add(schedule);
             }
-            Groups = NewGroups;
 
-            if (Groups.Count == 0)
+            if (NewGroups.Count == 0)
             {
                 NoScheduleEntriesText = "There are no schedule entries for this season";
             }
             else
             {
                 NoScheduleEntriesText = "";
+                //Needed for left padding
+                NewGroups.Insert(0,FirstEntryVM);
             }
+
+            Groups = NewGroups;
+            
         }
 
         public void GetNextPreviousGames()
@@ -213,23 +218,24 @@ namespace HudlRT.ViewModels
 
             sortedGames.AddRange(games);
             sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
+            DateTime fakeNow = new DateTime(2012, 10, 8);
 
             if (sortedGames.Count > 0)
             {
-                if (DateTime.Compare(DateTime.Now, sortedGames[sortedGames.Count - 1].date) <= 0)
+                if (DateTime.Compare(fakeNow, sortedGames[sortedGames.Count - 1].date) <= 0)
                 {
                     nextGame = sortedGames[sortedGames.Count - 1];
                     previousGame = null;
                 }
-                else if (DateTime.Compare(DateTime.Now, sortedGames[0].date) >= 0)
+                else if (DateTime.Compare(fakeNow, sortedGames[0].date) >= 0)
                 {
                     nextGame = null;
                     previousGame = sortedGames[0];
                 }
                 else
                 {
-                    nextGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) < 0).LastOrDefault();
-                    previousGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) > 0).FirstOrDefault();
+                    nextGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) < 0).LastOrDefault();
+                    previousGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) > 0).FirstOrDefault();
                 }
             }
             else

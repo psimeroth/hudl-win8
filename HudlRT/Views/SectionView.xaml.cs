@@ -33,10 +33,5 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
-
-        private void CategoriesGridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-            string s = "sdfs";
-        }
     }
 }

@@ -165,10 +165,14 @@ namespace HudlRT.ViewModels
                     cats.Add(cat);
                 }
             }
-            Categories = cats;
-            MarkDownloadedPlaylists();
+
+            if (cats.Count() > 0)
+            {
+                cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = null });
+            }
 
             Categories = cats;
+            MarkDownloadedPlaylists();
 
             if (Categories.Count == 0)
             {
