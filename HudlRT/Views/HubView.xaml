@@ -27,7 +27,7 @@
             <!-- Back button and page title -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition x:Name="ComboBoxColumn" Width="2*" />
                 </Grid.ColumnDefinitions>
@@ -53,7 +53,7 @@
             <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" IsEnabled="{Binding PageIsEnabled}" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]; [Event SelectionChanged] = [SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
+                        <VirtualizingStackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
             
@@ -75,7 +75,7 @@
                         </GroupStyle.HeaderTemplate>
                         <GroupStyle.ContainerStyle>
                             <Style TargetType="GroupItem">
-                                <Setter Property="Margin" Value="0,0,60,0" />
+                                <Setter Property="Margin" Value="30,0,0,0" />
                             </Style>
                         </GroupStyle.ContainerStyle>
                         <GroupStyle.Panel>

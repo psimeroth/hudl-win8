@@ -211,13 +211,15 @@ namespace HudlRT.ViewModels
                 }
             }
 
+            if (cats.Count() > 0)
+            {
+                cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = null });
+            }
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
 
             Categories = cats;
             MarkDownloadedPlaylists();
-
-            Categories = cats;
 
             if (Categories.Count == 0)
             {

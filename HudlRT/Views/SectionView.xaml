@@ -24,7 +24,7 @@
                 <!-- Back button and page title -->
                 <Grid Grid.Row="0" >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
@@ -34,7 +34,7 @@
             <GridView Grid.Row="1" x:Name="CategoriesGridView" IsEnabled="{Binding PageIsEnabled}" SelectionMode="Multiple" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]; [Event SelectionChanged] = [CategoriesGridView_SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
                     <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
+                            <VirtualizingStackPanel Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </GridView.ItemsPanel>
 
@@ -61,7 +61,7 @@
                             </GroupStyle.Panel>
                             <GroupStyle.ContainerStyle>
                                 <Style TargetType="GroupItem">
-                                    <Setter Property="Margin" Value="0,0,60,0" />
+                                    <Setter Property="Margin" Value="30,0,0,0" />
                                 </Style>
                             </GroupStyle.ContainerStyle>
                         </GroupStyle>
