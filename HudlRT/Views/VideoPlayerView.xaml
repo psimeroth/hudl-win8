@@ -127,9 +127,9 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Button Content="Apply" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" FontSize="20" Grid.Column="0" Style="{StaticResource ButtonStyle_Standard}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,2"/>
-                            <Button x:Name="RemoveFilterBtn" Content="Remove" HorizontalAlignment="Stretch" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Grid.Column="1" VerticalAlignment="Stretch" Margin="0,2,5,2"/>
-                            <Button x:Name="CloseBtn"  Content="Close" Click="closeSettingsPopupClicked" FontSize="20" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonStyle_Standard}" Margin="0,2,5,2"/>
+                            <Button Content="Apply" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" FontSize="20" Grid.Column="0" Style="{StaticResource ButtonStyle_Standard}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5"/>
+                            <Button x:Name="RemoveFilterBtn" Content="Remove" HorizontalAlignment="Stretch" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Grid.Column="1" VerticalAlignment="Stretch" Margin="0,5,5,5"/>
+                            <Button x:Name="CloseBtn"  Content="Close" Click="closeSettingsPopupClicked" FontSize="20" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonStyle_Standard}" Margin="0,5,5,5"/>
                         </Grid>
                     </Grid>
                 </ContentControl>
