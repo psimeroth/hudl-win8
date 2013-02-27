@@ -8,7 +8,7 @@
     xmlns:caliburn="using:Caliburn.Micro"
     mc:Ignorable="d">
 
-    <Grid caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]" Background="{StaticResource HudlDarkerGray}">
+    <Grid caliburn:Message.Attach="[Event SizeChanged] = [OnWindowSizeChanged()]" Background="{StaticResource HudlDarkGray}">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
@@ -17,7 +17,7 @@
 
         <Grid x:Name="TopTitleGrid" Background="{StaticResource HudlDarkGray}">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1"/>
-            <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlHeaderGray}" Width="250" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid x:Name="Logo_BackgroundGrid" Margin="70,0,0,0" Background="{StaticResource HudlDarkGray}" Width="250" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border BorderBrush="Black" BorderThickness="1,0,1,1"/>
             </Grid>
             <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,0,0,0" />

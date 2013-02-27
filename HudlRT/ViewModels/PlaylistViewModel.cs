@@ -41,7 +41,7 @@ namespace HudlRT.ViewModels
             {
                 if (PlaylistModel.thumbnailLocation == null)
                 {
-                    return "ms-appx:///Assets/agile-hudl-logo-dark.png";
+                    return "ms-appx:///Assets/agile-hudl-logo-light.png";
                 }
                 else
                 {
@@ -49,10 +49,33 @@ namespace HudlRT.ViewModels
                 }
             }
         }
+        private Visibility downloadedIcon_Visibility;
+        public Visibility DownloadedIcon_Visibility
+        {
+            get { return downloadedIcon_Visibility; }
+            set
+            {
+                downloadedIcon_Visibility = value;
+                NotifyOfPropertyChange(() => DownloadedIcon_Visibility);
+            }
+        }
+
+        private bool isSelectable;
+        public bool IsSelectable
+        {
+            get { return isSelectable; }
+            set
+            {
+                isSelectable = value;
+                NotifyOfPropertyChange(() => IsSelectable);
+            }
+        }
 
         public PlaylistViewModel(Playlist playlist)
         {
             PlaylistModel = playlist;
+            DownloadedIcon_Visibility = Visibility.Collapsed;
+            IsSelectable = false;
         }
     }
 }
