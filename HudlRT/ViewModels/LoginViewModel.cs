@@ -96,7 +96,7 @@ namespace HudlRT.ViewModels
         protected override void OnInitialize()
         {
             CachedParameter.resetCache();
-
+            DownloadAccessor.Instance.DeleteTempData();
             base.OnInitialize();
 
             ButtonText = "Login";
@@ -184,7 +184,7 @@ namespace HudlRT.ViewModels
                     if (ts.Days <= 14)
                     {
                         CachedParameter.noConnection = true;
-                        navigationService.NavigateToViewModel<DownloadsViewModel>();
+                        navigationService.NavigateToViewModel<HubViewModel>();
                     }
                     else
                     {

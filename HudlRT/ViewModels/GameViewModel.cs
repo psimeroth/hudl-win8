@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
@@ -18,12 +19,24 @@ namespace HudlRT.ViewModels
         public bool IsLastViewed { get; set; }
         public Game GameModel { get; set; }
         public Task FetchPlaylists { get; set; }
+        private Visibility playButtonVisibility;
+        public Visibility PlayButtonVisibility
+        {
+            get
+            {
+                return IsLastViewed ? Visibility.Visible : Visibility.Collapsed;
+            }
+            set
+            {
+                playButtonVisibility = value;
+            }
+        }
 
         public string Opponent
         {
             get
             {
-                return "vs. " + GameModel.opponent;
+                return GameModel.opponent;
             }
         }
 
@@ -85,36 +98,48 @@ namespace HudlRT.ViewModels
         }
 
         public async Task FetchThumbnailsAndPlaylistCounts() 
-
         {
-            CategoryResponse response = await ServiceAccessor.GetGameCategories(GameModel.gameId);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            if (ServiceAccessor.ConnectedToInternet())
             {
-                GameModel.categories = response.categories;
-                int numLists = 0;
-                foreach (Category cat in GameModel.categories)
+                CategoryResponse response = await ServiceAccessor.GetGameCategories(GameModel.gameId);
+                if (response.status == SERVICE_RESPONSE.SUCCESS)
                 {
-                    PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
-                    if (response.status == SERVICE_RESPONSE.SUCCESS)
+                    GameModel.categories = response.categories;
+                    int numLists = 0;
+                    foreach (Category cat in GameModel.categories)
                     {
-                        cat.playlists = playResponse.playlists;
-                        if (cat.playlists != null && cat.playlists.Count() > 0)
+                        PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
+                        if (response.status == SERVICE_RESPONSE.SUCCESS)
                         {
-                            numLists += cat.playlists.Count();
-                            //Populate the thumbnail on the hub
-                            if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
+                            cat.playlists = playResponse.playlists;
+                            if (cat.playlists != null && cat.playlists.Count() > 0)
                             {
-                                if (cat.playlists[0].thumbnailLocation != null)
+                                numLists += cat.playlists.Count();
+                                //Populate the thumbnail on the hub
+                                if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
                                 {
-                                    Thumbnail = cat.playlists[0].thumbnailLocation;
-                                    ImageWidth = 565;
+                                    if (cat.playlists[0].thumbnailLocation != null)
+                                    {
+                                        Thumbnail = cat.playlists[0].thumbnailLocation;
+                                        ImageWidth = 565;
+                                    }
                                 }
                             }
                         }
                     }
+                    //Populate the numplaylistsfield.
+                    NumPlaylists = numLists.ToString();
                 }
-                //Populate the numplaylistsfield.
+            }
+            else
+            {
+                int numLists = 0;
+                foreach (Category cat in GameModel.categories)
+                {
+                    numLists += cat.playlists.Count;
+                }
                 NumPlaylists = numLists.ToString();
+                ImageWidth = 565;
             }
         }
     }

@@ -1,4 +1,5 @@
 using Caliburn.Micro;
+using HudlRT.Common;
 using HudlRT.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,25 @@ namespace HudlRT.ViewModels
     public class PlaylistViewModel : PropertyChangedBase
     {
         public Playlist PlaylistModel { get; set; }
+        public Task FetchClips { get; set; }
+
+        public async Task FetchClipsAndHeaders()
+        {
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                PlaylistModel.clips = new BindableCollection<Clip>();
+                ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(PlaylistModel.playlistId);
+                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                {
+                    PlaylistModel.clips = response.clips;
+                    PlaylistModel.displayColumns = response.DisplayColumns;
+                }
+                else
+                {
+                }
+            }
+        }
+
         public string Name
         {
             get
@@ -49,10 +69,33 @@ namespace HudlRT.ViewModels
                 }
             }
         }
+        private Visibility downloadedIcon_Visibility;
+        public Visibility DownloadedIcon_Visibility
+        {
+            get { return downloadedIcon_Visibility; }
+            set
+            {
+                downloadedIcon_Visibility = value;
+                NotifyOfPropertyChange(() => DownloadedIcon_Visibility);
+            }
+        }
+
+        private bool isSelectable;
+        public bool IsSelectable
+        {
+            get { return isSelectable; }
+            set
+            {
+                isSelectable = value;
+                NotifyOfPropertyChange(() => IsSelectable);
+            }
+        }
 
         public PlaylistViewModel(Playlist playlist)
         {
             PlaylistModel = playlist;
+            DownloadedIcon_Visibility = Visibility.Collapsed;
+            IsSelectable = false;
         }
     }
 }
