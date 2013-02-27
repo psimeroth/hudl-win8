@@ -12,10 +12,9 @@
     <Style x:Key="VideoPlayer_TextBlockStyle_GridHeader" TargetType="TextBlock" >
         <Setter Property="FontSize" Value="24"/>
         <Setter Property="Margin" Value="5,0"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="{StaticResource HudlMediumDarkGray}" />
-        <Setter Property="TextTrimming" Value="WordEllipsis" />
     </Style>
     
     <Style x:Key="VideoPlayer_ListViewItemStyle_Popout" TargetType="ListViewItem">
@@ -258,7 +257,7 @@
                                 </VisualState>
                                 <VisualState x:Name="UnselectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlDarkGrayAccentColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="Black"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
@@ -297,7 +296,7 @@
                                 <Grid>
                                     <Rectangle x:Name="default">
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="Black"/>
+                                            <SolidColorBrush Color="{StaticResource HudlDarkGrayAccentColor}"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <Rectangle x:Name="BackgroundColor" Opacity="0" >
