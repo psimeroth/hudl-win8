@@ -97,7 +97,7 @@
             Padding="10,0,0,0"
             ItemsSource="{Binding Source={StaticResource GroupsViewSource}}"
             ItemTemplate="{StaticResource HubPageSnappedGamesTemplate}"
-            SelectionMode="Single"
+            SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
             caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]">
@@ -128,8 +128,11 @@
                 -->
                 <VisualState x:Name="Snapped">
                     <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="40" />
+                        </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="-30,0,0,20" />
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="-90,0,0,30" />
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>

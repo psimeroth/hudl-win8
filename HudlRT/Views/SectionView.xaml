@@ -105,7 +105,7 @@
                     Margin="0,0,0,0"
                     Padding="10,0,0,0"
                     ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}"
-                    SelectionMode="Single"
+                    SelectionMode="None"
                     IsSwipeEnabled="false"
                     IsItemClickEnabled="True"
                     caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]">
