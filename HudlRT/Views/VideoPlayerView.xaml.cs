@@ -140,13 +140,10 @@ namespace HudlRT.Views
                     TextBlock t = new TextBlock();
                     Run text = new Run();
                     text.Text = displayColumns[i];
-                    Underline underline = new Underline();
-                    underline.Inlines.Add(text);
-                    t.Inlines.Add(underline);
+                    t.Inlines.Add(text);
                     b.SetValue(Grid.RowProperty, 0);
                     b.SetValue(Grid.ColumnProperty, i);
                     t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
-                    t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
 
                     t.Tag = i;
                     t.PointerReleased += columnHeaderClick;

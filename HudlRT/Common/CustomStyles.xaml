@@ -30,7 +30,7 @@
     <SolidColorBrush x:Key="HudlPartialBlack" Color="{StaticResource HudlPartialBlackColor}" />
     
     <Style x:Key="ComboBoxItemStyle_Standard" TargetType="ComboBoxItem">
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource HudlMediumGray}"/>
         <Setter Property="Padding" Value="5"/>
         <Setter Property="Height" Value ="80"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -89,9 +89,9 @@
                             <Border BorderThickness="0,0.5" BorderBrush="Black" >
                             </Border>
                         </Grid>
-                        <StackPanel Orientation="Vertical" Margin="0,0,22,0">
+                        <StackPanel Orientation="Vertical" Margin="22,0">
                             <TextBlock x:Name="Year" Text="{Binding name}" HorizontalAlignment="Right" FontSize="40" FontWeight="Light" Foreground="{StaticResource HudlMediumGray}" />
-                            <StackPanel Orientation="Horizontal" Margin="0,-10,0,0" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal" Margin="0,-10,0,0" HorizontalAlignment="Right" >
                                 <TextBlock x:Name="SchoolName" Text="{Binding SchoolName}" FontSize="22" Foreground="{StaticResource HudlMediumDarkGray}" FontWeight="Bold"/>
                                 <TextBlock x:Name="TeamName" Text="{Binding TeamName}" FontSize="22" FontWeight="Light" Foreground="{StaticResource HudlMediumDarkGray}" Margin="10,0,0,0"/>
                             </StackPanel>
@@ -228,7 +228,7 @@
                             </Grid>
                         </Border>
                         <Popup x:Name="Popup">
-                            <Border x:Name="PopupBorder" Background="Transparent" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Stretch">
+                            <Border x:Name="PopupBorder" Background="Transparent" BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Stretch">
                                 <Grid>
                                     <ScrollViewer x:Name="ScrollViewer" Padding="0" Background="Transparent" VerticalScrollBarVisibility="Hidden">
                                         <ItemsPresenter/>
@@ -294,7 +294,8 @@
                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                               Margin="{TemplateBinding Padding}"
                               TextWrapping="Wrap"
-                              TextAlignment="Center"/>
+                              TextAlignment="Center"
+                              Foreground="{StaticResource HudlMediumGray}"/>
                         <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
                         <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
                     </Grid>
