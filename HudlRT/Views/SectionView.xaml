@@ -14,7 +14,6 @@
         <CollectionViewSource x:Name="CategoriesViewSource" Source="{Binding Categories}" IsSourceGrouped="True" ItemsPath="Playlists" />
     </UserControl.Resources>
 
-    <Grid>
         <Grid>
             <Grid Background="{StaticResource HudlGrayGradient}">
                 <Grid.RowDefinitions>
@@ -153,7 +152,6 @@
                 </ListView>
             </Grid>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" />
-        </Grid>
         <ProgressRing Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
         <VisualStateManager.VisualStateGroups>
 
