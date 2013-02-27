@@ -82,7 +82,14 @@ namespace HudlRT.ViewModels
             else
             {
                 SeasonsDropDown = await DownloadAccessor.Instance.GetDownloadsModel();
-                SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
+                if (SeasonsDropDown.Any())
+                {
+                    SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
+                }
+                else
+                {
+                    //show message here if no downloads
+                }
                 
             }
             
