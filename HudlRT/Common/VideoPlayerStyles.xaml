@@ -12,9 +12,9 @@
     <Style x:Key="VideoPlayer_TextBlockStyle_GridHeader" TargetType="TextBlock" >
         <Setter Property="FontSize" Value="24"/>
         <Setter Property="Margin" Value="5,0"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{StaticResource HudlOrange}" />
+        <Setter Property="Foreground" Value="{StaticResource HudlMediumDarkGray}" />
     </Style>
     
     <Style x:Key="VideoPlayer_ListViewItemStyle_Popout" TargetType="ListViewItem">
@@ -28,7 +28,8 @@
                               ContentTemplate="{TemplateBinding ContentTemplate}"
                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              Margin="{TemplateBinding Padding}"/>
+                              Margin="{TemplateBinding Padding}"
+                              Foreground="{StaticResource HudlMediumGray}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -220,71 +221,9 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <Style x:Key="VideoPlayer_ButtonStyle_Standard" TargetType="Button">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="5"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="PointerOver">
-                                    <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlDarkGrayColor}"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Pressed">
-                                    <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" Storyboard.TargetName="DisabledVisualElement" Storyboard.TargetProperty="Opacity" To=".5"/>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="1"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unfocused" />
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-
-                        <Grid>
-                            <Border BorderThickness="1" BorderBrush="Black">
-                                <Rectangle x:Name="BackgroundColor" >
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="Black">
-                                        </SolidColorBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </Border>
-                        </Grid>
-                        <TextBlock
-                              x:Name="contentPresenter"
-                              Text="{TemplateBinding Content}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              Margin="{TemplateBinding Padding}"
-                              TextWrapping="Wrap"
-                              TextAlignment="Center"/>
-                        <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
-                        <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
     <Style x:Key="VideoPlayer_ListViewItemStyle_Standard" TargetType="ListViewItem">
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource HudlMediumGray}"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Height" Value="39"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -303,7 +242,7 @@
                                 <VisualState x:Name="Normal"/>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlOrangeColor}"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -318,12 +257,12 @@
                                 </VisualState>
                                 <VisualState x:Name="UnselectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{ StaticResource HudlDarkGrayColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="Black"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlBlueColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlOrangeColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="UnselectedSwiping">
@@ -357,12 +296,12 @@
                                 <Grid>
                                     <Rectangle x:Name="default">
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="Black"/>
+                                            <SolidColorBrush Color="{StaticResource HudlDarkGrayAccentColor}"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <Rectangle x:Name="BackgroundColor" Opacity="0" >
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="{StaticResource HudlBlueColor}" />
+                                            <SolidColorBrush Color="{StaticResource HudlOrangeColor}" />
                                         </Rectangle.Fill>
                                     </Rectangle>
                                 </Grid>

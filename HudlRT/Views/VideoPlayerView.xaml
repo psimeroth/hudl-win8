@@ -91,58 +91,58 @@
                     <PaneThemeTransition />
                 </TransitionCollection>
             </Popup.ChildTransitions>
-            <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" BorderThickness="2" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" x:Name="RootPopupBorder">
+            <Border BorderBrush="Black" BorderThickness="2,0" Background="{StaticResource HudlDarkGray}" x:Name="RootPopupBorder" Height="423">
                 <ContentControl DataContext="{Binding SelectedFilter}">
                     <Grid x:Name="FilterGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="346" Height="425">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50" />
-                            <RowDefinition Height="65" />
+                            <RowDefinition Height="70" />
                             <RowDefinition x:Name="FiltersListRow" Height="220" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Border BorderBrush="Black" Background="{StaticResource HudlBlue}" BorderThickness="0,0,0,2" Grid.Row="0" />
-                        <TextBlock Text="{Binding ColumnHeaderName}" FontSize="28" Grid.Row="0" Foreground="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,0"/>
+                        <Border BorderBrush="Black" Background="{StaticResource HudlOrange}" BorderThickness="0" Grid.Row="0" />
+                        <TextBlock Text="{Binding ColumnHeaderName}" FontSize="28" Grid.Row="0" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         <StackPanel Orientation="Vertical" Grid.Row="1">
-                            <TextBlock Text="Sort" FontSize="24" Margin="10,0,0,0"/>
+                            <TextBlock Text="Sort" Foreground="{StaticResource HudlMediumDarkGray}" FontSize="24" Margin="10,5,0,0"/>
                             <StackPanel Orientation="Horizontal" Margin="30,0,0,0">
-                                <RadioButton x:Name="AscBtn" Content="Asc" IsChecked="{Binding IsAscendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 0)]" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
-                                <RadioButton x:Name="DscBtn" Content="Dsc" IsChecked="{Binding IsDescendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 1)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
-                                <RadioButton x:Name="NoneBtn" Content="None" IsChecked="{Binding IsNoneChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 2)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                                <RadioButton x:Name="AscBtn" Content="Asc" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsAscendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 0)]" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                                <RadioButton x:Name="DscBtn" Content="Dsc" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsDescendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 1)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                                <RadioButton x:Name="NoneBtn" Content="None" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsNoneChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 2)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
                             </StackPanel>
                         </StackPanel>
-                        <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="1" />
+                        <Border BorderBrush="Black" BorderThickness="0,2" Grid.Row="1" />
                         <StackPanel Orientation="Vertical" Grid.Row="2">
-                            <TextBlock Text="Filter" FontSize="24" Margin="10,0,0,0"/>
+                            <TextBlock Text="Filter" FontSize="24" Margin="10,5,0,0" Foreground="{StaticResource HudlMediumDarkGray}"/>
                             <ListView x:Name="FiltersList" Height="200" Width="340"  ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
+                                        <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ListView>
                         </StackPanel>
                         <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="2" />
-                        <Grid x:Name="FilterButtonsGrid" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="346" Margin="2,0,5,0">
+                        <Grid x:Name="FilterButtonsGrid" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="346" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Button Content="Apply" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" FontSize="20" Grid.Column="0" Style="{StaticResource VideoPlayer_ButtonStyle_Standard}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="3,3,3,3"/>
-                            <Button x:Name="RemoveFilterBtn" Content="Remove" HorizontalAlignment="Stretch" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Style="{StaticResource VideoPlayer_ButtonStyle_Standard}" FontSize="20" Grid.Column="1" VerticalAlignment="Stretch" Margin="0,3,3,3"/>
-                            <Button x:Name="CloseBtn"  Content="Close" Click="closeSettingsPopupClicked" FontSize="20" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource VideoPlayer_ButtonStyle_Standard}" Margin="0,3,3,3"/>
+                            <Button Content="Apply" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" FontSize="20" Grid.Column="0" Style="{StaticResource ButtonStyle_Standard}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5"/>
+                            <Button x:Name="RemoveFilterBtn" Content="Remove" HorizontalAlignment="Stretch" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Grid.Column="1" VerticalAlignment="Stretch" Margin="0,5,5,5"/>
+                            <Button x:Name="CloseBtn"  Content="Close" Click="closeSettingsPopupClicked" FontSize="20" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonStyle_Standard}" Margin="0,5,5,5"/>
                         </Grid>
                     </Grid>
                 </ContentControl>
             </Border>
         </Popup>
 
-        <Grid x:Name="mainGrid">
+        <Grid x:Name="mainGrid" Background="{StaticResource HudlDarkGray}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition x:Name="mainGrid_Row2" Height="375" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Name="header" Background="{StaticResource HudlDarkGray}">
+            <Grid Name="header" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85"/>
                     <ColumnDefinition Width="165"/>
@@ -150,9 +150,9 @@
                     <ColumnDefinition Width="250"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="17,0,0,0" />
-                <Button x:Name="btnTogglePlayback" Grid.Column="1" Width="180" Height="40" FontSize="20" Content="{Binding ToggleButtonContent}" HorizontalAlignment="Center"
+                <Button x:Name="btnTogglePlayback" Style="{StaticResource ButtonStyle_Standard}" Grid.Column="1" Width="165" Height="40" FontSize="20" Content="{Binding ToggleButtonContent}" HorizontalAlignment="Center"
                          caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
-                <TextBlock x:Name="PlaylistName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
+                <TextBlock x:Name="PlaylistName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="{StaticResource HudlMediumGray}"/>
                 <Grid Grid.Column="3">
                     <Button x:Name="btnDownload" Visibility="Collapsed" Width="230" Height="40" FontSize="20" Content="Download Playlist"  HorizontalAlignment="Left"
                          caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
@@ -257,7 +257,7 @@
         </Grid>
 
         <Grid x:Name="full_mainGrid" Visibility="Collapsed">
-            <Grid Background="#AA000000" Height="50" Width="Auto" VerticalAlignment="Top">
+            <Grid Background="#AA333333" Height="50" Width="Auto" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[0]}"/>
                     <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[0]}" />
@@ -272,7 +272,7 @@
                 </StackPanel>
             </Grid>
 
-            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
 
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-25,0,0,-7" Orientation="Vertical" Width="150" Background="Transparent">
                 <Button x:Name="full_btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
@@ -294,7 +294,7 @@
                                     Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="#AA000000" RadiusX="20" RadiusY="20"/>
+            <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
 
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-25,-7" Orientation="Vertical" Width="150">
                 <Button x:Name="full_btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
@@ -314,7 +314,7 @@
 
         <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
 
-            <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="15,-396,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
+            <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource SnappedBackButtonStyle}" Margin="20,-369,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                 <Button x:Name="snapped_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
                         caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" />
@@ -358,7 +358,7 @@
         </VisualStateManager.VisualStateGroups>
     </Grid>
     <common:LayoutAwarePage.TopAppBar>
-        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGray}" BorderThickness="0,0,0,3">
+        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
@@ -366,7 +366,7 @@
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Foreground="White" FontSize="24" Padding="10,0,5,0" Grid.Column="0">
+                <TextBlock Foreground="{StaticResource HudlMediumDarkGray}" FontSize="24" Padding="10,0,5,0" Grid.Column="0">
                     Angles:
                 </TextBlock>
                 <ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Column="1">
@@ -378,7 +378,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Margin="0,0,10,0" FontSize="16" Foreground="White"/>
+                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Margin="0,0,10,0" FontSize="16" Foreground="{StaticResource HudlMediumGray}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

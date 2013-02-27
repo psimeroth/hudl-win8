@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace HudlRT.ViewModels
 {
@@ -18,6 +19,18 @@ namespace HudlRT.ViewModels
         public bool IsLastViewed { get; set; }
         public Game GameModel { get; set; }
         public Task FetchPlaylists { get; set; }
+        private Visibility playButtonVisibility;
+        public Visibility PlayButtonVisibility
+        {
+            get
+            {
+                return IsLastViewed ? Visibility.Visible : Visibility.Collapsed;
+            }
+            set
+            {
+                playButtonVisibility = value;
+            }
+        }
 
         public string Opponent
         {
@@ -73,7 +86,7 @@ namespace HudlRT.ViewModels
             GameModel = game;
             IsLargeView = isLarge;
             IsLastViewed = isLastviewed;
-            Thumbnail = "ms-appx:///Assets/agile-hudl-logo-light.png";
+            Thumbnail = "ms-appx:///Assets/hudl-mark-gray.png";
             if (IsLastViewed)
             {
                 ImageWidth = 565;
@@ -103,7 +116,7 @@ namespace HudlRT.ViewModels
                             {
                                 numLists += cat.playlists.Count();
                                 //Populate the thumbnail on the hub
-                                if (Thumbnail == "ms-appx:///Assets/agile-hudl-logo-light.png")
+                                if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
                                 {
                                     if (cat.playlists[0].thumbnailLocation != null)
                                     {

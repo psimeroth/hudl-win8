@@ -18,7 +18,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid Background="{StaticResource HudlGrayGradient}" SizeChanged="Grid_SizeChanged_1">
+        <Grid Background="{StaticResource HudlGrayGradient}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="*"/>
@@ -27,13 +27,13 @@
             <!-- Back button and page title -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition x:Name="ComboBoxColumn" Width="2*" />
                 </Grid.ColumnDefinitions>
                 <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
-                <Grid x:Name="ComboBoxGrid" MinWidth ="500" Margin="0,0,15,0" HorizontalAlignment="Right" Grid.Column="2">
-                    <ComboBox x:Name="SeasonsDropDown" MinWidth="500" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" Foreground="Black" Margin="0,20,20,0">
+                <Grid x:Name="ComboBoxGrid" MinWidth ="700" Margin="0,0,15,0" HorizontalAlignment="Right" Grid.Column="2">
+                    <ComboBox x:Name="SeasonsDropDown" MinWidth="500" IsEnabled="{Binding PageIsEnabled}" SelectedItem="{Binding SelectedSeason, Mode=TwoWay}" Style="{StaticResource ComboBoxStyle_Standard}" ItemContainerStyle="{StaticResource ComboBoxItemStyle_Standard}" Foreground="Black" Margin="0,20,20,0">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
@@ -50,20 +50,20 @@
             </Grid>
 
             <!-- Horizontal scrolling grid used in most view states -->
-            <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]; [Event SelectionChanged] = [SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
+            <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" IsEnabled="{Binding PageIsEnabled}" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]; [Event SelectionChanged] = [SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50" IsSwipeEnabled="False">
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <VirtualizingStackPanel Orientation="Horizontal" Margin="100,0"/>
+                        <VirtualizingStackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
-            
+
                 <GridView.ItemContainerStyle>
                     <Style TargetType="GridViewItem">
                         <!-- Puts space between grid view items-->
                         <Setter Property="Margin" Value="8,8,8,8" />
                     </Style>
                 </GridView.ItemContainerStyle>
-            
+
                 <GridView.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.HeaderTemplate>
@@ -75,7 +75,7 @@
                         </GroupStyle.HeaderTemplate>
                         <GroupStyle.ContainerStyle>
                             <Style TargetType="GroupItem">
-                                <Setter Property="Margin" Value="0,0,60,0" />
+                                <Setter Property="Margin" Value="30,0,0,0" />
                             </Style>
                         </GroupStyle.ContainerStyle>
                         <GroupStyle.Panel>
@@ -86,29 +86,30 @@
                     </GroupStyle>
                 </GridView.GroupStyle>
             </GridView>
-        
+
             <!-- Vertical scrolling list only used when snapped -->
             <ListView
-                x:Name="itemListView"
-                AutomationProperties.AutomationId="ItemListView"
-                AutomationProperties.Name="Grouped Items"
-                Grid.Row="1"
-                Visibility="Collapsed"
-                Margin="0,0,0,0"
-                Padding="10,0,0,0"
-                ItemsSource="{Binding Source={StaticResource GroupsViewSource}}"
-                ItemTemplate="{StaticResource HubPageSnappedGamesTemplate}"
-                SelectionMode="Single"
-                IsSwipeEnabled="false"
-                IsItemClickEnabled="True"
-                caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]">
-     
+            x:Name="itemListView"
+            AutomationProperties.AutomationId="ItemListView"
+            AutomationProperties.Name="Grouped Items"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Margin="0,0,0,0"
+            Padding="10,0,0,0"
+            ItemsSource="{Binding Source={StaticResource GroupsViewSource}}"
+            ItemTemplate="{StaticResource HubPageSnappedGamesTemplate}"
+            SelectionMode="None"
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True"
+			IsEnabled="{Binding PageIsEnabled}"
+            caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]">
+
                 <ListView.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate>
                                 <Grid Margin="7,7,0,0">
-                                    <TextBlock Text="{Binding Name}" Foreground="Gray" FontSize="25" />
+                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource HudlMediumDarkGray}" FontSize="25"/>
                                 </Grid>
                             </DataTemplate>
                         </GroupStyle.HeaderTemplate>
@@ -117,6 +118,7 @@
             </ListView>
         </Grid>
 
+        <ProgressRing Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoScheduleEntriesText}" />
 
         <VisualStateManager.VisualStateGroups>
@@ -127,11 +129,17 @@
                 <VisualState x:Name="Filled"/>
 
                 <!--
-                        The back button and title have different styles when snapped, and the list representation is substituted
-                        for the grid displayed in all other view states
-                    -->
+                    The title has different styles when snapped, and the list representation is substituted
+                    for the grid displayed in all other view states
+                -->
                 <VisualState x:Name="Snapped">
                     <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="40" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="-90,0,0,30" />
+                        </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                         </ObjectAnimationUsingKeyFrames>
@@ -143,12 +151,6 @@
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ComboBoxColumn" Storyboard.TargetProperty="Width">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="40" />
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="-80,0,0,30" />
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

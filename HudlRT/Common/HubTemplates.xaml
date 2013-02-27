@@ -4,61 +4,67 @@
     xmlns:local="using:HudlRT.Common">
 
     <DataTemplate x:Key="HubPageLargeGamesTemplate">
-        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="518" Width="350">
+        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="518" Width="350" IsRightTapEnabled="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="9*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding Thumbnail}" MinWidth="{Binding ImageWidth}" HorizontalAlignment="Center" Grid.Row="0"/>
-            <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
+            <Grid Visibility="{Binding PlayButtonVisibility}">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="105" FontFamily="Segoe UI Symbol" Text="&#x2B24;" Foreground="Black"></Run></TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,12,0,0"><Run FontSize="60" FontFamily="Segoe UI Symbol" Text="&#xE102;" Foreground="{StaticResource HudlMediumDarkGray}"></Run></TextBlock>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="120" FontFamily="Segoe UI Symbol" Text="&#x2B58;" Foreground="{StaticResource HudlDarkGrayAccent}"></Run></TextBlock>
+                
+            </Grid>
+            <Grid Background="{StaticResource HudlOrange}" IsRightTapEnabled="False" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="Opponent" VerticalAlignment="Bottom" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" TextTrimming="WordEllipsis"/>
-                <TextBlock x:Name="Date" VerticalAlignment="Top" Text ="{Binding Date}" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                <TextBlock x:Name="NumPlaylists" VerticalAlignment="Top" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
+                <TextBlock x:Name="Opponent" VerticalAlignment="Bottom" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" TextTrimming="WordEllipsis" IsRightTapEnabled="False"/>
+                <TextBlock x:Name="Date" VerticalAlignment="Top" Text ="{Binding Date}" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" IsRightTapEnabled="False"/>
+                <TextBlock x:Name="NumPlaylists" VerticalAlignment="Top" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" IsRightTapEnabled="False"/>
             </Grid>
         </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
-        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="240" Width="325">
+        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="240" Width="325" IsRightTapEnabled="False">
             <Grid.RowDefinitions>
-                <RowDefinition Height="7*"/>
+                <RowDefinition Height="9*"/>
                 <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding Thumbnail}" MinHeight="263" HorizontalAlignment="Center" Grid.Row="0"/>
-            <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
+            <Image Source="{Binding Thumbnail}" MinHeight="263" HorizontalAlignment="Center" Grid.Row="0" IsRightTapEnabled="False"/>
+            <Grid Background="{StaticResource HudlOrange}" Grid.Row="1" IsRightTapEnabled="False">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="Opponent" VerticalAlignment="Bottom" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" TextTrimming="WordEllipsis"/>
-                <TextBlock x:Name="Date" VerticalAlignment="Top" Text ="{Binding Date}" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
-                <TextBlock x:Name="NumPlaylists" VerticalAlignment="Top" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}"/>
+                <TextBlock x:Name="Opponent" VerticalAlignment="Bottom" Text ="{Binding Opponent}" Grid.Row="0" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" TextTrimming="WordEllipsis" IsRightTapEnabled="False"/>
+                <TextBlock x:Name="Date" VerticalAlignment="Top" Text ="{Binding Date}" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" IsRightTapEnabled="False"/>
+                <TextBlock x:Name="NumPlaylists" VerticalAlignment="Top" Text="{Binding NumPlaylists}" HorizontalAlignment="Right" Grid.Row="1" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" IsRightTapEnabled="False"/>
             </Grid>
         </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSnappedGamesTemplate">
-        <Grid Margin="6">
+        <Grid Margin="5" Width="275" IsRightTapEnabled="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
-                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill"/>
+            <Border Background="Transparent" Width="60" Height="60" IsRightTapEnabled="False">
+                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" IsRightTapEnabled="False"/>
             </Border>
-            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch">
-                <TextBlock Text="{Binding Opponent}" Style="{StaticResource ItemTextStyle}" MaxHeight="40"/>
-                <Grid>
+            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch" IsRightTapEnabled="False">
+                <TextBlock Text="{Binding Opponent}" Style="{StaticResource ItemTextStyle}" TextTrimming="WordEllipsis" TextWrapping="NoWrap" MaxHeight="40" IsRightTapEnabled="False"/>
+                <Grid IsRightTapEnabled="False">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Date}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>
-                    <TextBlock Text="{Binding NumPlaylists}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Grid.Column="1" HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding Date}" Width="120" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" TextTrimming="WordEllipsis" IsRightTapEnabled="False"/>
+                    <TextBlock Text="{Binding NumPlaylists}" Padding="0,0,10,0" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Grid.Column="1" HorizontalAlignment="Right" IsRightTapEnabled="False"/>
                 </Grid>
             </StackPanel>
         </Grid>

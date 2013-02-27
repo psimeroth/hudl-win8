@@ -45,6 +45,8 @@ namespace HudlRT.Views
         private Size _previousVideoSize = new Size();
         private string _rootNamespace;
         private Brush background;
+        private Brush mainGridBackground;
+        private Brush dataPanelBackground;
         public string RootNamespace
         {
             get { return _rootNamespace; }
@@ -147,13 +149,10 @@ namespace HudlRT.Views
                     TextBlock t = new TextBlock();
                     Run text = new Run();
                     text.Text = displayColumns[i];
-                    Underline underline = new Underline();
-                    underline.Inlines.Add(text);
-                    t.Inlines.Add(underline);
+                    t.Inlines.Add(text);
                     b.SetValue(Grid.RowProperty, 0);
                     b.SetValue(Grid.ColumnProperty, i);
                     t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
-                    t.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
 
                     t.Tag = i;
                     t.PointerReleased += columnHeaderClick;
@@ -338,7 +337,10 @@ namespace HudlRT.Views
             {
                 SortFilterPopup.IsOpen = false;
                 background = RootGrid.Background;
+                mainGridBackground = mainGrid.Background;
+                dataPanelBackground = dataPanel.Background;
                 RootGrid.Background = new SolidColorBrush();
+                mainGrid.Background = new SolidColorBrush();
                 dataPanel.Background = new SolidColorBrush();
                 // Hide all non full screen controls
                 header.Visibility = Visibility.Collapsed;
@@ -369,6 +371,8 @@ namespace HudlRT.Views
             {
                 SortFilterPopup.IsOpen = false;
                 RootGrid.Background = background;
+                mainGrid.Background = mainGridBackground;
+                dataPanel.Background = dataPanelBackground;
                 // Show the non full screen controls
                 header.Visibility = Visibility.Visible;
                 TransportControlsPanel_Left.Visibility = Visibility.Visible;
@@ -840,6 +844,7 @@ namespace HudlRT.Views
                 this.IsFullscreen = true;
 
                 RootGrid.Background = new SolidColorBrush();
+                mainGrid.Background = new SolidColorBrush();
                 dataPanel.Visibility = Visibility.Collapsed;
                 header.Visibility = Visibility.Collapsed;
                 header.UpdateLayout();
