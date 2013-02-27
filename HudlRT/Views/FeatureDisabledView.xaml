@@ -67,7 +67,7 @@
                 </TextBlock>
                 <HyperlinkButton x:Name="hyperlinkButtonEmail" Grid.Row="5" NavigateUri="mailto:kyle.deterding@hudl.com?subject=HudlRT%20Beta%20Access" Margin="30,0,0,0" Padding="0">
                     <HyperlinkButton.Content>
-                        <TextBlock TextWrapping="Wrap" Text="kyle.deterding@hudl.com" FontSize="30" Foreground="{StaticResource HudlLightBlue}" />
+                        <TextBlock TextWrapping="Wrap" Text="kyle.deterding@hudl.com" FontSize="30" Foreground="{StaticResource HudlBlue}" />
                     </HyperlinkButton.Content>
                 </HyperlinkButton>
             </Grid>
