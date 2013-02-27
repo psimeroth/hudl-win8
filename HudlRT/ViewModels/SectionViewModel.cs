@@ -159,15 +159,18 @@ namespace HudlRT.ViewModels
 
         public async Task AddClipsAndHeadersForPlaylist(Playlist playlist)
         {
-            playlist.clips = new BindableCollection<Clip>();
-            ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(playlist.playlistId);
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            if (ServiceAccessor.ConnectedToInternet())
             {
-                playlist.clips = response.clips;
-                playlist.displayColumns = response.DisplayColumns;
-            }
-            else
-            {
+                playlist.clips = new BindableCollection<Clip>();
+                ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(playlist.playlistId);
+                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                {
+                    playlist.clips = response.clips;
+                    playlist.displayColumns = response.DisplayColumns;
+                }
+                else
+                {
+                }
             }
         }
 

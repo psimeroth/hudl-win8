@@ -131,6 +131,7 @@ namespace HudlRT.Common
                     foreach (Angle a in c.angles)
                     {
                         a.isPreloaded = false;
+                        a.preloadFile = null;
                     }
                 }
                 var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
@@ -177,14 +178,20 @@ namespace HudlRT.Common
                     if (g.categories.Count == 0)
                     {
                         newGames.Remove(g);
+                        break;
                     }
                 }
                 s.games = newGames;
                 if (s.games.Count == 0)
                 {
                     newModel.Remove(s);
+                    break;
                 }
             }
+            var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername(), Windows.Storage.CreationCollisionOption.OpenIfExists);
+            StorageFile completeModelFile = await userFolder.CreateFileAsync("CompleteModel", Windows.Storage.CreationCollisionOption.OpenIfExists);
+            string complete = JsonConvert.SerializeObject(newModel);
+            await Windows.Storage.FileIO.WriteTextAsync(completeModelFile, complete);
 
         }
 

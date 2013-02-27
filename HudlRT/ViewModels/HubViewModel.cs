@@ -64,19 +64,29 @@ namespace HudlRT.ViewModels
         {
             base.OnInitialize();
             await DownloadAccessor.Instance.GetDownloads();
-            BindableCollection<Season> downloadModel = await DownloadAccessor.Instance.GetDownloadsModel();
-            SeasonsDropDown = await GetSortedSeasons();
-            string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
-
-            if (savedSeasonId != null)
+            if (ServiceAccessor.ConnectedToInternet())
             {
-                SelectedSeason = SeasonsDropDown.Where(u => u.seasonID == savedSeasonId).FirstOrDefault();
+                SeasonsDropDown = await GetSortedSeasons();
+                string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
+
+                if (savedSeasonId != null)
+                {
+                    SelectedSeason = SeasonsDropDown.Where(u => u.seasonID == savedSeasonId).FirstOrDefault();
+                }
+                else
+                {
+                    SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
+                    AppDataAccessor.SetTeamContext(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
+                }
             }
             else
             {
+                SeasonsDropDown = await DownloadAccessor.Instance.GetDownloadsModel();
                 SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
-                AppDataAccessor.SetTeamContext(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
+                
             }
+            
+            
         }
 
         protected override void OnActivate()
@@ -85,7 +95,7 @@ namespace HudlRT.ViewModels
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
-            if (response.ID != null)
+            if (response.ID != null && ServiceAccessor.ConnectedToInternet())
             {
                 Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };//this is actually a playlist - not a game
                 GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, true);
@@ -111,46 +121,56 @@ namespace HudlRT.ViewModels
 
         private async void PopulateGroups()
         {
-            games = await GetGames();
+            
+
+            BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
+
             //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
             previousGame = null;
             nextGame = null;
 
-            GetNextPreviousGames();
-            NextGameVM.Games = new BindableCollection<GameViewModel>();
-            LastGameVM.Games = new BindableCollection<GameViewModel>();
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                games = await GetGames();
+                GetNextPreviousGames();
+                NextGameVM.Games = new BindableCollection<GameViewModel>();
+                LastGameVM.Games = new BindableCollection<GameViewModel>();
 
-            if (previousGame != null)
-            {
-                GameViewModel previous = new GameViewModel(previousGame, true);
-                previous.FetchPlaylists =  previous.FetchThumbnailsAndPlaylistCounts();
-                previous.IsLargeView = true;
-                NextGameVM.Games.Add(previous);
-            }
-            if (nextGame != null)
-            {
-                GameViewModel next = new GameViewModel(nextGame, true);
-                //next.isLargeView = true;
-                next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
-                LastGameVM.Games.Add(next);
-            }
+                if (previousGame != null)
+                {
+                    GameViewModel previous = new GameViewModel(previousGame, true);
+                    previous.FetchPlaylists = previous.FetchThumbnailsAndPlaylistCounts();
+                    previous.IsLargeView = true;
+                    NextGameVM.Games.Add(previous);
+                }
+                if (nextGame != null)
+                {
+                    GameViewModel next = new GameViewModel(nextGame, true);
+                    //next.isLargeView = true;
+                    next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
+                    LastGameVM.Games.Add(next);
+                }
 
-            BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
-            if(NextGameVM.Games.Count() > 0)
-            {
-                NewGroups.Add(NextGameVM);
-            }
-            if (LastGameVM.Games.Count() > 0)
-            {
-                NewGroups.Add(LastGameVM);
-            }
 
-            LastViewedResponse response = AppDataAccessor.GetLastViewed();
-            if (response.ID != null)
-            {
-                NewGroups.Add(LastViewedVM);
+                if (NextGameVM.Games.Count() > 0)
+                {
+                    NewGroups.Add(NextGameVM);
+                }
+                if (LastGameVM.Games.Count() > 0)
+                {
+                    NewGroups.Add(LastGameVM);
+                }
+
+                LastViewedResponse response = AppDataAccessor.GetLastViewed();
+                if (response.ID != null)
+                {
+                    NewGroups.Add(LastViewedVM);
+                }
             }
-            
+            else
+            {
+                games = SelectedSeason.games;
+            }
 
             HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
             foreach (Game g in games)
