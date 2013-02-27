@@ -17,6 +17,17 @@ namespace HudlRT.ViewModels
     {
         INavigationService navigationService;
 
+        private string _noScheduleEntriesText;
+        public string NoScheduleEntriesText
+        {
+            get { return _noScheduleEntriesText; }
+            set
+            {
+                _noScheduleEntriesText = value;
+                NotifyOfPropertyChange(() => NoScheduleEntriesText);
+            }
+        }
+
         private BindableCollection<HubGroupViewModel> _groups;
         public BindableCollection<HubGroupViewModel> Groups
         {
@@ -185,6 +196,15 @@ namespace HudlRT.ViewModels
                 NewGroups.Add(schedule);
             }
             Groups = NewGroups;
+
+            if (Groups.Count == 0)
+            {
+                NoScheduleEntriesText = "There are no schedule entries for this season";
+            }
+            else
+            {
+                NoScheduleEntriesText = "";
+            }
         }
 
         public void GetNextPreviousGames()

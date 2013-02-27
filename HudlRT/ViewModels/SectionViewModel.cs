@@ -28,6 +28,17 @@ namespace HudlRT.ViewModels
         GridView categoriesGrid;
         List<Object> playlistsSelected;
 
+        private string _noPlaylistText;
+        public string NoPlaylistText
+        {
+            get { return _noPlaylistText; }
+            set
+            {
+                _noPlaylistText = value;
+                NotifyOfPropertyChange(() => NoPlaylistText);
+            }
+        }
+
         private string downloadProgressText { get; set; }
         public string DownloadProgressText
         {
@@ -155,6 +166,17 @@ namespace HudlRT.ViewModels
             }
             Categories = cats;
             MarkDownloadedPlaylists();
+
+            Categories = cats;
+
+            if (Categories.Count == 0)
+            {
+                NoPlaylistText = "There are no playlists for this schedule entry";
+            }
+            else
+            {
+                NoPlaylistText = "";
+            }
         }
 
         public async Task AddClipsAndHeadersForPlaylist(Playlist playlist)
