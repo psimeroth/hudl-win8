@@ -19,6 +19,8 @@ using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace HudlRT.Common
 {
@@ -32,12 +34,21 @@ namespace HudlRT.Common
 
         public CancellationTokenSource cts = new CancellationTokenSource();
 
+        public DiskSpaceResponse diskSpaceFromDownloads { get; set; }
+
+        private const double bytesPerMB = 1048576.0;
 
         private static readonly Lazy<DownloadAccessor> downloader = new Lazy<DownloadAccessor>(() => new DownloadAccessor());
 
         public static DownloadAccessor Instance
         {
             get { return downloader.Value; }
+        }
+
+        public class DiskSpaceResponse
+        {
+            public long totalBytes { get; set; }
+            public string formattedSize { get; set; }//formated in either megabytes or gigabytes
         }
 
         private DownloadAccessor()
@@ -59,42 +70,6 @@ namespace HudlRT.Common
         public long ClipsComplete { get; set; }
         public long CurrentDownloadedBytes { get; set; }
         public long TotalClips { get; set; }
-
-        public async Task<BindableCollection<Playlist>> GetDownloads()
-        {
-            BindableCollection<Playlist> playlists = new BindableCollection<Playlist>();
-            StorageFolder userFolder;
-            long totalSize = 0;
-            try
-            {
-                userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync(AppDataAccessor.GetUsername());
-            }
-            catch (FileNotFoundException e)
-            {
-                return playlists;
-            }
-            if (userFolder != null)
-            {
-                var playlistFolders = await userFolder.GetFoldersAsync();
-                foreach (StorageFolder pFolder in playlistFolders)
-                {
-                    try
-                    {
-                        StorageFile model = await pFolder.GetFileAsync("DownloadsModel");
-                        string text = await Windows.Storage.FileIO.ReadTextAsync(model);
-                        Playlist playlist = JsonConvert.DeserializeObject<Playlist>(text);
-                        if (playlist != null)
-                        {
-                            totalSize += playlist.totalFilesSize;
-                            playlists.Add(playlist);
-                        }
-                    }
-                    catch (Exception) { }
-                }
-            }
-            downloadedPlaylists = playlists;
-            return playlists;
-        }
 
         public async Task<BindableCollection<Season>> GetDownloadsModel()
         {
@@ -118,11 +93,41 @@ namespace HudlRT.Common
                 }
                 catch (Exception) { }
             }
+            //BindableCollection<Playlist> playlists = new BindableCollection<Playlist>();
+            long totalSize = 0;
+            if (seasons.Any())
+            {
+                foreach (Season s in seasons)
+                {
+                    foreach (Game g in s.games)
+                    {
+                        foreach (Category c in g.categories)
+                        {
+                            foreach (Playlist p in c.playlists)
+                            {
+                                //playlists.Add(p);
+                                Playlist plFound = downloadedPlaylists.Where(u => u.playlistId == p.playlistId).FirstOrDefault();
+                                if (plFound == null)
+                                {
+                                    downloadedPlaylists.Add(p);
+                                }
+                                if (p.totalFilesSize != null)
+                                {
+                                    totalSize += p.totalFilesSize;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            diskSpaceFromDownloads = new DiskSpaceResponse{totalBytes= totalSize, formattedSize = FormatBytes(totalSize)};
+            //downloadedPlaylists = playlists;
             return seasons;
         }
 
         public async Task RemoveDownload(Playlist playlist)
         {
+            BindableCollection<Season> currentModel = await GetDownloadsModel();
             try
             {
                 playlist.downloadedThumbnailLocation = null;
@@ -147,12 +152,12 @@ namespace HudlRT.Common
             {
                 //should only fail if the folder does not exist - meaning its already deleted
             }
-            await RemoveDownloadFromModel(playlist);
+            await RemoveDownloadFromModel(playlist, currentModel);
         }
 
-        public async Task RemoveDownloadFromModel(Playlist playlist)
+        public async Task RemoveDownloadFromModel(Playlist playlist, BindableCollection<Season> currentModel)
         {
-            BindableCollection<Season> currentModel = await GetDownloadsModel();
+            
             BindableCollection<Season> newModel = currentModel;
             foreach (Season s in currentModel)
             {
@@ -374,9 +379,12 @@ namespace HudlRT.Common
             string complete = JsonConvert.SerializeObject(currentDownloadsCompleteModel);
             await Windows.Storage.FileIO.WriteTextAsync(completeModelFile, complete);
 
+            long newBytesDownloaded = diskSpaceFromDownloads.totalBytes + TotalBytes;
+            diskSpaceFromDownloads = new DiskSpaceResponse { totalBytes = newBytesDownloaded, formattedSize = FormatBytes(newBytesDownloaded) };
             DownloadComplete_Notification();
             Downloading = false;
             CurrentDownloadedBytes = 0;
+            TotalBytes = 0;
             currentlyDownloadingPlaylists = new List<Playlist>();
         }
 
@@ -406,6 +414,41 @@ namespace HudlRT.Common
                 }
             }
             return true;
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool GetDiskFreeSpaceEx(
+            string lpDirectoryName,
+            out ulong lpFreeBytesAvailable,
+            out ulong lpTotalNumberOfBytes,
+            out ulong lpTotalNumberOfFreeBytes);
+
+        private string FormatBytes(long bytes)
+        {
+            string formattedOutput="";
+            double gigaByte;
+            double megabytes = Math.Round((bytes / bytesPerMB), 1);
+            formattedOutput = megabytes + " MB";
+            if (megabytes > 1024)
+            {
+                gigaByte = Math.Round((bytes / bytesPerMB / 1024.0), 1);
+                formattedOutput = gigaByte + " GB";
+            }
+            return formattedOutput;
+        }
+
+        public DiskSpaceResponse GetDiskSpace()
+        {
+            ulong a, b, c;
+            if (GetDiskFreeSpaceEx(ApplicationData.Current.LocalFolder.Path, out a, out b, out c))
+            {
+                long bytes = (long)a;
+                return new DiskSpaceResponse { totalBytes = bytes, formattedSize = FormatBytes(bytes) };
+            }
+            else
+            {
+                return new DiskSpaceResponse { totalBytes = 1, formattedSize = "NA"};
+            }
         }
     }
 }

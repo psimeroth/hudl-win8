@@ -108,14 +108,14 @@ namespace HudlRT.ViewModels
         protected override async void OnInitialize()
         {
             base.OnInitialize();
-            await DownloadAccessor.Instance.GetDownloads();
+            BindableCollection<Season> downloadedSeasons = await DownloadAccessor.Instance.GetDownloadsModel();
             if (ServiceAccessor.ConnectedToInternet())
             {
                 SeasonsDropDown = await GetSortedSeasons();
             }
             else
             {
-                SeasonsDropDown = await DownloadAccessor.Instance.GetDownloadsModel();  
+                SeasonsDropDown = downloadedSeasons;
             }
             string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
 

@@ -16,7 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Windows.Networking.BackgroundTransfer;
 using System.Threading;
-
+using HudlRT.Common;
 namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
@@ -47,6 +47,17 @@ namespace HudlRT.ViewModels
             {
                 _progressRingIsActive = value;
                 NotifyOfPropertyChange(() => ProgressRingIsActive);
+            }
+        }
+
+        private string diskSpaceInformation;
+        public string DiskSpaceInformation
+        {
+            get { return diskSpaceInformation; }
+            set
+            {
+                diskSpaceInformation = value;
+                NotifyOfPropertyChange(() => DiskSpaceInformation);
             }
         }
 
@@ -156,9 +167,18 @@ namespace HudlRT.ViewModels
             Categories = new BindableCollection<CategoryViewModel>();
         }
 
+        public void UpdateDiskInformation()
+        {
+            DownloadAccessor.DiskSpaceResponse freeSpaceResponse = DownloadAccessor.Instance.GetDiskSpace();
+            DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.diskSpaceFromDownloads;
+            DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize + " of " + freeSpaceResponse.formattedSize;
+        }
+
         protected override void OnActivate()
         {
             base.OnActivate();
+            LoadActiveDownloadsAsync();
+            UpdateDiskInformation();
             
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
@@ -277,7 +297,10 @@ namespace HudlRT.ViewModels
                 await DownloadAccessor.Instance.RemoveDownload(playVM.PlaylistModel);
             }
             MarkDownloadedPlaylists();
-            categoriesGrid.SelectedItem = null;
+            if(categoriesGrid != null)
+            {
+                categoriesGrid.SelectedItem = null;
+            }
             AppBarOpen = false;
         }
 
@@ -373,6 +396,7 @@ namespace HudlRT.ViewModels
         }
         private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
         {
+            DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
             await downloadOperation.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
         }
 
@@ -383,18 +407,22 @@ namespace HudlRT.ViewModels
             {
                 foreach (CategoryViewModel cat in Categories)
                 {
-                    foreach (PlaylistViewModel pl in cat.Playlists)
+                    if (cat.Playlists != null)
                     {
-                        bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
-                        if (downloadFound)
+                        foreach (PlaylistViewModel pl in cat.Playlists)
                         {
-                            pl.DownloadedIcon_Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            pl.DownloadedIcon_Visibility = Visibility.Collapsed;
+                            bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
+                            if (downloadFound)
+                            {
+                                pl.DownloadedIcon_Visibility = Visibility.Visible;
+                            }
+                            else
+                            {
+                                pl.DownloadedIcon_Visibility = Visibility.Collapsed;
+                            }
                         }
                     }
+
                 }
             }
         }
@@ -409,22 +437,29 @@ namespace HudlRT.ViewModels
                 {
                     foreach (CategoryViewModel cat in Categories)
                     {
-                        foreach (PlaylistViewModel pl in cat.Playlists)
+                        if (cat.Playlists != null)
                         {
-                            bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
-                            bool currentlyDownloadingFound = DownloadAccessor.Instance.currentlyDownloadingPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
-                            if (downloadFound || currentlyDownloadingFound)
+                            foreach (PlaylistViewModel pl in cat.Playlists)
                             {
-                                pl.DownloadedIcon_Visibility = Visibility.Visible;
+                                bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
+                                bool currentlyDownloadingFound = DownloadAccessor.Instance.currentlyDownloadingPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
+                                if (downloadFound || currentlyDownloadingFound)
+                                {
+                                    pl.DownloadedIcon_Visibility = Visibility.Visible;
+                                }
                             }
                         }
                     }
                 }
-                categoriesGrid.SelectedItem = null;
+                if (categoriesGrid != null)
+                {
+                    categoriesGrid.SelectedItem = null;
+                }
                 DownloadAccessor.Instance.currentlyDownloadingPlaylists = new List<Playlist>();
                 DownloadProgressText = "";
                 DownloadProgress = 0;
                 Downloading_Visibility = Visibility.Collapsed;
+                UpdateDiskInformation();
                 AppBarOpen = false;
             }
         }
