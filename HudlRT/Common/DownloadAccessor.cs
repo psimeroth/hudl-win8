@@ -60,6 +60,7 @@ namespace HudlRT.Common
             TotalClips = 0;
             downloadedPlaylists = new BindableCollection<Playlist>();
             currentlyDownloadingPlaylists = new List<Playlist>();
+            diskSpaceFromDownloads = new DiskSpaceResponse { totalBytes = 0, formattedSize = "NA" };
         }
 
         public DownloadOperation Download { get; set; }
@@ -81,6 +82,7 @@ namespace HudlRT.Common
             }
             catch (FileNotFoundException e)
             {
+                diskSpaceFromDownloads = new DiskSpaceResponse { totalBytes = 0, formattedSize = "0 MB" };
                 return seasons;
             }
             if (userFolder != null)
@@ -121,7 +123,6 @@ namespace HudlRT.Common
                 }
             }
             diskSpaceFromDownloads = new DiskSpaceResponse{totalBytes= totalSize, formattedSize = FormatBytes(totalSize)};
-            //downloadedPlaylists = playlists;
             return seasons;
         }
 
@@ -224,6 +225,7 @@ namespace HudlRT.Common
 
         public async Task DownloadPlaylists(List<Playlist> playlists, Season seasonAndGame)//list of playlists,  season(with game)
         {
+            //Season copy = new Season { games = seasonAndGame.games, name = seasonAndGame.name, seasonID = seasonAndGame.seasonID, owningTeam = seasonAndGame.owningTeam, year = seasonAndGame.year };
             currentlyDownloadingPlaylists = playlists;
             backgroundDownloader = new BackgroundDownloader();
             Downloading = true;
@@ -325,10 +327,10 @@ namespace HudlRT.Common
                 BindableCollection<Playlist> newPlaylists = new BindableCollection<Playlist>();
                 foreach (Playlist pl in c.playlists)
                 {
-                    bool found = playlists.Any(u => u.playlistId == pl.playlistId);
-                    if (found)
+                    Playlist found = playlists.Where(u => u.playlistId == pl.playlistId).FirstOrDefault();
+                    if (found != null)
                     {
-                        newPlaylists.Add(pl);
+                        newPlaylists.Add(found);
                     }
                 }
                 c.playlists = newPlaylists;
@@ -440,14 +442,21 @@ namespace HudlRT.Common
         public DiskSpaceResponse GetDiskSpace()
         {
             ulong a, b, c;
-            if (GetDiskFreeSpaceEx(ApplicationData.Current.LocalFolder.Path, out a, out b, out c))
+            try
             {
-                long bytes = (long)a;
-                return new DiskSpaceResponse { totalBytes = bytes, formattedSize = FormatBytes(bytes) };
+                if (GetDiskFreeSpaceEx(ApplicationData.Current.LocalFolder.Path, out a, out b, out c))
+                {
+                    long bytes = (long)a;
+                    return new DiskSpaceResponse { totalBytes = bytes, formattedSize = FormatBytes(bytes) };
+                }
+                else
+                {
+                    return new DiskSpaceResponse { totalBytes = 1, formattedSize = "NA" };
+                }
             }
-            else
+            catch (Exception)
             {
-                return new DiskSpaceResponse { totalBytes = 1, formattedSize = "NA"};
+                return new DiskSpaceResponse { totalBytes = 1, formattedSize = "NA" };
             }
         }
     }

@@ -177,8 +177,7 @@ namespace HudlRT.ViewModels
         protected override void OnActivate()
         {
             base.OnActivate();
-            LoadActiveDownloadsAsync();
-            UpdateDiskInformation();
+            
             
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
@@ -204,6 +203,9 @@ namespace HudlRT.ViewModels
             DeleteButton_Visibility = Visibility.Collapsed;
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Collapsed;
+
+            LoadActiveDownloadsAsync();
+            UpdateDiskInformation();
             if (DownloadAccessor.Instance.Downloading)
             {
                 Downloading_Visibility = Visibility.Visible;
@@ -335,10 +337,12 @@ namespace HudlRT.ViewModels
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Visible;
             DownloadProgressText = "Determining Download Size";
+            DiskSpaceInformation = "";
+            DownloadProgress = 0;
             DownloadAccessor.Instance.cts = new CancellationTokenSource();
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = playlistsToBeDownloaded;
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded, Parameter);//TODO need to deep copy here
+            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded, Season.DeepCopy(Parameter));
 
         }
 

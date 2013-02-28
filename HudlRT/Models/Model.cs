@@ -101,6 +101,26 @@ namespace HudlRT.Models
             s.year = seasonDTO.Year;
             return s;
         }
+
+        internal static Season DeepCopy(Season seasonAndGame)
+        {
+            Season returnSeason = new Season {name = seasonAndGame.name, seasonID = seasonAndGame.seasonID, owningTeam = seasonAndGame.owningTeam, year = seasonAndGame.year };
+            foreach (Game g in seasonAndGame.games)
+            {
+                Game newGame = new Game { date = g.date, gameId = g.gameId, isHome = g.isHome, opponent = g.opponent };
+                foreach (Category c in g.categories)
+                {
+                    Category newCategory = new Category { categoryId = c.categoryId, name = c.name };
+                    foreach (Playlist p in c.playlists)
+                    {
+                        newCategory.playlists.Add(Playlist.Copy(p));
+                    }
+                    newGame.categories.Add(newCategory);
+                }
+                returnSeason.games.Add(newGame);
+            }
+            return returnSeason;
+        }
     }
 
     public class Game
