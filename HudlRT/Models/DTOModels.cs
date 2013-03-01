@@ -44,22 +44,22 @@ namespace HudlRT.Models
         public int Year { get; set; }
     }
 
-    public class GameDTO
+    public class CategoryDTO
     {
-        public string GameId { get; set; }
-        public DateTime Date { get; set; }
-        public string Opponent { get; set; }
-        public bool Ishome { get; set; }
-        public List<CategoryDTO> Categories { get; set; }
-        public string seasonID { get; set; }//this would be ideal
+        public string CategoryId { get; set; }
+        public string SqlId { get; set; }
+        public string Classification { get; set; }
+        public string Name { get; set; } //This contains both date and opponent
+        public List<CategoryDTO> SubCategories { get; set; }
+        public string parentId { get; set; }//seasonId would be ideal
     }
 
-    public class CategoryDTO
+    /*public class CategoryDTO
     {
         public string CategoryId { get; set; }
         public int Classification { get; set; }
         public string Name { get; set; }
-    }
+    }*/
 
     public class PlaylistDTO
     {

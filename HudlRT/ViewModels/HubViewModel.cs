@@ -99,8 +99,9 @@ namespace HudlRT.ViewModels
 
         private BindableCollection<Game> games { get; set; }
 
-        private Game nextGame {get; set;}
-        private Game previousGame { get; set; }
+        private Game _nextGame {get; set;}
+        private Game _previousGame { get; set; }
+        private Game _otherItems { get; set; }
         private HubGroupViewModel NextGameVM = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
         private HubGroupViewModel LastGameVM = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<GameViewModel>() };
         private HubGroupViewModel LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
@@ -181,27 +182,29 @@ namespace HudlRT.ViewModels
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
 
             //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
-            previousGame = null;
-            nextGame = null;
+            _previousGame = null;
+            _nextGame = null;
+            _otherItems = null;
             HubGroupViewModel FirstEntryVM = new HubGroupViewModel() { Name = null, Games = new BindableCollection<GameViewModel>() };
 
             if (ServiceAccessor.ConnectedToInternet())
             {
                 games = await GetGames();
+
                 GetNextPreviousGames();
                 NextGameVM.Games = new BindableCollection<GameViewModel>();
                 LastGameVM.Games = new BindableCollection<GameViewModel>();
 
-                if (previousGame != null)
+                if (_previousGame != null)
                 {
-                    GameViewModel previous = new GameViewModel(previousGame, true);
+                    GameViewModel previous = new GameViewModel(_previousGame, true);
                     previous.FetchPlaylists = previous.FetchThumbnailsAndPlaylistCounts();
                     previous.IsLargeView = true;
                     LastGameVM.Games.Add(previous);
                 }
-                if (nextGame != null)
+                if (_nextGame != null)
                 {
-                    GameViewModel next = new GameViewModel(nextGame, true);
+                    GameViewModel next = new GameViewModel(_nextGame, true);
                     next.IsLargeView = true;
                     next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
                     NextGameVM.Games.Add(next);
@@ -270,24 +273,24 @@ namespace HudlRT.ViewModels
             {
                 if (DateTime.Compare(fakeNow, sortedGames[sortedGames.Count - 1].date) <= 0)
                 {
-                    nextGame = sortedGames[sortedGames.Count - 1];
-                    previousGame = null;
+                    _nextGame = sortedGames[sortedGames.Count - 1];
+                    _previousGame = null;
                 }
                 else if (DateTime.Compare(fakeNow, sortedGames[0].date) >= 0)
                 {
-                    nextGame = null;
-                    previousGame = sortedGames[0];
+                    _nextGame = null;
+                    _previousGame = sortedGames[0];
                 }
                 else
                 {
-                    nextGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) < 0).LastOrDefault();
-                    previousGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) > 0).FirstOrDefault();
+                    _nextGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) < 0).LastOrDefault();
+                    _previousGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) > 0).FirstOrDefault();
                 }
             }
             else
             {
-                nextGame = null;
-                previousGame = null;
+                _nextGame = null;
+                _previousGame = null;
             }
         }
 

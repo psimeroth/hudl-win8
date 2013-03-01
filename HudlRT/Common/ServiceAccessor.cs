@@ -106,11 +106,12 @@ namespace HudlRT.Common
 
         public const string URL_SERVICE_LOGIN = "login";
         public const string URL_SERVICE_GET_TEAMS = "teams";
-        public const string URL_SERVICE_GET_SCHEDULE = "teams/{0}/schedule";//returns games
-        public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games
+        public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/categories?seasonId={1}";//returns games
+        //public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games
         public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/{0}/categories";//returns categories
         public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns playlists
         public const string URL_SERVICE_GET_CLIPS = "playlists/{0}/clips?startIndex={1}";//returns clips
+        public const string URL_SERVICE_GET_OTHER_ITEMS = "teams/{0}/categories?seasonId={1}&type=7"; //note the seven at the end is hard coded so that this returns "Other Items"
         public const string NO_CONNECTION = "NoConnection";
 
         public static bool ConnectedToInternet()
@@ -197,9 +198,9 @@ namespace HudlRT.Common
             {
                 try
                 {
-                    var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
+                    var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(games);
                     BindableCollection<Game> gameCollection = new BindableCollection<Game>();
-                    foreach (GameDTO gameDTO in obj)
+                    foreach (CategoryDTO gameDTO in obj)
                     {
                         gameCollection.Add(Game.FromDTO(gameDTO));
                     }

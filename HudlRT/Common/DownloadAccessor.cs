@@ -295,7 +295,7 @@ namespace HudlRT.Common
 
             }
             Game selectedGame = seasonAndGame.games.FirstOrDefault();
-            Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, isHome = selectedGame.isHome, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() };
+            Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() };
             foreach (Category c in selectedGame.categories)
             {
                 foreach (Playlist plFromSelectedGame in c.playlists)

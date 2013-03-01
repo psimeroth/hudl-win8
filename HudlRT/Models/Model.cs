@@ -107,7 +107,6 @@ namespace HudlRT.Models
     {
         public string opponent { get; set; }
         public DateTime date { get; set; }
-        public bool isHome { get; set; }
         public BindableCollection<Category> categories { get; set; }
         public string gameId { get; set; }
         public string DisplayDate
@@ -123,13 +122,24 @@ namespace HudlRT.Models
             categories = new BindableCollection<Category>();
         }
         
-        public static Game FromDTO(GameDTO gameDTO)
+        public static Game FromDTO(CategoryDTO gameDTO)
         {
             Game game = new Game();
-            game.gameId = gameDTO.GameId;
-            game.isHome = gameDTO.Ishome;
-            game.opponent = gameDTO.Opponent;
-            game.date = gameDTO.Date;
+            string [] oppAndDate = gameDTO.Name.Split('-'); //in the call we're using to return this information, opponent and date are concatenated.
+            game.gameId = gameDTO.CategoryId;
+            game.opponent = oppAndDate[0].Trim();
+            string [] date = oppAndDate[1].Split('/');
+            int year;
+            int month;
+            int day;
+            int.TryParse(date[2], out year);
+            int.TryParse(date[1], out day);
+            int.TryParse(date[0], out month);
+            game.date = new DateTime(year,month, day);
+            foreach(CategoryDTO cat in gameDTO.SubCategories)
+            {
+                game.categories.Add(Category.FromDTO(cat));
+            }
             return game;
         }
     }
