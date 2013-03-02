@@ -73,7 +73,7 @@ namespace HudlRT.Models
             }
         }
 
-        public string seasonID { get; set; }
+        public string seasonId { get; set; }
         public int year { get; set; }
         public BindableCollection<Game> games { get; set; }
         public Team owningTeam { get; set; }
@@ -92,12 +92,31 @@ namespace HudlRT.Models
             games = new BindableCollection<Game>();
         }
 
+        public Season(CategoryDTO cat, Team team)
+        {
+            seasonId = cat.CategoryId;
+            owningTeam = team;
+
+            //this method of making a season doesn't have a year, so we just choose the first year listed in the name
+            int yearInt;
+            int.TryParse(cat.Name.Substring(0, 4), out yearInt);
+            year = yearInt;
+            
+            name = cat.Name;
+            games = new BindableCollection<Game>();
+            foreach (CategoryDTO subCat in cat.SubCategories)
+            {
+                games.Add(Game.FromDTO(subCat));
+            }
+
+        }
+
         public static Season FromDTO(SeasonDTO seasonDTO, Team team)
         {
             Season s = new Season();
             s.owningTeam = team;
             s.name = seasonDTO.Name;
-            s.seasonID = seasonDTO.SeasonId;
+            s.seasonId = seasonDTO.SeasonId;
             s.year = seasonDTO.Year;
             return s;
         }
@@ -128,14 +147,17 @@ namespace HudlRT.Models
             string [] oppAndDate = gameDTO.Name.Split('-'); //in the call we're using to return this information, opponent and date are concatenated.
             game.gameId = gameDTO.CategoryId;
             game.opponent = oppAndDate[0].Trim();
-            string [] date = oppAndDate[1].Split('/');
-            int year;
-            int month;
-            int day;
-            int.TryParse(date[2], out year);
-            int.TryParse(date[1], out day);
-            int.TryParse(date[0], out month);
-            game.date = new DateTime(year,month, day);
+            if (gameDTO.Classification == "1")
+            {
+                string[] date = oppAndDate[1].Split('/');
+                int year;
+                int month;
+                int day;
+                int.TryParse(date[2], out year);
+                int.TryParse(date[1], out day);
+                int.TryParse(date[0], out month);
+                game.date = new DateTime(year, month, day);
+            }
             foreach(CategoryDTO cat in gameDTO.SubCategories)
             {
                 game.categories.Add(Category.FromDTO(cat));

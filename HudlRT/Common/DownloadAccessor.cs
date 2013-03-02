@@ -335,7 +335,7 @@ namespace HudlRT.Common
             bool seasonFound = false;
             foreach (Season s in currentDownloadsCompleteModel)
             {
-                if (s.seasonID == seasonAndGame.seasonID)//found the season we need to merge
+                if (s.seasonId == seasonAndGame.seasonId)//found the season we need to merge
                 {
                     seasonFound = true;
                     Game g = s.games.Where(u => u.gameId == newGameWithOnlyDownloads.gameId).FirstOrDefault();

@@ -92,7 +92,7 @@ namespace HudlRT.ViewModels
             {
                 selectedSeason = value;
                 NotifyOfPropertyChange(() => SelectedSeason);
-                AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
+                AppDataAccessor.SetTeamContext(selectedSeason.seasonId, selectedSeason.owningTeam.teamID);
                 PopulateGroups();
             }
         }
@@ -122,12 +122,12 @@ namespace HudlRT.ViewModels
 
             if (savedSeasonId != null && SeasonsDropDown.Any())
             {
-                SelectedSeason = SeasonsDropDown.Where(u => u.seasonID == savedSeasonId).FirstOrDefault() ?? SeasonsDropDown[0];
+                SelectedSeason = SeasonsDropDown.Where(u => u.seasonId == savedSeasonId).FirstOrDefault() ?? SeasonsDropDown[0];
             }
             else
             {
                 SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
-                AppDataAccessor.SetTeamContext(SelectedSeason.seasonID, SelectedSeason.owningTeam.teamID);
+                AppDataAccessor.SetTeamContext(SelectedSeason.seasonId, SelectedSeason.owningTeam.teamID);
             }
             if (!SeasonsDropDown.Any())
             {
@@ -175,21 +175,29 @@ namespace HudlRT.ViewModels
         }
 
 
-        private async void PopulateGroups()
+        private void PopulateGroups()
         {
-            
-
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
 
             //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
             _previousGame = null;
             _nextGame = null;
             _otherItems = null;
+
+            //This is used for extra spacing in the Gridview
             HubGroupViewModel FirstEntryVM = new HubGroupViewModel() { Name = null, Games = new BindableCollection<GameViewModel>() };
+
+            games = selectedSeason.games;
+
+            //Find the other items if present
+            Game otherItems = games.Where(g => g.opponent == "Other Items").FirstOrDefault();
+            games.Remove(otherItems);
+            //otherItems.Date = null;
+            HubGroupViewModel otherItemsGroup = new HubGroupViewModel() { Name = "Other Items", Games = new BindableCollection<GameViewModel>() { new GameViewModel(otherItems, true) } };
 
             if (ServiceAccessor.ConnectedToInternet())
             {
-                games = await GetGames();
+                games = selectedSeason.games;
 
                 GetNextPreviousGames();
                 NextGameVM.Games = new BindableCollection<GameViewModel>();
@@ -224,11 +232,6 @@ namespace HudlRT.ViewModels
                 {
                     NewGroups.Add(LastGameVM);
                 }
-
-            }
-            else
-            {
-                games = SelectedSeason.games;
             }
 
             HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
@@ -242,6 +245,11 @@ namespace HudlRT.ViewModels
             {
                 NewGroups.Add(schedule);
             }
+            if(otherItems != null && otherItems.categories != null)
+            {
+                NewGroups.Add(otherItemsGroup);
+            }
+            
 
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
@@ -294,17 +302,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public async Task<BindableCollection<Game>> GetGames()
-        {
-            GameResponse response = await ServiceAccessor.GetGames(SelectedSeason.owningTeam.teamID.ToString(), SelectedSeason.seasonID.ToString());
-            if (response.status == SERVICE_RESPONSE.SUCCESS)
-            {
-                
-                return response.games;
-            }
-            return null;
-        }
-
+        //this returns seasons populated down to the category level.
         public async Task<BindableCollection<Season>> GetSortedSeasons()
         {
             TeamResponse response = await ServiceAccessor.GetTeams();
@@ -314,12 +312,19 @@ namespace HudlRT.ViewModels
                 BindableCollection<Season> seasons = new BindableCollection<Season>();
                 foreach (Team team in teams)
                 {
-                    foreach (Season season in team.seasons)
-                    {
-                        seasons.Add(season);
-                    }
+                    seasons.AddRange(await GetPopulatedSeasons(team));
                 }
                 return new BindableCollection<Season>(seasons.OrderByDescending(s => s.year));
+            }
+            return null;
+        }
+
+        public async Task<BindableCollection<Season>> GetPopulatedSeasons(Team team)
+        {
+            SeasonsResponse response = await ServiceAccessor.GetPopulatedSeasons(team);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                return response.Seasons;
             }
             return null;
         }
@@ -341,7 +346,6 @@ namespace HudlRT.ViewModels
             Season parameter = SelectedSeason;
             parameter.games = new BindableCollection<Game>();
             parameter.games.Add(gameViewModel.GameModel);
-            //Game parameter = gameViewModel.GameModel;
             
             if (!gameViewModel.IsLastViewed)
             {
