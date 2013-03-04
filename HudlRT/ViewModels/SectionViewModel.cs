@@ -180,9 +180,8 @@ namespace HudlRT.ViewModels
 
         public void UpdateDiskInformation()
         {
-            DownloadAccessor.DiskSpaceResponse freeSpaceResponse = DownloadAccessor.Instance.GetDiskSpace();
             DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.diskSpaceFromDownloads;
-            DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize + " of " + freeSpaceResponse.formattedSize;
+            DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;// +" of " + freeSpaceResponse.formattedSize;
         }
 
         protected override void OnActivate()

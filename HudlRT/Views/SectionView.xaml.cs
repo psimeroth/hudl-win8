@@ -37,9 +37,8 @@ namespace HudlRT.Views
         private void UpdateDiskInformation(object sender, object e)
         {
             SectionViewModel vm = (SectionViewModel)this.DataContext;
-            DownloadAccessor.DiskSpaceResponse freeSpaceResponse = DownloadAccessor.Instance.GetDiskSpace();
             DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.diskSpaceFromDownloads;
-            vm.DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize +" of " + freeSpaceResponse.formattedSize;
+            vm.DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;
         }
     }
 }

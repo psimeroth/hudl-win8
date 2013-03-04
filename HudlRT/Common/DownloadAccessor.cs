@@ -418,13 +418,6 @@ namespace HudlRT.Common
             return true;
         }
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool GetDiskFreeSpaceEx(
-            string lpDirectoryName,
-            out ulong lpFreeBytesAvailable,
-            out ulong lpTotalNumberOfBytes,
-            out ulong lpTotalNumberOfFreeBytes);
-
         private string FormatBytes(long bytes)
         {
             string formattedOutput="";
@@ -437,27 +430,6 @@ namespace HudlRT.Common
                 formattedOutput = gigaByte + " GB";
             }
             return formattedOutput;
-        }
-
-        public DiskSpaceResponse GetDiskSpace()
-        {
-            ulong a, b, c;
-            try
-            {
-                if (GetDiskFreeSpaceEx(ApplicationData.Current.LocalFolder.Path, out a, out b, out c))
-                {
-                    long bytes = (long)a;
-                    return new DiskSpaceResponse { totalBytes = bytes, formattedSize = FormatBytes(bytes) };
-                }
-                else
-                {
-                    return new DiskSpaceResponse { totalBytes = 1, formattedSize = "NA" };
-                }
-            }
-            catch (Exception)
-            {
-                return new DiskSpaceResponse { totalBytes = 1, formattedSize = "NA" };
-            }
         }
     }
 }
