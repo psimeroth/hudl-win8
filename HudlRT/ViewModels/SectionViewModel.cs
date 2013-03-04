@@ -195,7 +195,14 @@ namespace HudlRT.ViewModels
             //But that it doesn't fetch the data again if coming back from the video page.
             gameSelected = Parameter.games.FirstOrDefault();
 
-            ScheduleEntryName = this.gameSelected.opponent;
+            if (this.gameSelected.opponent.ToLower().Contains("practice") || this.gameSelected.opponent.ToLower().Contains("scrimmage") || this.gameSelected.opponent.ToLower().Contains("camp"))
+            {
+                ScheduleEntryName = this.gameSelected.opponent;
+            }
+            else 
+            {
+                ScheduleEntryName = "vs " + this.gameSelected.opponent;
+            }
 
             PageIsEnabled = true;
 
