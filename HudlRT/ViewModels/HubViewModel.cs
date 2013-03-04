@@ -188,9 +188,13 @@ namespace HudlRT.ViewModels
             if (ServiceAccessor.ConnectedToInternet())
             {
                 games = await GetGames();
-                GetNextPreviousGames();
-                NextGameVM.Games = new BindableCollection<GameViewModel>();
-                LastGameVM.Games = new BindableCollection<GameViewModel>();
+
+                if (games != null)
+                {
+                    GetNextPreviousGames();
+                    NextGameVM.Games = new BindableCollection<GameViewModel>();
+                    LastGameVM.Games = new BindableCollection<GameViewModel>();
+                }
 
                 if (previousGame != null)
                 {
@@ -228,16 +232,19 @@ namespace HudlRT.ViewModels
                 games = SelectedSeason.games;
             }
 
-            HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
-            foreach (Game g in games)
+            if (games != null)
             {
-                GameViewModel gamevm = new GameViewModel(g);
-                gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
-                schedule.Games.Add(gamevm);
-            }
-            if (schedule.Games.Count > 0)
-            {
-                NewGroups.Add(schedule);
+                HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
+                foreach (Game g in games)
+                {
+                    GameViewModel gamevm = new GameViewModel(g);
+                    gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
+                    schedule.Games.Add(gamevm);
+                }
+                if (schedule.Games.Count > 0)
+                {
+                    NewGroups.Add(schedule);
+                }
             }
 
             ProgressRingVisibility = Visibility.Collapsed;
@@ -264,24 +271,23 @@ namespace HudlRT.ViewModels
 
             sortedGames.AddRange(games);
             sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
-            DateTime fakeNow = new DateTime(2012, 10, 8);
 
             if (sortedGames.Count > 0)
             {
-                if (DateTime.Compare(fakeNow, sortedGames[sortedGames.Count - 1].date) <= 0)
+                if (DateTime.Compare(DateTime.Now, sortedGames[sortedGames.Count - 1].date) <= 0)
                 {
                     nextGame = sortedGames[sortedGames.Count - 1];
                     previousGame = null;
                 }
-                else if (DateTime.Compare(fakeNow, sortedGames[0].date) >= 0)
+                else if (DateTime.Compare(DateTime.Now, sortedGames[0].date) >= 0)
                 {
                     nextGame = null;
                     previousGame = sortedGames[0];
                 }
                 else
                 {
-                    nextGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) < 0).LastOrDefault();
-                    previousGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) > 0).FirstOrDefault();
+                    nextGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) < 0).LastOrDefault();
+                    previousGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) > 0).FirstOrDefault();
                 }
             }
             else

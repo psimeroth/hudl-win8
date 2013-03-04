@@ -39,6 +39,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private string _scheduleEntryName;
+        public string ScheduleEntryName
+        {
+            get { return _scheduleEntryName; }
+            set
+            {
+                _scheduleEntryName = value;
+                NotifyOfPropertyChange(() => ScheduleEntryName);
+            }
+        }
+
         private bool _progressRingIsActive;
         public bool ProgressRingIsActive
         {
@@ -183,6 +194,15 @@ namespace HudlRT.ViewModels
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
             gameSelected = Parameter.games.FirstOrDefault();
+
+            if (this.gameSelected.opponent.ToLower().Contains("practice") || this.gameSelected.opponent.ToLower().Contains("scrimmage") || this.gameSelected.opponent.ToLower().Contains("camp"))
+            {
+                ScheduleEntryName = this.gameSelected.opponent;
+            }
+            else 
+            {
+                ScheduleEntryName = "vs " + this.gameSelected.opponent;
+            }
 
             PageIsEnabled = true;
 
