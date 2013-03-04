@@ -188,9 +188,13 @@ namespace HudlRT.ViewModels
             if (ServiceAccessor.ConnectedToInternet())
             {
                 games = await GetGames();
-                GetNextPreviousGames();
-                NextGameVM.Games = new BindableCollection<GameViewModel>();
-                LastGameVM.Games = new BindableCollection<GameViewModel>();
+
+                if (games != null)
+                {
+                    GetNextPreviousGames();
+                    NextGameVM.Games = new BindableCollection<GameViewModel>();
+                    LastGameVM.Games = new BindableCollection<GameViewModel>();
+                }
 
                 if (previousGame != null)
                 {
@@ -228,16 +232,19 @@ namespace HudlRT.ViewModels
                 games = SelectedSeason.games;
             }
 
-            HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
-            foreach (Game g in games)
+            if (games != null)
             {
-                GameViewModel gamevm = new GameViewModel(g);
-                gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
-                schedule.Games.Add(gamevm);
-            }
-            if (schedule.Games.Count > 0)
-            {
-                NewGroups.Add(schedule);
+                HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
+                foreach (Game g in games)
+                {
+                    GameViewModel gamevm = new GameViewModel(g);
+                    gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
+                    schedule.Games.Add(gamevm);
+                }
+                if (schedule.Games.Count > 0)
+                {
+                    NewGroups.Add(schedule);
+                }
             }
 
             ProgressRingVisibility = Visibility.Collapsed;

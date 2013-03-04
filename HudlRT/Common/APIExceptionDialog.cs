@@ -40,6 +40,12 @@ namespace HudlRT.Common
                 message += "\nYou cannot access this content - if you think you should have access, please email support@hudl.com.";
             }
 
+            else if (statusCode == "Forbidden")
+            {
+                message = "Unauthorized Access.";
+                message += "\nYou cannot access this content - if you think you should have access, please email support@hudl.com.";
+            }
+
             else
             {
                 message = "Server Error.";
