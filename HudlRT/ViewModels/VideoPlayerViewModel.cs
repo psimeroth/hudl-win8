@@ -711,7 +711,11 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                try
+                {
+                    clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                }
+                catch { }   
             }
         }
 

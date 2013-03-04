@@ -264,24 +264,23 @@ namespace HudlRT.ViewModels
 
             sortedGames.AddRange(games);
             sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
-            DateTime fakeNow = new DateTime(2012, 10, 8);
 
             if (sortedGames.Count > 0)
             {
-                if (DateTime.Compare(fakeNow, sortedGames[sortedGames.Count - 1].date) <= 0)
+                if (DateTime.Compare(DateTime.Now, sortedGames[sortedGames.Count - 1].date) <= 0)
                 {
                     nextGame = sortedGames[sortedGames.Count - 1];
                     previousGame = null;
                 }
-                else if (DateTime.Compare(fakeNow, sortedGames[0].date) >= 0)
+                else if (DateTime.Compare(DateTime.Now, sortedGames[0].date) >= 0)
                 {
                     nextGame = null;
                     previousGame = sortedGames[0];
                 }
                 else
                 {
-                    nextGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) < 0).LastOrDefault();
-                    previousGame = sortedGames.Where(game => DateTime.Compare(fakeNow, game.date) > 0).FirstOrDefault();
+                    nextGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) < 0).LastOrDefault();
+                    previousGame = sortedGames.Where(game => DateTime.Compare(DateTime.Now, game.date) > 0).FirstOrDefault();
                 }
             }
             else
