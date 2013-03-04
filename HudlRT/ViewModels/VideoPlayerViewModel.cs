@@ -43,6 +43,47 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private string columnHeaderName;
+        public string ColumnHeaderName
+        {
+            get { return columnHeaderName; }
+            set
+            {
+                columnHeaderName = value;
+                NotifyOfPropertyChange(() => ColumnHeaderName);
+            }
+        }
+        private bool isLoopChecked;
+        public bool IsLoopChecked
+        {
+            get { return isLoopChecked; }
+            set
+            {
+                isLoopChecked = value;
+                NotifyOfPropertyChange(() => IsLoopChecked);
+            }
+        }
+        private bool isOnceChecked;
+        public bool IsOnceChecked
+        {
+            get { return isOnceChecked; }
+            set
+            {
+                isOnceChecked = value;
+                NotifyOfPropertyChange(() => IsOnceChecked);
+            }
+        }
+        private bool isNextChecked;
+        public bool IsNextChecked
+        {
+            get { return isNextChecked; }
+            set
+            {
+                isNextChecked = value;
+                NotifyOfPropertyChange(() => IsNextChecked);
+            }
+        }
+
         private Visibility downloadButtonVisibility;
         public Visibility DownloadButtonVisibility
         {
@@ -214,7 +255,7 @@ namespace HudlRT.ViewModels
             {
                 playbackType = (PlaybackType)playbackTypeResult;
             }
-            setToggleButtonContent();
+            setPlaybackRadioButton();
 
             dispRequest = new DisplayRequest();
             dispRequest.RequestActive();
@@ -750,10 +791,32 @@ namespace HudlRT.ViewModels
             return values.ToList();
         }
 
-        private void playbackToggle()
+        private void setPlaybackRadioButton()
         {
-            playbackType = (PlaybackType)(((int)playbackType + 1) % Enum.GetNames(typeof(PlaybackType)).Length);
-            setToggleButtonContent();
+            switch (playbackType)
+            {
+                case PlaybackType.once:
+                    IsOnceChecked = true;
+                    IsNextChecked = false;
+                    IsLoopChecked = false;
+                    break;
+                case PlaybackType.next:
+                    IsOnceChecked = false;
+                    IsNextChecked = true;
+                    IsLoopChecked = false;
+                    break;
+                case PlaybackType.loop:
+                    IsOnceChecked = false;
+                    IsNextChecked = false;
+                    IsLoopChecked = true;
+                    break;
+            }
+        }
+
+        public void PlaybackButton_Click(int playbackTypeSelected)
+        {
+            playbackType = (PlaybackType)playbackTypeSelected;
+            setPlaybackRadioButton();
             AppDataAccessor.SetPlaybackType((int)playbackType);
         }
 
@@ -793,22 +856,6 @@ namespace HudlRT.ViewModels
         //        DownloadProgress = 0;
         //    }
         //}
-
-        private void setToggleButtonContent()
-        {
-            if (playbackType == PlaybackType.once)
-            {
-                ToggleButtonContent = "Playback: Once";
-            }
-            else if (playbackType == PlaybackType.loop)
-            {
-                ToggleButtonContent = "Playback: Loop";
-            }
-            else
-            {
-                ToggleButtonContent = "Playback: Next";
-            }
-        }
 
         void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -875,8 +922,6 @@ namespace HudlRT.ViewModels
                 }
             }
         }
-
-        
 
         public void GoBack()
         {
