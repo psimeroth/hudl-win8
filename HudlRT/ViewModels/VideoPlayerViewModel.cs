@@ -683,7 +683,7 @@ namespace HudlRT.ViewModels
 
                     if (filter.sortType == SortType.Ascending)
                     {
-                        clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                        clips = clips.OrderBy(c => c.order).ToList();
                         try
                         {
                             clips = clips.OrderBy(clip => Convert.ToInt32(clip.breakDownData[filter.columnId])).ToList();
@@ -695,7 +695,7 @@ namespace HudlRT.ViewModels
                     }
                     else if (filter.sortType == SortType.Descending)
                     {
-                        clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                        clips = clips.OrderBy(c => c.order).ToList();
                         try
                         {
                             clips = clips.OrderByDescending(clip => Convert.ToInt32(clip.breakDownData[filter.columnId])).ToList();
@@ -711,11 +711,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                try
-                {
-                    clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
-                }
-                catch { }   
+                clips = clips.OrderBy(c => c.order).ToList();
             }
         }
 

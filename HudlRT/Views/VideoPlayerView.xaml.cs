@@ -189,25 +189,22 @@ namespace HudlRT.Views
         private void columnHeaderClick(object sender, PointerRoutedEventArgs e)
         {
             int id = (int)((TextBlock)sender).Tag;
+            
+            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+            vm.PrepareSortFilterPopup(id);
 
-            if (id != 0)
+            if (!SortFilterPopup.IsOpen)
             {
-                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                vm.PrepareSortFilterPopup(id);
+                RootPopupBorder.Width = POPUP_WIDTH;
+                SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH;
 
-                if (!SortFilterPopup.IsOpen)
+                var currentViewState = ApplicationView.Value;
+                if (currentViewState != ApplicationViewState.Filled)
                 {
-                    RootPopupBorder.Width = POPUP_WIDTH;
-                    SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH;
-
-                    var currentViewState = ApplicationView.Value;
-                    if (currentViewState != ApplicationViewState.Filled)
-                    {
-                        SortFilterPopup.IsOpen = true;
-                    }
+                    SortFilterPopup.IsOpen = true;
                 }
             }
-
+            
             /* 
              * RemoveFilterBtn visibility is set to visible by default, so we do not want to display it the first time a grid header is clicked.
              * So, we use a variable count to ensure we don't display the RemoveFilterBtn the first time a header is clicked.
