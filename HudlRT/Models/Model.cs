@@ -128,6 +128,7 @@ namespace HudlRT.Models
         public DateTime date { get; set; }
         public BindableCollection<Category> categories { get; set; }
         public string gameId { get; set; }
+        public string Classification { get; set; }
         public string DisplayDate
         {
             get
@@ -144,7 +145,8 @@ namespace HudlRT.Models
         public static Game FromDTO(CategoryDTO gameDTO)
         {
             Game game = new Game();
-            string [] oppAndDate = gameDTO.Name.Split('-'); //in the call we're using to return this information, opponent and date are concatenated.
+            game.Classification = gameDTO.Classification;
+            string[] oppAndDate = gameDTO.Name.Split('-'); //in the call we're using to return this information, opponent and date are concatenated.
             game.gameId = gameDTO.CategoryId;
             game.opponent = oppAndDate[0].Trim();
             if (gameDTO.Classification == "1")

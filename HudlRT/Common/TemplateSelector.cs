@@ -19,10 +19,16 @@ namespace HudlRT.Common
             {
                 return  this.LargeTemplate;
             }
+            else if (game.GameModel.Classification != "1")
+            {
+                //Goes in "Other" category
+                return this.OtherCategoryTemplate;
+            }
             return this.SmallTemplate;
         }
 
         public DataTemplate LargeTemplate { get; set; }
         public DataTemplate SmallTemplate { get; set; }
+        public DataTemplate OtherCategoryTemplate { get; set; }
     }
 }

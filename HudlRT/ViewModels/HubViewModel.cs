@@ -101,7 +101,7 @@ namespace HudlRT.ViewModels
 
         private Game _nextGame {get; set;}
         private Game _previousGame { get; set; }
-        private Game _otherItems { get; set; }
+        private BindableCollection<Game> _otherItems { get; set; }
         private HubGroupViewModel NextGameVM = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
         private HubGroupViewModel LastGameVM = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<GameViewModel>() };
         private HubGroupViewModel LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
@@ -133,7 +133,6 @@ namespace HudlRT.ViewModels
             {
                 //show message here if no downloads
             }
-            
         }
 
         protected override void OnActivate()
@@ -190,10 +189,11 @@ namespace HudlRT.ViewModels
             games = selectedSeason.games;
 
             //Find the other items if present
-            Game otherItems = games.Where(g => g.opponent == "Other Items").FirstOrDefault();
-            games.Remove(otherItems);
-            //otherItems.Date = null;
-            HubGroupViewModel otherItemsGroup = new HubGroupViewModel() { Name = "Other Items", Games = new BindableCollection<GameViewModel>() { new GameViewModel(otherItems, true) } };
+            _otherItems = games.Where(g => g.Classification != "1") as BindableCollection<Game>;
+            foreach(Game g in _otherItems)
+            {
+                games.Remove(g);
+            }
 
             if (ServiceAccessor.ConnectedToInternet())
             {
@@ -245,7 +245,14 @@ namespace HudlRT.ViewModels
             {
                 NewGroups.Add(schedule);
             }
-            if(otherItems != null && otherItems.categories != null)
+
+            HubGroupViewModel otherItems = new HubGroupViewModel() { Name = "Other", Games = new BindableCollection<GameViewModel>() };
+            foreach (Game g in _otherItems)
+            {
+                GameViewModel gamevm = new GameViewModel(g);
+                otherItems.Games.Add(gamevm);
+            }
+            if(otherItems.Games.Count > 0)
             {
                 NewGroups.Add(otherItemsGroup);
             }
