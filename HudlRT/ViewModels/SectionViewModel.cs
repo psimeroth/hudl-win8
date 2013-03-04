@@ -233,9 +233,9 @@ namespace HudlRT.ViewModels
                 }
             }
 
-            if (cats.Count() > 0)
+            if (cats.Count() > 0)//Fixes margin on the left side of page given our scrolling issue
             {
-                cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = null });
+                cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = new BindableCollection<PlaylistViewModel>() });
             }
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
