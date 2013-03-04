@@ -713,7 +713,7 @@ namespace HudlRT.Views
         {
             videoContainer.Height = 350;
             videoMediaElement.Height = 350;
-            mainGrid_Row2.Height = new GridLength(375);
+            mainGrid_Row.Height = new GridLength(375);
             Container1_Row1.Height = new GridLength(375);
             isGridCollapsed = false;
             SortFilterPopup.IsOpen = false;
