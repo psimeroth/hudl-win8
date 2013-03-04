@@ -184,13 +184,13 @@
     </Grid>
 
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGray}" IsOpen="{Binding AppBarOpen, Mode=TwoWay}" Opened="UpdateDiskInformation" IsSticky="True">
-            <Grid Name="AppBar" Background="{StaticResource HudlDarkGray}">
+        <AppBar Background="{StaticResource HudlDarkGray}"  IsOpen="{Binding AppBarOpen, Mode=TwoWay}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3" Opened="UpdateDiskInformation" IsSticky="True">
+            <Grid Name="AppBar">
                 <Grid>
                     <Button x:Name="btnDownload" Visibility="{Binding DownloadButton_Visibility}" Width="230" Height="50" FontSize="20" Content="Download Playlist(s)" VerticalAlignment="Center"
-                        HorizontalAlignment="Right" caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
+                        HorizontalAlignment="Right" Style="{StaticResource ButtonStyle_Standard}" caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
 
-                    <Button x:Name="deleteDownload" Visibility="{Binding DeleteButton_Visibility}" Width="230" Height="50" FontSize="20" Content="Delete Download(s)" VerticalAlignment="Center"
+                    <Button x:Name="deleteDownload" Style="{StaticResource ButtonStyle_Standard}" Visibility="{Binding DeleteButton_Visibility}" Width="230" Height="50" FontSize="20" Content="Delete Download(s)" VerticalAlignment="Center"
                         HorizontalAlignment="Left" caliburn:Message.Attach="[Event Click] = [Action DeleteButtonClick()]"/>
                     <TextBlock Grid.Row="1" Text="{Binding DiskSpaceInformation}" HorizontalAlignment="Center" Margin="0,20,0,0" Foreground="{StaticResource HudlOrange}" FontSize="20"/>
                 </Grid>
@@ -200,8 +200,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Margin="0,0,60,0" Grid.Row="0" HorizontalAlignment="Left" Foreground="{StaticResource HudlOrange}" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="225"/>
-                    <ProgressBar Margin="0,0,60,0" Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="225" Foreground="{StaticResource HudlBlue}"/>
+                    <TextBlock Margin="0,0,60,0" Grid.Row="0" HorizontalAlignment="Left" Foreground="{StaticResource HudlMediumGray}" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="225"/>
+                    <ProgressBar Margin="0,0,60,0" Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="20" Width="225" Foreground="{StaticResource HudlMediumDarkGray}"/>
                     <Button x:Name="btnCancel" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,5,0"
                         caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
                 </Grid>

@@ -303,7 +303,17 @@ namespace HudlRT.ViewModels
             {
                 categoriesGrid.SelectedItem = null;
             }
-            AppBarOpen = false;
+            
+            DeleteButton_Visibility = Visibility.Collapsed;
+            if (DownloadAccessor.Instance.Downloading)
+            {
+                AppBarOpen = true;
+            }
+            else
+            {
+                AppBarOpen = false;
+            }
+
         }
 
         public void CancelButtonClick()
@@ -312,7 +322,10 @@ namespace HudlRT.ViewModels
             {
                 DownloadAccessor.Instance.cts.Cancel();
             }
-            categoriesGrid.SelectedItem = null;
+            if (categoriesGrid != null)
+            {
+                categoriesGrid.SelectedItem = null;
+            }
             AppBarOpen = false;
         }
 
@@ -350,58 +363,81 @@ namespace HudlRT.ViewModels
         {
             categoriesGrid = (GridView)sender;
             PlaylistViewModel playlistAdded = (PlaylistViewModel)e.AddedItems.FirstOrDefault();
-
-            if (categoriesGrid.SelectedItems.Count == 0)
+            if (DownloadAccessor.Instance.Downloading)
             {
-                DownloadButton_Visibility = Visibility.Collapsed;
-                Downloading_Visibility = Visibility.Collapsed;
-                DeleteButton_Visibility = Visibility.Collapsed;
+                if (categoriesGrid.SelectedItems.Count >= 1)
+                {
+                    //PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
+                    if (playlistAdded != null)
+                    {
+                        if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
+                        {
+                            DeleteButton_Visibility = Visibility.Visible;
+                            playlistsSelected = categoriesGrid.SelectedItems.ToList();
+                        }
+                        else
+                        {
+                            categoriesGrid.SelectedItems.Remove(e.AddedItems[0]);
+                        }
+                    }
+                }
+                AppBarOpen = true;
             }
-
-            if (categoriesGrid.SelectedItems.Count == 1 && playlistAdded != null)
+            else
             {
-                if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
+
+                if (categoriesGrid.SelectedItems.Count == 0)
                 {
                     DownloadButton_Visibility = Visibility.Collapsed;
                     Downloading_Visibility = Visibility.Collapsed;
-                    DeleteButton_Visibility = Visibility.Visible;
-
-                }
-                else
-                {
-                    DownloadButton_Visibility = Visibility.Visible;
-                    Downloading_Visibility = Visibility.Collapsed;
                     DeleteButton_Visibility = Visibility.Collapsed;
                 }
-            }
 
-            if (categoriesGrid.SelectedItems.Count > 1)
-            {
-                PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
-                if (playlistAdded != null)
+                if (categoriesGrid.SelectedItems.Count == 1 && playlistAdded != null)
                 {
-                    if (playlistAdded.DownloadedIcon_Visibility != firstPlaylist.DownloadedIcon_Visibility)
+                    if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
                     {
-                        categoriesGrid.SelectedItems.Remove(e.AddedItems[0]);
+                        DownloadButton_Visibility = Visibility.Collapsed;
+                        Downloading_Visibility = Visibility.Collapsed;
+                        DeleteButton_Visibility = Visibility.Visible;
+
+                    }
+                    else
+                    {
+                        DownloadButton_Visibility = Visibility.Visible;
+                        Downloading_Visibility = Visibility.Collapsed;
+                        DeleteButton_Visibility = Visibility.Collapsed;
                     }
                 }
+
+                if (categoriesGrid.SelectedItems.Count > 1)
+                {
+                    PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
+                    if (playlistAdded != null)
+                    {
+                        if (playlistAdded.DownloadedIcon_Visibility != firstPlaylist.DownloadedIcon_Visibility)
+                        {
+                            categoriesGrid.SelectedItems.Remove(e.AddedItems[0]);
+                        }
+                    }
+                }
+                playlistsSelected = categoriesGrid.SelectedItems.ToList();
+                AppBarOpen = playlistsSelected.Any() ? true : false;
             }
-            playlistsSelected = categoriesGrid.SelectedItems.ToList();
-            AppBarOpen = playlistsSelected.Any() ? true : false;
+            
         }
 
         private async Task LoadActiveDownloadsAsync()
         {
-            IReadOnlyList<DownloadOperation> downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
-            if (downloads.Count > 0)
+            if(DownloadAccessor.Instance.Downloading)
             {
-                await ResumeDownloadAsync(downloads.First());
+                await ResumeDownloadAsync();
             }
         }
-        private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
+        private async Task ResumeDownloadAsync()
         {
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            await downloadOperation.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
+            await DownloadAccessor.Instance.Download.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
         }
 
         private void MarkDownloadedPlaylists()
