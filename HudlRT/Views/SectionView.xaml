@@ -186,7 +186,7 @@
     </Grid>
 
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="{StaticResource HudlDarkGray}"  IsOpen="{Binding AppBarOpen, Mode=TwoWay}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3" Opened="UpdateDiskInformation" IsSticky="True">
+        <AppBar Background="{StaticResource HudlDarkGray}"  IsOpen="{Binding AppBarOpen, Mode=TwoWay}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3" IsSticky="True">
             <Grid Name="AppBar">
                 <Grid>
                     <Button x:Name="btnDownload" Visibility="{Binding DownloadButton_Visibility}" Width="230" Height="50" FontSize="20" Content="Download Playlist(s)" VerticalAlignment="Center"

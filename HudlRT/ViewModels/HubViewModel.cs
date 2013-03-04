@@ -108,7 +108,7 @@ namespace HudlRT.ViewModels
         protected override async void OnInitialize()
         {
             base.OnInitialize();
-            BindableCollection<Season> downloadedSeasons = await DownloadAccessor.Instance.GetDownloadsModel();
+            BindableCollection<Season> downloadedSeasons = await DownloadAccessor.Instance.GetDownloadsModel(true);
             if (ServiceAccessor.ConnectedToInternet())
             {
                 SeasonsDropDown = await GetSortedSeasons();

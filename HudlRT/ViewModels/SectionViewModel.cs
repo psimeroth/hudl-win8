@@ -180,7 +180,7 @@ namespace HudlRT.ViewModels
 
         public void UpdateDiskInformation()
         {
-            DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.diskSpaceFromDownloads;
+            DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.DiskSpaceFromDownloads;
             DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;// +" of " + freeSpaceResponse.formattedSize;
         }
 
@@ -332,6 +332,7 @@ namespace HudlRT.ViewModels
             {
                 AppBarOpen = false;
             }
+            UpdateDiskInformation();
 
         }
 
@@ -488,7 +489,8 @@ namespace HudlRT.ViewModels
 
         public void ProgressCallback(DownloadOperation obj)
         {
-            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
+            UpdateDiskInformation();
+            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived / (long)obj.Progress.TotalBytesToReceive) / (double)(DownloadAccessor.Instance.TotalClips) + (DownloadAccessor.Instance.ClipsComplete / (double)DownloadAccessor.Instance.TotalClips));
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
             if (DownloadProgress == 100)
             {

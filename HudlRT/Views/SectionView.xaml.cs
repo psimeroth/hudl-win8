@@ -33,12 +33,5 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
-
-        private void UpdateDiskInformation(object sender, object e)
-        {
-            SectionViewModel vm = (SectionViewModel)this.DataContext;
-            DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.diskSpaceFromDownloads;
-            vm.DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;
-        }
     }
 }
