@@ -343,6 +343,11 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private void openOptionsMenu()
+        {
+            //open options menu with angles and playback
+        }
+
         private void getAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
