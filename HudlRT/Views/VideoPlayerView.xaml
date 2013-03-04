@@ -136,7 +136,7 @@
             </Border>
         </Popup>
 
-        <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True">
+        <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Center" Margin="90,68,0,0">
             <Popup.ChildTransitions>
                 <TransitionCollection>
                     <PaneThemeTransition />
@@ -172,8 +172,6 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
-                            <!--Content="{Binding ToggleButtonContent}" HorizontalAlignment="Center"
-                         caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"-->
                             <RadioButton Content="Once" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsOnceChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(0)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
                             <RadioButton Content="Loop" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsLoopChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(1)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
                             <RadioButton Content="Next" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsNextChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(2)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
@@ -388,7 +386,7 @@
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="0" />
                 <TextBlock x:Name="PlaylistName" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="28" Foreground="{StaticResource HudlMediumGray}"/>
-                <Button x:Name="OptionsMenu" Grid.Column="2" Width="250" Height="45" FontSize="22" FontWeight="Light" Background="Transparent" Foreground="{StaticResource HudlLightGray}" caliburn:Message.Attach="[Event Click] = [Action openOptionsMenu()]">Options</Button>
+                <Button x:Name="OptionsMenu" Grid.Column="2" Width="250" Height="45" FontSize="22" FontWeight="Light" Background="Transparent" Foreground="{StaticResource HudlLightGray}" Click="openOptionsMenu">Options</Button>
                 <Grid Grid.Column="3">
                     <Button x:Name="btnDownload" Visibility="Collapsed" Width="230" Height="40" FontSize="20" Content="Download Playlist"  HorizontalAlignment="Left"
                          caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>

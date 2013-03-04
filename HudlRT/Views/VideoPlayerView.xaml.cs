@@ -860,7 +860,7 @@ namespace HudlRT.Views
             }
         }
 
-        private void btnTogglePlayback_Click_1(object sender, RoutedEventArgs e)
+        private void openOptionsMenu(object sender, RoutedEventArgs e)
         {
             PlaybackOptionsPopup.IsOpen = true;
         }
