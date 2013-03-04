@@ -210,25 +210,6 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-
-            <Grid x:Name="dataPanel" Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-                    <Border BorderBrush="Black" BorderThickness="0,0,0,2">
-                        <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False" 
-                          ManipulationMode="All">
-                        </Grid>
-                    </Border>
-                </ScrollViewer>
-                <common:VideoPlayerListView x:Name="FilteredClips" Grid.Row="1" HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
-                            ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" VirtualizingStackPanel.VirtualizationMode="Recycling" ScrollViewer.BringIntoViewOnFocusChange="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollMode="Enabled">
-                </common:VideoPlayerListView>
-
-            </Grid>
-
         </Grid>
 
 
@@ -386,4 +367,25 @@
             </Grid>
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
+    <common:LayoutAwarePage.BottomAppBar>
+        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
+            <Grid x:Name="dataPanel" Grid.Row="2" Height="200">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <ScrollViewer x:Name="gridHeaderScroll" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                    <Border BorderBrush="Black" BorderThickness="0,0,0,2">
+                        <Grid x:Name="gridHeaders" Margin="0" IsDoubleTapEnabled="False" IsHoldingEnabled="true" IsRightTapEnabled="False" IsTapEnabled="False" 
+                          ManipulationMode="All">
+                        </Grid>
+                    </Border>
+                </ScrollViewer>
+                <common:VideoPlayerListView x:Name="FilteredClips" Grid.Row="1" HorizontalAlignment="Left" IsTabStop="False" IsSwipeEnabled="False" IsItemClickEnabled="True" SelectionChanged="VideosList_SelectionChanged" caliburn:Message.Attach="[Event ItemClick] = [ClipSelected($eventArgs)]" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Standard}" SelectedItem="{Binding SelectedClip}"
+                            ItemClick="ListViewItemClicked" PointerPressed="ListViewItemPointerPressed" VirtualizingStackPanel.VirtualizationMode="Recycling" ScrollViewer.BringIntoViewOnFocusChange="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollMode="Enabled">
+                </common:VideoPlayerListView>
+
+            </Grid>
+        </AppBar>
+    </common:LayoutAwarePage.BottomAppBar>
 </common:LayoutAwarePage>

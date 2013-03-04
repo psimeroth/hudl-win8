@@ -345,8 +345,6 @@ namespace HudlRT.Views
                 FilteredClips.UpdateLayout();
                 TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
                 TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
-                gridHeaderScroll.Visibility = Visibility.Collapsed;
-                dataPanel.Visibility = Visibility.Collapsed;
 
                 // Show the full screen controls
                 full_mainGrid.Visibility = Visibility.Visible;
@@ -374,8 +372,6 @@ namespace HudlRT.Views
                 header.Visibility = Visibility.Visible;
                 TransportControlsPanel_Left.Visibility = Visibility.Visible;
                 TransportControlsPanel_Right.Visibility = Visibility.Visible;
-                gridHeaderScroll.Visibility = Visibility.Visible;
-                dataPanel.Visibility = Visibility.Visible;
 
                 // Hide the full screen controls
                 full_mainGrid.Visibility = Visibility.Collapsed;
