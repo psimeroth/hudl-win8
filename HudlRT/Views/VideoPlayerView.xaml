@@ -139,7 +139,7 @@
         <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Center" Margin="90,68,0,0">
             <Popup.ChildTransitions>
                 <TransitionCollection>
-                    <PaneThemeTransition />
+                    <PaneThemeTransition Edge="Top" />
                 </TransitionCollection>
             </Popup.ChildTransitions>
             <Border BorderBrush="Black" BorderThickness="2,0" Background="{StaticResource HudlDarkGray}" x:Name="PlaybackPopupBorder" Height="200">
@@ -376,7 +376,7 @@
         </VisualStateManager.VisualStateGroups>
     </Grid>
     <common:LayoutAwarePage.TopAppBar>
-        <AppBar Background="{StaticResource HudlDarkGray}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
+        <AppBar x:Name="TitleBar" Background="{StaticResource HudlDarkGray}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
             <Grid Name="header" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85"/>
