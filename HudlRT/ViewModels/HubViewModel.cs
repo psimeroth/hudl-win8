@@ -16,6 +16,7 @@ namespace HudlRT.ViewModels
     public class HubViewModel : ViewModelBase
     {
         INavigationService navigationService;
+        bool firstLoad = true;
 
         private BindableCollection<HubGroupViewModel> _groups;
         public BindableCollection<HubGroupViewModel> Groups
@@ -49,6 +50,11 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => SelectedSeason);
                 AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
                 PopulateGroups();
+                if (!firstLoad)
+                {
+                    Logger.Instance.LogSeasonChanged(selectedSeason);
+                }
+                else { firstLoad = false; }
             }
         }
 
@@ -87,7 +93,7 @@ namespace HudlRT.ViewModels
             if (response.ID != null)
             {
                 Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };//this is actually a playlist - not a game
-                GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, true);
+                GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, isLastviewed:true);
                 lastViewed.Thumbnail = response.thumbnail;
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
                 LastViewedVM.Games.Add(lastViewed);
@@ -118,14 +124,14 @@ namespace HudlRT.ViewModels
 
             if (previousGame != null)
             {
-                GameViewModel previous = new GameViewModel(previousGame, true);
+                GameViewModel previous = new GameViewModel(previousGame, true, isPreviousGame:true);
                 previous.FetchThumbnailsAndPlaylistCounts();
                 previous.IsLargeView = true;
                 NextGameVM.Games.Add(previous);
             }
             if (nextGame != null)
             {
-                GameViewModel next = new GameViewModel(nextGame, true);
+                GameViewModel next = new GameViewModel(nextGame, true, isNextGame:true);
                 //next.isLargeView = true;
                 next.FetchThumbnailsAndPlaylistCounts();
                 LastGameVM.Games.Add(next);
@@ -234,16 +240,28 @@ namespace HudlRT.ViewModels
             string parameter = gameViewModel.GameModel.gameId;
             
             //CachedParameter.gameId = ((GameViewModel)eventArgs.ClickedItem).GameModel.gameId;
-            if (!gameViewModel.IsLastViewed)
+            if (gameViewModel.IsLastViewed)
             {
-                navigationService.NavigateToViewModel<SectionViewModel>(parameter);
+                ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
+                Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.Thumbnail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count };
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
+                Logger.Instance.LogLastViewedClick(lastViewedPlaylist);
             }
             else
             {
-                ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
-                Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.Thumbnail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
-                Logger.Instance.LogLastViewedClick(lastViewedPlaylist);
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
+                navigationService.NavigateToViewModel<SectionViewModel>(parameter);
+                if (gameViewModel.IsNextGame)
+                {
+                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, "NextGame");
+                }
+                else if (gameViewModel.IsPreviousGame)
+                {
+                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, "PreviousGame");
+                }
+                else
+                {
+                    Logger.Instance.LogGameSelected(gameViewModel.GameModel);
+                }
             }
             
         }

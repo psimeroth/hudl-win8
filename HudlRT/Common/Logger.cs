@@ -278,15 +278,17 @@ namespace HudlRT.Common
         public async void LogLastViewedClick(Playlist playlist)
         {
             LogEntry entry = new LogEntry();
-            entry.Function = "Click";
-            entry.Operation = "Cutup";
+            entry.Function = Function.Click.ToString();
+            entry.Operation = Operation.Cutup.ToString();
             entry.Error = null;
             entry.Method = "LastViewed";
             entry.ErrorLevel = ErrorLevel.Info;
+
             entry.AttributesDictionary = new Dictionary<string, object>();
-            entry.AttributesDictionary.Add("name", playlist.name);
-            entry.AttributesDictionary.Add("playlistId", playlist.playlistId);
-            entry.AttributesDictionary.Add("clickedOn", DateTime.Now);
+            entry.AttributesDictionary.Add("Method", "LastViewed");
+            entry.AttributesDictionary.Add("Name", playlist.name);
+            entry.AttributesDictionary.Add("Playlist", playlist.playlistId);
+            entry.AttributesDictionary.Add("ClickedOn", DateTime.Now);
 
             entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
             entry.AttributesDictionary = null;
@@ -294,24 +296,69 @@ namespace HudlRT.Common
             ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
 
-        public async void LastWeekClick(Game game)
+        public async void LogRemoteUse()
         {
         }
 
-        public async void NextWeekClick(Game game)
+        public async void LogGameSelected(Game game, string description = "GameSelected")
         {
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.Click.ToString();
+            entry.Operation = Operation.Game.ToString();
+            entry.Error = null;
+            entry.Method = description;
+            entry.ErrorLevel = ErrorLevel.Info;
+
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", description);
+            entry.AttributesDictionary.Add("Game", game.gameId);
+            entry.AttributesDictionary.Add("ClickedOn", DateTime.Now);
+
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
+
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
 
-        public async void RemoteUse()
+        public async void LogPlaylistSelected(Playlist playlist)
         {
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.Click.ToString();
+            entry.Operation = Operation.Game.ToString();
+            entry.Error = null;
+            entry.Method = "PlaylistSelected";
+            entry.ErrorLevel = ErrorLevel.Info;
+
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", "PlaylistSelected");
+            entry.AttributesDictionary.Add("Playlist", playlist.playlistId);
+            entry.AttributesDictionary.Add("ClickedOn", DateTime.Now);
+
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
+
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
 
-        public async void GameSelected(Game game)
+        public async void LogSeasonChanged(Season season)
         {
-        }
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.Click.ToString();
+            entry.Operation = Operation.Game.ToString();
+            entry.Error = null;
+            entry.Method = "SeasonChanged";
+            entry.ErrorLevel = ErrorLevel.Info;
 
-        public async void PlaylistViewed(Playlist playlist)
-        {
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", "SeasonChanged");
+            entry.AttributesDictionary.Add("Season", season.seasonID);
+            entry.AttributesDictionary.Add("Year", season.year);
+            entry.AttributesDictionary.Add("ClickedOn", DateTime.Now);
+
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
+
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
     }
 }

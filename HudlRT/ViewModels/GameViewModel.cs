@@ -16,6 +16,8 @@ namespace HudlRT.ViewModels
         public bool IsLargeView { get; set; }
         public Game GameModel { get; set; }
         public bool IsLastViewed { get; set; }
+        public bool IsNextGame { get; set; }
+        public bool IsPreviousGame { get; set; }
 
 
         public string Opponent
@@ -57,11 +59,13 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false)
+        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false, bool isNextGame = false, bool isPreviousGame = false)
         {
             GameModel = game;
             IsLargeView = isLarge;
             IsLastViewed = isLastviewed;
+            IsNextGame = isNextGame;
+            IsPreviousGame = isPreviousGame;
             Thumbnail = "ms-appx:///Assets/agile-hudl-logo-dark.png";
         }
 

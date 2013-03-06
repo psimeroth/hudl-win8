@@ -111,7 +111,7 @@ namespace HudlRT.ViewModels
         public void PlaylistSelected(ItemClickEventArgs eventArgs)
         {
             navigationService.NavigateToViewModel<VideoPlayerViewModel>(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
-
+            Logger.Instance.LogPlaylistSelected(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
         }
     }
 }
