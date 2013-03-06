@@ -310,12 +310,12 @@ namespace HudlRT.ViewModels
             Playlist matchingDownload = DownloadAccessor.Instance.downloadedPlaylists.Where(u => u.playlistId == playlistClicked.playlistId).FirstOrDefault();
             if (matchingDownload != null)
             {
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter{ playlist= matchingDownload, hubGroups = Parameter.hubGroups, season = new Season()});
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter{ playlist= matchingDownload, hubGroups = Parameter.hubGroups, season = Parameter.season});
             }
             else
             {
                 await vmClicked.FetchClips;
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { playlist = playlistClicked, hubGroups = Parameter.hubGroups, season = new Season() });
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { playlist = playlistClicked, hubGroups = Parameter.hubGroups, season = Parameter.season });
             }
             
 

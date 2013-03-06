@@ -373,9 +373,9 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = Visibility.Visible;
 
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
-            Season parameter = SelectedSeason;
-            parameter.games = new BindableCollection<Game>();
-            parameter.games.Add(gameViewModel.GameModel);
+            Season seasonToPass = SelectedSeason;
+            seasonToPass.games = new BindableCollection<Game>();
+            seasonToPass.games.Add(gameViewModel.GameModel);
             //Game parameter = gameViewModel.GameModel;
 
             CachedParameter.hubGroups = Groups;
@@ -387,20 +387,20 @@ namespace HudlRT.ViewModels
                     CachedParameter.sectionCategories = null;
                 }
                 CachedParameter.sectionGameId = gameViewModel.GameModel.gameId;
-                navigationService.NavigateToViewModel<SectionViewModel>(new PageParameter { season = parameter, hubGroups = Groups, playlist = new Playlist() });
+                navigationService.NavigateToViewModel<SectionViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = new Playlist() });
             }
             else
             {
                 Playlist downloadedPlaylist = DownloadAccessor.Instance.downloadedPlaylists.Where(u => u.playlistId == gameViewModel.GameModel.gameId).FirstOrDefault();
                 if (downloadedPlaylist != null)
                 {
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { season = new Season(), hubGroups = Groups, playlist = downloadedPlaylist });
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = downloadedPlaylist });
                 }
                 else
                 {
                     ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
                     Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.Thumbnail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count };
-                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { season = new Season(), hubGroups = Groups, playlist = lastViewedPlaylist });
+                    navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = lastViewedPlaylist });
                 }
             }
             
