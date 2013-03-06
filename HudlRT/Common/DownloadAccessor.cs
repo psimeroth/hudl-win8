@@ -325,7 +325,7 @@ namespace HudlRT.Common
                 Logger.Instance.LogPlaylistDownloadComplete(pl);
             }
             Game selectedGame = seasonAndGame.games.FirstOrDefault();
-            Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, isHome = selectedGame.isHome, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() };
+            Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() };
             foreach (Category c in selectedGame.categories)
             {
                 foreach (Playlist plFromSelectedGame in c.playlists)
@@ -365,7 +365,7 @@ namespace HudlRT.Common
             bool seasonFound = false;
             foreach (Season s in currentDownloadsCompleteModel)
             {
-                if (s.seasonID == seasonAndGame.seasonID)//found the season we need to merge
+                if (s.seasonId == seasonAndGame.seasonId)//found the season we need to merge
                 {
                     seasonFound = true;
                     Game g = s.games.Where(u => u.gameId == newGameWithOnlyDownloads.gameId).FirstOrDefault();

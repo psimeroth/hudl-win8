@@ -351,7 +351,7 @@ namespace HudlRT.Common
 
             entry.AttributesDictionary = new Dictionary<string, object>();
             entry.AttributesDictionary.Add("Method", "SeasonChanged");
-            entry.AttributesDictionary.Add("Season", season.seasonID);
+            entry.AttributesDictionary.Add("Season", season.seasonId);
             entry.AttributesDictionary.Add("Year", season.year);
             entry.AttributesDictionary.Add("ClickedOn", DateTime.Now);
 
