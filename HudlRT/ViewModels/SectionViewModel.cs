@@ -317,8 +317,7 @@ namespace HudlRT.ViewModels
                 await vmClicked.FetchClips;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { playlist = playlistClicked, hubGroups = Parameter.hubGroups, season = Parameter.season });
             }
-            
-
+            Logger.Instance.LogPlaylistSelected(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
         }
 
         public async void DeleteButtonClick()
@@ -326,6 +325,7 @@ namespace HudlRT.ViewModels
             foreach (PlaylistViewModel playVM in playlistsSelected)
             {
                 await DownloadAccessor.Instance.RemoveDownload(playVM.PlaylistModel);
+                Logger.Instance.LogPlaylistDownloadRemoved(playVM.PlaylistModel);
             }
             MarkDownloadedPlaylists();
             if(categoriesGrid != null)
@@ -358,7 +358,7 @@ namespace HudlRT.ViewModels
             }
             AppBarOpen = false;
         }
-
+            
         public async void DownloadButtonClick()
         {
             List<Playlist> playlistsToBeDownloaded = new List<Playlist>();

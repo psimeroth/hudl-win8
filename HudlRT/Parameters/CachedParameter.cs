@@ -22,7 +22,8 @@ namespace HudlRT.Parameters
         public static BindableCollection<CategoryViewModel> sectionCategories { get; set; }
         public static string sectionGameId { get; set; }
 
-        public static void resetCache(){
+        public static void resetCache()
+        {
             playlist = null;
             hubGroups = null;
             season = null;

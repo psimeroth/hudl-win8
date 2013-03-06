@@ -613,10 +613,13 @@ namespace HudlRT.ViewModels
 
                 if (SelectedFilter.FilterCriteria != null && SelectedFilter.FilterCriteria.Any(c => c.IsChecked))
                 {
+                    List<String> filtersApplied = new List<String>();
                     foreach (FilterCriteriaViewModel criteria in SelectedFilter.FilterCriteria.Where(c => c.IsChecked))
                     {
                         newFilteredClips.AddRange(currentFilteredClips.Where(clip => clip.breakDownData[SelectedFilter.columnId].Equals(criteria.Name)));
+                        filtersApplied.Add(criteria.Name);
                     }
+                    Logger.Instance.LogFilterApplied(filtersApplied);
                 }
                 else
                 {
@@ -761,6 +764,8 @@ namespace HudlRT.ViewModels
 
                     clips.AddRange(unfilteredClips);
                 }
+
+                Logger.Instance.LogSortApplied(filter);
             }
             else
             {
