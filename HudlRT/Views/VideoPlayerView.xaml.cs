@@ -559,6 +559,16 @@ namespace HudlRT.Views
         {
             PlaybackOptionsPopup.IsOpen = true;
         }
+
+        private void PlaybackOptionsPopup_Opened_1(object sender, object e)
+        {
+            SortFilterPopup.IsOpen = false;
+        }
+
+        private void SortFilterPopup_Opened_1(object sender, object e)
+        {
+            PlaybackOptionsPopup.IsOpen = false;
+        }
     }
 
     public enum VideoPlayerState

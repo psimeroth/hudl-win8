@@ -22,7 +22,7 @@
 
     <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkGray}">
 
-        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="False">
+        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="False" Opened="SortFilterPopup_Opened_1">
             <Popup.ChildTransitions>
                 <TransitionCollection>
                     <PaneThemeTransition />
@@ -73,7 +73,7 @@
             </Border>
         </Popup>
 
- <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Center" Margin="90,68,0,0">
+ <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Center" Margin="90,68,0,0" Opened="PlaybackOptionsPopup_Opened_1">
             <Popup.ChildTransitions>
                 <TransitionCollection>
                     <PaneThemeTransition Edge="Top" />
