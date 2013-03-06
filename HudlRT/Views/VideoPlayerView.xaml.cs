@@ -32,30 +32,13 @@ namespace HudlRT.Views
 
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
-        private bool _isFullscreenToggle = false;
-        public bool IsFullscreen
-        {
-            get { return _isFullscreenToggle; }
-            set { _isFullscreenToggle = value; }
-        }
-        private bool previousVideoStateIsFullScreen = false;
-        private bool previousStateIsSnapped = false;
-
-        private Size _previousVideoContainerSize = new Size();
-        private Size _previousVideoSize = new Size();
         private string _rootNamespace;
-        private Brush background;
-        private Brush mainGridBackground;
-        private Brush dataPanelBackground;
         public string RootNamespace
         {
             get { return _rootNamespace; }
             set { _rootNamespace = value; }
         }
-        Point initialPoint = new Point();
-        Point currentPoint = new Point();
         private int count = 0;
-        bool isGridCollapsed = false;
         private TranslateTransform dragTranslation;
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
         private long keyPressLength = 225;
@@ -72,29 +55,13 @@ namespace HudlRT.Views
         {
             this.InitializeComponent();
 
-            dragTranslation = new TranslateTransform();
-
-            gridHeaders.ManipulationStarted += gridHeaders_ManipulationStarted;
-            gridHeaders.ManipulationDelta += gridHeaders_ManipulationDelta;
-            gridHeaders.ManipulationInertiaStarting += gridHeaders_ManipulationInertiaStarting;
-
-            videoMediaElement.ManipulationStarted += videoMediaElement_ManipulationStarted;
-            videoMediaElement.ManipulationInertiaStarting += videoMediaElement_ManipulationInertiaStarting;
-            videoMediaElement.ManipulationDelta += videoMediaElement_ManipulationDelta;
-
-            gridHeaders.RenderTransform = this.dragTranslation;
             FilteredClips.RenderTransform = this.dragTranslation;
-            gridHeaderScroll.ViewChanged += gridHeaderScroll_ViewChanged;
             FilteredClips.Loaded += filteredClips_Loaded;
 
             btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
-            full_btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
             btnSlowForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowForward_Click), true);
-            full_btnSlowForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowForward_Click), true);
             btnFastReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastReverse_Click), true);
-            full_btnFastReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastReverse_Click), true);
             btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
-            full_btnSlowReverse.AddHandler(PointerPressedEvent, new PointerEventHandler(btnSlowReverse_Click), true);
 
             Window.Current.CoreWindow.KeyDown += VideoPage_KeyDown;
             Window.Current.CoreWindow.KeyUp += VideoPage_KeyUp;
@@ -117,7 +84,8 @@ namespace HudlRT.Views
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            videoMediaElement.Width = Window.Current.Bounds.Width - 300;
+            videoMediaElement.Width = Window.Current.Bounds.Width;
+            videoMediaElement.Height = Window.Current.Bounds.Height;
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
             initializeGrid(vm.Parameter);
 
@@ -244,64 +212,6 @@ namespace HudlRT.Views
             gridHeaders.ColumnDefinitions.Clear();
         }
 
-        void gridHeaders_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
-        {
-            if (initialPoint.Y - currentPoint.Y >= 50 && isGridCollapsed)
-                btnExpandGrid_Click(null, null);
-            else if (initialPoint.Y - currentPoint.Y <= -50 && !isGridCollapsed)
-            {
-                var currentViewState = ApplicationView.Value;
-                if (currentViewState == ApplicationViewState.Filled)
-                {
-                    FullscreenToggle();
-                }
-                else
-                {
-                    btnCollapseGrid_Click(null, null);
-                }
-            }
-            else if (initialPoint.Y - currentPoint.Y <= -50 && isGridCollapsed)
-            {
-                FullscreenToggle();
-            }
-        }
-
-        void gridHeaders_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            currentPoint = e.Position;
-        }
-
-        void gridHeaders_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
-        {
-            initialPoint = e.Position;
-        }
-
-        void videoMediaElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            currentPoint = e.Position;
-            if (e.Delta.Scale >= 1.1 && !IsFullscreen)
-            {
-                FullscreenToggle();
-            }
-            else if (e.Delta.Scale <= .92 && IsFullscreen)
-            {
-                FullscreenToggle();
-            }
-        }
-
-        void videoMediaElement_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
-        {
-            initialPoint = e.Position;
-        }
-
-        private void videoMediaElement_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
-        {
-            if (initialPoint.Y - currentPoint.Y >= 50 && IsFullscreen && (initialPoint.Y >= Window.Current.Bounds.Height - 500))
-            {
-                FullscreenToggle();
-            }
-        }
-
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (rightClicked)
@@ -324,77 +234,6 @@ namespace HudlRT.Views
                 }
                 catch { }
             }
-        }
-
-        private void FullscreenToggle()
-        {
-            this.IsFullscreen = !this.IsFullscreen;
-
-            if (this.IsFullscreen)
-            {
-                SortFilterPopup.IsOpen = false;
-                background = RootGrid.Background;
-                mainGridBackground = mainGrid.Background;
-                dataPanelBackground = dataPanel.Background;
-                RootGrid.Background = new SolidColorBrush();
-                mainGrid.Background = new SolidColorBrush();
-                dataPanel.Background = new SolidColorBrush();
-                // Hide all non full screen controls
-                header.Visibility = Visibility.Collapsed;
-                header.UpdateLayout();
-                FilteredClips.UpdateLayout();
-                TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
-                TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
-
-                // Show the full screen controls
-                full_mainGrid.Visibility = Visibility.Visible;
-
-                // Save the video containers size
-                _previousVideoContainerSize.Width = videoContainer.ActualWidth;
-                _previousVideoContainerSize.Height = videoContainer.ActualHeight;
-                _previousVideoSize.Width = Window.Current.Bounds.Width - 300;
-                _previousVideoSize.Height = videoMediaElement.ActualHeight;
-
-                // Set the video container to fullscreen
-                videoContainer.Width = Window.Current.Bounds.Width;
-                videoContainer.Height = Window.Current.Bounds.Height;
-                videoMediaElement.Width = Window.Current.Bounds.Width;
-                videoMediaElement.Height = Window.Current.Bounds.Height;
-                VideoGrid.Margin = new Thickness(0, 0, 0, 0);
-            }
-            else
-            {
-                SortFilterPopup.IsOpen = false;
-                RootGrid.Background = background;
-                mainGrid.Background = mainGridBackground;
-                dataPanel.Background = dataPanelBackground;
-                // Show the non full screen controls
-                header.Visibility = Visibility.Visible;
-                TransportControlsPanel_Left.Visibility = Visibility.Visible;
-                TransportControlsPanel_Right.Visibility = Visibility.Visible;
-
-                // Hide the full screen controls
-                full_mainGrid.Visibility = Visibility.Collapsed;
-
-                // Reset the video container to it's original height
-                videoContainer.Width = Window.Current.Bounds.Width;
-                videoContainer.Height = _previousVideoContainerSize.Height;
-                videoMediaElement.Width = Window.Current.Bounds.Width - 300;
-                videoMediaElement.Height = _previousVideoSize.Height;
-
-                var currentViewState = ApplicationView.Value;
-                if (currentViewState == ApplicationViewState.Filled && isGridCollapsed)
-                {
-                    btnExpandGrid_Click(null, null);
-                }
-
-                VideoGrid.Margin = new Thickness(0, 70, 0, 0);
-            }
-        }
-
-        private void btnFullScreenToggle_Click(object sender, RoutedEventArgs e)
-        {
-            FullscreenToggle();
         }
 
         private void btn_release(object sender, RoutedEventArgs e)
@@ -492,65 +331,55 @@ namespace HudlRT.Views
             btnPause.Visibility = Visibility.Collapsed;
             btnPlay.Visibility = Visibility.Visible;
 
-            full_btnPause.Visibility = Visibility.Collapsed;
-            full_btnPlay.Visibility = Visibility.Visible;
-
             snapped_btnPause.Visibility = Visibility.Collapsed;
             snapped_btnPlay.Visibility = Visibility.Visible;
         }
 
         private void VideoPage_KeyUp(object sender, Windows.UI.Core.KeyEventArgs e)
         {
-            if (IsFullscreen && e.VirtualKey == Windows.System.VirtualKey.Escape)
+            keyPressTimer.Stop();
+            if (keyPressTimer.ElapsedMilliseconds < keyPressLength)
             {
-                FullscreenToggle();
+                if (e.VirtualKey == Windows.System.VirtualKey.Down)
+                {
+                    if (playerState == VideoPlayerState.Paused)
+                    {
+                        btnPlay_Click(null, null);
+                    }
+                    else
+                    {
+                        btnPause_Click(null, null);
+                    }
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+                {
+                    rewindKeyPressTimer.Stop();
+                    btn_release(null, null);
+                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                    vm.ResetClip();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+                {
+                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                    vm.GoToNextClip();
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
+                {
+                    rewindKeyPressTimer.Stop();
+                    btn_release(null, null);
+                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                    vm.GoToPreviousClip();
+                    e.Handled = true;
+                }
             }
             else
             {
-                keyPressTimer.Stop();
-                if (keyPressTimer.ElapsedMilliseconds < keyPressLength)
-                {
-                    if (e.VirtualKey == Windows.System.VirtualKey.Down)
-                    {
-                        if (playerState == VideoPlayerState.Paused)
-                        {
-                            btnPlay_Click(null, null);
-                        }
-                        else
-                        {
-                            btnPause_Click(null, null);
-                        }
-                        e.Handled = true;
-                    }
-                    else if (e.VirtualKey == Windows.System.VirtualKey.Up)
-                    {
-                        rewindKeyPressTimer.Stop();
-                        btn_release(null, null);
-                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                        vm.ResetClip();
-                        e.Handled = true;
-                    }
-                    else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
-                    {
-                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                        vm.GoToNextClip();
-                        e.Handled = true;
-                    }
-                    else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
-                    {
-                        rewindKeyPressTimer.Stop();
-                        btn_release(null, null);
-                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                        vm.GoToPreviousClip();
-                        e.Handled = true;
-                    }
-                }
-                else
-                {
-                    btn_release(null, null);
-                }
-                keyPressTimer.Reset();
+                btn_release(null, null);
             }
+            keyPressTimer.Reset();
         }
 
         private void VideoPage_KeyDown(object sender, Windows.UI.Core.KeyEventArgs e)
@@ -660,9 +489,6 @@ namespace HudlRT.Views
             btnPlay.Visibility = Visibility.Collapsed;
             btnPause.Visibility = Visibility.Visible;
 
-            full_btnPlay.Visibility = Visibility.Collapsed;
-            full_btnPause.Visibility = Visibility.Visible;
-
             snapped_btnPlay.Visibility = Visibility.Collapsed;
             snapped_btnPause.Visibility = Visibility.Visible;
         }
@@ -671,9 +497,6 @@ namespace HudlRT.Views
         {
             btnReverse.Visibility = Visibility.Collapsed;
             btnStop.Visibility = Visibility.Visible;
-
-            full_btnReverse.Visibility = Visibility.Collapsed;
-            full_btnStop.Visibility = Visibility.Visible;
 
             snapped_btnReverse.Visibility = Visibility.Collapsed;
             snapped_btnStop.Visibility = Visibility.Visible;
@@ -684,46 +507,8 @@ namespace HudlRT.Views
             btnStop.Visibility = Visibility.Collapsed;
             btnReverse.Visibility = Visibility.Visible;
 
-            full_btnStop.Visibility = Visibility.Collapsed;
-            full_btnReverse.Visibility = Visibility.Visible;
-
             snapped_btnStop.Visibility = Visibility.Collapsed;
             snapped_btnReverse.Visibility = Visibility.Visible;
-        }
-
-        private void btnExpandGrid_Click(object sender, RoutedEventArgs e)
-        {
-            Storyboard sb = (Storyboard)RootGrid.Resources["ExpandGridAnimation"];
-            sb.Begin();
-            isGridCollapsed = false;
-            SortFilterPopup.IsOpen = false;
-            FilterGrid.Height = 425;
-            FiltersListRow.Height = new GridLength(220);
-            FiltersList.Height = 200;
-        }
-
-        private void btnExpandGrid_Click_NoAnimation(object sender, RoutedEventArgs e)
-        {
-            videoContainer.Height = 350;
-            videoMediaElement.Height = 350;
-            mainGrid_Row2.Height = new GridLength(375);
-            Container1_Row1.Height = new GridLength(375);
-            isGridCollapsed = false;
-            SortFilterPopup.IsOpen = false;
-            FilterGrid.Height = 425;
-            FiltersListRow.Height = new GridLength(220);
-            FiltersList.Height = 200;
-        }
-
-        private void btnCollapseGrid_Click(object sender, RoutedEventArgs e)
-        {
-            Storyboard sb = (Storyboard)RootGrid.Resources["CollapseGridAnimation"];
-            sb.Begin();
-            isGridCollapsed = true;
-            SortFilterPopup.IsOpen = false;
-            FilterGrid.Height = 575;
-            FiltersListRow.Height = new GridLength(370);
-            FiltersList.Height = 350;
         }
 
         private void ListViewItemPointerPressed(object sender, PointerRoutedEventArgs e)
@@ -756,101 +541,18 @@ namespace HudlRT.Views
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             SortFilterPopup.IsOpen = false;
-            snapped_mainGrid.Visibility = Visibility.Collapsed;
-            videoMediaElement.ControlPanel.Visibility = Visibility.Visible;
+            TopAppBar.IsOpen = false;
+            BottomAppBar.IsOpen = false;
             var currentViewState = ApplicationView.Value;
-            if (currentViewState == ApplicationViewState.Filled)
+            if (currentViewState == ApplicationViewState.Snapped)
             {
-                if (IsFullscreen)
-                {
-                    videoContainer.Width = Window.Current.Bounds.Width;
-                    videoContainer.Height = Window.Current.Bounds.Height;
-                    videoMediaElement.Width = Window.Current.Bounds.Width;
-                    videoMediaElement.Height = Window.Current.Bounds.Height;
-                    VideoGrid.Margin = new Thickness(0, 0, 0, 0);
-                    full_mainGrid.Visibility = Visibility.Visible;
-                }
-                else if (isGridCollapsed)
-                {
-                    btnExpandGrid_Click_NoAnimation(null, null);
-                    videoContainer.Width = Window.Current.Bounds.Width - 300;
-                    videoMediaElement.Width = Window.Current.Bounds.Width - 300;
-                }
-                else
-                {
-                    videoContainer.Width = Window.Current.Bounds.Width;
-                    videoMediaElement.Width = Window.Current.Bounds.Width - 300;
-                }
-
-                if (!previousVideoStateIsFullScreen && previousStateIsSnapped)
-                {
-                    FullscreenToggle();
-                    dataPanel.Visibility = Visibility.Visible;
-                }
-                previousStateIsSnapped = false;
-                previousVideoStateIsFullScreen = false;
-            }
-            else if (currentViewState == ApplicationViewState.FullScreenLandscape)
-            {
-                if (IsFullscreen)
-                {
-                    videoContainer.Width = Window.Current.Bounds.Width;
-                    videoContainer.Height = Window.Current.Bounds.Height;
-                    videoMediaElement.Width = Window.Current.Bounds.Width;
-                    videoMediaElement.Height = Window.Current.Bounds.Height;
-                    VideoGrid.Margin = new Thickness(0, 0, 0, 0);
-                    full_mainGrid.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    videoContainer.Width = Window.Current.Bounds.Width;
-                    videoMediaElement.Width = Window.Current.Bounds.Width - 300;
-                }
-                if (!previousVideoStateIsFullScreen && previousStateIsSnapped)
-                {
-                    FullscreenToggle();
-                    dataPanel.Visibility = Visibility.Visible;
-                }
-                previousStateIsSnapped = false;
-                previousVideoStateIsFullScreen = false;
-                btnExpandGrid_Click_NoAnimation(null, null);
-            }
-            else if (currentViewState == ApplicationViewState.Snapped)
-            {
-                if (IsFullscreen)
-                {
-                    previousVideoStateIsFullScreen = true;
-                }
-                else
-                {
-                    _previousVideoContainerSize.Width = Window.Current.Bounds.Width;
-                    _previousVideoContainerSize.Height = 350;
-                    _previousVideoSize.Width = Window.Current.Bounds.Width - 300;
-                    _previousVideoSize.Height = 350;
-                    background = RootGrid.Background;
-                }
-
-                previousStateIsSnapped = true;
-                this.IsFullscreen = true;
-
-                RootGrid.Background = new SolidColorBrush();
-                mainGrid.Background = new SolidColorBrush();
-                dataPanel.Visibility = Visibility.Collapsed;
-                header.Visibility = Visibility.Collapsed;
-                header.UpdateLayout();
-                FilteredClips.UpdateLayout();
-                TransportControlsPanel_Left.Visibility = Visibility.Collapsed;
-                TransportControlsPanel_Right.Visibility = Visibility.Collapsed;
-                gridHeaderScroll.Visibility = Visibility.Collapsed;
+                mainGrid.Visibility = Visibility.Collapsed;
                 snapped_mainGrid.Visibility = Visibility.Visible;
-                videoMediaElement.ControlPanel.Visibility = Visibility.Collapsed;
-                full_mainGrid.Visibility = Visibility.Collapsed;
-
-                videoContainer.Width = Window.Current.Bounds.Width;
-                videoContainer.Height = Window.Current.Bounds.Height;
-                videoMediaElement.Width = Window.Current.Bounds.Width;
-                videoMediaElement.Height = Window.Current.Bounds.Height;
-                VideoGrid.Margin = new Thickness(0, 0, 0, 0);
+            }
+            else
+            {
+                snapped_mainGrid.Visibility = Visibility.Collapsed;
+                mainGrid.Visibility = Visibility.Visible;
             }
         }
     }

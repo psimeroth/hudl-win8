@@ -295,6 +295,7 @@
         <Setter Property="FontFamily" Value="Segoe UI Symbol"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Margin" Value="0,10" />
         <Setter Property="AutomationProperties.ItemType" Value="App Bar Button"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -306,17 +307,6 @@
                                 <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource HudlDarkGrayAccent}"/>
                                 <ContentPresenter x:Name="Content" HorizontalAlignment="Center" Margin="-1,-1,0,0" VerticalAlignment="Center" Foreground="{StaticResource HudlMediumGray}"/>
                             </Grid>
-                            <TextBlock
-                                x:Name="TextLabel"
-                                Text="{TemplateBinding AutomationProperties.Name}"
-                                Foreground="{StaticResource AppBarItemForegroundThemeBrush}"
-                                Margin="0,0,2,0"
-                                FontSize="12"
-                                TextAlignment="Center"
-                                Width="88"
-                                MaxHeight="32"
-                                TextTrimming="WordEllipsis"
-                                Style="{StaticResource BasicTextStyle}"/>
                         </StackPanel>
                         <Rectangle
                                 x:Name="FocusVisualWhite"
