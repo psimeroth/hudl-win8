@@ -12,6 +12,7 @@ namespace HudlRT.Common
 {
     class APIExceptionDialog
     {
+        private static bool messageShown = false;
         static public void ShowNoInternetConnectionDialog(object sender = null, RoutedEventArgs e = null)
         {
             string message = "We didn't detect an internet connection.";
@@ -40,6 +41,12 @@ namespace HudlRT.Common
                 message += "\nYou cannot access this content - if you think you should have access, please email support@hudl.com.";
             }
 
+            else if (statusCode == "Forbidden")
+            {
+                message = "Unauthorized Access.";
+                message += "\nYou cannot access this content - if you think you should have access, please email support@hudl.com.";
+            }
+
             else
             {
                 message = "Server Error.";
@@ -51,32 +58,38 @@ namespace HudlRT.Common
 
         static private async void ShowExceptionDialog(string text, bool feedback, object sender = null, RoutedEventArgs e = null)
         {
-            string message = text;
-            // Create the message dialog and set its content
-            var messageDialog = new MessageDialog(message);
-
-            // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
-            if (feedback)
+            if (!messageShown)
             {
+                messageShown = true;
+                string message = text;
+                // Create the message dialog and set its content
+                var messageDialog = new MessageDialog(message);
+
+
+                // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
+                if (feedback)
+                {
+                    messageDialog.Commands.Add(new UICommand(
+                        "Submit Feedback",
+                        new UICommandInvokedHandler(CommandInvokedHandler)));
+                }
                 messageDialog.Commands.Add(new UICommand(
-                    "Submit Feedback",
+                    "Close",
                     new UICommandInvokedHandler(CommandInvokedHandler)));
+
+                // Set the command that will be invoked by default
+                messageDialog.DefaultCommandIndex = 0;
+
+                // Set the command to be invoked when escape is pressed
+                messageDialog.CancelCommandIndex = 1;
+
+                // Show the message dialog
+                await messageDialog.ShowAsync();
             }
-            messageDialog.Commands.Add(new UICommand(
-                "Close",
-                new UICommandInvokedHandler(CommandInvokedHandler)));
-
-            // Set the command that will be invoked by default
-            messageDialog.DefaultCommandIndex = 0;
-
-            // Set the command to be invoked when escape is pressed
-            messageDialog.CancelCommandIndex = 1;
-
-            // Show the message dialog
-            await messageDialog.ShowAsync();
         }
         static private async void CommandInvokedHandler(IUICommand command)
         {
+            messageShown = false;
             if (command.Label == "Submit Feedback")
             {
                 await Windows.System.Launcher.LaunchUriAsync(new Uri("mailto:kyle.deterding@hudl.com?subject=HudlRT%20Feedback"));

@@ -11,6 +11,9 @@ namespace HudlRT.Common
 {
     class Logger
     {
+        public const string LOG_GAME_NEXT = "NextGame";
+        public const string LOG_GAME_PREVIOUS = "PreviousGame";
+
         public enum ErrorLevel
         {
             Audit = 0,

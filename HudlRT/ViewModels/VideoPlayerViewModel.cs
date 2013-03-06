@@ -93,8 +93,11 @@ namespace HudlRT.ViewModels
             set
             {
                 selectedAngle = value;
-                NotifyOfPropertyChange(() => SelectedAngle);
-            }
+                if (videoMediaElement != null)
+                {
+                    videoMediaElement.Source = (selectedAngle != null) ? new Uri(SelectedAngle.fileLocation) : null;
+                }
+            }   
         }
 
         private string[] gridHeaders;
@@ -168,12 +171,13 @@ namespace HudlRT.ViewModels
         private CancellationTokenSource preloadCTS { get; set; }
         private CancellationToken preloadCT { get; set; }
         public List<TextBlock> ColumnHeaderTextBlocks { get; set; }
+        private Microsoft.PlayerFramework.MediaPlayer videoMediaElement { get; set; }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
         }
-
+        
         protected override void OnActivate()
         {
             base.OnActivate();
@@ -194,6 +198,7 @@ namespace HudlRT.ViewModels
                     listView.SelectedItem = SelectedClip;
                 }
             }
+
             getMoreClips();
 
             GridHeaders = Parameter.displayColumns;
@@ -267,7 +272,6 @@ namespace HudlRT.ViewModels
 
         private async void initialClipPreload()
         {
-            await DeleteTempData(); //Make sure there are no left over temp files (from app crash, etc)
             if (FilteredClips.Any())
             {
                 PreloadClips(preloadCT, FilteredClips[0].angles.Where(angle => angle.angleType.IsChecked));
@@ -369,10 +373,10 @@ namespace HudlRT.ViewModels
 
                 Angle nextAngle = clip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
-
+                
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
+                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked));
+                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
             }
             else
             {
@@ -434,7 +438,7 @@ namespace HudlRT.ViewModels
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
+                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
             }
         }
 
@@ -497,7 +501,7 @@ namespace HudlRT.ViewModels
 
             int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
             PreloadClips(preloadCT, filteredAngles.Where(angle => angle.isPreloaded == false));
-            PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked && angle.isPreloaded == false));
+            PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
 
             //If the current angle has been filtered out, reset the clip to the first unfiltered angle, or null
             if (SelectedAngle != null)
@@ -519,7 +523,7 @@ namespace HudlRT.ViewModels
         {
             if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Any())
             {
-                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlBlue"];
 
                 if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
                 {
@@ -573,7 +577,7 @@ namespace HudlRT.ViewModels
                     {
                         if (!currentSortFilter.FilterCriteria.Any(c => c.IsChecked))
                         {
-                            ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+                            ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlMediumDarkGray"];
                             if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
                             {
                                 ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.RemoveAt(1);
@@ -608,7 +612,7 @@ namespace HudlRT.ViewModels
 
         public void RemoveSelectedFilter()
         {
-            ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+            ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlMediumDarkGray"];
             if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
             {
                 ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.RemoveAt(1);
@@ -679,7 +683,7 @@ namespace HudlRT.ViewModels
 
                     if (filter.sortType == SortType.Ascending)
                     {
-                        clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                        clips = clips.OrderBy(c => c.order).ToList();
                         try
                         {
                             clips = clips.OrderBy(clip => Convert.ToInt32(clip.breakDownData[filter.columnId])).ToList();
@@ -691,7 +695,7 @@ namespace HudlRT.ViewModels
                     }
                     else if (filter.sortType == SortType.Descending)
                     {
-                        clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                        clips = clips.OrderBy(c => c.order).ToList();
                         try
                         {
                             clips = clips.OrderByDescending(clip => Convert.ToInt32(clip.breakDownData[filter.columnId])).ToList();
@@ -707,7 +711,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                clips = clips.OrderBy(c => c.order).ToList();
             }
         }
 
@@ -835,12 +839,18 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public void setVideoMediaElement(Microsoft.PlayerFramework.MediaPlayer videoMediaElement)
+        {
+            this.videoMediaElement = videoMediaElement;
+            videoMediaElement.Source = (SelectedAngle != null) ? new Uri(SelectedAngle.fileLocation) : null;
+        }
+
         private async Task PreloadClips(CancellationToken ct, IEnumerable<Angle> angles)
         {
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             foreach (Angle angle in angles)
             {
-                if (!ct.IsCancellationRequested)
+                if (!ct.IsCancellationRequested && !angle.isPreloaded)
                 {
                     try
                     {
@@ -866,29 +876,12 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async Task<bool> DeleteTempData()
-        {
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-            var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
-
-            foreach (StorageFile file in files)
-            {
-                try
-                {
-                    await file.DeleteAsync();
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
-            return true;
-        }
+        
 
         public void GoBack()
         {
             preloadCTS.Cancel();
-            DeleteTempData();
+            //DeleteTempData();
             dispRequest.RequestRelease();
             dispRequest = null;
             saveAnglePreferences();

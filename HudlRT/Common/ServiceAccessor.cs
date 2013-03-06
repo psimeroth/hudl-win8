@@ -112,6 +112,7 @@ namespace HudlRT.Common
         public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/{0}/categories";//returns categories
         public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns playlists
         public const string URL_SERVICE_GET_CLIPS = "playlists/{0}/clips?startIndex={1}";//returns clips
+        public const string NO_CONNECTION = "NoConnection";
 
         public static bool ConnectedToInternet()
         {
@@ -163,7 +164,7 @@ namespace HudlRT.Common
         public static async Task<TeamResponse> GetTeams()
         {
             var teams = await MakeApiCallGet(ServiceAccessor.URL_SERVICE_GET_TEAMS, true);
-            if (!string.IsNullOrEmpty(teams) && teams != "NoConnection")
+            if (!string.IsNullOrEmpty(teams) && teams != NO_CONNECTION)
             {
                 try
                 {
@@ -180,7 +181,7 @@ namespace HudlRT.Common
                     return new TeamResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
-            else if (teams == "NoConnection")
+            else if (teams == NO_CONNECTION)
             {
                 return new TeamResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
@@ -193,7 +194,7 @@ namespace HudlRT.Common
         public static async Task<GameResponse> GetGames(string teamId, string seasonId)
         {
             var games = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON, teamId, seasonId), true);
-            if (!string.IsNullOrEmpty(games) && games != "NoConnection")
+            if (!string.IsNullOrEmpty(games) && games != NO_CONNECTION)
             {
                 try
                 {
@@ -210,7 +211,7 @@ namespace HudlRT.Common
                     return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
-            else if (games == "NoConnection")
+            else if (games == NO_CONNECTION)
             {
                 return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
@@ -223,7 +224,7 @@ namespace HudlRT.Common
         public static async Task<CategoryResponse> GetGameCategories(string gameId)
         {
             var categories = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME,gameId), true);
-            if (!string.IsNullOrEmpty(categories) && categories != "NoConnection")
+            if (!string.IsNullOrEmpty(categories) && categories != NO_CONNECTION)
             {
                 try
                 {
@@ -240,7 +241,7 @@ namespace HudlRT.Common
                     return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
-            else if (categories == "NoConnection")
+            else if (categories == NO_CONNECTION)
             {
                 return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
@@ -253,7 +254,7 @@ namespace HudlRT.Common
         public static async Task<PlaylistResponse> GetCategoryPlaylists(string categoryId)
         {
             var playlists = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY, categoryId), true);
-            if (!string.IsNullOrEmpty(playlists) && playlists != "NoConnection")
+            if (!string.IsNullOrEmpty(playlists) && playlists != NO_CONNECTION)
             {
                 try
                 {
@@ -270,7 +271,7 @@ namespace HudlRT.Common
                     return new PlaylistResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
-            else if (playlists == "NoConnection")
+            else if (playlists == NO_CONNECTION)
             {
                 return new PlaylistResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
@@ -282,44 +283,48 @@ namespace HudlRT.Common
 
         public static async Task<List<Clip>> GetAdditionalPlaylistClips(string playlistID, int startIndex)
         {
-            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, playlistID, startIndex.ToString()), true);
-            var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
-            List<Clip> clipCollection = new List<Clip>();
-            if (clipResponseDTO.ClipsList.Clips.Count == 100)
+            var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, playlistID, startIndex.ToString()), false);
+            if (clips != NO_CONNECTION)
             {
-                foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
+                var clipResponseDTO = JsonConvert.DeserializeObject<ClipResponseDTO>(clips);
+                List<Clip> clipCollection = new List<Clip>();
+                if (clipResponseDTO.ClipsList.Clips.Count == 100)
                 {
-                    Clip c = Clip.FromDTO(clipDTO, clipResponseDTO.DisplayColumns);
-                    if (c != null)
+                    foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
+                    {
+                        Clip c = Clip.FromDTO(clipDTO, clipResponseDTO.DisplayColumns);
+                        if (c != null)
+                        {
+                            clipCollection.Add(c);
+                        }
+                    }
+                    var additionalClips = await GetAdditionalPlaylistClips(playlistID, startIndex + 100);
+                    foreach (Clip c in additionalClips)
                     {
                         clipCollection.Add(c);
                     }
+                    return clipCollection;
                 }
-                var additionalClips = await GetAdditionalPlaylistClips(playlistID, startIndex + 100);
-                foreach (Clip c in additionalClips)
+                else
                 {
-                    clipCollection.Add(c);
-                }
-                return clipCollection;
-            }
-            else
-            {
-                foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
-                {
-                    Clip c = Clip.FromDTO(clipDTO, clipResponseDTO.DisplayColumns);
-                    if (c != null)
+                    foreach (ClipDTO clipDTO in clipResponseDTO.ClipsList.Clips)
                     {
-                        clipCollection.Add(c);
+                        Clip c = Clip.FromDTO(clipDTO, clipResponseDTO.DisplayColumns);
+                        if (c != null)
+                        {
+                            clipCollection.Add(c);
+                        }
                     }
+                    return clipCollection;
                 }
-                return clipCollection;
             }
+            return new List<Clip>();
         }
 
         public static async Task<ClipResponse> GetPlaylistClipsAndHeaders(string playlistId)
         {
             var clips = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CLIPS, playlistId, "0"), true);
-            if (!string.IsNullOrEmpty(clips) && clips != "NoConnection")
+            if (!string.IsNullOrEmpty(clips) && clips != NO_CONNECTION)
             {
                 try
                 {
@@ -340,7 +345,7 @@ namespace HudlRT.Common
                     return new ClipResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
-            else if (clips == "NoConnection")
+            else if (clips == NO_CONNECTION)
             {
                 return new ClipResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
@@ -360,8 +365,11 @@ namespace HudlRT.Common
         {
             if (!ConnectedToInternet())
             {
-                APIExceptionDialog.ShowNoInternetConnectionDialog();
-                return "NoConnection";
+                if (showDialog)
+                {
+                    APIExceptionDialog.ShowNoInternetConnectionDialog();
+                }
+                return NO_CONNECTION;
             }
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE + url);
