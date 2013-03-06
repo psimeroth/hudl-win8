@@ -1,4 +1,5 @@
 ﻿using HudlRT.Models;
+using HudlRT.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -299,10 +300,6 @@ namespace HudlRT.Common
             ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
 
-        public async void LogRemoteUse()
-        {
-        }
-
         public async void LogGameSelected(Game game, string description = "GameSelected")
         {
             LogEntry entry = new LogEntry();
@@ -327,7 +324,7 @@ namespace HudlRT.Common
         {
             LogEntry entry = new LogEntry();
             entry.Function = Function.Click.ToString();
-            entry.Operation = Operation.Game.ToString();
+            entry.Operation = Operation.Cutup.ToString();
             entry.Error = null;
             entry.Method = "PlaylistSelected";
             entry.ErrorLevel = ErrorLevel.Info.ToString();
@@ -347,7 +344,7 @@ namespace HudlRT.Common
         {
             LogEntry entry = new LogEntry();
             entry.Function = Function.Click.ToString();
-            entry.Operation = Operation.Game.ToString();
+            entry.Operation = Operation.Season.ToString();
             entry.Error = null;
             entry.Method = "SeasonChanged";
             entry.ErrorLevel = ErrorLevel.Info.ToString();
@@ -368,7 +365,7 @@ namespace HudlRT.Common
         {
             LogEntry entry = new LogEntry();
             entry.Function = Function.Download.ToString();
-            entry.Operation = Operation.Game.ToString();
+            entry.Operation = Operation.Cutup.ToString();
             entry.Error = null;
             entry.Method = "PlaylistDownloadStart";
             entry.ErrorLevel = ErrorLevel.Info.ToString();
@@ -388,7 +385,7 @@ namespace HudlRT.Common
         {
             LogEntry entry = new LogEntry();
             entry.Function = Function.Download.ToString();
-            entry.Operation = Operation.Game.ToString();
+            entry.Operation = Operation.Cutup.ToString();
             entry.Error = null;
             entry.Method = "PlaylistDownloadComplete";
             entry.ErrorLevel = ErrorLevel.Info.ToString();
@@ -406,25 +403,65 @@ namespace HudlRT.Common
 
         public async void LogPlaylistDownloadRemoved(Playlist playlist)
         {
-            if (ServiceAccessor.ConnectedToInternet())
-            {
-                LogEntry entry = new LogEntry();
-                entry.Function = Function.Download.ToString();
-                entry.Operation = Operation.Game.ToString();
-                entry.Error = null;
-                entry.Method = "PlaylistDownloadRemoved";
-                entry.ErrorLevel = ErrorLevel.Info.ToString();
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.Download.ToString();
+            entry.Operation = Operation.Cutup.ToString();
+            entry.Error = null;
+            entry.Method = "PlaylistDownloadRemoved";
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
 
-                entry.AttributesDictionary = new Dictionary<string, object>();
-                entry.AttributesDictionary.Add("Method", "PlaylistDownloadRemoved");
-                entry.AttributesDictionary.Add("Playlist", playlist.playlistId);
-                entry.AttributesDictionary.Add("RemovedOn", DateTime.Now);
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", "PlaylistDownloadRemoved");
+            entry.AttributesDictionary.Add("Playlist", playlist.playlistId);
+            entry.AttributesDictionary.Add("RemovedOn", DateTime.Now);
 
-                entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
-                entry.AttributesDictionary = null;
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
 
-                ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
-            }
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+        }
+
+        public async void LogRemoteUse()
+        {
+        }
+
+        public async void LogSortApplied(FilterViewModel filterVM)
+        {
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.View.ToString();
+            entry.Operation = Operation.ClipDataColumn.ToString();
+            entry.Error = null;
+            entry.Method = "Sort";
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
+
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", "Sort");
+            entry.AttributesDictionary.Add("Sort", filterVM.sortType.ToString());
+            entry.AttributesDictionary.Add("Column", filterVM.ColumnHeaderName);
+
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
+
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+        }
+
+        public async void LogFilterApplied(List<String> filters)
+        {
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.View.ToString();
+            entry.Operation = Operation.ClipDataColumn.ToString();
+            entry.Error = null;
+            entry.Method = "Filter";
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
+
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", "Filter");
+            entry.AttributesDictionary.Add("FilterOn", filters);
+
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
+
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
     }
 }
