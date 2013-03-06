@@ -7,4 +7,12 @@
         <ResourceDictionary Source="ms-appx:///Common/CustomStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <Style x:Key="SectionPageTitle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource HudlMediumGray}"/>
+        <Setter Property="FontSize" Value="50"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="Margin" Value="0,0,0,-9"/>
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
 </ResourceDictionary>

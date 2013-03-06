@@ -73,8 +73,51 @@
             </Border>
         </Popup>
 
-        <Grid x:Name="mainGrid" Background="Black">
-            <ContentControl x:Name="videoContainer"
+ <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Center" Margin="90,68,0,0">
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PaneThemeTransition Edge="Top" />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+            <Border BorderBrush="Black" BorderThickness="2,0" Background="{StaticResource HudlDarkGray}" x:Name="PlaybackPopupBorder" Height="200">
+                <ContentControl>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Background="{StaticResource HudlDarkGray}" BorderThickness="0,0,0,1" Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="White" />
+                        <Border BorderThickness="0,0,1,0" BorderBrush="White" Grid.RowSpan="2" />
+                        <TextBlock Text="Angles" FontSize="28" Grid.Row="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="Playback" FontSize="28" Grid.Row="0" Grid.Column="1" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Row="1">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical">
+                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}" Margin="2,15,0,0" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Foreground="{StaticResource HudlMediumGray}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
+                            <RadioButton Content="Once" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsOnceChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(0)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            <RadioButton Content="Loop" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsLoopChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(1)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            <RadioButton Content="Next" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsNextChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(2)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                        </StackPanel>
+                    </Grid>
+                </ContentControl>
+            </Border>
+        </Popup>
+        <Grid x:Name="mainGrid" Background="Black">            <ContentControl x:Name="videoContainer"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Bottom">
                 <mmppf:MediaPlayer x:Name="videoMediaElement" IsPlayPauseVisible="False"
@@ -146,18 +189,33 @@
         </Grid>
     </Grid>
     <common:LayoutAwarePage.TopAppBar>
-        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
-            <Grid VerticalAlignment="Center">
+        <AppBar x:Name="TitleBar" Background="{StaticResource HudlDarkGray}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
+            <Grid Name="header" >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="85"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="250"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Foreground="{StaticResource HudlMediumDarkGray}" FontSize="24" Padding="10,0,5,0" Grid.Column="0">
-                    Angles:
-                </TextBlock>
-                <ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Column="1">
+                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="0" />
+                <TextBlock x:Name="PlaylistName" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="28" Foreground="{StaticResource HudlMediumGray}"/>
+                <Button x:Name="OptionsMenu" Grid.Column="2" Width="250" Height="45" FontSize="22" FontWeight="Light" Background="Transparent" Foreground="{StaticResource HudlLightGray}" Click="openOptionsMenu">Options</Button>
+                <Grid Grid.Column="3">
+                    <Button x:Name="btnDownload" Visibility="{Binding DownloadButtonVisibility}" Width="250" Height="45" FontSize="22" Content="Download Playlist"  HorizontalAlignment="Center" Background="Transparent" Foreground="{StaticResource HudlLightGray}" FontWeight="Light"
+                         caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
+                    <Grid Grid.Column="2" Visibility="Collapsed" Margin="0,5,0,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="165" ></TextBlock>
+                        <ProgressBar Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="165" Foreground="{StaticResource HudlBlue}"/>
+                    </Grid>
+                </Grid>
+                <Button x:Name="btnCancel" Visibility="Collapsed" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,17,0"
+                         caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
+            </Grid>
+                <!--<ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Column="1">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" />
@@ -170,8 +228,7 @@
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
+                </ItemsControl>-->
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
     <common:LayoutAwarePage.BottomAppBar>

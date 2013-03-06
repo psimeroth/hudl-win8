@@ -89,7 +89,6 @@ namespace HudlRT.Views
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
             initializeGrid(vm.Parameter);
 
-            
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
@@ -554,6 +553,11 @@ namespace HudlRT.Views
                 snapped_mainGrid.Visibility = Visibility.Collapsed;
                 mainGrid.Visibility = Visibility.Visible;
             }
+        }
+
+        private void openOptionsMenu(object sender, RoutedEventArgs e)
+        {
+            PlaybackOptionsPopup.IsOpen = true;
         }
     }
 
