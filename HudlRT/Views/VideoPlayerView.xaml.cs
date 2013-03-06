@@ -648,13 +648,10 @@ namespace HudlRT.Views
 
         private void videoMediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (btnPlay.Visibility == Visibility.Collapsed)
+            if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
             {
-                btnPause_Click(null, null);
-            }
-            else
-            {
-                btnPlay_Click(null, null);
+                TopAppBar.IsOpen = true;
+                BottomAppBar.IsOpen = true;
             }
         }
 
