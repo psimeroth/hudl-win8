@@ -172,6 +172,8 @@ namespace HudlRT.ViewModels
         private CancellationToken preloadCT { get; set; }
         public List<TextBlock> ColumnHeaderTextBlocks { get; set; }
         private Microsoft.PlayerFramework.MediaPlayer videoMediaElement { get; set; }
+        public List<string> GridHeadersTextSorted { get; set; }
+        public List<string> GridHeadersTextUnsorted { get; set; }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -518,7 +520,7 @@ namespace HudlRT.ViewModels
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
             }
         }
-
+        
         public void ApplySelectedFilter()
         {
             if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Any())
@@ -532,18 +534,16 @@ namespace HudlRT.ViewModels
                 if (SelectedFilter.sortType == SortType.Ascending)
                 {
                     Run text = new Run();
-                    text.Text = "   \u25B2";
+                    text.Text = " \u25B2";
+                    ColumnHeaderTextBlocks[SelectedFilter.columnId].Text = GridHeadersTextSorted[SelectedFilter.columnId];
                     ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Add(text);
                 }
                 else if (SelectedFilter.sortType == SortType.Descending)
                 {
                     Run text = new Run();
-                    text.Text = "   \u25BC";
+                    text.Text = " \u25BC";
+                    ColumnHeaderTextBlocks[SelectedFilter.columnId].Text = GridHeadersTextSorted[SelectedFilter.columnId];
                     ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Add(text);
-                }
-                if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Text.Length >= 10 && ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
-                {
-                    ColumnHeaderTextBlocks[SelectedFilter.columnId].FontSize = 18;
                 }
 
                 List<Clip> newFilteredClips = new List<Clip>();
@@ -581,6 +581,7 @@ namespace HudlRT.ViewModels
                             if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
                             {
                                 ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.RemoveAt(1);
+                                ColumnHeaderTextBlocks[currentSortFilter.columnId].Text = GridHeadersTextUnsorted[currentSortFilter.columnId];
                             }
                             FiltersList.Remove(currentSortFilter);
                         }
@@ -589,10 +590,10 @@ namespace HudlRT.ViewModels
                             if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
                             {
                                 ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.RemoveAt(1);
+                                ColumnHeaderTextBlocks[currentSortFilter.columnId].Text = GridHeadersTextUnsorted[currentSortFilter.columnId];
                             }
                             currentSortFilter.setSortType(SortType.None);
                         }
-                        ColumnHeaderTextBlocks[currentSortFilter.columnId].FontSize = 24;
                     }
                     currentSortFilter = SelectedFilter;
                 }
@@ -616,7 +617,7 @@ namespace HudlRT.ViewModels
             if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
             {
                 ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.RemoveAt(1);
-                ColumnHeaderTextBlocks[SelectedFilter.columnId].FontSize = 24;
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Text = GridHeadersTextUnsorted[SelectedFilter.columnId];
             }
             List<Clip> clips = removeFilter();
             sortClips(ref clips, FiltersList.FirstOrDefault(f => f.sortType != SortType.None));

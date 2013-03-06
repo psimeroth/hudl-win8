@@ -29,6 +29,8 @@ namespace HudlRT.Views
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
         private const int POPUP_WIDTH = 346;
+        private const int GRID_HEADER_LENGTH_SORTED = 6;
+        private const int GRID_HEADER_LENGTH_UNSORTED = 8;
 
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
@@ -119,8 +121,9 @@ namespace HudlRT.Views
         {
             videoMediaElement.Width = Window.Current.Bounds.Width - 300;
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            initializeGrid(vm.Parameter);
-
+            vm.GridHeadersTextSorted = new List<string>();
+            vm.GridHeadersTextUnsorted = new List<string>();
+            initializeGrid(vm);
             
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
@@ -128,8 +131,9 @@ namespace HudlRT.Views
             vm.setVideoMediaElement(videoMediaElement);
         }
 
-        private void initializeGrid(Playlist playlist)
+        private void initializeGrid(VideoPlayerViewModel vm)
         {
+            Playlist playlist = vm.Parameter;
             string[] displayColumns = playlist.displayColumns;
             var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
             string columnDefinitions = "";
@@ -148,16 +152,19 @@ namespace HudlRT.Views
                     b.BorderThickness = new Thickness(0, 0, 1, 0);
                     TextBlock t = new TextBlock();
                     Run text = new Run();
-                    text.Text = displayColumns[i];
+                    vm.GridHeadersTextSorted.Add(trimHeaderText(displayColumns[i], GRID_HEADER_LENGTH_SORTED));
+                    vm.GridHeadersTextUnsorted.Add(trimHeaderText(displayColumns[i], GRID_HEADER_LENGTH_UNSORTED));
+                    text.Text = vm.GridHeadersTextUnsorted.Last();
                     t.Inlines.Add(text);
                     b.SetValue(Grid.RowProperty, 0);
                     b.SetValue(Grid.ColumnProperty, i);
                     t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
-
+                    
                     t.Tag = i;
                     t.PointerReleased += columnHeaderClick;
 
                     b.Child = t;
+                    t.FontSize = 24;
                     gridHeaders.Children.Add(b);
                 }
             }
@@ -165,6 +172,22 @@ namespace HudlRT.Views
 
             var dt = (DataTemplate)XamlReader.Load(template);
             FilteredClips.ItemTemplate = dt;
+        }
+
+        private string trimHeaderText(string s, int l)
+        {
+            if (s.Length > l)
+            {
+                if (s.IndexOf(' ') <= (l-1) && s.IndexOf(' ') > 0)
+                {
+                    s = s.Substring(0, s.IndexOf(' ')) + "...";
+                }
+                else
+                {
+                    s = s.Substring(0, l-1) + "...";
+                }
+            }
+            return s;
         }
 
         private void filteredClips_Loaded(object sender, RoutedEventArgs e)
