@@ -19,11 +19,6 @@ namespace HudlRT.Common
             {
                 return  this.LargeTemplate;
             }
-            else if (game.GameModel.Classification != "1")
-            {
-                //Goes in "Other" category
-                return this.OtherCategoryTemplate;
-            }
             return this.SmallTemplate;
         }
 

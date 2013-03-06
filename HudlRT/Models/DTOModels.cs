@@ -54,13 +54,6 @@ namespace HudlRT.Models
         public string parentId { get; set; }//seasonId would be ideal
     }
 
-    /*public class CategoryDTO
-    {
-        public string CategoryId { get; set; }
-        public int Classification { get; set; }
-        public string Name { get; set; }
-    }*/
-
     public class PlaylistDTO
     {
         public string PlaylistId { get; set; }

@@ -109,6 +109,8 @@ namespace HudlRT.ViewModels
         protected override async void OnInitialize()
         {
             base.OnInitialize();
+            //SeasonsDropDown = new BindableCollection<Season>();
+            
             await DownloadAccessor.Instance.GetDownloads();
             if (ServiceAccessor.ConnectedToInternet())
             {
@@ -189,10 +191,13 @@ namespace HudlRT.ViewModels
             games = selectedSeason.games;
 
             //Find the other items if present
-            _otherItems = games.Where(g => g.Classification != "1") as BindableCollection<Game>;
-            foreach(Game g in _otherItems)
+            _otherItems = new BindableCollection<Game>(games.Where(g => g.Classification != 1).ToList<Game>());
+            if (_otherItems != null)
             {
-                games.Remove(g);
+                foreach (Game g in _otherItems)
+                {
+                    games.Remove(g);
+                }
             }
 
             if (ServiceAccessor.ConnectedToInternet())
@@ -247,14 +252,18 @@ namespace HudlRT.ViewModels
             }
 
             HubGroupViewModel otherItems = new HubGroupViewModel() { Name = "Other", Games = new BindableCollection<GameViewModel>() };
-            foreach (Game g in _otherItems)
+            if (_otherItems != null)
             {
-                GameViewModel gamevm = new GameViewModel(g);
-                otherItems.Games.Add(gamevm);
-            }
-            if(otherItems.Games.Count > 0)
-            {
-                NewGroups.Add(otherItemsGroup);
+                foreach (Game g in _otherItems)
+                {
+                    GameViewModel gamevm = new GameViewModel(g);
+                    gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
+                    otherItems.Games.Add(gamevm);
+                }
+                if (otherItems.Games.Count > 0)
+                {
+                    NewGroups.Add(otherItems);
+                }
             }
             
 
@@ -319,7 +328,11 @@ namespace HudlRT.ViewModels
                 BindableCollection<Season> seasons = new BindableCollection<Season>();
                 foreach (Team team in teams)
                 {
-                    seasons.AddRange(await GetPopulatedSeasons(team));
+                    BindableCollection<Season> teamSeason = await GetPopulatedSeasons(team);
+                    if (teamSeason != null)
+                    {
+                        seasons.AddRange(teamSeason);
+                    }
                 }
                 return new BindableCollection<Season>(seasons.OrderByDescending(s => s.year));
             }

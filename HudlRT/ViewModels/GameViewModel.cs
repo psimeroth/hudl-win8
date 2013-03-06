@@ -44,7 +44,18 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return !IsLastViewed ? GameModel.DisplayDate : "Viewed: " + GameModel.DisplayDate;
+                if (IsLastViewed)
+                {
+                    return "Viewed: " + GameModel.DisplayDate;
+                }
+                if(GameModel.Classification != 1)
+                {
+                    return "-";
+                }
+                else
+                {
+                    return GameModel.DisplayDate;
+                }
             }
         }
 

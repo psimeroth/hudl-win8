@@ -128,7 +128,7 @@ namespace HudlRT.Models
         public DateTime date { get; set; }
         public BindableCollection<Category> categories { get; set; }
         public string gameId { get; set; }
-        public string Classification { get; set; }
+        public int Classification { get; set; }
         public string DisplayDate
         {
             get
@@ -145,13 +145,23 @@ namespace HudlRT.Models
         public static Game FromDTO(CategoryDTO gameDTO)
         {
             Game game = new Game();
-            game.Classification = gameDTO.Classification;
+            int c;
+            int.TryParse(gameDTO.Classification, out c);
+            game.Classification = c;
             string[] oppAndDate = gameDTO.Name.Split('-'); //in the call we're using to return this information, opponent and date are concatenated.
             game.gameId = gameDTO.CategoryId;
-            game.opponent = oppAndDate[0].Trim();
+
+            //get the game's name
             if (gameDTO.Classification == "1")
             {
-                string[] date = oppAndDate[1].Split('/');
+                game.opponent = "";
+
+                for (int i = 0; i < oppAndDate.Length - 1; i++)
+                {
+                    game.opponent += oppAndDate[i];
+                }
+
+                string[] date = oppAndDate.Last().Split('/');
                 int year;
                 int month;
                 int day;
@@ -159,6 +169,10 @@ namespace HudlRT.Models
                 int.TryParse(date[1], out day);
                 int.TryParse(date[0], out month);
                 game.date = new DateTime(year, month, day);
+            }
+            else
+            {
+                game.opponent = gameDTO.Name;
             }
             foreach(CategoryDTO cat in gameDTO.SubCategories)
             {
