@@ -43,6 +43,47 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private string columnHeaderName;
+        public string ColumnHeaderName
+        {
+            get { return columnHeaderName; }
+            set
+            {
+                columnHeaderName = value;
+                NotifyOfPropertyChange(() => ColumnHeaderName);
+            }
+        }
+        private bool isLoopChecked;
+        public bool IsLoopChecked
+        {
+            get { return isLoopChecked; }
+            set
+            {
+                isLoopChecked = value;
+                NotifyOfPropertyChange(() => IsLoopChecked);
+            }
+        }
+        private bool isOnceChecked;
+        public bool IsOnceChecked
+        {
+            get { return isOnceChecked; }
+            set
+            {
+                isOnceChecked = value;
+                NotifyOfPropertyChange(() => IsOnceChecked);
+            }
+        }
+        private bool isNextChecked;
+        public bool IsNextChecked
+        {
+            get { return isNextChecked; }
+            set
+            {
+                isNextChecked = value;
+                NotifyOfPropertyChange(() => IsNextChecked);
+            }
+        }
+
         private Visibility downloadButtonVisibility;
         public Visibility DownloadButtonVisibility
         {
@@ -178,7 +219,7 @@ namespace HudlRT.ViewModels
             this.navigationService = navigationService;
         }
         
-        protected override void OnActivate()
+        protected override async void OnActivate()
         {
             base.OnActivate();
 
@@ -214,7 +255,7 @@ namespace HudlRT.ViewModels
             {
                 playbackType = (PlaybackType)playbackTypeResult;
             }
-            setToggleButtonContent();
+            setPlaybackRadioButton();
 
             dispRequest = new DisplayRequest();
             dispRequest.RequestActive();
@@ -226,33 +267,34 @@ namespace HudlRT.ViewModels
             initialClipPreload();
 
             bool downloadFound = false;
-            //foreach (PlaylistViewModel downloadedPlaylist in CachedParameter.downloadedPlaylists)
-            //{
-            //    if (downloadedPlaylist.PlaylistId == Parameter.playlistId)
-            //    {
-            //        downloadFound = true;
-            //        break;
-            //    }
-            //}
-            //CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            //if (DownloadAccessor.Instance.Downloading)
-            //{
-            //    LoadActiveDownloadsAsync();
-            //    ProgressGridVisibility = Visibility.Visible;
-            //    DownloadButtonVisibility = Visibility.Collapsed;
-            //}
-            //else
-            //{
-            //    ProgressGridVisibility = Visibility.Collapsed;
-            //    if (!downloadFound)
-            //    {
-            //        DownloadButtonVisibility = Visibility.Visible;
-            //    }
-            //    else
-            //    {
-            //        DownloadButtonVisibility = Visibility.Collapsed;
-            //    }
-            //}
+            BindableCollection<Playlist> downloadedPlaylists = DownloadAccessor.Instance.downloadedPlaylists;
+            foreach (Playlist p in downloadedPlaylists)
+            {
+                if (p.playlistId == Parameter.playlistId)
+                {
+                    downloadFound = true;
+                    break;
+                }
+            }
+            DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            if (DownloadAccessor.Instance.Downloading)
+            {
+                LoadActiveDownloadsAsync();
+                ProgressGridVisibility = Visibility.Visible;
+                DownloadButtonVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ProgressGridVisibility = Visibility.Collapsed;
+                if (!downloadFound)
+                {
+                    DownloadButtonVisibility = Visibility.Visible;
+                }
+                else
+                {
+                    DownloadButtonVisibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private async Task LoadActiveDownloadsAsync()
@@ -267,7 +309,7 @@ namespace HudlRT.ViewModels
         }
         private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
         {
-            await downloadOperation.AttachAsync().AsTask(CachedParameter.progressCallback);
+            await downloadOperation.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
         }
 
         private async void initialClipPreload()
@@ -750,63 +792,69 @@ namespace HudlRT.ViewModels
             return values.ToList();
         }
 
-        private void playbackToggle()
+        private void setPlaybackRadioButton()
         {
-            playbackType = (PlaybackType)(((int)playbackType + 1) % Enum.GetNames(typeof(PlaybackType)).Length);
-            setToggleButtonContent();
+            switch (playbackType)
+            {
+                case PlaybackType.once:
+                    IsOnceChecked = true;
+                    IsNextChecked = false;
+                    IsLoopChecked = false;
+                    break;
+                case PlaybackType.next:
+                    IsOnceChecked = false;
+                    IsNextChecked = true;
+                    IsLoopChecked = false;
+                    break;
+                case PlaybackType.loop:
+                    IsOnceChecked = false;
+                    IsNextChecked = false;
+                    IsLoopChecked = true;
+                    break;
+            }
+        }
+
+        public void PlaybackButton_Click(int playbackTypeSelected)
+        {
+            playbackType = (PlaybackType)playbackTypeSelected;
+            setPlaybackRadioButton();
             AppDataAccessor.SetPlaybackType((int)playbackType);
         }
 
-        //private void DownloadButtonClick()
-        //{
-        //    ProgressGridVisibility = Visibility.Visible;
-        //    DownloadButtonVisibility = Visibility.Collapsed;
-        //    DownloadProgress = 0;
-        //    CachedParameter.cts = new CancellationTokenSource();
-        //    DownloadProgressText = "Determining Size";
-        //    Playlist playlistCopy = Playlist.Copy(Parameter);
-        //    List<Playlist> currentPlaylistList = new List<Playlist> { playlistCopy };
-        //    CachedParameter.currentlyDownloadingPlaylists = currentPlaylistList;
-        //    CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-        //    DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected);
-        //}
-
-        //public void CancelButtonClick()
-        //{
-        //    if (DownloadAccessor.Instance.Downloading)
-        //    {
-        //        CachedParameter.cts.Cancel();
-        //    }
-        //    ProgressGridVisibility = Visibility.Collapsed;
-        //    DownloadButtonVisibility = Visibility.Collapsed;
-        //}
-
-        //public void ProgressCallback(DownloadOperation obj)
-        //{
-        //    DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
-        //    DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
-        //    int downloadedPlaylistCount = 0;
-        //    if (DownloadProgress == 100)
-        //    {
-        //        ProgressGridVisibility = Visibility.Collapsed;
-        //        CachedParameter.currentlyDownloadingPlaylists = new List<Playlist>();
-        //        DownloadProgress = 0;
-        //    }
-        //}
-
-        private void setToggleButtonContent()
+        private void DownloadButtonClick()
         {
-            if (playbackType == PlaybackType.once)
+            ProgressGridVisibility = Visibility.Visible;
+            DownloadButtonVisibility = Visibility.Collapsed;
+            DownloadProgress = 0;
+            DownloadAccessor.Instance.cts = new CancellationTokenSource();
+            DownloadProgressText = "Determining Size";
+            Playlist playlistCopy = Playlist.Copy(Parameter);
+            List<Playlist> currentPlaylistList = new List<Playlist> { playlistCopy };
+            DownloadAccessor.Instance.currentlyDownloadingPlaylists = currentPlaylistList;
+            DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            //DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, Parameter.Season); //Parameter being updated on another branch
+        }
+
+        public void CancelButtonClick()
+        {
+            if (DownloadAccessor.Instance.Downloading)
             {
-                ToggleButtonContent = "Playback: Once";
+                DownloadAccessor.Instance.cts.Cancel();
             }
-            else if (playbackType == PlaybackType.loop)
+            ProgressGridVisibility = Visibility.Collapsed;
+            DownloadButtonVisibility = Visibility.Collapsed;
+        }
+
+        public void ProgressCallback(DownloadOperation obj)
+        {
+            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
+            DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
+            int downloadedPlaylistCount = 0;
+            if (DownloadProgress == 100)
             {
-                ToggleButtonContent = "Playback: Loop";
-            }
-            else
-            {
-                ToggleButtonContent = "Playback: Next";
+                ProgressGridVisibility = Visibility.Collapsed;
+                DownloadAccessor.Instance.currentlyDownloadingPlaylists = new List<Playlist>();
+                DownloadProgress = 0;
             }
         }
 
@@ -875,8 +923,6 @@ namespace HudlRT.ViewModels
                 }
             }
         }
-
-        
 
         public void GoBack()
         {

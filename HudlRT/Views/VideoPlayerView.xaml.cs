@@ -121,7 +121,6 @@ namespace HudlRT.Views
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
             initializeGrid(vm.Parameter);
 
-            
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
@@ -706,7 +705,7 @@ namespace HudlRT.Views
         {
             videoContainer.Height = 350;
             videoMediaElement.Height = 350;
-            mainGrid_Row2.Height = new GridLength(375);
+            mainGrid_Row.Height = new GridLength(375);
             Container1_Row1.Height = new GridLength(375);
             isGridCollapsed = false;
             SortFilterPopup.IsOpen = false;
@@ -852,6 +851,11 @@ namespace HudlRT.Views
                 videoMediaElement.Height = Window.Current.Bounds.Height;
                 VideoGrid.Margin = new Thickness(0, 0, 0, 0);
             }
+        }
+
+        private void openOptionsMenu(object sender, RoutedEventArgs e)
+        {
+            PlaybackOptionsPopup.IsOpen = true;
         }
     }
 
