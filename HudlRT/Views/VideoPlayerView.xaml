@@ -358,7 +358,7 @@
         </VisualStateManager.VisualStateGroups>
     </Grid>
     <common:LayoutAwarePage.TopAppBar>
-        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
+        <AppBar Background="{StaticResource HudlDarkGray}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />

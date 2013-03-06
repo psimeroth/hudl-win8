@@ -120,6 +120,26 @@ namespace HudlRT.Models
             s.year = seasonDTO.Year;
             return s;
         }
+
+        internal static Season DeepCopy(Season seasonAndGame)
+        {
+            Season returnSeason = new Season {name = seasonAndGame.name, seasonId = seasonAndGame.seasonId, owningTeam = seasonAndGame.owningTeam, year = seasonAndGame.year };
+            foreach (Game g in seasonAndGame.games)
+            {
+                Game newGame = new Game { date = g.date, gameId = g.gameId, opponent = g.opponent };
+                foreach (Category c in g.categories)
+                {
+                    Category newCategory = new Category { categoryId = c.categoryId, name = c.name };
+                    foreach (Playlist p in c.playlists)
+                    {
+                        newCategory.playlists.Add(Playlist.Copy(p));
+                    }
+                    newGame.categories.Add(newCategory);
+                }
+                returnSeason.games.Add(newGame);
+            }
+            return returnSeason;
+        }
     }
 
     public class Game
@@ -341,6 +361,7 @@ namespace HudlRT.Models
         public AngleType angleType { get; set; }
         public bool isPreloaded { get; set; }
         public string preloadFile { get; set; }
+        public long fileSize { get; set; }
 
         public Angle()
         {
@@ -363,6 +384,7 @@ namespace HudlRT.Models
                 if (angleDTO.Files.FirstOrDefault() != null)
                 {
                     angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;//throws error if there is no filename
+                    angle.fileSize = angleDTO.Files.FirstOrDefault().FileSize;
                 }
                 else
                 {

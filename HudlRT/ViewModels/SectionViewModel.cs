@@ -16,7 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Windows.Networking.BackgroundTransfer;
 using System.Threading;
-
+using HudlRT.Common;
 namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
@@ -39,6 +39,17 @@ namespace HudlRT.ViewModels
             }
         }
 
+        private string _scheduleEntryName;
+        public string ScheduleEntryName
+        {
+            get { return _scheduleEntryName; }
+            set
+            {
+                _scheduleEntryName = value;
+                NotifyOfPropertyChange(() => ScheduleEntryName);
+            }
+        }
+
         private bool _progressRingIsActive;
         public bool ProgressRingIsActive
         {
@@ -47,6 +58,17 @@ namespace HudlRT.ViewModels
             {
                 _progressRingIsActive = value;
                 NotifyOfPropertyChange(() => ProgressRingIsActive);
+            }
+        }
+
+        private string diskSpaceInformation;
+        public string DiskSpaceInformation
+        {
+            get { return diskSpaceInformation; }
+            set
+            {
+                diskSpaceInformation = value;
+                NotifyOfPropertyChange(() => DiskSpaceInformation);
             }
         }
 
@@ -156,14 +178,30 @@ namespace HudlRT.ViewModels
             Categories = new BindableCollection<CategoryViewModel>();
         }
 
+        public void UpdateDiskInformation()
+        {
+            DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.DiskSpaceFromDownloads;
+            DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;// +" of " + freeSpaceResponse.formattedSize;
+        }
+
         protected override void OnActivate()
         {
             base.OnActivate();
+            
             
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
             gameSelected = Parameter.games.FirstOrDefault();
+
+            if (this.gameSelected.opponent.ToLower().Contains("practice") || this.gameSelected.opponent.ToLower().Contains("scrimmage") || this.gameSelected.opponent.ToLower().Contains("camp"))
+            {
+                ScheduleEntryName = this.gameSelected.opponent;
+            }
+            else 
+            {
+                ScheduleEntryName = "vs " + this.gameSelected.opponent;
+            }
 
             PageIsEnabled = true;
 
@@ -184,6 +222,9 @@ namespace HudlRT.ViewModels
             DeleteButton_Visibility = Visibility.Collapsed;
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Collapsed;
+
+            LoadActiveDownloadsAsync();
+            UpdateDiskInformation();
             if (DownloadAccessor.Instance.Downloading)
             {
                 Downloading_Visibility = Visibility.Visible;
@@ -211,9 +252,9 @@ namespace HudlRT.ViewModels
                 }
             }
 
-            if (cats.Count() > 0)
+            if (cats.Count() > 0)//Fixes margin on the left side of page given our scrolling issue
             {
-                cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = null });
+                cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = new BindableCollection<PlaylistViewModel>() });
             }
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
@@ -277,8 +318,22 @@ namespace HudlRT.ViewModels
                 await DownloadAccessor.Instance.RemoveDownload(playVM.PlaylistModel);
             }
             MarkDownloadedPlaylists();
-            categoriesGrid.SelectedItem = null;
-            AppBarOpen = false;
+            if(categoriesGrid != null)
+            {
+                categoriesGrid.SelectedItem = null;
+            }
+            
+            DeleteButton_Visibility = Visibility.Collapsed;
+            if (DownloadAccessor.Instance.Downloading)
+            {
+                AppBarOpen = true;
+            }
+            else
+            {
+                AppBarOpen = false;
+            }
+            UpdateDiskInformation();
+
         }
 
         public void CancelButtonClick()
@@ -287,7 +342,10 @@ namespace HudlRT.ViewModels
             {
                 DownloadAccessor.Instance.cts.Cancel();
             }
-            categoriesGrid.SelectedItem = null;
+            if (categoriesGrid != null)
+            {
+                categoriesGrid.SelectedItem = null;
+            }
             AppBarOpen = false;
         }
 
@@ -311,11 +369,12 @@ namespace HudlRT.ViewModels
             }
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Visible;
-            DownloadProgressText = "Determining Download Size";
+            DownloadProgressText = "Preparing Download";
+            DownloadProgress = 0;
             DownloadAccessor.Instance.cts = new CancellationTokenSource();
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = playlistsToBeDownloaded;
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded, Parameter);//TODO need to deep copy here
+            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded, Season.DeepCopy(Parameter));
 
         }
 
@@ -323,57 +382,81 @@ namespace HudlRT.ViewModels
         {
             categoriesGrid = (GridView)sender;
             PlaylistViewModel playlistAdded = (PlaylistViewModel)e.AddedItems.FirstOrDefault();
-
-            if (categoriesGrid.SelectedItems.Count == 0)
+            if (DownloadAccessor.Instance.Downloading)
             {
-                DownloadButton_Visibility = Visibility.Collapsed;
-                Downloading_Visibility = Visibility.Collapsed;
-                DeleteButton_Visibility = Visibility.Collapsed;
+                if (categoriesGrid.SelectedItems.Count >= 1)
+                {
+                    //PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
+                    if (playlistAdded != null)
+                    {
+                        if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
+                        {
+                            DeleteButton_Visibility = Visibility.Visible;
+                            playlistsSelected = categoriesGrid.SelectedItems.ToList();
+                        }
+                        else
+                        {
+                            categoriesGrid.SelectedItems.Remove(e.AddedItems[0]);
+                        }
+                    }
+                }
+                AppBarOpen = true;
             }
-
-            if (categoriesGrid.SelectedItems.Count == 1 && playlistAdded != null)
+            else
             {
-                if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
+
+                if (categoriesGrid.SelectedItems.Count == 0)
                 {
                     DownloadButton_Visibility = Visibility.Collapsed;
                     Downloading_Visibility = Visibility.Collapsed;
-                    DeleteButton_Visibility = Visibility.Visible;
-
-                }
-                else
-                {
-                    DownloadButton_Visibility = Visibility.Visible;
-                    Downloading_Visibility = Visibility.Collapsed;
                     DeleteButton_Visibility = Visibility.Collapsed;
                 }
-            }
 
-            if (categoriesGrid.SelectedItems.Count > 1)
-            {
-                PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
-                if (playlistAdded != null)
+                if (categoriesGrid.SelectedItems.Count == 1 && playlistAdded != null)
                 {
-                    if (playlistAdded.DownloadedIcon_Visibility != firstPlaylist.DownloadedIcon_Visibility)
+                    if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
                     {
-                        categoriesGrid.SelectedItems.Remove(e.AddedItems[0]);
+                        DownloadButton_Visibility = Visibility.Collapsed;
+                        Downloading_Visibility = Visibility.Collapsed;
+                        DeleteButton_Visibility = Visibility.Visible;
+
+                    }
+                    else
+                    {
+                        DownloadButton_Visibility = Visibility.Visible;
+                        Downloading_Visibility = Visibility.Collapsed;
+                        DeleteButton_Visibility = Visibility.Collapsed;
                     }
                 }
+
+                if (categoriesGrid.SelectedItems.Count > 1)
+                {
+                    PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
+                    if (playlistAdded != null)
+                    {
+                        if (playlistAdded.DownloadedIcon_Visibility != firstPlaylist.DownloadedIcon_Visibility)
+                        {
+                            categoriesGrid.SelectedItems.Remove(e.AddedItems[0]);
+                        }
+                    }
+                }
+                playlistsSelected = categoriesGrid.SelectedItems.ToList();
+                AppBarOpen = playlistsSelected.Any() ? true : false;
             }
-            playlistsSelected = categoriesGrid.SelectedItems.ToList();
-            AppBarOpen = playlistsSelected.Any() ? true : false;
+            
         }
 
         private async Task LoadActiveDownloadsAsync()
         {
-            IReadOnlyList<DownloadOperation> downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
-            if (downloads.Count > 0)
+            if(DownloadAccessor.Instance.Downloading)
             {
-                await ResumeDownloadAsync(downloads.First());
+                await ResumeDownloadAsync();
             }
         }
-        private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
+        private async Task ResumeDownloadAsync()
         {
-            await downloadOperation.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
+            DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            await DownloadAccessor.Instance.Download.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
         }
 
         private void MarkDownloadedPlaylists()
@@ -383,24 +466,30 @@ namespace HudlRT.ViewModels
             {
                 foreach (CategoryViewModel cat in Categories)
                 {
-                    foreach (PlaylistViewModel pl in cat.Playlists)
+                    if (cat.Playlists != null)
                     {
-                        bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
-                        if (downloadFound)
+                        foreach (PlaylistViewModel pl in cat.Playlists)
                         {
-                            pl.DownloadedIcon_Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            pl.DownloadedIcon_Visibility = Visibility.Collapsed;
+                            bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
+                            if (downloadFound)
+                            {
+                                pl.DownloadedIcon_Visibility = Visibility.Visible;
+                            }
+                            else
+                            {
+                                pl.DownloadedIcon_Visibility = Visibility.Collapsed;
+                            }
                         }
                     }
+
                 }
             }
         }
 
         public void ProgressCallback(DownloadOperation obj)
         {
+            UpdateDiskInformation();
+            //DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived / (long)obj.Progress.TotalBytesToReceive) / (double)(DownloadAccessor.Instance.TotalClips) + (DownloadAccessor.Instance.ClipsComplete / (double)DownloadAccessor.Instance.TotalClips));
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
             if (DownloadProgress == 100)
@@ -409,22 +498,29 @@ namespace HudlRT.ViewModels
                 {
                     foreach (CategoryViewModel cat in Categories)
                     {
-                        foreach (PlaylistViewModel pl in cat.Playlists)
+                        if (cat.Playlists != null)
                         {
-                            bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
-                            bool currentlyDownloadingFound = DownloadAccessor.Instance.currentlyDownloadingPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
-                            if (downloadFound || currentlyDownloadingFound)
+                            foreach (PlaylistViewModel pl in cat.Playlists)
                             {
-                                pl.DownloadedIcon_Visibility = Visibility.Visible;
+                                bool downloadFound = DownloadAccessor.Instance.downloadedPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
+                                bool currentlyDownloadingFound = DownloadAccessor.Instance.currentlyDownloadingPlaylists.Any(play => play.playlistId == pl.PlaylistModel.playlistId);
+                                if (downloadFound || currentlyDownloadingFound)
+                                {
+                                    pl.DownloadedIcon_Visibility = Visibility.Visible;
+                                }
                             }
                         }
                     }
                 }
-                categoriesGrid.SelectedItem = null;
+                if (categoriesGrid != null)
+                {
+                    categoriesGrid.SelectedItem = null;
+                }
                 DownloadAccessor.Instance.currentlyDownloadingPlaylists = new List<Playlist>();
                 DownloadProgressText = "";
                 DownloadProgress = 0;
                 Downloading_Visibility = Visibility.Collapsed;
+                UpdateDiskInformation();
                 AppBarOpen = false;
             }
         }
