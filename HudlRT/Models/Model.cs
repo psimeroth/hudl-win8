@@ -28,6 +28,13 @@ namespace HudlRT.Models
         }
     }
 
+    public class PageParameter
+    {
+        public Season season { get; set; }
+        public Playlist playlist { get; set; }
+        public BindableCollection<HubGroupViewModel> hubGroups { get; set; }
+    }
+
     public class Team
     {
         public string school { get; set; }

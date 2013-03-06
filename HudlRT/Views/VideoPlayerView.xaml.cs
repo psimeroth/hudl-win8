@@ -119,7 +119,7 @@ namespace HudlRT.Views
         {
             videoMediaElement.Width = Window.Current.Bounds.Width - 300;
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            initializeGrid(vm.Parameter);
+            initializeGrid(vm.Parameter.playlist);
 
             
             vm.listView = FilteredClips;
