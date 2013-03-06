@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using HudlRT.Parameters;
 using HudlRT.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace HudlRT.Common
         public static void Logout(IUICommand command)
         {
             AppDataAccessor.RemovePasswords();
+            CachedParameter.resetCache();
             navigationService.NavigateToViewModel<LoginViewModel>();
         }
 

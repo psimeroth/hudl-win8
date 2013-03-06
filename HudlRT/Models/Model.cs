@@ -28,6 +28,13 @@ namespace HudlRT.Models
         }
     }
 
+    public class PageParameter
+    {
+        public Season season { get; set; }
+        public Playlist playlist { get; set; }
+        public BindableCollection<HubGroupViewModel> hubGroups { get; set; }
+    }
+
     public class Team
     {
         public string school { get; set; }
@@ -233,7 +240,7 @@ namespace HudlRT.Models
                 BindableCollection<Angle> angles = new BindableCollection<Angle>();
                 foreach (Angle a in c.angles)
                 {
-                    Angle angle = new Angle { angleName = a.angleName, angleType = null, clipAngleId = a.clipAngleId, duration = a.duration, fileLocation = a.fileLocation, isPreloaded = a.isPreloaded, preloadFile = a.preloadFile, thumbnailLocation = a.thumbnailLocation };
+                    Angle angle = new Angle { angleName = a.angleName, angleType = null, clipAngleId = a.clipAngleId, duration = a.duration, fileLocation = a.fileLocation, isPreloaded = a.isPreloaded, preloadFile = a.preloadFile, thumbnailLocation = a.thumbnailLocation, fileSize =a.fileSize };
                     angles.Add(angle);
                 }
                 clip.angles = angles;
@@ -313,6 +320,7 @@ namespace HudlRT.Models
         public AngleType angleType { get; set; }
         public bool isPreloaded { get; set; }
         public string preloadFile { get; set; }
+        public long fileSize { get; set; }
 
         public Angle()
         {
@@ -335,6 +343,7 @@ namespace HudlRT.Models
                 if (angleDTO.Files.FirstOrDefault() != null)
                 {
                     angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;//throws error if there is no filename
+                    angle.fileSize = angleDTO.Files.FirstOrDefault().FileSize;
                 }
                 else
                 {
