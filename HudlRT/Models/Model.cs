@@ -313,6 +313,7 @@ namespace HudlRT.Models
         public AngleType angleType { get; set; }
         public bool isPreloaded { get; set; }
         public string preloadFile { get; set; }
+        public long fileSize { get; set; }
 
         public Angle()
         {
@@ -335,6 +336,7 @@ namespace HudlRT.Models
                 if (angleDTO.Files.FirstOrDefault() != null)
                 {
                     angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;//throws error if there is no filename
+                    angle.fileSize = angleDTO.Files.FirstOrDefault().FileSize;
                 }
                 else
                 {

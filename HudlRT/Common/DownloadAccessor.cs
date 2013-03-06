@@ -227,6 +227,7 @@ namespace HudlRT.Common
             {
                 Download = downloadOperation;
                 await downloadOperation.StartAsync().AsTask(cts.Token, progressCallback);
+                CurrentDownloadedBytes += (long)downloadOperation.Progress.BytesReceived;
                 return (StorageFile)downloadOperation.ResultFile;
             }
             catch (Exception e)
@@ -247,6 +248,7 @@ namespace HudlRT.Common
             currentlyDownloadingPlaylists = playlists;
             backgroundDownloader = new BackgroundDownloader();
             Downloading = true;
+            TotalBytes = 0;
             ClipsComplete = 0;
             CurrentDownloadedBytes = 0;
             TotalClips = 0;
@@ -258,6 +260,7 @@ namespace HudlRT.Common
                 {
                     foreach (Angle angle in c.angles)
                     {
+                        TotalBytes += angle.fileSize;
                         TotalClips++;
                     }
                 }
@@ -292,9 +295,9 @@ namespace HudlRT.Common
                                 var destinationFile = await fileFolder.CreateFileAsync(pl.playlistId + "-" + c.clipId + "-" + angle.clipAngleId, CreationCollisionOption.ReplaceExisting);
                                 Download = backgroundDownloader.CreateDownload(source, destinationFile);
                                 file = await StartDownloadAsync(Download);
-                                BasicProperties prop = await file.GetBasicPropertiesAsync();
-                                long newBytesDownloaded = diskSpaceFromDownloads.totalBytes + (long)prop.Size;
-                                playlistSize += (long)prop.Size;
+                                //BasicProperties prop = await file.GetBasicPropertiesAsync();
+                                long newBytesDownloaded = diskSpaceFromDownloads.totalBytes + angle.fileSize;
+                                playlistSize += angle.fileSize;
                                 diskSpaceFromDownloads = new DiskSpaceResponse { totalBytes = newBytesDownloaded, formattedSize = FormatBytes(newBytesDownloaded) };
                                 angle.preloadFile = file.Path;
                                 angle.isPreloaded = true;
