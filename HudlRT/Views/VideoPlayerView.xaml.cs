@@ -29,8 +29,8 @@ namespace HudlRT.Views
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
         private const int POPUP_WIDTH = 346;
-        private const int GRID_HEADER_LENGTH_SORTED = 6;
-        private const int GRID_HEADER_LENGTH_UNSORTED = 8;
+        private const int COLUMN_WIDTH = 130;
+        private const int GRID_HEADER_FONT_SIZE = 22;
 
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
@@ -112,15 +112,15 @@ namespace HudlRT.Views
                     ColumnDefinition col = new ColumnDefinition();
                     col.Width = new GridLength(130);
                     gridHeaders.ColumnDefinitions.Add(col);
-                    columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
+                    columnDefinitions += String.Format(@"<ColumnDefinition Width=""{0}"" /> ", COLUMN_WIDTH);
                     rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                     Border b = new Border();
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
                     b.BorderThickness = new Thickness(0, 0, 1, 0);
                     TextBlock t = new TextBlock();
                     Run text = new Run();
-                    vm.GridHeadersTextSorted.Add(trimHeaderText(displayColumns[i], GRID_HEADER_LENGTH_SORTED));
-                    vm.GridHeadersTextUnsorted.Add(trimHeaderText(displayColumns[i], GRID_HEADER_LENGTH_UNSORTED));
+                    vm.GridHeadersTextSorted.Add(trimHeaderText(displayColumns[i], true));
+                    vm.GridHeadersTextUnsorted.Add(trimHeaderText(displayColumns[i], false));
                     text.Text = vm.GridHeadersTextUnsorted.Last();
                     t.Inlines.Add(text);
                     b.SetValue(Grid.RowProperty, 0);
@@ -131,7 +131,7 @@ namespace HudlRT.Views
                     t.PointerReleased += columnHeaderClick;
 
                     b.Child = t;
-                    t.FontSize = 24;
+                    t.FontSize = GRID_HEADER_FONT_SIZE;
                     gridHeaders.Children.Add(b);
                 }
             }
@@ -141,20 +141,38 @@ namespace HudlRT.Views
             FilteredClips.ItemTemplate = dt;
         }
 
-        private string trimHeaderText(string s, int l)
+        private string trimHeaderText(string headerText, bool addIcon)
         {
-            if (s.Length > l)
+            TextBlock textBlock = new TextBlock();
+            textBlock.Text = headerText;
+            textBlock.FontSize = GRID_HEADER_FONT_SIZE;
+
+            if (addIcon)
             {
-                if (s.IndexOf(' ') <= (l-1) && s.IndexOf(' ') > 0)
-                {
-                    s = s.Substring(0, s.IndexOf(' ')) + "...";
-                }
-                else
-                {
-                    s = s.Substring(0, l-1) + "...";
-                }
+                Run text = new Run();
+                text.Text = " \u25B2";
+                textBlock.Inlines.Add(text);
             }
-            return s;
+
+            textBlock.Measure(new Size(double.MaxValue, double.MaxValue));
+
+            if(textBlock.ActualWidth > COLUMN_WIDTH - 10){
+                while (textBlock.ActualWidth > COLUMN_WIDTH - 10)
+                {
+                    headerText = headerText.Remove(headerText.Length - 1).Trim();
+                    textBlock.Text = String.Concat(headerText, "...");
+                    if (addIcon)
+                    {
+                        Run text = new Run();
+                        text.Text = " \u25B2";
+                        textBlock.Inlines.Add(text);
+                    }
+                    textBlock.Measure(new Size(double.MaxValue, double.MaxValue));
+                }
+                headerText = String.Concat(headerText, "...");
+            }
+            
+            return headerText;
         }
 
         private void filteredClips_Loaded(object sender, RoutedEventArgs e)
