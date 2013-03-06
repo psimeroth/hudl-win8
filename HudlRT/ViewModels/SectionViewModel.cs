@@ -307,8 +307,7 @@ namespace HudlRT.ViewModels
                 await vmClicked.FetchClips;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(playlistClicked);
             }
-            
-
+            Logger.Instance.LogPlaylistSelected(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
         }
 
         public async void DeleteButtonClick()
@@ -348,7 +347,7 @@ namespace HudlRT.ViewModels
             }
             AppBarOpen = false;
         }
-
+            
         public async void DownloadButtonClick()
         {
             List<Playlist> playlistsToBeDownloaded = new List<Playlist>();

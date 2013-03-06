@@ -17,6 +17,7 @@ namespace HudlRT.ViewModels
     public class HubViewModel : ViewModelBase
     {
         INavigationService navigationService;
+        bool firstLoad = true;
 
         private string _noScheduleEntriesText;
         public string NoScheduleEntriesText
@@ -94,6 +95,14 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => SelectedSeason);
                 AppDataAccessor.SetTeamContext(selectedSeason.seasonID, selectedSeason.owningTeam.teamID);
                 PopulateGroups();
+                if (firstLoad)
+                {
+                    firstLoad = false;
+                }
+                else
+                {
+                    Logger.Instance.LogSeasonChanged(selectedSeason);
+                }
             }
         }
 
@@ -146,7 +155,7 @@ namespace HudlRT.ViewModels
             if (response.ID != null && ServiceAccessor.ConnectedToInternet())
             {
                 Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };//this is actually a playlist - not a game
-                GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, true);
+                GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, isLastviewed:true);
                 lastViewed.Thumbnail = response.thumbnail;
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
                 LastViewedVM.Games.Add(lastViewed);
@@ -176,8 +185,6 @@ namespace HudlRT.ViewModels
 
         private async void PopulateGroups()
         {
-            
-
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
 
             //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
@@ -198,14 +205,14 @@ namespace HudlRT.ViewModels
 
                 if (previousGame != null)
                 {
-                    GameViewModel previous = new GameViewModel(previousGame, true);
+                    GameViewModel previous = new GameViewModel(previousGame, true, isPreviousGame:true);
                     previous.FetchPlaylists = previous.FetchThumbnailsAndPlaylistCounts();
                     previous.IsLargeView = true;
                     LastGameVM.Games.Add(previous);
                 }
                 if (nextGame != null)
                 {
-                    GameViewModel next = new GameViewModel(nextGame, true);
+                    GameViewModel next = new GameViewModel(nextGame, true, isNextGame:true);
                     next.IsLargeView = true;
                     next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
                     NextGameVM.Games.Add(next);
@@ -350,6 +357,19 @@ namespace HudlRT.ViewModels
             {
                 await gameViewModel.FetchPlaylists;
                 navigationService.NavigateToViewModel<SectionViewModel>(parameter);
+
+                if (gameViewModel.IsNextGame)
+                {
+                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_NEXT);
+                }
+                else if (gameViewModel.IsPreviousGame)
+                {
+                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_PREVIOUS);
+                }
+                else
+                {
+                    Logger.Instance.LogGameSelected(gameViewModel.GameModel);
+                }
             }
             else
             {
@@ -357,12 +377,14 @@ namespace HudlRT.ViewModels
                 if (downloadedPlaylist != null)
                 {
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>(downloadedPlaylist);
+                    Logger.Instance.LogLastViewedClick(downloadedPlaylist);
                 }
                 else
                 {
                     ClipResponse response = await ServiceAccessor.GetPlaylistClipsAndHeaders(gameViewModel.GameModel.gameId);
                     Playlist lastViewedPlaylist = new Playlist { playlistId = gameViewModel.GameModel.gameId, name = gameViewModel.GameModel.opponent, thumbnailLocation = gameViewModel.Thumbnail, clips = response.clips, displayColumns = response.DisplayColumns, clipCount = response.clips.Count};
                     navigationService.NavigateToViewModel<VideoPlayerViewModel>(lastViewedPlaylist);
+                    Logger.Instance.LogLastViewedClick(lastViewedPlaylist);
                 }
             }
             
