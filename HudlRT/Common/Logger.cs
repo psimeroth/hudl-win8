@@ -251,8 +251,8 @@ namespace HudlRT.Common
 
         public class LogEntry
         {
-            public Function Func { get; set; }
-            public Operation Op { get; set; }
+            public String Function { get; set; }
+            public String Operation { get; set; }
             public string Error { get; set; }
             public string Method { get; set; }
             public ErrorLevel ErrorLevel { get; set; }
@@ -278,13 +278,12 @@ namespace HudlRT.Common
         public async void LogLastViewedClick(Playlist playlist)
         {
             LogEntry entry = new LogEntry();
-            entry.Func = Function.Click;
-            entry.Op = Operation.Cutup;
+            entry.Function = "Click";
+            entry.Operation = "Cutup";
             entry.Error = null;
             entry.Method = "LastViewed";
             entry.ErrorLevel = ErrorLevel.Info;
             entry.AttributesDictionary = new Dictionary<string, object>();
-
             entry.AttributesDictionary.Add("name", playlist.name);
             entry.AttributesDictionary.Add("playlistId", playlist.playlistId);
             entry.AttributesDictionary.Add("clickedOn", DateTime.Now);
