@@ -254,11 +254,11 @@ namespace HudlRT.Common
 
         public class LogEntry
         {
-            public String Function { get; set; }
-            public String Operation { get; set; }
+            public string Function { get; set; }
+            public string Operation { get; set; }
             public string Error { get; set; }
             public string Method { get; set; }
-            public ErrorLevel ErrorLevel { get; set; }
+            public string ErrorLevel { get; set; }
             public string Attributes { get; internal set; }
             public Dictionary<string, object> AttributesDictionary { get; set; }
         }
@@ -285,7 +285,7 @@ namespace HudlRT.Common
             entry.Operation = Operation.Cutup.ToString();
             entry.Error = null;
             entry.Method = "LastViewed";
-            entry.ErrorLevel = ErrorLevel.Info;
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
 
             entry.AttributesDictionary = new Dictionary<string, object>();
             entry.AttributesDictionary.Add("Method", "LastViewed");
@@ -310,7 +310,7 @@ namespace HudlRT.Common
             entry.Operation = Operation.Game.ToString();
             entry.Error = null;
             entry.Method = description;
-            entry.ErrorLevel = ErrorLevel.Info;
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
 
             entry.AttributesDictionary = new Dictionary<string, object>();
             entry.AttributesDictionary.Add("Method", description);
@@ -330,7 +330,7 @@ namespace HudlRT.Common
             entry.Operation = Operation.Game.ToString();
             entry.Error = null;
             entry.Method = "PlaylistSelected";
-            entry.ErrorLevel = ErrorLevel.Info;
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
 
             entry.AttributesDictionary = new Dictionary<string, object>();
             entry.AttributesDictionary.Add("Method", "PlaylistSelected");
@@ -350,7 +350,7 @@ namespace HudlRT.Common
             entry.Operation = Operation.Game.ToString();
             entry.Error = null;
             entry.Method = "SeasonChanged";
-            entry.ErrorLevel = ErrorLevel.Info;
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
 
             entry.AttributesDictionary = new Dictionary<string, object>();
             entry.AttributesDictionary.Add("Method", "SeasonChanged");
@@ -362,6 +362,69 @@ namespace HudlRT.Common
             entry.AttributesDictionary = null;
 
             ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+        }
+
+        public async void LogPlaylistDownloadStart(Playlist playlist)
+        {
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.Download.ToString();
+            entry.Operation = Operation.Game.ToString();
+            entry.Error = null;
+            entry.Method = "PlaylistDownloadStart";
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
+
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", "PlaylistDownloadStart");
+            entry.AttributesDictionary.Add("Playlist", playlist.playlistId);
+            entry.AttributesDictionary.Add("StartedOn", DateTime.Now);
+
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
+
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+        }
+
+        public async void LogPlaylistDownloadComplete(Playlist playlist)
+        {
+            LogEntry entry = new LogEntry();
+            entry.Function = Function.Download.ToString();
+            entry.Operation = Operation.Game.ToString();
+            entry.Error = null;
+            entry.Method = "PlaylistDownloadComplete";
+            entry.ErrorLevel = ErrorLevel.Info.ToString();
+
+            entry.AttributesDictionary = new Dictionary<string, object>();
+            entry.AttributesDictionary.Add("Method", "PlaylistDownloadComplete");
+            entry.AttributesDictionary.Add("Playlist", playlist.playlistId);
+            entry.AttributesDictionary.Add("CompletedOn", DateTime.Now);
+
+            entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+            entry.AttributesDictionary = null;
+
+            ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+        }
+
+        public async void LogPlaylistDownloadRemoved(Playlist playlist)
+        {
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                LogEntry entry = new LogEntry();
+                entry.Function = Function.Download.ToString();
+                entry.Operation = Operation.Game.ToString();
+                entry.Error = null;
+                entry.Method = "PlaylistDownloadRemoved";
+                entry.ErrorLevel = ErrorLevel.Info.ToString();
+
+                entry.AttributesDictionary = new Dictionary<string, object>();
+                entry.AttributesDictionary.Add("Method", "PlaylistDownloadRemoved");
+                entry.AttributesDictionary.Add("Playlist", playlist.playlistId);
+                entry.AttributesDictionary.Add("RemovedOn", DateTime.Now);
+
+                entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
+                entry.AttributesDictionary = null;
+
+                ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+            }
         }
     }
 }
