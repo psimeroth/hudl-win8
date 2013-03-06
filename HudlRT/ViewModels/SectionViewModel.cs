@@ -315,6 +315,7 @@ namespace HudlRT.ViewModels
             foreach (PlaylistViewModel playVM in playlistsSelected)
             {
                 await DownloadAccessor.Instance.RemoveDownload(playVM.PlaylistModel);
+                Logger.Instance.LogPlaylistDownloadRemoved(playVM.PlaylistModel);
             }
             MarkDownloadedPlaylists();
             if(categoriesGrid != null)

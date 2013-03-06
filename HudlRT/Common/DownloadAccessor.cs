@@ -269,6 +269,9 @@ namespace HudlRT.Common
             var userFolder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(AppDataAccessor.GetUsername(), Windows.Storage.CreationCollisionOption.OpenIfExists);
             foreach (Playlist pl in playlists)
             {
+                // Log download playlist begin
+                Logger.Instance.LogPlaylistDownloadStart(pl);
+
                 playlistSize = 0;
                 var fileFolder = await userFolder.CreateFolderAsync(pl.playlistId, Windows.Storage.CreationCollisionOption.OpenIfExists);
                 //save thumbnail
@@ -318,6 +321,8 @@ namespace HudlRT.Common
                 await Windows.Storage.FileIO.WriteTextAsync(downloadModel, updatedModel);
                 downloadedPlaylists.Add(pl);
 
+                // Log download complete
+                Logger.Instance.LogPlaylistDownloadComplete(pl);
             }
             Game selectedGame = seasonAndGame.games.FirstOrDefault();
             Game newGameWithOnlyDownloads = new Game { date = selectedGame.date, gameId = selectedGame.gameId, opponent = selectedGame.opponent, categories = new BindableCollection<Category>() };
