@@ -242,7 +242,7 @@
                                 <VisualState x:Name="Normal"/>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlOrangeColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlPartialOrangeColor}"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -257,12 +257,12 @@
                                 </VisualState>
                                 <VisualState x:Name="UnselectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="Black"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="default" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlPartialBlackColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlOrangeColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlPartialOrangeColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="UnselectedSwiping">
@@ -296,12 +296,12 @@
                                 <Grid>
                                     <Rectangle x:Name="default">
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="{StaticResource HudlDarkGrayAccentColor}"/>
+                                            <SolidColorBrush Color="{StaticResource HudlPartialGrayColor}"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <Rectangle x:Name="BackgroundColor" Opacity="0" >
                                         <Rectangle.Fill>
-                                            <SolidColorBrush Color="{StaticResource HudlOrangeColor}" />
+                                            <SolidColorBrush Color="{StaticResource HudlPartialOrangeColor}" />
                                         </Rectangle.Fill>
                                     </Rectangle>
                                 </Grid>
