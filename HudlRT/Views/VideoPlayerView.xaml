@@ -388,7 +388,7 @@
                 <TextBlock x:Name="PlaylistName" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="28" Foreground="{StaticResource HudlMediumGray}"/>
                 <Button x:Name="OptionsMenu" Grid.Column="2" Width="250" Height="45" FontSize="22" FontWeight="Light" Background="Transparent" Foreground="{StaticResource HudlLightGray}" Click="openOptionsMenu">Options</Button>
                 <Grid Grid.Column="3">
-                    <Button x:Name="btnDownload" Visibility="Collapsed" Width="230" Height="40" FontSize="20" Content="Download Playlist"  HorizontalAlignment="Left"
+                    <Button x:Name="btnDownload" Visibility="{Binding DownloadButtonVisibility}" Width="250" Height="45" FontSize="22" Content="Download Playlist"  HorizontalAlignment="Center" Background="Transparent" Foreground="{StaticResource HudlLightGray}" FontWeight="Light"
                          caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
                     <Grid Grid.Column="2" Visibility="Collapsed" Margin="0,5,0,5">
                         <Grid.RowDefinitions>
