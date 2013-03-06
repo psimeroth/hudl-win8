@@ -421,10 +421,6 @@ namespace HudlRT.Common
             ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
         }
 
-        public async void LogRemoteUse()
-        {
-        }
-
         public async void LogSortApplied(FilterViewModel filterVM)
         {
             LogEntry entry = new LogEntry();
@@ -456,12 +452,20 @@ namespace HudlRT.Common
 
             entry.AttributesDictionary = new Dictionary<string, object>();
             entry.AttributesDictionary.Add("Method", "Filter");
-            entry.AttributesDictionary.Add("FilterOn", filters);
+            entry.AttributesDictionary.Add("Filters", filters);
 
             entry.Attributes = JsonConvert.SerializeObject(entry.AttributesDictionary);
             entry.AttributesDictionary = null;
 
             ServiceAccessor.MakeApiCallLog(ServiceAccessor.URL_SERVICE_LOG, JsonConvert.SerializeObject(entry));
+        }
+
+        public async void LogMediaKeyUse()
+        {
+        }
+
+        public async void LogKeyUse()
+        {
         }
     }
 }
