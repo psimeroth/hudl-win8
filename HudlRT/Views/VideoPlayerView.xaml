@@ -117,7 +117,8 @@
                 </ContentControl>
             </Border>
         </Popup>
-        <Grid x:Name="mainGrid" Background="Black">            <ContentControl x:Name="videoContainer"
+        <Grid x:Name="mainGrid" Background="Black">            
+            <ContentControl x:Name="videoContainer"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Bottom">
                 <mmppf:MediaPlayer x:Name="videoMediaElement" IsPlayPauseVisible="False"
@@ -232,7 +233,7 @@
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
+        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3" Closed="AppBarClosed">
             <Grid x:Name="dataPanel" Grid.Row="2" Height="200">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />

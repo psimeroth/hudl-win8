@@ -30,6 +30,8 @@ namespace HudlRT.Views
     {
         private const int POPUP_WIDTH = 346;
 
+        private Grid timelineContainer;
+
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
         private string _rootNamespace;
@@ -480,6 +482,12 @@ namespace HudlRT.Views
             {
                 TopAppBar.IsOpen = true;
                 BottomAppBar.IsOpen = true;
+
+                if (timelineContainer == null)
+                {
+                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                }
+                timelineContainer.Margin = new Thickness(0,0,0,200);
             }
         }
 
@@ -568,6 +576,11 @@ namespace HudlRT.Views
         private void SortFilterPopup_Opened_1(object sender, object e)
         {
             PlaybackOptionsPopup.IsOpen = false;
+        }
+
+        private void AppBarClosed(object sender, object e)
+        {
+            timelineContainer.Margin = new Thickness(0);
         }
     }
 
