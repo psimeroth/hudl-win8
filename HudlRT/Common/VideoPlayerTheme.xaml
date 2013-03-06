@@ -62,7 +62,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#BBFFFFFF">
+                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#55000000">
                                     <Grid Margin="30,6,30,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -71,12 +71,15 @@
                                         </Grid.ColumnDefinitions>
                                         <local:TimeElapsedButton FontSize="20" x:Name="TimeElapsedButton" Grid.Column="0" ViewModel="{TemplateBinding ViewModel}" Visibility="{Binding IsTimeElapsedButtonVisible, Converter={StaticResource VisibleIfConverter}}" Margin="8,0,8,0"/>
                                         <!--<local:Timeline x:Name="Timeline" Grid.Column="1" ViewModel="{TemplateBinding ViewModel}" Visibility="{Binding IsTimelineVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource VisibleIfConverter}}" Margin="8,0,8,0"/>-->
-                                        <local:Timeline Height="25" Padding="0,10,0,10" x:Name="Timeline" Grid.Column="1" ViewModel="{TemplateBinding ViewModel}" Visibility="{Binding IsTimelineVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource VisibleIfConverter}}" Margin="8,0,8,0">
+                                        <local:Timeline Height="25" Background="White" Padding="0,10,0,10" x:Name="Timeline" Grid.Column="1" ViewModel="{TemplateBinding ViewModel}" Visibility="{Binding IsTimelineVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource VisibleIfConverter}}" Margin="8,0,8,0">
                                             <local:Timeline.SliderStyle>
                                                 <Style TargetType="local:SeekableSlider">
+                                                    <Setter Property="Background" Value="#99FFFFFF" />
                                                     <Setter Property="Foreground" Value="{StaticResource HudlBlue}"/>
                                                     <Setter Property="SliderTrackDecreasePressedBackground" Value="{StaticResource HudlOrange}" />
                                                     <Setter Property="SliderTrackDecreasePointerOverBackground" Value="{StaticResource HudlOrange}" />
+                                                    <Setter Property="SliderTrackPointerOverBackground" Value="#99FFFFFF" />
+                                                    <Setter Property="SliderTrackPressedBackground" Value="#99FFFFFF" />
                                                     <Setter Property="SliderThumbStyle">
                                                         <Setter.Value>
                                                             <Style TargetType="Thumb">
