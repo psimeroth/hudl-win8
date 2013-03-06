@@ -57,12 +57,20 @@ namespace HudlRT.Models
     public class Season : IComparable
     {
         public string name { get; set; }
-        public string FullName 
+        public string SchoolName 
         { 
             get 
             { 
-                return owningTeam.school + " - " + owningTeam.name + " - " + name; 
+                return owningTeam.school; 
             }  
+        }
+
+        public string TeamName
+        {
+            get
+            {
+                return owningTeam.name;
+            }
         }
 
         public string seasonID { get; set; }
@@ -93,6 +101,26 @@ namespace HudlRT.Models
             s.year = seasonDTO.Year;
             return s;
         }
+
+        internal static Season DeepCopy(Season seasonAndGame)
+        {
+            Season returnSeason = new Season {name = seasonAndGame.name, seasonID = seasonAndGame.seasonID, owningTeam = seasonAndGame.owningTeam, year = seasonAndGame.year };
+            foreach (Game g in seasonAndGame.games)
+            {
+                Game newGame = new Game { date = g.date, gameId = g.gameId, isHome = g.isHome, opponent = g.opponent };
+                foreach (Category c in g.categories)
+                {
+                    Category newCategory = new Category { categoryId = c.categoryId, name = c.name };
+                    foreach (Playlist p in c.playlists)
+                    {
+                        newCategory.playlists.Add(Playlist.Copy(p));
+                    }
+                    newGame.categories.Add(newCategory);
+                }
+                returnSeason.games.Add(newGame);
+            }
+            return returnSeason;
+        }
     }
 
     public class Game
@@ -102,7 +130,6 @@ namespace HudlRT.Models
         public bool isHome { get; set; }
         public BindableCollection<Category> categories { get; set; }
         public string gameId { get; set; }
-
         public string DisplayDate
         {
             get
@@ -127,15 +154,27 @@ namespace HudlRT.Models
         }
     }
 
+    public class HubPageGameEntry
+    {
+        public string Name {get; set;}
+        public List<Game> Games {get; set;}
+
+        public HubPageGameEntry()
+        {
+            Games = new List<Game>();
+            Name = "";
+        }
+    }
+
     public class Category
     {
         public string name { get; set; }
-        public BindableCollection<Cutup> cutups { get; set; }
+        public BindableCollection<Playlist> playlists { get; set; }
         public string categoryId { get; set; }
 
         public Category()
         {
-            cutups = new BindableCollection<Cutup>();
+            playlists = new BindableCollection<Playlist>();
         }
 
         public static Category FromDTO(CategoryDTO categoryDTO)
@@ -149,32 +188,44 @@ namespace HudlRT.Models
 
     public class Downloads
     {
-        public BindableCollection<Cutup> cutups { get; set; }
+        public BindableCollection<Playlist> playlists { get; set; }
 
         public Downloads()
         {
-            cutups = new BindableCollection<Cutup>();
+            playlists = new BindableCollection<Playlist>();
         }
     }
 
-    public class Cutup
+    public class Playlist
     {
         public string name { get; set; }
         public int clipCount { get; set; }
-        public string cutupId { get; set; }
+        public string playlistId { get; set; }
         public BindableCollection<Clip> clips { get; set; }
         public string[] displayColumns { get; set; }
-        public string thumbnailLocation { get; set; }
+        public string downloadedThumbnailLocation { get; set; }
+        private string thumnaillocation;
+        public string thumbnailLocation
+        {
+            get
+            {
+                return downloadedThumbnailLocation != null ? downloadedThumbnailLocation : thumnaillocation;
+            }
+            set
+            {
+                thumnaillocation = value;
+            }
+        }
         public long totalFilesSize { get; set; }
-        public bool IsDownloaded { get; set; }
-        public Cutup()
+        public DateTime downloadedDate { get; set; }
+        public Playlist()
         {
             clips = new BindableCollection<Clip>();
         }
 
-        public static Cutup Copy(Cutup toCopy)
+        public static Playlist Copy(Playlist toCopy)
         {
-            Cutup cutup = new Cutup { cutupId = toCopy.cutupId, clipCount = toCopy.clipCount, name = toCopy.name, thumbnailLocation = toCopy.thumbnailLocation, displayColumns = toCopy.displayColumns, totalFilesSize = toCopy.totalFilesSize};
+            Playlist playlist = new Playlist { playlistId = toCopy.playlistId, clipCount = toCopy.clipCount, name = toCopy.name, thumbnailLocation = toCopy.thumbnailLocation, displayColumns = toCopy.displayColumns, totalFilesSize = toCopy.totalFilesSize };
             BindableCollection<Clip> clips = new BindableCollection<Clip>();
             foreach (Clip c in toCopy.clips)
             {
@@ -188,18 +239,18 @@ namespace HudlRT.Models
                 clip.angles = angles;
                 clips.Add(clip);
             }
-            cutup.clips = clips;
-            return cutup;
+            playlist.clips = clips;
+            return playlist;
         }
 
-        public static Cutup FromDTO(CutupDTO cutupDTO)
+        public static Playlist FromDTO(PlaylistDTO playlistDTO)
         {
-            Cutup cutup = new Cutup();
-            cutup.cutupId = cutupDTO.PlaylistId;
-            cutup.clipCount = cutupDTO.ClipCount;
-            cutup.name = cutupDTO.Name;
-            cutup.thumbnailLocation = cutupDTO.Thumbnailpath;
-            return cutup;
+            Playlist playlist = new Playlist();
+            playlist.playlistId = playlistDTO.PlaylistId;
+            playlist.clipCount = playlistDTO.ClipCount;
+            playlist.name = playlistDTO.Name;
+            playlist.thumbnailLocation = playlistDTO.Thumbnailpath;
+            return playlist;
         }
     }
 
@@ -262,6 +313,7 @@ namespace HudlRT.Models
         public AngleType angleType { get; set; }
         public bool isPreloaded { get; set; }
         public string preloadFile { get; set; }
+        public long fileSize { get; set; }
 
         public Angle()
         {
@@ -284,6 +336,7 @@ namespace HudlRT.Models
                 if (angleDTO.Files.FirstOrDefault() != null)
                 {
                     angle.fileLocation = angleDTO.Files.FirstOrDefault().FileName;//throws error if there is no filename
+                    angle.fileSize = angleDTO.Files.FirstOrDefault().FileSize;
                 }
                 else
                 {

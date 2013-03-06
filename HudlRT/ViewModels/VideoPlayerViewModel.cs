@@ -27,6 +27,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
+        public Playlist Parameter { get; set; }       //Passed in from hub page - contains the game Id.
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
         private List<Clip> Clips { get; set; }
@@ -92,8 +93,11 @@ namespace HudlRT.ViewModels
             set
             {
                 selectedAngle = value;
-                NotifyOfPropertyChange(() => SelectedAngle);
-            }
+                if (videoMediaElement != null)
+                {
+                    videoMediaElement.Source = (selectedAngle != null) ? new Uri(SelectedAngle.fileLocation) : null;
+                }
+            }   
         }
 
         private string[] gridHeaders;
@@ -106,14 +110,14 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => GridHeaders);
             }
         }
-        private string cutupName;
-        public string CutupName
+        private string playlistName;
+        public string PlaylistName
         {
-            get { return cutupName; }
+            get { return playlistName; }
             set
             {
-                cutupName = value;
-                NotifyOfPropertyChange(() => CutupName);
+                playlistName = value;
+                NotifyOfPropertyChange(() => PlaylistName);
             }
         }
         private Clip selectedClip;
@@ -167,18 +171,19 @@ namespace HudlRT.ViewModels
         private CancellationTokenSource preloadCTS { get; set; }
         private CancellationToken preloadCT { get; set; }
         public List<TextBlock> ColumnHeaderTextBlocks { get; set; }
+        private Microsoft.PlayerFramework.MediaPlayer videoMediaElement { get; set; }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
             this.navigationService = navigationService;
         }
-
+        
         protected override void OnActivate()
         {
             base.OnActivate();
 
-            AppDataAccessor.SetLastViewed(CachedParameter.selectedCutup.name, DateTime.Now.ToString("g"), CachedParameter.selectedCutup.cutupId, CachedParameter.selectedCutup.thumbnailLocation);
-            Clips = CachedParameter.selectedCutup.clips.ToList();
+            AppDataAccessor.SetLastViewed(Parameter.name, DateTime.Now.ToString("g"), Parameter.playlistId, Parameter.thumbnailLocation);
+            Clips = Parameter.clips.ToList();
             
             FilteredClips = new ObservableCollection<Clip>(Clips);
             if (FilteredClips.Any())
@@ -193,13 +198,11 @@ namespace HudlRT.ViewModels
                     listView.SelectedItem = SelectedClip;
                 }
             }
-            if (ServiceAccessor.ConnectedToInternet() && !CachedParameter.selectedCutup.IsDownloaded)
-            {
-                getMoreClips();
-            }
 
-            GridHeaders = CachedParameter.selectedCutup.displayColumns;
-            CutupName = CachedParameter.selectedCutup.name;
+            getMoreClips();
+
+            GridHeaders = Parameter.displayColumns;
+            PlaylistName = Parameter.name;
 
             int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
             if (playbackTypeResult == null)
@@ -223,33 +226,33 @@ namespace HudlRT.ViewModels
             initialClipPreload();
 
             bool downloadFound = false;
-            foreach (CutupViewModel downloadedCutup in CachedParameter.downloadedCutups)
-            {
-                if (downloadedCutup.CutupId == CachedParameter.selectedCutup.cutupId)
-                {
-                    downloadFound = true;
-                    break;
-                }
-            }
-            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            if (DownloadAccessor.Instance.Downloading)
-            {
-                LoadActiveDownloadsAsync();
-                ProgressGridVisibility = Visibility.Visible;
-                DownloadButtonVisibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ProgressGridVisibility = Visibility.Collapsed;
-                if (!downloadFound)
-                {
-                    DownloadButtonVisibility = Visibility.Visible;
-                }
-                else
-                {
-                    DownloadButtonVisibility = Visibility.Collapsed;
-                }
-            }
+            //foreach (PlaylistViewModel downloadedPlaylist in CachedParameter.downloadedPlaylists)
+            //{
+            //    if (downloadedPlaylist.PlaylistId == Parameter.playlistId)
+            //    {
+            //        downloadFound = true;
+            //        break;
+            //    }
+            //}
+            //CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            //if (DownloadAccessor.Instance.Downloading)
+            //{
+            //    LoadActiveDownloadsAsync();
+            //    ProgressGridVisibility = Visibility.Visible;
+            //    DownloadButtonVisibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    ProgressGridVisibility = Visibility.Collapsed;
+            //    if (!downloadFound)
+            //    {
+            //        DownloadButtonVisibility = Visibility.Visible;
+            //    }
+            //    else
+            //    {
+            //        DownloadButtonVisibility = Visibility.Collapsed;
+            //    }
+            //}
         }
 
         private async Task LoadActiveDownloadsAsync()
@@ -269,7 +272,6 @@ namespace HudlRT.ViewModels
 
         private async void initialClipPreload()
         {
-            await DeleteTempData(); //Make sure there are no left over temp files (from app crash, etc)
             if (FilteredClips.Any())
             {
                 PreloadClips(preloadCT, FilteredClips[0].angles.Where(angle => angle.angleType.IsChecked));
@@ -282,7 +284,7 @@ namespace HudlRT.ViewModels
 
         private async void getMoreClips()
         {
-            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalCutupClips(CachedParameter.selectedCutup.cutupId, CachedParameter.selectedCutup.clips.Count);
+            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalPlaylistClips(Parameter.playlistId, 100);
             foreach (Clip clip in remainingClipsList)
             {
                 foreach (Angle angle in clip.angles)
@@ -303,7 +305,7 @@ namespace HudlRT.ViewModels
         private void getAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in CachedParameter.selectedCutup.clips)
+            foreach (Clip clip in Parameter.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -318,7 +320,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in CachedParameter.selectedCutup.clips)
+            foreach (Clip clip in Parameter.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -371,7 +373,7 @@ namespace HudlRT.ViewModels
 
                 Angle nextAngle = clip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
-
+                
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
                 PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked));
                 PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
@@ -521,7 +523,7 @@ namespace HudlRT.ViewModels
         {
             if (SelectedFilter.sortType != SortType.None || SelectedFilter.FilterCriteria.Where(f => f.IsChecked).Any())
             {
-                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlLightBlue"];
+                ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlBlue"];
 
                 if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
                 {
@@ -575,7 +577,7 @@ namespace HudlRT.ViewModels
                     {
                         if (!currentSortFilter.FilterCriteria.Any(c => c.IsChecked))
                         {
-                            ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+                            ColumnHeaderTextBlocks[currentSortFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlMediumDarkGray"];
                             if (ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.Count > 1)
                             {
                                 ColumnHeaderTextBlocks[currentSortFilter.columnId].Inlines.RemoveAt(1);
@@ -610,7 +612,7 @@ namespace HudlRT.ViewModels
 
         public void RemoveSelectedFilter()
         {
-            ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlOrange"];
+            ColumnHeaderTextBlocks[SelectedFilter.columnId].Foreground = (Windows.UI.Xaml.Media.Brush)Windows.UI.Xaml.Application.Current.Resources["HudlMediumDarkGray"];
             if (ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.Count > 1)
             {
                 ColumnHeaderTextBlocks[SelectedFilter.columnId].Inlines.RemoveAt(1);
@@ -681,7 +683,7 @@ namespace HudlRT.ViewModels
 
                     if (filter.sortType == SortType.Ascending)
                     {
-                        clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                        clips = clips.OrderBy(c => c.order).ToList();
                         try
                         {
                             clips = clips.OrderBy(clip => Convert.ToInt32(clip.breakDownData[filter.columnId])).ToList();
@@ -693,7 +695,7 @@ namespace HudlRT.ViewModels
                     }
                     else if (filter.sortType == SortType.Descending)
                     {
-                        clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                        clips = clips.OrderBy(c => c.order).ToList();
                         try
                         {
                             clips = clips.OrderByDescending(clip => Convert.ToInt32(clip.breakDownData[filter.columnId])).ToList();
@@ -709,7 +711,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                clips = clips.OrderBy(c => Convert.ToInt32(c.breakDownData[0])).ToList();
+                clips = clips.OrderBy(c => c.order).ToList();
             }
         }
 
@@ -726,7 +728,7 @@ namespace HudlRT.ViewModels
                     filterCriteria.Add(new FilterCriteriaViewModel(id, criteria));
                 }
 
-                filter = new FilterViewModel(id, CachedParameter.selectedCutup.displayColumns[id], SortType.None, filterCriteria, this);
+                filter = new FilterViewModel(id, Parameter.displayColumns[id], SortType.None, filterCriteria, this);
             }
             else
             {
@@ -755,42 +757,42 @@ namespace HudlRT.ViewModels
             AppDataAccessor.SetPlaybackType((int)playbackType);
         }
 
-        private void DownloadButtonClick()
-        {
-            ProgressGridVisibility = Visibility.Visible;
-            DownloadButtonVisibility = Visibility.Collapsed;
-            DownloadProgress = 0;
-            CachedParameter.cts = new CancellationTokenSource();
-            DownloadProgressText = "Determining Size";
-            Cutup cutupCopy = Cutup.Copy(CachedParameter.selectedCutup);
-            List<Cutup> currentCutupList = new List<Cutup> { cutupCopy };
-            CachedParameter.currentlyDownloadingCutups = currentCutupList;
-            CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadCutups(currentCutupList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected);
-        }
+        //private void DownloadButtonClick()
+        //{
+        //    ProgressGridVisibility = Visibility.Visible;
+        //    DownloadButtonVisibility = Visibility.Collapsed;
+        //    DownloadProgress = 0;
+        //    CachedParameter.cts = new CancellationTokenSource();
+        //    DownloadProgressText = "Determining Size";
+        //    Playlist playlistCopy = Playlist.Copy(Parameter);
+        //    List<Playlist> currentPlaylistList = new List<Playlist> { playlistCopy };
+        //    CachedParameter.currentlyDownloadingPlaylists = currentPlaylistList;
+        //    CachedParameter.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+        //    DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, CachedParameter.seasonSelected, CachedParameter.sectionViewGameSelected);
+        //}
 
-        public void CancelButtonClick()
-        {
-            if (DownloadAccessor.Instance.Downloading)
-            {
-                CachedParameter.cts.Cancel();
-            }
-            ProgressGridVisibility = Visibility.Collapsed;
-            DownloadButtonVisibility = Visibility.Collapsed;
-        }
+        //public void CancelButtonClick()
+        //{
+        //    if (DownloadAccessor.Instance.Downloading)
+        //    {
+        //        CachedParameter.cts.Cancel();
+        //    }
+        //    ProgressGridVisibility = Visibility.Collapsed;
+        //    DownloadButtonVisibility = Visibility.Collapsed;
+        //}
 
-        public void ProgressCallback(DownloadOperation obj)
-        {
-            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
-            DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
-            int downloadedCutupCount = 0;
-            if (DownloadProgress == 100)
-            {
-                ProgressGridVisibility = Visibility.Collapsed;
-                CachedParameter.currentlyDownloadingCutups = new List<Cutup>();
-                DownloadProgress = 0;
-            }
-        }
+        //public void ProgressCallback(DownloadOperation obj)
+        //{
+        //    DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
+        //    DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
+        //    int downloadedPlaylistCount = 0;
+        //    if (DownloadProgress == 100)
+        //    {
+        //        ProgressGridVisibility = Visibility.Collapsed;
+        //        CachedParameter.currentlyDownloadingPlaylists = new List<Playlist>();
+        //        DownloadProgress = 0;
+        //    }
+        //}
 
         private void setToggleButtonContent()
         {
@@ -837,6 +839,12 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public void setVideoMediaElement(Microsoft.PlayerFramework.MediaPlayer videoMediaElement)
+        {
+            this.videoMediaElement = videoMediaElement;
+            videoMediaElement.Source = (SelectedAngle != null) ? new Uri(SelectedAngle.fileLocation) : null;
+        }
+
         private async Task PreloadClips(CancellationToken ct, IEnumerable<Angle> angles)
         {
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
@@ -868,29 +876,12 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private async Task<bool> DeleteTempData()
-        {
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-            var files = await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
-
-            foreach (StorageFile file in files)
-            {
-                try
-                {
-                    await file.DeleteAsync();
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
-            return true;
-        }
+        
 
         public void GoBack()
         {
             preloadCTS.Cancel();
-            DeleteTempData();
+            //DeleteTempData();
             dispRequest.RequestRelease();
             dispRequest = null;
             saveAnglePreferences();

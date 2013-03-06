@@ -109,7 +109,7 @@
     </Compile>
     <Compile Include="Common\AppDataAccessor.cs" />
     <Compile Include="Common\CharmsData.cs" />
-    <Compile Include="Common\Class1.cs" />
+    <Compile Include="Common\TemplateSelector.cs" />
     <Compile Include="Common\DownloadAccessor.cs" />
     <Compile Include="Common\VideoPlayerListView.cs" />
     <Compile Include="Common\LayoutAwarePage.cs" />
@@ -120,12 +120,12 @@
     <Compile Include="Parameters\CachedParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
-    <Compile Include="ViewModels\CutupViewModel.cs" />
-    <Compile Include="ViewModels\DownloadsViewModel.cs" />
+    <Compile Include="ViewModels\PlaylistViewModel.cs" />
     <Compile Include="ViewModels\FeatureDisabledViewModel.cs" />
     <Compile Include="ViewModels\FilterCriteriaViewModel.cs" />
     <Compile Include="ViewModels\FilterViewModel.cs" />
     <Compile Include="ViewModels\GameViewModel.cs" />
+    <Compile Include="ViewModels\HubGroupViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\HubViewModel.cs" />
     <Compile Include="ViewModels\SectionViewModel.cs" />
@@ -137,9 +137,6 @@
     <Compile Include="Views\CutupView.xaml.cs">
       <DependentUpon>CutupView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DownloadsView.xaml.cs">
-      <DependentUpon>DownloadsView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\FeatureDisabledView.xaml.cs">
       <DependentUpon>FeatureDisabledView.xaml</DependentUpon>
     </Compile>
@@ -148,6 +145,9 @@
     </Compile>
     <Compile Include="Views\HubView.xaml.cs">
       <DependentUpon>HubView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LargeGameView.xaml.cs">
+      <DependentUpon>LargeGameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -168,21 +168,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\agile-hudl-logo-dark.png" />
     <Content Include="Assets\agile-hudl-logo-light.png" />
-    <Content Include="Assets\agile-hudl-text-dark.png" />
     <Content Include="Assets\Beta.png" />
     <Content Include="Assets\dark_BG_Tiled.png" />
     <Content Include="Assets\hudl-hi-res-white-medium.png" />
     <Content Include="Assets\hudl-hi-res-white-small.png" />
     <Content Include="Assets\hudl-logo-big-tile.png" />
-    <Content Include="Assets\hudlsplash.png" />
+    <Content Include="Assets\hudl-mark-gray.png" />
+    <Content Include="Assets\hudl-metro-orange.png" />
+    <Content Include="Assets\hudl-metro-orange-large.png" />
+    <Content Include="Assets\hudl-splash.png" />
     <Content Include="Assets\hudl-hi-res-logo.png" />
     <Content Include="Assets\Hudl_Metro150 Centered.png" />
     <Content Include="Assets\Hudl_Metro150 thumbCentered.png" />
     <Content Include="Assets\Hudl_Partial150.png" />
-    <Content Include="Assets\light_BG_Tiled.png" />
-    <Content Include="Assets\medium_BG_Tiled.png" />
     <Content Include="Assets\scale-100\Hudl_Metro_Logo.png" />
     <Content Include="Assets\scale-100\Hudl_Small_Logo.png" />
     <Content Include="Assets\scale-100\StoreLogo.png" />
@@ -194,8 +193,6 @@
     <Content Include="Assets\scale-180\StoreLogo.Scale-180.png" />
     <Content Include="Assets\scale-80\Hudl_Metro_Logo.png" />
     <Content Include="Assets\scale-80\Hudl_Small_Logo.png" />
-    <Content Include="Assets\selectArrow.png" />
-    <Content Include="Assets\SplashScreen.png" />
     <None Include="Package.StoreAssociation.xml">
       <SubType>Designer</SubType>
     </None>
@@ -205,6 +202,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Common\HubTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Common\DownloadStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -246,10 +248,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DownloadsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\FeatureDisabledView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -261,6 +259,10 @@
     <Page Include="Views\HubView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LargeGameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LoginView.xaml">
       <SubType>Designer</SubType>
@@ -300,7 +302,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.7.0.0">
+    <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.8.0.5">
       <Name>Microsoft Player Framework</Name>
     </SDKReference>
   </ItemGroup>

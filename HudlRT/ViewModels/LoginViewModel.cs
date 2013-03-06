@@ -96,7 +96,7 @@ namespace HudlRT.ViewModels
         protected override void OnInitialize()
         {
             CachedParameter.resetCache();
-
+            DownloadAccessor.Instance.DeleteTempData();
             base.OnInitialize();
 
             ButtonText = "Login";
@@ -123,18 +123,22 @@ namespace HudlRT.ViewModels
 
         public async void LoginAttempt()
         {
-            // Get the username and password from the view
-#if DEBUG
-            if (Password == null || Password == "")
+            // Attempt to get the debug urls from a config file
+            InitResponse initResponse = await ServiceAccessor.Init();
+
+            if (initResponse.status == SERVICE_RESPONSE.SUCCESS)
             {
-                Password = DebugConfig.PASSWORD;
-            }
-            if (UserName == null || UserName == "")
-            {
-                UserName = DebugConfig.USERNAME;
+                if (Password == null || Password == "")
+                {
+                    Password = initResponse.Password;
+                }
+                if (UserName == null || UserName == "")
+                {
+                    UserName = initResponse.Username;
+                }
             }
 
-#endif
+            // Get the username and password from the view
             string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = UserName, Password = Password });
 
             // Show the user a call is being made in the background
@@ -145,7 +149,11 @@ namespace HudlRT.ViewModels
             LoginResponse response = await ServiceAccessor.Login(loginArgs);
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
-                AppDataAccessor.SetUsername(UserName);
+                if (AppDataAccessor.GetUsername() != userName)
+                {
+                    AppDataAccessor.SetUsername(UserName);
+                    CachedParameter.resetCache();
+                }
                 if (RememberMe)
                 {
                     AppDataAccessor.SetPassword(Password);
@@ -176,7 +184,7 @@ namespace HudlRT.ViewModels
                     if (ts.Days <= 14)
                     {
                         CachedParameter.noConnection = true;
-                        navigationService.NavigateToViewModel<DownloadsViewModel>();
+                        navigationService.NavigateToViewModel<HubViewModel>();
                     }
                     else
                     {
