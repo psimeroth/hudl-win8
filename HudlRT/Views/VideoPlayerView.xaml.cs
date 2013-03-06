@@ -87,7 +87,7 @@ namespace HudlRT.Views
             videoMediaElement.Width = Window.Current.Bounds.Width;
             videoMediaElement.Height = Window.Current.Bounds.Height;
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            initializeGrid(vm.Parameter);
+            initializeGrid(vm.Parameter.playlist);
 
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;

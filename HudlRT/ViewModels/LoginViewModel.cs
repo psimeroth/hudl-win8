@@ -183,7 +183,6 @@ namespace HudlRT.ViewModels
                     TimeSpan ts = DateTime.Now - LastLogin;
                     if (ts.Days <= 14)
                     {
-                        CachedParameter.noConnection = true;
                         navigationService.NavigateToViewModel<HubViewModel>();
                     }
                     else
