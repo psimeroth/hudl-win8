@@ -832,7 +832,8 @@ namespace HudlRT.ViewModels
             List<Playlist> currentPlaylistList = new List<Playlist> { playlistCopy };
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = currentPlaylistList;
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            //DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, Parameter.Season); //Parameter being updated on another branch
+            //Parameter being updated on another branch
+            //DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, Parameter.Season);
         }
 
         public void CancelButtonClick()
