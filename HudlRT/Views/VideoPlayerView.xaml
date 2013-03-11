@@ -90,10 +90,13 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border Background="{StaticResource HudlDarkGray}" BorderThickness="0,0,0,1" Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="White" />
-                        <Border BorderThickness="0,0,1,0" BorderBrush="White" Grid.RowSpan="2" />
+                        
+                        <Border BorderBrush="Black" Background="{StaticResource HudlOrange}" BorderThickness="0" Grid.Row="0" Grid.ColumnSpan="2" />
+                        <Border BorderThickness="0,0,0,1" Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" />
+                        <Border BorderThickness="0,0,1,0" BorderBrush="Black" Grid.RowSpan="2" />
                         <TextBlock Text="Angles" FontSize="28" Grid.Row="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="Playback" FontSize="28" Grid.Row="0" Grid.Column="1" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
                         <ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Row="1">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
