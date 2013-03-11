@@ -487,8 +487,35 @@ namespace HudlRT.Views
                 {
                     timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
                 }
-                timelineContainer.Margin = new Thickness(0,0,0,200);
+                //timelineContainer.Margin = new Thickness(0,0,0,200);
+
+                Storyboard sb = new Storyboard();
+                ObjectAnimationUsingKeyFrames slideUpAnimation = initilizeSlideUpKeyFrames();
+
+                Storyboard.SetTarget(slideUpAnimation, timelineContainer as DependencyObject);
+                Storyboard.SetTargetProperty(slideUpAnimation, "Margin");
+
+                sb.Children.Add(slideUpAnimation);
+                sb.Begin();
+
+                
+                
             }
+        }
+
+        private ObjectAnimationUsingKeyFrames initilizeSlideUpKeyFrames()
+        {
+            ObjectAnimationUsingKeyFrames slideUpAnimation = new ObjectAnimationUsingKeyFrames();
+            for (int i = 1; i <= 20; i++)
+            {
+                DiscreteObjectKeyFrame frame = new DiscreteObjectKeyFrame();
+                frame.KeyTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(4.55 * i));
+                frame.Value = new Thickness(0, 0, 0, Math.Pow(5, 0.16460148371 * i));
+
+                slideUpAnimation.KeyFrames.Add(frame);
+            }
+
+            return slideUpAnimation;
         }
 
         private void setPauseVisible()
