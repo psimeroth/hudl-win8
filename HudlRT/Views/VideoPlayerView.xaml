@@ -22,7 +22,7 @@
 
     <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkGray}">
 
-        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="False" Opened="SortFilterPopup_Opened_1">
+        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="True" Opened="SortFilterPopup_Opened_1">
             <Popup.ChildTransitions>
                 <TransitionCollection>
                     <PaneThemeTransition />
@@ -109,9 +109,9 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
-                            <RadioButton Content="Once" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsOnceChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(0)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
-                            <RadioButton Content="Loop" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsLoopChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(1)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
-                            <RadioButton Content="Next" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsNextChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(2)]" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            <RadioButton Content="Once" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsOnceChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(0)]" Click="CloseOptionsPopup" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            <RadioButton Content="Loop" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsLoopChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(1)]" Click="CloseOptionsPopup" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            <RadioButton Content="Next" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsNextChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(2)]" Click="CloseOptionsPopup" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
                         </StackPanel>
                     </Grid>
                 </ContentControl>
@@ -194,7 +194,7 @@
         </Grid>
     </Grid>
     <common:LayoutAwarePage.TopAppBar>
-        <AppBar x:Name="TitleBar" Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3">
+        <AppBar x:Name="TitleBar" Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" IsSticky="True">
             <Grid Name="header" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85"/>
@@ -230,7 +230,7 @@
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" Closed="AppBarClosed">
+        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" Closed="AppBarClosed" IsSticky="True">
             <Grid x:Name="dataPanel" Grid.Row="2" Height="200">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
