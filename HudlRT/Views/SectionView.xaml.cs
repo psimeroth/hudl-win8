@@ -33,5 +33,10 @@ namespace HudlRT.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
+
+        private void GoBack(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
