@@ -29,6 +29,7 @@ namespace HudlRT.Views
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
         private const int POPUP_WIDTH = 346;
+        private const int VIDEO_CONTROLS_WIDTH = 105;
         private const int COLUMN_WIDTH = 130;
         private const int GRID_HEADER_FONT_SIZE = 22;
 
@@ -208,7 +209,7 @@ namespace HudlRT.Views
             if (!SortFilterPopup.IsOpen)
             {
                 RootPopupBorder.Width = POPUP_WIDTH;
-                SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH;
+                SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH - VIDEO_CONTROLS_WIDTH;
 
                 var currentViewState = ApplicationView.Value;
                 if (currentViewState != ApplicationViewState.Filled)
