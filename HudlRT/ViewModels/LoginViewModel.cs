@@ -95,7 +95,6 @@ namespace HudlRT.ViewModels
 
         protected override void OnInitialize()
         {
-            CachedParameter.resetCache();
             DownloadAccessor.Instance.DeleteTempData();
             base.OnInitialize();
 
@@ -152,7 +151,6 @@ namespace HudlRT.ViewModels
                 if (AppDataAccessor.GetUsername() != userName)
                 {
                     AppDataAccessor.SetUsername(UserName);
-                    CachedParameter.resetCache();
                 }
                 if (RememberMe)
                 {

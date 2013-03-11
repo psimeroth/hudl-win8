@@ -93,15 +93,18 @@ namespace HudlRT.ViewModels
             {
                 selectedSeason = value;
                 NotifyOfPropertyChange(() => SelectedSeason);
-                AppDataAccessor.SetTeamContext(selectedSeason.seasonId, selectedSeason.owningTeam.teamID);
-                PopulateGroups();
-                if (firstLoad)
+                if (selectedSeason != null)
                 {
-                    firstLoad = false;
-                }
-                else
-                {
-                    Logger.Instance.LogSeasonChanged(selectedSeason);
+                    AppDataAccessor.SetTeamContext(selectedSeason.seasonId, selectedSeason.owningTeam.teamID);
+                    PopulateGroups();
+                    if (firstLoad)
+                    {
+                        firstLoad = false;
+                    }
+                    else
+                    {
+                        Logger.Instance.LogSeasonChanged(selectedSeason);
+                    }
                 }
             }
         }
@@ -110,15 +113,16 @@ namespace HudlRT.ViewModels
         public PageParameter Parameter { get; set; }  
         private Game _nextGame {get; set;}
         private Game _previousGame { get; set; }
-        private BindableCollection<Game> _otherItems { get; set; }
         private HubGroupViewModel NextGameVM = new HubGroupViewModel() { Name = "Next Game", Games = new BindableCollection<GameViewModel>() };
         private HubGroupViewModel LastGameVM = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<GameViewModel>() };
         private HubGroupViewModel LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
+        private string currentUserName { get; set; }
 
         //This only runs the first time the page is made, so when a user first logs in (due to page caching)
-        protected override async void OnInitialize()
+        protected override async void OnInitialize()//
         {
             base.OnInitialize();
+            currentUserName = AppDataAccessor.GetUsername();
             BindableCollection<Season> downloadedSeasons = await DownloadAccessor.Instance.GetDownloadsModel(true);
             if (ServiceAccessor.ConnectedToInternet())
             {
@@ -147,9 +151,14 @@ namespace HudlRT.ViewModels
             }
         }
 
-        protected override void OnActivate()
+        protected override void OnActivate()//called every page load
         {
             base.OnActivate();
+            if (currentUserName != AppDataAccessor.GetUsername())
+            {
+                Groups = new BindableCollection<HubGroupViewModel>();//clears old page after logout
+                OnInitialize();
+            }
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
 
             ProgressRingVisibility = Visibility.Collapsed;
@@ -195,23 +204,8 @@ namespace HudlRT.ViewModels
             //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
             _previousGame = null;
             _nextGame = null;
-            _otherItems = null;
-
-            //This is used for extra spacing in the Gridview
-            HubGroupViewModel FirstEntryVM = new HubGroupViewModel() { Name = null, Games = new BindableCollection<GameViewModel>() };
 
             games = selectedSeason.games;
-
-            //Find the other items if present
-            _otherItems = new BindableCollection<Game>(games.Where(g => g.Classification != 1).ToList<Game>());
-            if (_otherItems != null)
-            {
-                foreach (Game g in _otherItems)
-                {
-                    games.Remove(g);
-                }
-            }
-
             if (ServiceAccessor.ConnectedToInternet())
             {
                 games = selectedSeason.games;
@@ -254,33 +248,29 @@ namespace HudlRT.ViewModels
             if (games != null)
             {
                 HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
+                HubGroupViewModel otherItems = new HubGroupViewModel() { Name = "Other", Games = new BindableCollection<GameViewModel>() };
                 foreach (Game g in games)
                 {
                     GameViewModel gamevm = new GameViewModel(g);
                     gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
-                    schedule.Games.Add(gamevm);
+                    if (g.Classification == 1)
+                    {
+                        schedule.Games.Add(gamevm);
+                    }
+                    else
+                    { 
+                        otherItems.Games.Add(gamevm);
+                    }
                 }
                 if (schedule.Games.Count > 0)
                 {
                     NewGroups.Add(schedule);
-                }
-            }
-
-            HubGroupViewModel otherItems = new HubGroupViewModel() { Name = "Other", Games = new BindableCollection<GameViewModel>() };
-            if (_otherItems != null)
-            {
-                foreach (Game g in _otherItems)
-                {
-                    GameViewModel gamevm = new GameViewModel(g);
-                    gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
-                    otherItems.Games.Add(gamevm);
                 }
                 if (otherItems.Games.Count > 0)
                 {
                     NewGroups.Add(otherItems);
                 }
             }
-
 
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
@@ -292,8 +282,6 @@ namespace HudlRT.ViewModels
             else
             {
                 NoScheduleEntriesText = "";
-                //Needed for left padding
-                NewGroups.Insert(0, FirstEntryVM);
             }
 
             Groups = NewGroups;
@@ -379,7 +367,6 @@ namespace HudlRT.ViewModels
             Season seasonToPass = new Season() { name=selectedSeason.name, owningTeam = selectedSeason.owningTeam, seasonId = selectedSeason.seasonId, year = selectedSeason.year, games = new BindableCollection<Game>() }; //Because we're changing the games in this season, we need to make a copy.
             seasonToPass.games.Add(gameViewModel.GameModel);
 
-            CachedParameter.hubGroups = Groups;
             if (!gameViewModel.IsLastViewed)
             {
                 /*foreach (HubGroupViewModel hgvm in Groups)
@@ -393,11 +380,6 @@ namespace HudlRT.ViewModels
                     }
                 }*/
                 await gameViewModel.FetchPlaylists;
-                if (CachedParameter.sectionGameId != gameViewModel.GameModel.gameId)
-                {
-                    CachedParameter.sectionCategories = null;
-                }
-                CachedParameter.sectionGameId = gameViewModel.GameModel.gameId;
                 navigationService.NavigateToViewModel<SectionViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = new Playlist() });
 
                 if (gameViewModel.IsNextGame)

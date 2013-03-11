@@ -25,12 +25,10 @@
                 <Grid Grid.Row="0" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90"/>
-                        <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
-                    <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
-                <TextBlock x:Name="ScheduleEntryName" Grid.Column="2" Style="{StaticResource SectionPageTitle}" Text="{Binding ScheduleEntryName}"/>
+                <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Margin="33,0,0,0" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
+                <TextBlock x:Name="ScheduleEntryName" Grid.Column="1" Style="{StaticResource SectionPageTitle}" Text="{Binding ScheduleEntryName}"/>
             </Grid>
 
             <GridView Grid.Row="1" x:Name="CategoriesGridView" IsEnabled="{Binding PageIsEnabled}" SelectionMode="Multiple" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]; [Event SelectionChanged] = [CategoriesGridView_SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
