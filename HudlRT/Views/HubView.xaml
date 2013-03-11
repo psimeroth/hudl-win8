@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:views="using:HudlRT.ViewModels"
-    NavigationCacheMode="Disabled">
+    NavigationCacheMode="Required">
     
     <UserControl.Resources>
         <CollectionViewSource x:Name="GroupsViewSource" Source="{Binding Groups}" IsSourceGrouped="True" ItemsPath="Games"/>
@@ -50,10 +50,10 @@
             </Grid>
 
             <!-- Horizontal scrolling grid used in most view states -->
-            <GridView Grid.Row="1" x:Name="ItemsByCategory" VerticalAlignment="Bottom" IsEnabled="{Binding PageIsEnabled}" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]; [Event SelectionChanged] = [SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50" IsSwipeEnabled="False">
+            <GridView Grid.Row="1" x:Name="ItemsByCategory" IsEnabled="{Binding PageIsEnabled}" ItemTemplateSelector="{StaticResource GameTemplateSelector}" ItemsSource="{Binding Source={StaticResource GroupsViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [GameSelected($eventArgs)]; [Event SelectionChanged] = [SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50" IsSwipeEnabled="False">
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <VirtualizingStackPanel Orientation="Horizontal"/>
+                        <StackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
 

@@ -7,7 +7,7 @@
     xmlns:caliburn="using:Caliburn.Micro"
     x:Class="HudlRT.Views.SectionView"
     IsTabStop="false"
-    NavigationCacheMode="Disabled"
+    NavigationCacheMode="Required"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -28,7 +28,7 @@
                         <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                    <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
+                <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
                     <Image x:Name="Logo" Grid.Column="1" VerticalAlignment="Bottom" Height="50" Source="ms-appx:///Assets/hudl-metro-orange.png" HorizontalAlignment="Left"/>
                 <TextBlock x:Name="ScheduleEntryName" Grid.Column="2" Style="{StaticResource SectionPageTitle}" Text="{Binding ScheduleEntryName}"/>
             </Grid>
@@ -36,7 +36,7 @@
             <GridView Grid.Row="1" x:Name="CategoriesGridView" IsEnabled="{Binding PageIsEnabled}" SelectionMode="Multiple" ItemsSource="{Binding Source={StaticResource CategoriesViewSource}}" caliburn:Message.Attach="[Event ItemClick] = [PlaylistSelected($eventArgs)]; [Event SelectionChanged] = [CategoriesGridView_SelectionChanged($source, $eventArgs)]" IsItemClickEnabled="True" Margin="0,25,0,50">
                     <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel Orientation="Horizontal" />
+                            <StackPanel Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </GridView.ItemsPanel>
 

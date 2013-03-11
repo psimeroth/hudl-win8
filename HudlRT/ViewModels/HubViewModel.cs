@@ -91,10 +91,6 @@ namespace HudlRT.ViewModels
             get { return selectedSeason; }
             set
             {
-                if (selectedSeason != null)
-                {
-                    CachedParameter.hubGroups = null;
-                }
                 selectedSeason = value;
                 NotifyOfPropertyChange(() => SelectedSeason);
                 AppDataAccessor.SetTeamContext(selectedSeason.seasonId, selectedSeason.owningTeam.teamID);
@@ -119,42 +115,35 @@ namespace HudlRT.ViewModels
         private HubGroupViewModel LastGameVM = new HubGroupViewModel() { Name = "Last Game", Games = new BindableCollection<GameViewModel>() };
         private HubGroupViewModel LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
 
+        //This only runs the first time the page is made, so when a user first logs in (due to page caching)
         protected override async void OnInitialize()
         {
             base.OnInitialize();
             BindableCollection<Season> downloadedSeasons = await DownloadAccessor.Instance.GetDownloadsModel(true);
-            if (CachedParameter.hubSeasons != null && CachedParameter.hubSelectedSeason != null)
+            if (ServiceAccessor.ConnectedToInternet())
             {
-                SeasonsDropDown = CachedParameter.hubSeasons;
-                SelectedSeason = CachedParameter.hubSelectedSeason;
+                SeasonsDropDown = await GetSortedSeasons();
             }
             else
             {
-                if (ServiceAccessor.ConnectedToInternet())
-                {
-                    SeasonsDropDown = await GetSortedSeasons();
-                }
-                else
-                {
-                    SeasonsDropDown = downloadedSeasons;
-                }
-                CachedParameter.hubSeasons = SeasonsDropDown;
-                string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
+                SeasonsDropDown = downloadedSeasons;
+            }
 
-                if (savedSeasonId != null && SeasonsDropDown.Any())
-                {
-                    SelectedSeason = SeasonsDropDown.Where(u => u.seasonId == savedSeasonId).FirstOrDefault() ?? SeasonsDropDown[0];
-                }
-                else
-                {
-                    SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
-                    AppDataAccessor.SetTeamContext(SelectedSeason.seasonId, SelectedSeason.owningTeam.teamID);
-                }
-                CachedParameter.hubSelectedSeason = SelectedSeason;
-                if (!SeasonsDropDown.Any())
-                {
-                    //show message here if no seasons
-                }
+            string savedSeasonId = AppDataAccessor.GetTeamContext().seasonID;
+
+            if (savedSeasonId != null && SeasonsDropDown.Any())
+            {
+                SelectedSeason = SeasonsDropDown.Where(u => u.seasonId == savedSeasonId).FirstOrDefault() ?? SeasonsDropDown[0];
+            }
+            else
+            {
+                SelectedSeason = SeasonsDropDown.LastOrDefault(u => u.year >= DateTime.Now.Year) ?? SeasonsDropDown[0];
+                AppDataAccessor.SetTeamContext(SelectedSeason.seasonId, SelectedSeason.owningTeam.teamID);
+            }
+
+            if (!SeasonsDropDown.Any())
+            {
+                //show message here if no seasons
             }
         }
 
@@ -162,6 +151,9 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
+
+            ProgressRingVisibility = Visibility.Collapsed;
+            ProgressRingIsActive = false;
 
             PageIsEnabled = true;
             LastViewedResponse response = AppDataAccessor.GetLastViewed();
@@ -200,134 +192,111 @@ namespace HudlRT.ViewModels
         {
             BindableCollection<HubGroupViewModel> NewGroups = new BindableCollection<HubGroupViewModel>();
 
-            if (CachedParameter.hubGroups != null)
+            //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
+            _previousGame = null;
+            _nextGame = null;
+            _otherItems = null;
+
+            //This is used for extra spacing in the Gridview
+            HubGroupViewModel FirstEntryVM = new HubGroupViewModel() { Name = null, Games = new BindableCollection<GameViewModel>() };
+
+            games = selectedSeason.games;
+
+            //Find the other items if present
+            _otherItems = new BindableCollection<Game>(games.Where(g => g.Classification != 1).ToList<Game>());
+            if (_otherItems != null)
             {
-                Groups = CachedParameter.hubGroups;
-                HubGroupViewModel oldLastViewed = Groups.Where(u => u.Name == "Last Viewed").FirstOrDefault();
-                if (oldLastViewed != null)
+                foreach (Game g in _otherItems)
                 {
-                    Groups[Groups.IndexOf(oldLastViewed)] = LastViewedVM;
+                    games.Remove(g);
                 }
-                else
+            }
+
+            if (ServiceAccessor.ConnectedToInternet())
+            {
+                games = selectedSeason.games;
+
+                GetNextPreviousGames();
+                NextGameVM.Games = new BindableCollection<GameViewModel>();
+                LastGameVM.Games = new BindableCollection<GameViewModel>();
+
+                if (_previousGame != null)
                 {
-                    Groups.Insert(1, LastViewedVM);
+                    GameViewModel previous = new GameViewModel(_previousGame, true, isPreviousGame: true);
+                    previous.FetchPlaylists = previous.FetchThumbnailsAndPlaylistCounts();
+                    previous.IsLargeView = true;
+                    LastGameVM.Games.Add(previous);
                 }
-                ProgressRingVisibility = Visibility.Collapsed;
-                ProgressRingIsActive = false;
-                if (Groups.Count == 0)
+                if (_nextGame != null)
                 {
-                    NoScheduleEntriesText = "There are no schedule entries for this season";
+                    GameViewModel next = new GameViewModel(_nextGame, true, isNextGame: true);
+                    next.IsLargeView = true;
+                    next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
+                    NextGameVM.Games.Add(next);
                 }
+
+                LastViewedResponse response = AppDataAccessor.GetLastViewed();
+                if (response.ID != null)
+                {
+                    NewGroups.Add(LastViewedVM);
+                }
+
+                if (NextGameVM.Games.Count() > 0)
+                {
+                    NewGroups.Add(NextGameVM);
+                }
+                if (LastGameVM.Games.Count() > 0)
+                {
+                    NewGroups.Add(LastGameVM);
+                }
+            }
+
+            if (games != null)
+            {
+                HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
+                foreach (Game g in games)
+                {
+                    GameViewModel gamevm = new GameViewModel(g);
+                    gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
+                    schedule.Games.Add(gamevm);
+                }
+                if (schedule.Games.Count > 0)
+                {
+                    NewGroups.Add(schedule);
+                }
+            }
+
+            HubGroupViewModel otherItems = new HubGroupViewModel() { Name = "Other", Games = new BindableCollection<GameViewModel>() };
+            if (_otherItems != null)
+            {
+                foreach (Game g in _otherItems)
+                {
+                    GameViewModel gamevm = new GameViewModel(g);
+                    gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
+                    otherItems.Games.Add(gamevm);
+                }
+                if (otherItems.Games.Count > 0)
+                {
+                    NewGroups.Add(otherItems);
+                }
+            }
+
+
+            ProgressRingVisibility = Visibility.Collapsed;
+            ProgressRingIsActive = false;
+
+            if (NewGroups.Count == 0)
+            {
+                NoScheduleEntriesText = "There are no schedule entries for this season";
             }
             else
             {
-
-                //If these aren't set here, if there is no schedule, these still link to another season's next and last games.
-                _previousGame = null;
-                _nextGame = null;
-                _otherItems = null;
-
-                //This is used for extra spacing in the Gridview
-                HubGroupViewModel FirstEntryVM = new HubGroupViewModel() { Name = null, Games = new BindableCollection<GameViewModel>() };
-
-                games = selectedSeason.games;
-
-                //Find the other items if present
-                _otherItems = new BindableCollection<Game>(games.Where(g => g.Classification != 1).ToList<Game>());
-                if (_otherItems != null)
-                {
-                    foreach (Game g in _otherItems)
-                    {
-                        games.Remove(g);
-                    }
-                }
-
-                if (ServiceAccessor.ConnectedToInternet())
-                {
-                    games = selectedSeason.games;
-
-                    GetNextPreviousGames();
-                    NextGameVM.Games = new BindableCollection<GameViewModel>();
-                    LastGameVM.Games = new BindableCollection<GameViewModel>();
-
-                    if (_previousGame != null)
-                    {
-                        GameViewModel previous = new GameViewModel(_previousGame, true, isPreviousGame: true);
-                        previous.FetchPlaylists = previous.FetchThumbnailsAndPlaylistCounts();
-                        previous.IsLargeView = true;
-                        LastGameVM.Games.Add(previous);
-                    }
-                    if (_nextGame != null)
-                    {
-                        GameViewModel next = new GameViewModel(_nextGame, true, isNextGame: true);
-                        next.IsLargeView = true;
-                        next.FetchPlaylists = next.FetchThumbnailsAndPlaylistCounts();
-                        NextGameVM.Games.Add(next);
-                    }
-
-                    LastViewedResponse response = AppDataAccessor.GetLastViewed();
-                    if (response.ID != null)
-                    {
-                        NewGroups.Add(LastViewedVM);
-                    }
-
-                    if (NextGameVM.Games.Count() > 0)
-                    {
-                        NewGroups.Add(NextGameVM);
-                    }
-                    if (LastGameVM.Games.Count() > 0)
-                    {
-                        NewGroups.Add(LastGameVM);
-                    }
-                }
-
-                if (games != null)
-                {
-                    HubGroupViewModel schedule = new HubGroupViewModel() { Name = "Schedule", Games = new BindableCollection<GameViewModel>() };
-                    foreach (Game g in games)
-                    {
-                        GameViewModel gamevm = new GameViewModel(g);
-                        gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
-                        schedule.Games.Add(gamevm);
-                    }
-                    if (schedule.Games.Count > 0)
-                    {
-                        NewGroups.Add(schedule);
-                    }
-                }
-
-                HubGroupViewModel otherItems = new HubGroupViewModel() { Name = "Other", Games = new BindableCollection<GameViewModel>() };
-                if (_otherItems != null)
-                {
-                    foreach (Game g in _otherItems)
-                    {
-                        GameViewModel gamevm = new GameViewModel(g);
-                        gamevm.FetchPlaylists = gamevm.FetchThumbnailsAndPlaylistCounts();
-                        otherItems.Games.Add(gamevm);
-                    }
-                    if (otherItems.Games.Count > 0)
-                    {
-                        NewGroups.Add(otherItems);
-                    }
-                }
-
-
-                ProgressRingVisibility = Visibility.Collapsed;
-                ProgressRingIsActive = false;
-
-                if (NewGroups.Count == 0)
-                {
-                    NoScheduleEntriesText = "There are no schedule entries for this season";
-                }
-                else
-                {
-                    NoScheduleEntriesText = "";
-                    //Needed for left padding
-                    NewGroups.Insert(0, FirstEntryVM);
-                }
-
-                Groups = NewGroups;
+                NoScheduleEntriesText = "";
+                //Needed for left padding
+                NewGroups.Insert(0, FirstEntryVM);
             }
+
+            Groups = NewGroups;
         }
 
         public void GetNextPreviousGames()
@@ -407,13 +376,22 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = Visibility.Visible;
 
             GameViewModel gameViewModel = (GameViewModel)eventArgs.ClickedItem;
-            Season seasonToPass = SelectedSeason;
-            seasonToPass.games = new BindableCollection<Game>();
+            Season seasonToPass = new Season() { name=selectedSeason.name, owningTeam = selectedSeason.owningTeam, seasonId = selectedSeason.seasonId, year = selectedSeason.year, games = new BindableCollection<Game>() }; //Because we're changing the games in this season, we need to make a copy.
             seasonToPass.games.Add(gameViewModel.GameModel);
 
             CachedParameter.hubGroups = Groups;
             if (!gameViewModel.IsLastViewed)
             {
+                /*foreach (HubGroupViewModel hgvm in Groups)
+                {
+                    foreach (GameViewModel gvm in hgvm.Games)
+                    {
+                        if (!gvm.IsLastViewed)
+                        {
+                            gvm.FetchPlaylists.
+                        }
+                    }
+                }*/
                 await gameViewModel.FetchPlaylists;
                 if (CachedParameter.sectionGameId != gameViewModel.GameModel.gameId)
                 {

@@ -208,7 +208,8 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
 
-            if (Categories.Count == 0 && (NoPlaylistText == "" || NoPlaylistText == null))
+            //Categories count is checked against one due to us putting an empty category in.
+            if (Categories.Count == 1 && (NoPlaylistText == "" || NoPlaylistText == null))
             {
                 ProgressRingVisibility = Visibility.Visible;
                 ProgressRingIsActive = true;
@@ -234,45 +235,37 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(string gameID)
         {
-            if (CachedParameter.sectionCategories == null)
-            {
-                Categories = null;
-                BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
-                foreach (Category c in gameSelected.categories)
-                {
-                    CategoryViewModel cat = new CategoryViewModel(c);
-                    foreach (Playlist p in c.playlists)
-                    {
-                        PlaylistViewModel pvm = new PlaylistViewModel(p);
-                        cat.Playlists.Add(pvm);
-                        pvm.FetchClips = pvm.FetchClipsAndHeaders();
-                        //AddClipsAndHeadersForPlaylist(p);
-                    }
-                    if (c.playlists != null && c.playlists.Count() != 0)
-                    {
-                        cats.Add(cat);
-                    }
-                }
+            Categories = new BindableCollection<CategoryViewModel>();
+            Categories.Add(new CategoryViewModel(new Category() { name = null }) { Playlists = new BindableCollection<PlaylistViewModel>() });
 
-                if (cats.Count() > 0)//Fixes margin on the left side of page given our scrolling issue
-                {
-                    cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = new BindableCollection<PlaylistViewModel>() });
-                }
-                ProgressRingVisibility = Visibility.Collapsed;
-                ProgressRingIsActive = false;
-
-                Categories = cats;
-                CachedParameter.sectionCategories = Categories;
-            }
-            else
+            foreach (Category c in gameSelected.categories)
             {
-                ProgressRingVisibility = Visibility.Collapsed;
-                ProgressRingIsActive = false;
-                Categories = CachedParameter.sectionCategories;
+                CategoryViewModel cat = new CategoryViewModel(c);
+                foreach (Playlist p in c.playlists)
+                {
+                    PlaylistViewModel pvm = new PlaylistViewModel(p);
+                    cat.Playlists.Add(pvm);
+                    pvm.FetchClips = pvm.FetchClipsAndHeaders();
+                }
+                if (c.playlists != null && c.playlists.Count() != 0)
+                {
+                    Categories.Add(cat);
+                }
             }
+
+            ProgressRingVisibility = Visibility.Collapsed;
+            ProgressRingIsActive = false;
+
+            CachedParameter.sectionCategories = Categories;
+
             MarkDownloadedPlaylists();
 
-            if (Categories.Count == 0)
+            if (Categories.Count == 2 && Categories.ElementAt(1).Playlists.Count == 1)
+            {
+                Categories.Add(Categories.ElementAt(1));
+            }
+
+            if (Categories.Count == 1) //This needs to be 1 as we add a blank category for spacing reasons.
             {
                 NoPlaylistText = "There are no playlists for this schedule entry";
             }
@@ -463,6 +456,7 @@ namespace HudlRT.ViewModels
                 await ResumeDownloadAsync();
             }
         }
+
         private async Task ResumeDownloadAsync()
         {
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
@@ -499,7 +493,6 @@ namespace HudlRT.ViewModels
         public void ProgressCallback(DownloadOperation obj)
         {
             UpdateDiskInformation();
-            //DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived / (long)obj.Progress.TotalBytesToReceive) / (double)(DownloadAccessor.Instance.TotalClips) + (DownloadAccessor.Instance.ClipsComplete / (double)DownloadAccessor.Instance.TotalClips));
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
             if (DownloadProgress == 100)
