@@ -307,8 +307,7 @@ namespace HudlRT.ViewModels
                 await vmClicked.FetchClips;
                 navigationService.NavigateToViewModel<VideoPlayerViewModel>(playlistClicked);
             }
-            
-
+            Logger.Instance.LogPlaylistSelected(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
         }
 
         public async void DeleteButtonClick()
@@ -316,6 +315,7 @@ namespace HudlRT.ViewModels
             foreach (PlaylistViewModel playVM in playlistsSelected)
             {
                 await DownloadAccessor.Instance.RemoveDownload(playVM.PlaylistModel);
+                Logger.Instance.LogPlaylistDownloadRemoved(playVM.PlaylistModel);
             }
             MarkDownloadedPlaylists();
             if(categoriesGrid != null)
@@ -348,7 +348,7 @@ namespace HudlRT.ViewModels
             }
             AppBarOpen = false;
         }
-
+            
         public async void DownloadButtonClick()
         {
             List<Playlist> playlistsToBeDownloaded = new List<Playlist>();
@@ -369,8 +369,7 @@ namespace HudlRT.ViewModels
             }
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Visible;
-            DownloadProgressText = "Determining Download Size";
-            DiskSpaceInformation = "";
+            DownloadProgressText = "Preparing Download";
             DownloadProgress = 0;
             DownloadAccessor.Instance.cts = new CancellationTokenSource();
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = playlistsToBeDownloaded;
@@ -490,7 +489,8 @@ namespace HudlRT.ViewModels
         public void ProgressCallback(DownloadOperation obj)
         {
             UpdateDiskInformation();
-            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived / (long)obj.Progress.TotalBytesToReceive) / (double)(DownloadAccessor.Instance.TotalClips) + (DownloadAccessor.Instance.ClipsComplete / (double)DownloadAccessor.Instance.TotalClips));
+            //DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived / (long)obj.Progress.TotalBytesToReceive) / (double)(DownloadAccessor.Instance.TotalClips) + (DownloadAccessor.Instance.ClipsComplete / (double)DownloadAccessor.Instance.TotalClips));
+            DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
             if (DownloadProgress == 100)
             {

@@ -65,6 +65,11 @@ namespace HudlRT.Common
         public BindableCollection<Clip> clips { get; set; }
     }
 
+    class SeasonsResponse : Response
+    {
+        public BindableCollection<Season> Seasons { get; set; }
+    }
+
     public class NoInternetConnectionException : Exception
     {
 
@@ -105,12 +110,14 @@ namespace HudlRT.Common
         private static string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
 
         public const string URL_SERVICE_LOGIN = "login";
+        public const string URL_SERVICE_LOG = "log";
         public const string URL_SERVICE_GET_TEAMS = "teams";
-        public const string URL_SERVICE_GET_SCHEDULE = "teams/{0}/schedule";//returns games
+        public const string URL_SERVICE_GET_SEASONS_BY_TEAM = "teams/{0}/categories";//returns Seasons for a team, complete with games and categories
         public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games
         public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/{0}/categories";//returns categories
         public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns playlists
         public const string URL_SERVICE_GET_CLIPS = "playlists/{0}/clips?startIndex={1}";//returns clips
+        public const string URL_SERVICE_GET_OTHER_ITEMS = "teams/{0}/categories?seasonId={1}&type=7"; //note the seven at the end is hard coded so that this returns "Other Items"
         public const string NO_CONNECTION = "NoConnection";
 
         public static bool ConnectedToInternet()
@@ -190,63 +197,33 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<GameResponse> GetGames(string teamId, string seasonId)
+        public static async Task<SeasonsResponse> GetPopulatedSeasons(Team team)
         {
-            var games = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_SCHEDULE_BY_SEASON, teamId, seasonId), true);
-            if (!string.IsNullOrEmpty(games) && games != NO_CONNECTION)
+            string seasons = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_SEASONS_BY_TEAM, team.teamID), true);
+            if (!string.IsNullOrEmpty(seasons) && seasons != NO_CONNECTION)
             {
                 try
                 {
-                    var obj = JsonConvert.DeserializeObject<List<GameDTO>>(games);
-                    BindableCollection<Game> gameCollection = new BindableCollection<Game>();
-                    foreach (GameDTO gameDTO in obj)
+                    BindableCollection<Season> seasonsList = new BindableCollection<Season>();
+                    List<CategoryDTO> obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(seasons);
+                    foreach (CategoryDTO cat in obj)
                     {
-                        gameCollection.Add(Game.FromDTO(gameDTO));
+                        seasonsList.Add(new Season(cat, team));
                     }
-                    return new GameResponse { status = SERVICE_RESPONSE.SUCCESS, games = gameCollection };
+                    return new SeasonsResponse { status = SERVICE_RESPONSE.SUCCESS, Seasons = seasonsList };
                 }
                 catch (Exception)
                 {
-                    return new GameResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
+                    return new SeasonsResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
                 }
             }
-            else if (games == NO_CONNECTION)
+            else if (seasons == NO_CONNECTION)
             {
-                return new GameResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+                return new SeasonsResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
             }
             else
             {
-                return new GameResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
-            }
-        }
-
-        public static async Task<CategoryResponse> GetGameCategories(string gameId)
-        {
-            var categories = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CATEGORIES_FOR_GAME,gameId), true);
-            if (!string.IsNullOrEmpty(categories) && categories != NO_CONNECTION)
-            {
-                try
-                {
-                    var obj = JsonConvert.DeserializeObject<List<CategoryDTO>>(categories);
-                    BindableCollection<Category> categoryCollection = new BindableCollection<Category>();
-                    foreach (CategoryDTO categoryDTO in obj)
-                    {
-                        categoryCollection.Add(Category.FromDTO(categoryDTO));
-                    }
-                    return new CategoryResponse { status = SERVICE_RESPONSE.SUCCESS, categories = categoryCollection };
-                }
-                catch (Exception)
-                {
-                    return new CategoryResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
-                }
-            }
-            else if (categories == NO_CONNECTION)
-            {
-                return new CategoryResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
-            }
-            else
-            {
-                return new CategoryResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
+                return new SeasonsResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
             }
         }
 
@@ -410,6 +387,29 @@ namespace HudlRT.Common
                 return null;
             }
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public static async Task<string> MakeApiCallLog(string url, string jsonString)
+        {
+            if (ConnectedToInternet())
+            {
+                var httpClient = new HttpClient();
+                Uri uri = new Uri(URL_BASE + url);
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+                httpRequestMessage.Headers.Add("hudl-authtoken", ApplicationData.Current.RoamingSettings.Values["hudl-authtoken"].ToString());
+                httpRequestMessage.Headers.Add("User-Agent", "HudlWin8/1.0.0");
+                httpRequestMessage.Content = new StringContent(jsonString);
+                httpRequestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                //response.StatusCode 404 500 401
+                if (!response.IsSuccessStatusCode)
+                {
+                    //APIExceptionDialog.ShowStatusCodeExceptionDialog(response.StatusCode.ToString(), uri.ToString());
+                    return null;
+                }
+                return await response.Content.ReadAsStringAsync();
+            }
+            else { return null; }
         }
     }
 }
