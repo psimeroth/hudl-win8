@@ -255,8 +255,6 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
 
-            CachedParameter.sectionCategories = Categories;
-
             MarkDownloadedPlaylists();
 
             if (Categories.Count == 0)
@@ -291,7 +289,6 @@ namespace HudlRT.ViewModels
             ProgressRingIsActive = true;
             ProgressRingVisibility = Visibility.Visible;
             PageIsEnabled = false;
-            CachedParameter.sectionCategories = Categories;
             PlaylistViewModel vmClicked = (PlaylistViewModel)eventArgs.ClickedItem;
             Playlist playlistClicked = vmClicked.PlaylistModel;
             Playlist matchingDownload = DownloadAccessor.Instance.downloadedPlaylists.Where(u => u.playlistId == playlistClicked.playlistId).FirstOrDefault();

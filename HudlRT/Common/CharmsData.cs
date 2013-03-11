@@ -36,7 +36,6 @@ namespace HudlRT.Common
         public static void Logout(IUICommand command)
         {
             AppDataAccessor.RemovePasswords();
-            CachedParameter.resetCache();
             navigationService.NavigateToViewModel<LoginViewModel>();
         }
 
