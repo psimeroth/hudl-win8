@@ -291,7 +291,7 @@ namespace HudlRT.ViewModels
         {
             List<Game> sortedGames = new List<Game>();
 
-            sortedGames.AddRange(games);
+            sortedGames.AddRange(games.Where(u => u.Classification == 1));
             sortedGames.Sort((x, y) => DateTime.Compare(y.date, x.date));//most recent to least recent
 
             if (sortedGames.Count > 0)
