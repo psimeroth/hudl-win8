@@ -304,8 +304,8 @@
                         <StackPanel VerticalAlignment="Top" Margin="0">
                             <Grid Width="80" Height="80" Margin="0,0,0,-4" HorizontalAlignment="Center">
                                 <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource AppBarItemBackgroundThemeBrush}"/>
-                                <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource HudlDarkGrayAccent}"/>
-                                <ContentPresenter x:Name="Content" HorizontalAlignment="Center" Margin="-1,-1,0,0" VerticalAlignment="Center" Foreground="{StaticResource HudlMediumGray}"/>
+                                <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource HudlMediumDarkGray}"/>
+                                <ContentPresenter x:Name="Content" HorizontalAlignment="Center" Margin="-1,-1,0,0" VerticalAlignment="Center" Foreground="{StaticResource HudlMediumDarkGray}"/>
                             </Grid>
                         </StackPanel>
                         <Rectangle
@@ -332,9 +332,6 @@
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlDarkGray}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlMediumDarkGray}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>

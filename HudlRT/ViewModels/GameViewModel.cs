@@ -31,6 +31,8 @@ namespace HudlRT.ViewModels
                 playButtonVisibility = value;
             }
         }
+        public bool IsNextGame { get; set; }
+        public bool IsPreviousGame { get; set; }
 
         public string Opponent
         {
@@ -44,7 +46,18 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return !IsLastViewed ? GameModel.DisplayDate : "Viewed: " + GameModel.DisplayDate;
+                if (IsLastViewed)
+                {
+                    return "Viewed: " + GameModel.DisplayDate;
+                }
+                if(GameModel.Classification != 1)
+                {
+                    return "-";
+                }
+                else
+                {
+                    return GameModel.DisplayDate;
+                }
             }
         }
 
@@ -81,13 +94,15 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false)
+        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false, bool isNextGame = false, bool isPreviousGame = false)
         {
             GameModel = game;
             IsLargeView = isLarge;
             IsLastViewed = isLastviewed;
+			IsNextGame = isNextGame;
+            IsPreviousGame = isPreviousGame;
             Thumbnail = "ms-appx:///Assets/hudl-mark-gray.png";
-            if (IsLastViewed)
+            if (IsLastViewed || IsNextGame || IsPreviousGame)
             {
                 ImageWidth = 565;
             }
@@ -99,48 +114,39 @@ namespace HudlRT.ViewModels
 
         public async Task FetchThumbnailsAndPlaylistCounts() 
         {
+            int numLists = 0;
             if (ServiceAccessor.ConnectedToInternet())
             {
-                CategoryResponse response = await ServiceAccessor.GetGameCategories(GameModel.gameId);
-                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                foreach (Category cat in GameModel.categories)
                 {
-                    GameModel.categories = response.categories;
-                    int numLists = 0;
-                    foreach (Category cat in GameModel.categories)
+                    PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
+                    if (playResponse.status == SERVICE_RESPONSE.SUCCESS)
                     {
-                        PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
-                        if (response.status == SERVICE_RESPONSE.SUCCESS)
+                        cat.playlists = playResponse.playlists;
+                        if (cat.playlists != null && cat.playlists.Count() > 0)
                         {
-                            cat.playlists = playResponse.playlists;
-                            if (cat.playlists != null && cat.playlists.Count() > 0)
+                            numLists += cat.playlists.Count();
+                            //Populate the thumbnail on the hub
+                            if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
                             {
-                                numLists += cat.playlists.Count();
-                                //Populate the thumbnail on the hub
-                                if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
+                                if (cat.playlists[0].thumbnailLocation != null)
                                 {
-                                    if (cat.playlists[0].thumbnailLocation != null)
-                                    {
-                                        Thumbnail = cat.playlists[0].thumbnailLocation;
-                                        ImageWidth = 565;
-                                    }
+                                    Thumbnail = cat.playlists[0].thumbnailLocation;
                                 }
                             }
                         }
                     }
-                    //Populate the numplaylistsfield.
-                    NumPlaylists = numLists.ToString();
                 }
             }
             else
             {
-                int numLists = 0;
                 foreach (Category cat in GameModel.categories)
                 {
                     numLists += cat.playlists.Count;
                 }
-                NumPlaylists = numLists.ToString();
-                ImageWidth = 565;
             }
+            //Populate the NumPlaylists field with the counter
+            NumPlaylists = numLists.ToString();
         }
     }
 }

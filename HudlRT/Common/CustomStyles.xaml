@@ -10,8 +10,11 @@
     <Color x:Key="HudlMediumDarkGrayColor">#939C9C</Color>
     <Color x:Key="HudlDarkGrayAccentColor">#2F2F2F</Color>
     <Color x:Key="HudlDarkGrayColor">#171919</Color>
-    <Color x:Key="HudlPartialBlackColor">#AA000000</Color>
-
+    
+    <Color x:Key="HudlPartialBlackColor">#DD000000</Color>
+    <Color x:Key="HudlPartialGrayColor">#552F2F2F</Color>
+    <Color x:Key="HudlPartialOrangeColor">#AAf87620</Color>
+    
     <!--GRADIENTS!!!!!-->
     <LinearGradientBrush x:Key="HudlGrayGradient" EndPoint="0.5,1" StartPoint="0.5,0.75">
         <GradientStop Color="Black" Offset="1"/>
@@ -28,6 +31,7 @@
     <SolidColorBrush x:Key="HudlDarkGrayAccent" Color="{StaticResource HudlDarkGrayAccentColor}" />
     <SolidColorBrush x:Key="HudlDarkGray" Color="{StaticResource HudlDarkGrayColor}" />
     <SolidColorBrush x:Key="HudlPartialBlack" Color="{StaticResource HudlPartialBlackColor}" />
+    <SolidColorBrush x:Key="HudlPartialGray" Color="{StaticResource HudlPartialGrayColor}" />
     
     <SolidColorBrush x:Key="ListViewItemPlaceholderBackgroundThemeBrush" Color="{StaticResource HudlMediumGrayColor}" />
     <SolidColorBrush x:Key="ListViewItemSelectedBackgroundThemeBrush" Color="{StaticResource HudlMediumDarkGrayColor}" />
@@ -97,8 +101,8 @@
                         <StackPanel Orientation="Vertical" Margin="22,0">
                             <TextBlock x:Name="Year" Text="{Binding name}" HorizontalAlignment="Right" FontSize="40" FontWeight="Light" Foreground="{StaticResource HudlMediumGray}" />
                             <StackPanel Orientation="Horizontal" Margin="0,-10,0,0" HorizontalAlignment="Right" >
-                                <TextBlock x:Name="SchoolName" Text="{Binding SchoolName}" FontSize="22" Foreground="{StaticResource HudlMediumDarkGray}" FontWeight="Bold"/>
-                                <TextBlock x:Name="TeamName" Text="{Binding TeamName}" FontSize="22" FontWeight="Light" Foreground="{StaticResource HudlMediumDarkGray}" Margin="10,0,0,0"/>
+                                <TextBlock x:Name="SchoolName" Text="{Binding SchoolName}" FontSize="22" Foreground="{StaticResource HudlMediumDarkGray}" FontWeight="Light"/>
+                                <TextBlock x:Name="TeamName" Text="{Binding TeamName}" FontSize="22" FontWeight="Bold" Foreground="{StaticResource HudlMediumDarkGray}" Margin="10,0,0,0"/>
                             </StackPanel>
                         </StackPanel>
                         <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
