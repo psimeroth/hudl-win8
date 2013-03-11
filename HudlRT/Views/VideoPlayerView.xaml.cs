@@ -32,6 +32,8 @@ namespace HudlRT.Views
         private const int COLUMN_WIDTH = 130;
         private const int GRID_HEADER_FONT_SIZE = 22;
 
+        private Grid timelineContainer;
+
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
         private string _rootNamespace;
@@ -523,7 +525,40 @@ namespace HudlRT.Views
             {
                 TopAppBar.IsOpen = true;
                 BottomAppBar.IsOpen = true;
+
+                if (timelineContainer == null)
+                {
+                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                }
+                //timelineContainer.Margin = new Thickness(0,0,0,200);
+
+                Storyboard sb = new Storyboard();
+                ObjectAnimationUsingKeyFrames slideUpAnimation = initilizeSlideUpKeyFrames();
+
+                Storyboard.SetTarget(slideUpAnimation, timelineContainer as DependencyObject);
+                Storyboard.SetTargetProperty(slideUpAnimation, "Margin");
+
+                sb.Children.Add(slideUpAnimation);
+                sb.Begin();
+
+                
+                
             }
+        }
+
+        private ObjectAnimationUsingKeyFrames initilizeSlideUpKeyFrames()
+        {
+            ObjectAnimationUsingKeyFrames slideUpAnimation = new ObjectAnimationUsingKeyFrames();
+            for (int i = 1; i <= 20; i++)
+            {
+                DiscreteObjectKeyFrame frame = new DiscreteObjectKeyFrame();
+                frame.KeyTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(4.55 * i));
+                frame.Value = new Thickness(0, 0, 0, Math.Pow(5, 0.16460148371 * i));
+
+                slideUpAnimation.KeyFrames.Add(frame);
+            }
+
+            return slideUpAnimation;
         }
 
         private void setPauseVisible()
@@ -611,6 +646,11 @@ namespace HudlRT.Views
         private void SortFilterPopup_Opened_1(object sender, object e)
         {
             PlaybackOptionsPopup.IsOpen = false;
+        }
+
+        private void AppBarClosed(object sender, object e)
+        {
+            timelineContainer.Margin = new Thickness(0);
         }
     }
 
