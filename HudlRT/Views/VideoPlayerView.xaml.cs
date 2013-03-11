@@ -540,10 +540,12 @@ namespace HudlRT.Views
                 Storyboard.SetTargetProperty(slideUpAnimation, "Margin");
 
                 sb.Children.Add(slideUpAnimation);
-                sb.Begin();
-
-                
-                
+                sb.Begin();  
+            }
+            else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
+            {
+                TopAppBar.IsOpen = false;
+                BottomAppBar.IsOpen = false;
             }
         }
 
@@ -652,6 +654,12 @@ namespace HudlRT.Views
         private void AppBarClosed(object sender, object e)
         {
             timelineContainer.Margin = new Thickness(0);
+        }
+
+        private void CloseOptionsPopup(object sender, RoutedEventArgs e)
+        {
+            PlaybackOptionsPopup.IsOpen = false;
+            OptionsMenu.Focus(FocusState.Pointer);
         }
     }
 

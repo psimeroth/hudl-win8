@@ -148,7 +148,7 @@
                 </ListView>
             </Grid>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoPlaylistText}" FontFamily="Segoe UI Semilight"  TextWrapping="Wrap"/>
-        <ProgressRing Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
+        <ProgressRing x:Name="LoadingRing" Visibility="{Binding ProgressRingVisibility}" IsActive="{Binding ProgressRingIsActive}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="150" Foreground="{StaticResource HudlBlue}" />
         <VisualStateManager.VisualStateGroups>
 
             <!-- Visual states reflect the application's view state -->
@@ -184,7 +184,7 @@
     </Grid>
 
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="{StaticResource HudlDarkGray}"  IsOpen="{Binding AppBarOpen, Mode=TwoWay}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3" IsSticky="True">
+        <AppBar Background="{StaticResource HudlDarkGray}" IsOpen="{Binding AppBarOpen, Mode=TwoWay}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3" IsSticky="True">
             <Grid Name="AppBar">
                 <Grid>
                     <Button x:Name="btnDownload" Visibility="{Binding DownloadButton_Visibility}" Width="230" Height="50" FontSize="20" Content="Download Playlist(s)" VerticalAlignment="Center"

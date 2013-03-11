@@ -32,6 +32,7 @@ namespace HudlRT.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            LoadingRing.IsActive = false;
         }
 
         private void GoBack(object sender, RoutedEventArgs e)
