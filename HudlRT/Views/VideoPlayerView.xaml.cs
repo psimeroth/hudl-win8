@@ -44,7 +44,6 @@ namespace HudlRT.Views
             set { _rootNamespace = value; }
         }
         private int count = 0;
-        private TranslateTransform dragTranslation;
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
         private long keyPressLength = 225;
         private DispatcherTimer rewindTimer { get; set; }
@@ -60,7 +59,7 @@ namespace HudlRT.Views
         {
             this.InitializeComponent();
 
-            FilteredClips.RenderTransform = this.dragTranslation;
+            gridHeaderScroll.ViewChanged += gridHeaderScroll_ViewChanged;
             FilteredClips.Loaded += filteredClips_Loaded;
 
             btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
