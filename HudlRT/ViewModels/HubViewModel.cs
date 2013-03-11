@@ -198,8 +198,6 @@ namespace HudlRT.ViewModels
             _otherItems = null;
 
             //This is used for extra spacing in the Gridview
-            HubGroupViewModel FirstEntryVM = new HubGroupViewModel() { Name = null, Games = new BindableCollection<GameViewModel>() };
-
             games = selectedSeason.games;
 
             //Find the other items if present
@@ -292,8 +290,6 @@ namespace HudlRT.ViewModels
             else
             {
                 NoScheduleEntriesText = "";
-                //Needed for left padding
-                NewGroups.Insert(0, FirstEntryVM);
             }
 
             Groups = NewGroups;

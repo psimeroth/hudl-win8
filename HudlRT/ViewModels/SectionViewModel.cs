@@ -236,7 +236,6 @@ namespace HudlRT.ViewModels
         public async Task GetGameCategories(string gameID)
         {
             Categories = new BindableCollection<CategoryViewModel>();
-            Categories.Add(new CategoryViewModel(new Category() { name = null }) { Playlists = new BindableCollection<PlaylistViewModel>() });
 
             foreach (Category c in gameSelected.categories)
             {
@@ -260,12 +259,7 @@ namespace HudlRT.ViewModels
 
             MarkDownloadedPlaylists();
 
-            if (Categories.Count == 2 && Categories.ElementAt(1).Playlists.Count == 1)
-            {
-                Categories.Add(Categories.ElementAt(1));
-            }
-
-            if (Categories.Count == 1) //This needs to be 1 as we add a blank category for spacing reasons.
+            if (Categories.Count == 0)
             {
                 NoPlaylistText = "There are no playlists for this schedule entry";
             }
