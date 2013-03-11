@@ -29,6 +29,8 @@ namespace HudlRT.Views
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
         private const int POPUP_WIDTH = 346;
+        private const int COLUMN_WIDTH = 130;
+        private const int GRID_HEADER_FONT_SIZE = 22;
 
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
@@ -87,7 +89,9 @@ namespace HudlRT.Views
             videoMediaElement.Width = Window.Current.Bounds.Width;
             videoMediaElement.Height = Window.Current.Bounds.Height;
             VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            initializeGrid(vm.Parameter.playlist);
+            vm.GridHeadersTextSorted = new List<string>();
+            vm.GridHeadersTextUnsorted = new List<string>();
+            initializeGrid(vm);
 
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
@@ -95,8 +99,9 @@ namespace HudlRT.Views
             vm.setVideoMediaElement(videoMediaElement);
         }
 
-        private void initializeGrid(Playlist playlist)
+        private void initializeGrid(VideoPlayerViewModel vm)
         {
+			Playlist playlist = vm.Parameter.playlist;
             double screenWidth = Window.Current.Bounds.Width;
             string[] displayColumns = playlist.displayColumns;
             var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid MinWidth='" + screenWidth + "'> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
@@ -109,23 +114,26 @@ namespace HudlRT.Views
                     ColumnDefinition col = new ColumnDefinition();
                     col.Width = new GridLength(130);
                     gridHeaders.ColumnDefinitions.Add(col);
-                    columnDefinitions += @"<ColumnDefinition Width=""130"" /> ";
+                    columnDefinitions += String.Format(@"<ColumnDefinition Width=""{0}"" /> ", COLUMN_WIDTH);
                     rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                     Border b = new Border();
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
                     b.BorderThickness = new Thickness(0, 0, 1, 0);
                     TextBlock t = new TextBlock();
                     Run text = new Run();
-                    text.Text = displayColumns[i];
+                    vm.GridHeadersTextSorted.Add(trimHeaderText(displayColumns[i], true));
+                    vm.GridHeadersTextUnsorted.Add(trimHeaderText(displayColumns[i], false));
+                    text.Text = vm.GridHeadersTextUnsorted.Last();
                     t.Inlines.Add(text);
                     b.SetValue(Grid.RowProperty, 0);
                     b.SetValue(Grid.ColumnProperty, i);
                     t.Style = (Style)Application.Current.Resources["VideoPlayer_TextBlockStyle_GridHeader"];
-
+                    
                     t.Tag = i;
                     t.PointerReleased += columnHeaderClick;
 
                     b.Child = t;
+                    t.FontSize = GRID_HEADER_FONT_SIZE;
                     gridHeaders.Children.Add(b);
                 }
             }
@@ -133,6 +141,40 @@ namespace HudlRT.Views
 
             var dt = (DataTemplate)XamlReader.Load(template);
             FilteredClips.ItemTemplate = dt;
+        }
+
+        private string trimHeaderText(string headerText, bool addIcon)
+        {
+            TextBlock textBlock = new TextBlock();
+            textBlock.Text = headerText;
+            textBlock.FontSize = GRID_HEADER_FONT_SIZE;
+
+            if (addIcon)
+            {
+                Run text = new Run();
+                text.Text = " \u25B2";
+                textBlock.Inlines.Add(text);
+            }
+
+            textBlock.Measure(new Size(double.MaxValue, double.MaxValue));
+
+            if(textBlock.ActualWidth > COLUMN_WIDTH - 10){
+                while (textBlock.ActualWidth > COLUMN_WIDTH - 10)
+                {
+                    headerText = headerText.Remove(headerText.Length - 1).Trim();
+                    textBlock.Text = String.Concat(headerText, "...");
+                    if (addIcon)
+                    {
+                        Run text = new Run();
+                        text.Text = " \u25B2";
+                        textBlock.Inlines.Add(text);
+                    }
+                    textBlock.Measure(new Size(double.MaxValue, double.MaxValue));
+                }
+                headerText = String.Concat(headerText, "...");
+            }
+            
+            return headerText;
         }
 
         private void filteredClips_Loaded(object sender, RoutedEventArgs e)
