@@ -102,7 +102,7 @@ namespace HudlRT.ViewModels
 			IsNextGame = isNextGame;
             IsPreviousGame = isPreviousGame;
             Thumbnail = "ms-appx:///Assets/hudl-mark-gray.png";
-            if (IsLastViewed)
+            if (IsLastViewed || IsNextGame || IsPreviousGame)
             {
                 ImageWidth = 565;
             }
@@ -147,7 +147,6 @@ namespace HudlRT.ViewModels
             }
             //Populate the NumPlaylists field with the counter
             NumPlaylists = numLists.ToString();
-            ImageWidth = 565;
         }
     }
 }

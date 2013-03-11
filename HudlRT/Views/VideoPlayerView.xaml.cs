@@ -92,6 +92,7 @@ namespace HudlRT.Views
             vm.GridHeadersTextSorted = new List<string>();
             vm.GridHeadersTextUnsorted = new List<string>();
             initializeGrid(vm);
+
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
@@ -100,9 +101,9 @@ namespace HudlRT.Views
 
         private void initializeGrid(VideoPlayerViewModel vm)
         {
-            Playlist playlist = vm.Parameter;
+			Playlist playlist = vm.Parameter.Playlist;            double screenWidth = Window.Current.Bounds.Width;
             string[] displayColumns = playlist.displayColumns;
-            var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
+            var template = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> <Grid MinWidth='" + screenWidth + "'> <Grid.ColumnDefinitions> @ </Grid.ColumnDefinitions> % </Grid> </DataTemplate>";
             string columnDefinitions = "";
             string rowText = "";
             if (displayColumns != null)

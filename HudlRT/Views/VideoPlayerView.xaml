@@ -138,30 +138,34 @@
                                    />
             </ContentControl>
             <Grid x:Name="VideoControls">
-                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
+                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
                 <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <Button x:Name="btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20"
+                                    Content="&#xE102;&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="14"
                                     PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
                         <Button.Projection>
                             <PlaneProjection RotationY="180"/>
                         </Button.Projection>
                     </Button>
                     <Button x:Name="btnSlowReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" 
-                                    Content="&#xE016;" FontSize="30" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
+                                    Content="&#xE102;&#xE102;" FontSize="14" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
+                        <Button.Projection>
+                            <PlaneProjection RotationY="180"/>
+                        </Button.Projection>
+                    </Button>
                     <Button x:Name="btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
                                     caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
                     <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center"
                                     Visibility="Collapsed"/>
                 </StackPanel>
 
-                <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
+                <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
 
                 <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Button x:Name="btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE102;&#xE102;" FontSize="20" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
+                                    Content="&#xE102;&#xE102;&#xE102;" FontSize="14" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                     <Button x:Name="btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE017;" FontSize="30" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
+                                    Content="&#xE102;&#xE102;" FontSize="14" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                     <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30"
                                     caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
                     <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30"/>
@@ -189,7 +193,7 @@
         </Grid>
     </Grid>
     <common:LayoutAwarePage.TopAppBar>
-        <AppBar x:Name="TitleBar" Background="{StaticResource HudlDarkGray}" Opacity=".85" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
+        <AppBar x:Name="TitleBar" Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3">
             <Grid Name="header" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85"/>
@@ -198,27 +202,34 @@
                     <ColumnDefinition Width="250"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="0" />
-                <TextBlock x:Name="PlaylistName" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="28" Foreground="{StaticResource HudlMediumGray}"/>
+                <TextBlock x:Name="PlaylistName" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="30" FontWeight="Light" Foreground="{StaticResource HudlMediumGray}"/>
                 <Button x:Name="OptionsMenu" Grid.Column="2" Width="250" Height="45" FontSize="22" FontWeight="Light" Background="Transparent" Foreground="{StaticResource HudlLightGray}" Click="openOptionsMenu">Options</Button>
-                <Grid Grid.Column="3">
-                    <Button x:Name="btnDownload" Visibility="{Binding DownloadButtonVisibility}" Width="250" Height="45" FontSize="22" Content="Download Playlist"  HorizontalAlignment="Center" Background="Transparent" Foreground="{StaticResource HudlLightGray}" FontWeight="Light"
+                <Button x:Name="btnDownload" Grid.Column="3" Visibility="{Binding DownloadButtonVisibility}" Width="250" Height="45" FontSize="22" Content="Download Playlist"  HorizontalAlignment="Center" Background="Transparent" Foreground="{StaticResource HudlLightGray}" FontWeight="Light"
                          caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
-                    <Grid Grid.Column="2" Visibility="Collapsed" Margin="0,5,0,5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="165" ></TextBlock>
-                        <ProgressBar Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="165" Foreground="{StaticResource HudlBlue}"/>
+                <Grid Grid.Column="3" Visibility="{Binding ProgressGridVisibility}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="0,0,60,0" Grid.Row="0" HorizontalAlignment="Left" Foreground="{StaticResource HudlMediumGray}" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="190"/>
+                    <ProgressBar Margin="0,0,60,0" Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="20" Width="190" Foreground="{StaticResource HudlMediumDarkGray}"/>
+                    <Button x:Name="btnCancel" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,0,0"
+                        caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
+                </Grid>
+                <Grid Grid.Column="3" Visibility="{Binding DownloadedVisibility}" Margin="0,0,45,0">
+                    <Grid >
+                        <TextBlock Margin="0,7,0,0" Text="Downloaded" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22" Foreground="{StaticResource HudlLightGray}" FontWeight="Light"/>
+                        <Grid Grid.Row="1" Margin="0,0,-5,3" HorizontalAlignment="Right" >
+                            <TextBlock Grid.Column="0" Margin="0,2,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="30" Text="&#xE188;"/>
+                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontFamily="Segoe UI Symbol" FontSize="20" Text="&#xE0E7;"/>
+                        </Grid>
                     </Grid>
                 </Grid>
-                <Button x:Name="btnCancel" Visibility="Collapsed" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,17,0"
-                         caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
             </Grid>
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="Black" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3" Opacity=".85">
+        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3">
             <Grid x:Name="dataPanel" Grid.Row="2" Height="200">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />

@@ -27,7 +27,7 @@ namespace HudlRT.ViewModels
     public class VideoPlayerViewModel : ViewModelBase
     {
         private readonly INavigationService navigationService;
-        public Playlist Parameter { get; set; }       //Passed in from hub page - contains the game Id.
+        public PageParameter Parameter { get; set; }       //Passed in from hub page - contains the game Id.
         private DisplayRequest dispRequest = null;
         private PlaybackType playbackType;
         private List<Clip> Clips { get; set; }
@@ -92,6 +92,17 @@ namespace HudlRT.ViewModels
             {
                 downloadButtonVisibility = value;
                 NotifyOfPropertyChange(() => DownloadButtonVisibility);
+            }
+        }
+
+        private Visibility downloadedVisibility;
+        public Visibility DownloadedVisibility
+        {
+            get { return downloadedVisibility; }
+            set
+            {
+                downloadedVisibility = value;
+                NotifyOfPropertyChange(() => DownloadedVisibility);
             }
         }
 
@@ -225,8 +236,8 @@ namespace HudlRT.ViewModels
         {
             base.OnActivate();
 
-            AppDataAccessor.SetLastViewed(Parameter.name, DateTime.Now.ToString("g"), Parameter.playlistId, Parameter.thumbnailLocation);
-            Clips = Parameter.clips.ToList();
+            AppDataAccessor.SetLastViewed(Parameter.playlist.name, DateTime.Now.ToString("g"), Parameter.playlist.playlistId, Parameter.playlist.thumbnailLocation);
+            Clips = Parameter.playlist.clips.ToList();
             
             FilteredClips = new ObservableCollection<Clip>(Clips);
             if (FilteredClips.Any())
@@ -244,8 +255,8 @@ namespace HudlRT.ViewModels
 
             getMoreClips();
 
-            GridHeaders = Parameter.displayColumns;
-            PlaylistName = Parameter.name;
+            GridHeaders = Parameter.playlist.displayColumns;
+            PlaylistName = Parameter.playlist.name;
 
             int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
             if (playbackTypeResult == null)
@@ -272,13 +283,14 @@ namespace HudlRT.ViewModels
             BindableCollection<Playlist> downloadedPlaylists = DownloadAccessor.Instance.downloadedPlaylists;
             foreach (Playlist p in downloadedPlaylists)
             {
-                if (p.playlistId == Parameter.playlistId)
+                if (p.playlistId == Parameter.playlist.playlistId)
                 {
                     downloadFound = true;
                     break;
                 }
             }
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            DownloadedVisibility = Visibility.Collapsed;
             if (DownloadAccessor.Instance.Downloading)
             {
                 LoadActiveDownloadsAsync();
@@ -295,23 +307,22 @@ namespace HudlRT.ViewModels
                 else
                 {
                     DownloadButtonVisibility = Visibility.Collapsed;
+                    DownloadedVisibility = Visibility.Visible;
                 }
             }
         }
 
         private async Task LoadActiveDownloadsAsync()
         {
-            IReadOnlyList<DownloadOperation> downloads = null;
-            downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
-            if (downloads.Count > 0)
+            if (DownloadAccessor.Instance.Downloading)
             {
-                //for simplicity we support only one download
-                await ResumeDownloadAsync(downloads.First());
+                await ResumeDownloadAsync();
             }
         }
-        private async Task ResumeDownloadAsync(DownloadOperation downloadOperation)
+        private async Task ResumeDownloadAsync()
         {
-            await downloadOperation.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
+            DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
+            await DownloadAccessor.Instance.Download.AttachAsync().AsTask(DownloadAccessor.Instance.progressCallback);
         }
 
         private async void initialClipPreload()
@@ -328,7 +339,7 @@ namespace HudlRT.ViewModels
 
         private async void getMoreClips()
         {
-            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalPlaylistClips(Parameter.playlistId, 100);
+            List<Clip> remainingClipsList = await ServiceAccessor.GetAdditionalPlaylistClips(Parameter.playlist.playlistId, 100);
             foreach (Clip clip in remainingClipsList)
             {
                 foreach (Angle angle in clip.angles)
@@ -349,7 +360,7 @@ namespace HudlRT.ViewModels
         private void getAngleNames()
         {
             HashSet<string> types = new HashSet<string>();
-            foreach (Clip clip in Parameter.clips)
+            foreach (Clip clip in Parameter.playlist.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -364,7 +375,7 @@ namespace HudlRT.ViewModels
             }
 
             AngleTypes = typeObjects;
-            foreach (Clip clip in Parameter.clips)
+            foreach (Clip clip in Parameter.playlist.clips)
             {
                 foreach (Angle angle in clip.angles)
                 {
@@ -776,7 +787,7 @@ namespace HudlRT.ViewModels
                     filterCriteria.Add(new FilterCriteriaViewModel(id, criteria));
                 }
 
-                filter = new FilterViewModel(id, Parameter.displayColumns[id], SortType.None, filterCriteria, this);
+                filter = new FilterViewModel(id, Parameter.playlist.displayColumns[id], SortType.None, filterCriteria, this);
             }
             else
             {
@@ -833,13 +844,12 @@ namespace HudlRT.ViewModels
             DownloadButtonVisibility = Visibility.Collapsed;
             DownloadProgress = 0;
             DownloadAccessor.Instance.cts = new CancellationTokenSource();
-            DownloadProgressText = "Determining Size";
-            Playlist playlistCopy = Playlist.Copy(Parameter);
+            DownloadProgressText = "Preparing Download";
+            Playlist playlistCopy = Playlist.Copy(Parameter.playlist);
             List<Playlist> currentPlaylistList = new List<Playlist> { playlistCopy };
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = currentPlaylistList;
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            //Parameter being updated on another branch
-            //DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, Parameter.Season);
+            DownloadAccessor.Instance.DownloadPlaylists(currentPlaylistList, Parameter.season);
         }
 
         public void CancelButtonClick()
@@ -848,20 +858,21 @@ namespace HudlRT.ViewModels
             {
                 DownloadAccessor.Instance.cts.Cancel();
             }
+            DownloadedVisibility = Visibility.Collapsed;
             ProgressGridVisibility = Visibility.Collapsed;
-            DownloadButtonVisibility = Visibility.Collapsed;
+            DownloadButtonVisibility = Visibility.Visible;
         }
 
         public void ProgressCallback(DownloadOperation obj)
         {
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
-            int downloadedPlaylistCount = 0;
             if (DownloadProgress == 100)
             {
                 ProgressGridVisibility = Visibility.Collapsed;
                 DownloadAccessor.Instance.currentlyDownloadingPlaylists = new List<Playlist>();
                 DownloadProgress = 0;
+                DownloadedVisibility = Visibility.Visible;
             }
         }
 

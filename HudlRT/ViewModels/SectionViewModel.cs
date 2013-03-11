@@ -22,7 +22,7 @@ namespace HudlRT.ViewModels
     public class SectionViewModel : ViewModelBase
     {
         INavigationService navigationService;
-        public Season Parameter { get; set; }       //Passed in from hub page - contains the game selected.
+        public PageParameter Parameter { get; set; }       //Passed in from hub page - contains the game selected.
         public Game gameSelected { get; set; }
         private string _gameId;     //Used to tell if the page needs to be reloaded
         GridView categoriesGrid;
@@ -192,7 +192,7 @@ namespace HudlRT.ViewModels
             SettingsPane.GetForCurrentView().CommandsRequested += CharmsData.SettingCharmManager_HubCommandsRequested;
             //To insure the data shown is fetched if coming from the hub page to a new game
             //But that it doesn't fetch the data again if coming back from the video page.
-            gameSelected = Parameter.games.FirstOrDefault();
+            gameSelected = Parameter.season.games.FirstOrDefault();
 
             if (this.gameSelected.opponent.ToLower().Contains("practice") || this.gameSelected.opponent.ToLower().Contains("scrimmage") || this.gameSelected.opponent.ToLower().Contains("camp"))
             {
@@ -208,7 +208,8 @@ namespace HudlRT.ViewModels
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
 
-            if (Categories.Count == 0 && (NoPlaylistText == "" || NoPlaylistText == null))
+            //Categories count is checked against one due to us putting an empty category in.
+            if (Categories.Count == 1 && (NoPlaylistText == "" || NoPlaylistText == null))
             {
                 ProgressRingVisibility = Visibility.Visible;
                 ProgressRingIsActive = true;
@@ -234,8 +235,8 @@ namespace HudlRT.ViewModels
 
         public async Task GetGameCategories(string gameID)
         {
-            Categories = null;
-            BindableCollection<CategoryViewModel> cats = new BindableCollection<CategoryViewModel>();
+            Categories = new BindableCollection<CategoryViewModel>();
+
             foreach (Category c in gameSelected.categories)
             {
                 CategoryViewModel cat = new CategoryViewModel(c);
@@ -244,22 +245,16 @@ namespace HudlRT.ViewModels
                     PlaylistViewModel pvm = new PlaylistViewModel(p);
                     cat.Playlists.Add(pvm);
                     pvm.FetchClips = pvm.FetchClipsAndHeaders();
-                    //AddClipsAndHeadersForPlaylist(p);
                 }
                 if (c.playlists != null && c.playlists.Count() != 0)
                 {
-                    cats.Add(cat);
+                    Categories.Add(cat);
                 }
             }
 
-            if (cats.Count() > 0)//Fixes margin on the left side of page given our scrolling issue
-            {
-                cats.Insert(0, new CategoryViewModel(new Category() { name = null }) { Playlists = new BindableCollection<PlaylistViewModel>() });
-            }
             ProgressRingVisibility = Visibility.Collapsed;
             ProgressRingIsActive = false;
 
-            Categories = cats;
             MarkDownloadedPlaylists();
 
             if (Categories.Count == 0)
@@ -294,18 +289,17 @@ namespace HudlRT.ViewModels
             ProgressRingIsActive = true;
             ProgressRingVisibility = Visibility.Visible;
             PageIsEnabled = false;
-
             PlaylistViewModel vmClicked = (PlaylistViewModel)eventArgs.ClickedItem;
             Playlist playlistClicked = vmClicked.PlaylistModel;
             Playlist matchingDownload = DownloadAccessor.Instance.downloadedPlaylists.Where(u => u.playlistId == playlistClicked.playlistId).FirstOrDefault();
             if (matchingDownload != null)
             {
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(matchingDownload);
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter{ playlist= matchingDownload, hubGroups = Parameter.hubGroups, season = Parameter.season});
             }
             else
             {
                 await vmClicked.FetchClips;
-                navigationService.NavigateToViewModel<VideoPlayerViewModel>(playlistClicked);
+                navigationService.NavigateToViewModel<VideoPlayerViewModel>(new PageParameter { playlist = playlistClicked, hubGroups = Parameter.hubGroups, season = Parameter.season });
             }
             Logger.Instance.LogPlaylistSelected(((PlaylistViewModel)eventArgs.ClickedItem).PlaylistModel);
         }
@@ -374,7 +368,7 @@ namespace HudlRT.ViewModels
             DownloadAccessor.Instance.cts = new CancellationTokenSource();
             DownloadAccessor.Instance.currentlyDownloadingPlaylists = playlistsToBeDownloaded;
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
-            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded, Season.DeepCopy(Parameter));
+            DownloadAccessor.Instance.DownloadPlaylists(playlistsToBeDownloaded, Season.DeepCopy(Parameter.season));
 
         }
 
@@ -453,6 +447,7 @@ namespace HudlRT.ViewModels
                 await ResumeDownloadAsync();
             }
         }
+
         private async Task ResumeDownloadAsync()
         {
             DownloadAccessor.Instance.progressCallback = new Progress<DownloadOperation>(ProgressCallback);
@@ -489,7 +484,6 @@ namespace HudlRT.ViewModels
         public void ProgressCallback(DownloadOperation obj)
         {
             UpdateDiskInformation();
-            //DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived / (long)obj.Progress.TotalBytesToReceive) / (double)(DownloadAccessor.Instance.TotalClips) + (DownloadAccessor.Instance.ClipsComplete / (double)DownloadAccessor.Instance.TotalClips));
             DownloadProgress = 100.0 * (((long)obj.Progress.BytesReceived + DownloadAccessor.Instance.CurrentDownloadedBytes) / (double)DownloadAccessor.Instance.TotalBytes);
             DownloadProgressText = DownloadAccessor.Instance.ClipsComplete + " / " + DownloadAccessor.Instance.TotalClips + " File(s)";
             if (DownloadProgress == 100)
