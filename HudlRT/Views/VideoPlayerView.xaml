@@ -139,7 +139,7 @@
                                    />
             </ContentControl>
             <Grid x:Name="VideoControls">
-                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,109,0,359" Height="300" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
+                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,-250,0,0" Height="290" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
                 <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Left" Margin="0,-250,0,0" VerticalAlignment="Center">
                     <Button x:Name="btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
                                     Content="&#xE102;&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="14"
@@ -160,7 +160,7 @@
                                     Visibility="Collapsed"/>
                 </StackPanel>
 
-                <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,-150,-30,0" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
+                <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="385" Margin="0,-150,-30,0" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
 
                 <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" HorizontalAlignment="Right" Margin="0,-150,0,0" VerticalAlignment="Center">
                     <Button x:Name="btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
@@ -169,9 +169,9 @@
                                     Content="&#xE102;&#xE102;" FontSize="14" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
                     <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30"
                                     caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
-                    <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30"/>
+                    <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="40"/>
                     <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
-                                    Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="30"/>
+                                    Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="40"/>
                 </StackPanel>
 
             </Grid>
