@@ -100,8 +100,10 @@ namespace HudlRT.Views
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
             vm.setVideoMediaElement(videoMediaElement);
+            vm.TopAppBar = TopAppBar;
+            vm.BottomAppBar = BottomAppBar;
         }
-
+        
         private void initializeGrid(VideoPlayerViewModel vm)
         {
 			Playlist playlist = vm.Parameter.playlist;
@@ -539,15 +541,14 @@ namespace HudlRT.Views
 
         private void videoMediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            if (timelineContainer == null)
+            {
+                timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+            }
             if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
             {
                 TopAppBar.IsOpen = true;
                 BottomAppBar.IsOpen = true;
-
-                if (timelineContainer == null)
-                {
-                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
-                }
 
                 Storyboard sb = new Storyboard();
 
@@ -570,6 +571,21 @@ namespace HudlRT.Views
                 TopAppBar.IsOpen = false;
                 BottomAppBar.IsOpen = false;
             }
+        }
+
+        private ObjectAnimationUsingKeyFrames initilizeSlideUpKeyFrames()
+        {
+            ObjectAnimationUsingKeyFrames slideUpAnimation = new ObjectAnimationUsingKeyFrames();
+            for (int i = 1; i <= 20; i++)
+            {
+                DiscreteObjectKeyFrame frame = new DiscreteObjectKeyFrame();
+                frame.KeyTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(4.55 * i));
+                frame.Value = new Thickness(0, 0, 0, Math.Pow(5, .16491060811 * i));
+
+                slideUpAnimation.KeyFrames.Add(frame);
+            }
+
+            return slideUpAnimation;
         }
 
         private void setPauseVisible()
