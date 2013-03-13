@@ -9,8 +9,7 @@
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
     xmlns:mmppf="using:Microsoft.PlayerFramework"
-    mc:Ignorable="d"
-    NavigationCacheMode="Required">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -21,7 +20,7 @@
     </Page.Resources>
 
     <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkGray}">
-        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="True" Opened="SortFilterPopup_Opened_1" VerticalAlignment="Bottom" Height="425" Margin="0,0,0,245">
+        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="True" Opened="SortFilterPopup_Opened_1" VerticalAlignment="Bottom" Height="425" Margin="0,0,0,250">
             <Popup.ChildTransitions>
                 <TransitionCollection>
                     <PaneThemeTransition Edge="Bottom"/>
@@ -72,7 +71,7 @@
             </Border>
         </Popup>
 
- <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Right" Margin="0,72,560,0" Opened="PlaybackOptionsPopup_Opened_1">
+        <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Right" Margin="0,72,560,0" Opened="PlaybackOptionsPopup_Opened_1">
             <Popup.ChildTransitions>
                 <TransitionCollection>
                     <PaneThemeTransition Edge="Top" />
@@ -177,9 +176,14 @@
                                     Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="40"/>
             </StackPanel>
 
-        </Grid>
+       </Grid>
+            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="40" VerticalAlignment="Top">
+                <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
+                    <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
         <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
-
             <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource BackButtonStyle}" Margin="20,-369,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                 <Button x:Name="snapped_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
@@ -231,8 +235,8 @@
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" Closed="AppBarClosed" IsSticky="True">
-            <Grid x:Name="dataPanel" Grid.Row="2"  Margin="-10,0" Height="200">
+        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" Closed="AppBarClosed" Opened="AppBarOpened" IsSticky="True">
+            <Grid x:Name="dataPanel" Grid.Row="2" Height="200" Margin="-10,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />

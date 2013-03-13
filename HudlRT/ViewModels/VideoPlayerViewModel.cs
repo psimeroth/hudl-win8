@@ -226,6 +226,8 @@ namespace HudlRT.ViewModels
         private Microsoft.PlayerFramework.MediaPlayer videoMediaElement { get; set; }
         public List<string> GridHeadersTextSorted { get; set; }
         public List<string> GridHeadersTextUnsorted { get; set; }
+        public Windows.UI.Xaml.Controls.AppBar TopAppBar { get; set; }
+        public Windows.UI.Xaml.Controls.AppBar BottomAppBar { get; set; }
 
         public VideoPlayerViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -310,6 +312,13 @@ namespace HudlRT.ViewModels
                     DownloadedVisibility = Visibility.Visible;
                 }
             }
+        }
+
+        protected override void OnViewReady(object view)
+        {
+            base.OnViewReady(view);
+            TopAppBar.IsOpen = true;
+            BottomAppBar.IsOpen = true;
         }
 
         private async Task LoadActiveDownloadsAsync()
@@ -490,14 +499,18 @@ namespace HudlRT.ViewModels
 
         public void GoToNextClip()
         {
-            if (FilteredClips.Count > 1)
+            if (FilteredClips.Count > 1 && FilteredClips.Any(c => c.angles.Any(a => a.angleType.IsChecked)))
             {
-                SelectedClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
+                SelectedAngle = null;
+                while (SelectedAngle == null)
+                {
+                    SelectedClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
 
-                SelectedClip = FilteredClips[SelectedClipIndex];
-                listView.SelectedItem = SelectedClip;
-                Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
-                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
+                    SelectedClip = FilteredClips[SelectedClipIndex];
+                    listView.SelectedItem = SelectedClip;
+                    Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
+                    SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
+                }
                 if (FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Any())
                 {
                     PreloadClips(preloadCT, FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Take(2));
@@ -534,14 +547,18 @@ namespace HudlRT.ViewModels
 
         public void GoToPreviousClip()
         {
-            if (FilteredClips.Count > 1)
+            if (FilteredClips.Count > 1 && FilteredClips.Any(c => c.angles.Any(a => a.angleType.IsChecked)))
             {
-                SelectedClipIndex = (SelectedClipIndex == 0) ? FilteredClips.Count - 1 : SelectedClipIndex - 1;
+                SelectedAngle = null;
+                while (SelectedAngle == null)
+                {
+                    SelectedClipIndex = (SelectedClipIndex == 0) ? FilteredClips.Count - 1 : SelectedClipIndex - 1;
 
-                SelectedClip = FilteredClips[SelectedClipIndex];
-                listView.SelectedItem = SelectedClip;
-                Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
-                SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
+                    SelectedClip = FilteredClips[SelectedClipIndex];
+                    listView.SelectedItem = SelectedClip;
+                    Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
+                    SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
+                }
                 if (FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Any())
                 {
                     PreloadClips(preloadCT, FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Take(2));

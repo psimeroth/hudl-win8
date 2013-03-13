@@ -226,6 +226,7 @@
         <Setter Property="Foreground" Value="{StaticResource HudlMediumGray}"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Height" Value="45"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Foreground" Value="White"/>

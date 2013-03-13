@@ -27,7 +27,7 @@
                         <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Margin="33,0,0,0" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
+                <Button x:Name="GoBack" IsEnabled="{Binding PageIsEnabled}" Margin="33,0,0,0" Grid.Column="0" Style="{StaticResource BackButtonStyle}" />
                 <TextBlock x:Name="ScheduleEntryName" Grid.Column="1" Style="{StaticResource SectionPageTitle}" Text="{Binding ScheduleEntryName}"/>
             </Grid>
 
@@ -167,14 +167,17 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CategoriesGridView" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GoBack" Storyboard.TargetProperty="Style">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}" />
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="40" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="FontSize">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="25" />
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="-30,0,0,30" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="VerticalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="TextWrapping">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Wrap" />
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
