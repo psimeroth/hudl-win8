@@ -58,16 +58,16 @@
 
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="UserName_Text" Foreground="{StaticResource HudlMediumDarkGray}" Width="125" Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" TextAlignment="Right" >Username</TextBlock>
-                    <TextBlock x:Name="Password_Text" Foreground="{StaticResource HudlMediumDarkGray}" Width="125" Grid.Column="0" Grid.Row="2" FontSize="25" VerticalAlignment="Center" TextAlignment="Right">Password</TextBlock>
+                    <TextBlock x:Name="UserName_Text" Foreground="{StaticResource HudlMediumDarkGray}" Width="125" Grid.Column="0" Grid.Row="0" FontSize="25" VerticalAlignment="Center" TextAlignment="Right" FontWeight="Light">Username</TextBlock>
+                    <TextBlock x:Name="Password_Text" Foreground="{StaticResource HudlMediumDarkGray}" Width="125" Grid.Column="0" Grid.Row="2" FontSize="25" VerticalAlignment="Center" TextAlignment="Right" FontWeight="Light">Password</TextBlock>
 
                     <TextBox x:Name="UserName" Background="{StaticResource HudlDarkGrayAccent}" Foreground="{StaticResource HudlMediumGray}" Height="50" FontSize="25" Margin="10,0,0,0" MinWidth="500" Grid.Column="1" Grid.Row="0"/>
                     <PasswordBox x:Name="Password" Background="{StaticResource HudlDarkGrayAccent}" Foreground="{StaticResource HudlMediumGray}" Height="50" FontSize="25" Margin="10,0,0,0" IsPasswordRevealButtonEnabled="True" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="1" Grid.Row="2" />
-                    <CheckBox Name="RememberMe" Foreground="{StaticResource HudlMediumDarkGray}" Grid.Row="4" Grid.Column="1" Content="Remember Me" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Bottom" MinWidth="500" Margin="8,0,0,0"/>
+                    <CheckBox Name="RememberMe" Foreground="{StaticResource HudlMediumDarkGray}" Grid.Row="4" Grid.Column="1" Content="Remember Me" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Bottom" FontFamily="Segoe UI" FontWeight="Light" MinWidth="500" Margin="8,0,0,0"/>
 
-                    <Button Style="{StaticResource ButtonStyle_Standard}" Grid.Row="4" Grid.Column="1" Content="New to Hudl?" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="18" Click="RedirectToSignup" Width="140" Margin="0" />
+                    <Button Style="{StaticResource ButtonStyle_Standard}" Grid.Row="4" Grid.Column="1" Content="New to Hudl?" VerticalAlignment="Top" FontSize="18" HorizontalAlignment="Right" Click="RedirectToSignup" Width="140" Margin="0,0,1,0" />
 
-                    <Button x:Name="Login" Content="{Binding ButtonText}" Style="{StaticResource ButtonStyle_Standard}" Height="105" Width="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" FontSize="18" Margin="5,0,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" />
+                    <Button x:Name="Login" Content="{Binding ButtonText}" Style="{StaticResource ButtonStyle_Standard}" Height="105" Width="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" Margin="5,0,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" />
                 </Grid>
 
                 <TextBlock x:Name="LoginFeedback" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Bottom"  FontSize="25"  Foreground="{StaticResource HudlOrange}" Margin="0,10,0,0"/>

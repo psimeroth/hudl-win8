@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.ViewModels
 {
@@ -14,7 +15,7 @@ namespace HudlRT.ViewModels
     {
         private string _thumbNail;
         private string _numPlaylists;
-        private double _imageWidth;
+        private string _stretch;
         public bool IsLargeView { get; set; }
         public bool IsLastViewed { get; set; }
         public Game GameModel { get; set; }
@@ -50,7 +51,7 @@ namespace HudlRT.ViewModels
                 {
                     return "Viewed: " + GameModel.DisplayDate;
                 }
-                if(GameModel.Classification != 1)
+                if (GameModel.Classification != 1)
                 {
                     return "-";
                 }
@@ -79,18 +80,21 @@ namespace HudlRT.ViewModels
             get { return _thumbNail; }
             set
             {
-                _thumbNail = value ;
+                _thumbNail = value;
                 NotifyOfPropertyChange(() => Thumbnail);
             }
         }
 
-        public double ImageWidth
+        public string Stretch
         {
-            get { return _imageWidth; }
+            get
+            {
+                return _stretch;
+            }
             set
             {
-                _imageWidth = value;
-                NotifyOfPropertyChange(() => ImageWidth);
+                _stretch = value;
+                NotifyOfPropertyChange(() => Stretch);
             }
         }
 
@@ -99,20 +103,13 @@ namespace HudlRT.ViewModels
             GameModel = game;
             IsLargeView = isLarge;
             IsLastViewed = isLastviewed;
-			IsNextGame = isNextGame;
+            IsNextGame = isNextGame;
             IsPreviousGame = isPreviousGame;
             Thumbnail = "ms-appx:///Assets/hudl-mark-gray.png";
-            if (IsLastViewed || IsNextGame || IsPreviousGame)
-            {
-                ImageWidth = 565;
-            }
-            else
-            {
-                ImageWidth = 350;
-            }
+            Stretch = "None";
         }
 
-        public async Task FetchThumbnailsAndPlaylistCounts() 
+        public async Task FetchThumbnailsAndPlaylistCounts()
         {
             int numLists = 0;
             if (ServiceAccessor.ConnectedToInternet())
@@ -132,6 +129,7 @@ namespace HudlRT.ViewModels
                                 if (cat.playlists[0].thumbnailLocation != null)
                                 {
                                     Thumbnail = cat.playlists[0].thumbnailLocation;
+                                    Stretch = "UniformToFill";
                                 }
                             }
                         }
