@@ -29,6 +29,7 @@ namespace HudlRT.Views
     public sealed partial class VideoPlayerView : LayoutAwarePage
     {
         private const int POPUP_WIDTH = 346;
+        private const int VIDEO_CONTROLS_WIDTH = 105;
         private const int COLUMN_WIDTH = 130;
         private const int GRID_HEADER_FONT_SIZE = 22;
 
@@ -43,7 +44,6 @@ namespace HudlRT.Views
             set { _rootNamespace = value; }
         }
         private int count = 0;
-        private TranslateTransform dragTranslation;
         private System.Diagnostics.Stopwatch keyPressTimer = new System.Diagnostics.Stopwatch();
         private long keyPressLength = 225;
         private DispatcherTimer rewindTimer { get; set; }
@@ -59,7 +59,7 @@ namespace HudlRT.Views
         {
             this.InitializeComponent();
 
-            FilteredClips.RenderTransform = this.dragTranslation;
+            gridHeaderScroll.ViewChanged += gridHeaderScroll_ViewChanged;
             FilteredClips.Loaded += filteredClips_Loaded;
 
             btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
@@ -208,7 +208,7 @@ namespace HudlRT.Views
             if (!SortFilterPopup.IsOpen)
             {
                 RootPopupBorder.Width = POPUP_WIDTH;
-                SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH;
+                SortFilterPopup.HorizontalOffset = Window.Current.Bounds.Width - POPUP_WIDTH - VIDEO_CONTROLS_WIDTH;
 
                 var currentViewState = ApplicationView.Value;
                 if (currentViewState != ApplicationViewState.Filled)
@@ -545,6 +545,11 @@ namespace HudlRT.Views
 
                 sb.Begin();
             }
+            else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
+            {
+                TopAppBar.IsOpen = false;
+                BottomAppBar.IsOpen = false;
+            }
         }
 
         private ObjectAnimationUsingKeyFrames initilizeSlideUpKeyFrames()
@@ -663,6 +668,12 @@ namespace HudlRT.Views
             timelineContainer.Margin = new Thickness(0);
 
             sb.Begin();
+        }
+
+        private void CloseOptionsPopup(object sender, RoutedEventArgs e)
+        {
+            PlaybackOptionsPopup.IsOpen = false;
+            OptionsMenu.Focus(FocusState.Pointer);
         }
     }
 

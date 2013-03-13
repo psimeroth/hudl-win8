@@ -75,7 +75,7 @@
                                             <local:Timeline.SliderStyle>
                                                 <Style TargetType="local:SeekableSlider">
                                                     <Setter Property="Background" Value="#99FFFFFF" />
-                                                    <Setter Property="Foreground" Value="{StaticResource HudlBlue}"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource HudlDarkGrayAccent}"/>
                                                     <Setter Property="SliderTrackDecreasePressedBackground" Value="{StaticResource HudlOrange}" />
                                                     <Setter Property="SliderTrackDecreasePointerOverBackground" Value="{StaticResource HudlOrange}" />
                                                     <Setter Property="SliderTrackPointerOverBackground" Value="#99FFFFFF" />
