@@ -51,7 +51,7 @@
         <Setter Property="VerticalContentAlignment" Value="Top"/>
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="Margin" Value="30,0,10,10" />
+        <Setter Property="Margin" Value="2,0,0,15" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
@@ -225,7 +225,8 @@
     <Style x:Key="VideoPlayer_ListViewItemStyle_Standard" TargetType="ListViewItem">
         <Setter Property="Foreground" Value="{StaticResource HudlMediumGray}"/>
         <Setter Property="Margin" Value="0"/>
-        <Setter Property="Height" Value="39"/>
+        <Setter Property="Height" Value="45"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Foreground" Value="White"/>
@@ -291,7 +292,7 @@
                             </VisualStateGroup>
                             
                         </VisualStateManager.VisualStateGroups>
-                        <Grid Margin="0,2,0,2">
+                        <Grid Margin="0,0,0,1">
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Grid>
                                     <Rectangle x:Name="default">
