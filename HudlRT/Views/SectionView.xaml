@@ -80,12 +80,11 @@
                                         <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
+                                    <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
                                     <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
-                                    <Grid Grid.Row="1" Margin="0,0,-3,3" HorizontalAlignment="Right" Visibility="{Binding DownloadedIcon_Visibility}">
-                                        <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlDarkGrayAccent}" FontFamily="Segoe UI Symbol" FontSize="45" Text="&#xE188;"/>
-                                        <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="35" Text="&#xE188;"/>
-                                        <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlOrange}" FontFamily="Segoe UI Symbol" FontSize="25" Text="&#xE0E7;"/>
+                                    <Grid Grid.Row="1" Margin="20,-5"  HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="{Binding DownloadedIcon_Visibility}">
+                                        <TextBlock Grid.Column="0" Margin="0,-5,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="27" Text="&#xE188;"/>
+                                        <TextBlock Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="{StaticResource HudlOrange}" FontFamily="Segoe UI Symbol" FontSize="18" Text="&#xE0E7;"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -117,7 +116,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
+                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
                                     <Image Source="{Binding ThumbnailPath}" Stretch="UniformToFill"/>
                                 </Border>
                                 <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch">
