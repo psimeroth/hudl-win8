@@ -481,6 +481,7 @@ namespace HudlRT.Views
             {
                 if (rewindKey.VirtualKey == Windows.System.VirtualKey.Up)
                 {
+
                     btnSlowReverse_Click(null, null);
                 } 
                 else if (rewindKey.VirtualKey == Windows.System.VirtualKey.Left || rewindKey.VirtualKey == Windows.System.VirtualKey.PageUp)
@@ -547,16 +548,19 @@ namespace HudlRT.Views
                 {
                     timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
                 }
-                //timelineContainer.Margin = new Thickness(0,0,0,200);
 
                 Storyboard sb = new Storyboard();
-                ObjectAnimationUsingKeyFrames slideUpAnimation = initilizeSlideUpKeyFrames();
 
-                Storyboard.SetTarget(slideUpAnimation, timelineContainer as DependencyObject);
-                Storyboard.SetTargetProperty(slideUpAnimation, "Margin");
+                RepositionThemeAnimation animation = new RepositionThemeAnimation();
 
-                sb.Children.Add(slideUpAnimation);
-                sb.Begin();  
+                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+                animation.FromVerticalOffset = 204;
+
+                sb.Children.Add(animation);
+
+                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
+
+                sb.Begin();
             }
             else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
             {
@@ -669,7 +673,18 @@ namespace HudlRT.Views
 
         private void AppBarClosed(object sender, object e)
         {
+            Storyboard sb = new Storyboard();
+
+            RepositionThemeAnimation animation = new RepositionThemeAnimation();
+
+            Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+            animation.FromVerticalOffset = -204;
+
+            sb.Children.Add(animation);
+
             timelineContainer.Margin = new Thickness(0);
+
+            sb.Begin();
         }
 
         private void CloseOptionsPopup(object sender, RoutedEventArgs e)
