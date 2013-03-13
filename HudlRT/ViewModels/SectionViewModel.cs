@@ -518,5 +518,10 @@ namespace HudlRT.ViewModels
                 AppBarOpen = false;
             }
         }
-    }
+
+        public void GoBack()
+        {
+            navigationService.GoBack();
+        }
+    }   
 }
