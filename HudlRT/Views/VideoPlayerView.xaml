@@ -127,6 +127,7 @@
                                    MediaOpened="videoElement_MediaOpened"
                                    MediaEnded="videoMediaElement_MediaEnded"
                                    MediaFailed="videoMediaElement_MediaFailed"
+                                   MediaStarted="videoMediaElement_MediaStarted"
                                    IsFullScreen="True"
                                    AutoHide="False" 
                                    IsSkipAheadEnabled="False"
