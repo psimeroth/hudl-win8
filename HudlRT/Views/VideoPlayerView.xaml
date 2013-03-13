@@ -178,6 +178,12 @@
                 </StackPanel>
 
             </Grid>
+            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="40" VerticalAlignment="Top">
+                <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
+                    <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
         </Grid>
 
         <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
