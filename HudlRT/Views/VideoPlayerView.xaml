@@ -9,8 +9,7 @@
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
     xmlns:mmppf="using:Microsoft.PlayerFramework"
-    mc:Ignorable="d"
-    NavigationCacheMode="Required">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
