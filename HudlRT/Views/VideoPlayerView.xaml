@@ -199,13 +199,13 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="260"/>
                     <ColumnDefinition Width="250"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="0" />
                 <TextBlock x:Name="PlaylistName" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="30" FontWeight="Light" Foreground="{StaticResource HudlMediumGray}"/>
-                <Button x:Name="OptionsMenu" Grid.Column="2" Width="250" Height="45" FontSize="22" FontWeight="Light" Background="Transparent" Foreground="{StaticResource HudlLightGray}" Click="openOptionsMenu">Options</Button>
-                <Button x:Name="btnDownload" Grid.Column="3" Visibility="{Binding DownloadButtonVisibility}" Width="250" Height="45" FontSize="22" Content="Download Playlist"  HorizontalAlignment="Center" Background="Transparent" Foreground="{StaticResource HudlLightGray}" FontWeight="Light"
+                <Button x:Name="OptionsMenu" Grid.Column="2" Width="250" Height="45" FontSize="22" Click="openOptionsMenu" Style="{StaticResource ButtonStyle_Standard}">Options</Button>
+                <Button x:Name="btnDownload" Grid.Column="3" Visibility="{Binding DownloadButtonVisibility}" Width="250" Height="45" FontSize="22" Content="Download Playlist"  HorizontalAlignment="Center"  Style="{StaticResource ButtonStyle_Standard}"
                          caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
                 <Grid Grid.Column="3" Visibility="{Binding ProgressGridVisibility}">
                     <Grid.RowDefinitions>
@@ -221,8 +221,8 @@
                     <Grid >
                         <TextBlock Margin="0,7,0,0" Text="Downloaded" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22" Foreground="{StaticResource HudlLightGray}" FontWeight="Light"/>
                         <Grid Grid.Row="1" Margin="0,0,-5,3" HorizontalAlignment="Right" >
-                            <TextBlock Grid.Column="0" Margin="0,2,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="30" Text="&#xE188;"/>
-                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontFamily="Segoe UI Symbol" FontSize="20" Text="&#xE0E7;"/>
+                            <TextBlock Grid.Column="0" Margin="0,2,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="27" Text="&#xE188;"/>
+                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontFamily="Segoe UI Symbol" FontSize="18" Text="&#xE0E7;"/>
                         </Grid>
                     </Grid>
                 </Grid>

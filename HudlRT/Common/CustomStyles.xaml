@@ -262,12 +262,12 @@
                                 <VisualState x:Name="Normal"/>
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="Black"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlPartialBlackColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlOrangeColor}"/>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource HudlPartialOrangeColor}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -290,7 +290,7 @@
                             <Border BorderThickness="1" BorderBrush="Black">
                                 <Rectangle x:Name="BackgroundColor" >
                                     <Rectangle.Fill>
-                                        <SolidColorBrush Color="{StaticResource HudlDarkGrayAccentColor}">
+                                        <SolidColorBrush Color="{StaticResource HudlPartialGrayColor}">
                                         </SolidColorBrush>
                                     </Rectangle.Fill>
                                 </Rectangle>
@@ -304,7 +304,8 @@
                               Margin="{TemplateBinding Padding}"
                               TextWrapping="Wrap"
                               TextAlignment="Center"
-                              Foreground="{StaticResource HudlMediumGray}"/>
+                              Foreground="{StaticResource HudlMediumGray}"
+                            />
                         <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FF000000" Opacity="0" IsHitTestVisible="false" />
                         <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
                     </Grid>
