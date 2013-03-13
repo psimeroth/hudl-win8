@@ -344,6 +344,8 @@ namespace HudlRT.ViewModels
                 categoriesGrid.SelectedItem = null;
             }
             AppBarOpen = false;
+            UpdateDiskInformation();
+            Downloading_Visibility = Visibility.Collapsed;
         }
             
         public async void DownloadButtonClick()
