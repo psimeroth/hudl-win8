@@ -27,7 +27,7 @@
                         <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="backButton" IsEnabled="{Binding PageIsEnabled}" Margin="33,0,0,0" Grid.Column="0" Click="GoBack" Style="{StaticResource BackButtonStyle}" />
+                <Button x:Name="GoBack" IsEnabled="{Binding PageIsEnabled}" Margin="33,0,0,0" Grid.Column="0" Style="{StaticResource BackButtonStyle}" />
                 <TextBlock x:Name="ScheduleEntryName" Grid.Column="1" Style="{StaticResource SectionPageTitle}" Text="{Binding ScheduleEntryName}"/>
             </Grid>
 

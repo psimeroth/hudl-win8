@@ -34,10 +34,5 @@ namespace HudlRT.Views
         {
             LoadingRing.IsActive = false;
         }
-
-        private void GoBack(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
