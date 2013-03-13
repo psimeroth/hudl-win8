@@ -54,6 +54,8 @@ namespace HudlRT.Views
         private VideoPlayerState playerState { get; set; }
         private DispatcherTimer rewindKeyPressTimer { get; set; }
         private Windows.UI.Core.KeyEventArgs rewindKey { get; set; }
+        private bool isShiftDown { get; set; }
+        private bool isControlDown { get; set; }
 
         public VideoPlayerView()
         {
@@ -381,49 +383,71 @@ namespace HudlRT.Views
 
         private void VideoPage_KeyUp(object sender, Windows.UI.Core.KeyEventArgs e)
         {
-            keyPressTimer.Stop();
-            if (keyPressTimer.ElapsedMilliseconds < keyPressLength)
+            if (e.VirtualKey == Windows.System.VirtualKey.Shift)
             {
-                if (e.VirtualKey == Windows.System.VirtualKey.Down)
-                {
-                    if (playerState == VideoPlayerState.Paused)
-                    {
-                        btnPlay_Click(null, null);
-                    }
-                    else
-                    {
-                        btnPause_Click(null, null);
-                    }
-                    e.Handled = true;
-                }
-                else if (e.VirtualKey == Windows.System.VirtualKey.Up)
-                {
-                    rewindKeyPressTimer.Stop();
-                    btn_release(null, null);
-                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                    vm.ResetClip();
-                    e.Handled = true;
-                }
-                else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
-                {
-                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                    vm.GoToNextClip();
-                    e.Handled = true;
-                }
-                else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
-                {
-                    rewindKeyPressTimer.Stop();
-                    btn_release(null, null);
-                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                    vm.GoToPreviousClip();
-                    e.Handled = true;
-                }
+                isShiftDown = false;
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == Windows.System.VirtualKey.Control)
+            {
+                isControlDown = false;
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == (Windows.System.VirtualKey)176 || e.VirtualKey == (Windows.System.VirtualKey)177)
+            {
+                btn_release(null, null);
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == (Windows.System.VirtualKey)179 || e.VirtualKey == (Windows.System.VirtualKey)178)
+            {
+                e.Handled = true;
             }
             else
             {
-                btn_release(null, null);
+                keyPressTimer.Stop();
+                if (keyPressTimer.ElapsedMilliseconds < keyPressLength)
+                {
+                    if (e.VirtualKey == Windows.System.VirtualKey.Down)
+                    {
+                        if (playerState == VideoPlayerState.Paused)
+                        {
+                            btnPlay_Click(null, null);
+                        }
+                        else
+                        {
+                            btnPause_Click(null, null);
+                        }
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+                    {
+                        rewindKeyPressTimer.Stop();
+                        btn_release(null, null);
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.ResetClip();
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+                    {
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.GoToNextClip();
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
+                    {
+                        rewindKeyPressTimer.Stop();
+                        btn_release(null, null);
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.GoToPreviousClip();
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    btn_release(null, null);
+                }
+                keyPressTimer.Reset();
             }
-            keyPressTimer.Reset();
         }
 
         private void VideoPage_KeyDown(object sender, Windows.UI.Core.KeyEventArgs e)
@@ -456,6 +480,75 @@ namespace HudlRT.Views
                     keyPressTimer.Start();
                     rewindKeyPressTimer.Start();
                     e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Shift)
+                {
+                    isShiftDown = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Control)
+                {
+                    isControlDown = true;
+                }
+                else if (e.VirtualKey == (Windows.System.VirtualKey)177)
+                {
+                    if (isShiftDown) //Slow Reverse
+                    {
+                        btnSlowReverse_Click(null, null);
+                        e.Handled = true;
+                    }
+                    else if (isControlDown) //Fast Reverse
+                    {
+                        btnFastReverse_Click(null, null);
+                        e.Handled = true;
+                    }
+                    else //Previous
+                    {
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.GoToPreviousClip();
+                        e.Handled = true;
+                    }
+                }
+                else if (e.VirtualKey == (Windows.System.VirtualKey)176)
+                {
+                    if (isShiftDown) //Slow Forward
+                    {
+                        btnSlowForward_Click(null, null);
+                        e.Handled = true;
+                    }
+                    else if (isControlDown) //Fast Forward
+                    {
+                        btnFastForward_Click(null, null);
+                        e.Handled = true;
+                    }
+                    else //Next
+                    {
+                        VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+                        vm.GoToNextClip();
+                        e.Handled = true;
+                    }
+                }
+                else if (e.VirtualKey == (Windows.System.VirtualKey)179)
+                {
+                    if (playerState == VideoPlayerState.Paused)
+                    {
+                        btnPlay_Click(null, null);
+                    }
+                    else
+                    {
+                        btnPause_Click(null, null);
+                    }
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == (Windows.System.VirtualKey)178)
+                {
+                    if (isShiftDown) //Full Screen
+                    {
+                        e.Handled = true;
+                    }
+                    else if (isControlDown) //Tag
+                    {
+                        e.Handled = true;
+                    }
                 }
             }
         }
