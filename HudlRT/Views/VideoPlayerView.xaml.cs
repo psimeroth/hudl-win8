@@ -96,13 +96,16 @@ namespace HudlRT.Views
             vm.GridHeadersTextSorted = new List<string>();
             vm.GridHeadersTextUnsorted = new List<string>();
             initializeGrid(vm);
+            initializeClipDataBar(vm);
 
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
             vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
             vm.setVideoMediaElement(videoMediaElement);
+            vm.TopAppBar = TopAppBar;
+            vm.BottomAppBar = BottomAppBar;
         }
-
+        
         private void initializeGrid(VideoPlayerViewModel vm)
         {
 			Playlist playlist = vm.Parameter.playlist;
@@ -179,6 +182,20 @@ namespace HudlRT.Views
             }
             
             return headerText;
+        }
+
+        private void initializeClipDataBar(VideoPlayerViewModel vm)
+        {
+            int i = 0;
+            foreach (var header in vm.GridHeaders)
+            {
+                TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""White"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
+                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""White"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
+                ClipDataText.Children.Add(textBlock_title);
+                ClipDataText.Children.Add(textBlock_data);
+
+                i++;
+            }
         }
 
         private void filteredClips_Loaded(object sender, RoutedEventArgs e)
@@ -559,6 +576,7 @@ namespace HudlRT.Views
             {
                 if (rewindKey.VirtualKey == Windows.System.VirtualKey.Up)
                 {
+
                     btnSlowReverse_Click(null, null);
                 } 
                 else if (rewindKey.VirtualKey == Windows.System.VirtualKey.Left || rewindKey.VirtualKey == Windows.System.VirtualKey.PageUp)
@@ -581,6 +599,8 @@ namespace HudlRT.Views
             videoMediaElement.PlaybackRate = 1.0;
             setPauseVisible();
             setStopVisibile();
+
+            ClipDataScrollViewer.ScrollToHorizontalOffset(0);
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
@@ -614,25 +634,30 @@ namespace HudlRT.Views
 
         private void videoMediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            if (timelineContainer == null)
+            {
+                timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+            }
             if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
             {
                 TopAppBar.IsOpen = true;
                 BottomAppBar.IsOpen = true;
 
-                if (timelineContainer == null)
-                {
-                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
-                }
-                //timelineContainer.Margin = new Thickness(0,0,0,200);
-
                 Storyboard sb = new Storyboard();
-                ObjectAnimationUsingKeyFrames slideUpAnimation = initilizeSlideUpKeyFrames();
 
-                Storyboard.SetTarget(slideUpAnimation, timelineContainer as DependencyObject);
-                Storyboard.SetTargetProperty(slideUpAnimation, "Margin");
+                RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
 
-                sb.Children.Add(slideUpAnimation);
-                sb.Begin();  
+                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
+                animation.FromVerticalOffset = 204;
+
+                sb.Children.Add(animation);
+                sb.Children.Add(fadeOutAnimation);
+
+                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
+
+                sb.Begin();
             }
             else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
             {
@@ -648,7 +673,7 @@ namespace HudlRT.Views
             {
                 DiscreteObjectKeyFrame frame = new DiscreteObjectKeyFrame();
                 frame.KeyTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(4.55 * i));
-                frame.Value = new Thickness(0, 0, 0, Math.Pow(5, 0.16460148371 * i));
+                frame.Value = new Thickness(0, 0, 0, Math.Pow(5, .16491060811 * i));
 
                 slideUpAnimation.KeyFrames.Add(frame);
             }
@@ -745,7 +770,22 @@ namespace HudlRT.Views
 
         private void AppBarClosed(object sender, object e)
         {
+            Storyboard sb = new Storyboard();
+
+            RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
+            FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
+
+            Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
+
+            Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
+            repositionAnimation.FromVerticalOffset = -204;
+
+            sb.Children.Add(repositionAnimation);
+            sb.Children.Add(fadeInAnimation);
+
             timelineContainer.Margin = new Thickness(0);
+
+            sb.Begin();
         }
 
         private void CloseOptionsPopup(object sender, RoutedEventArgs e)

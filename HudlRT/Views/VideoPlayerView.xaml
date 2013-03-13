@@ -9,8 +9,7 @@
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
     xmlns:mmppf="using:Microsoft.PlayerFramework"
-    mc:Ignorable="d"
-    NavigationCacheMode="Required">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -177,6 +176,12 @@
                                     Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="40"/>
                 </StackPanel>
 
+            </Grid>
+            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="40" VerticalAlignment="Top">
+                <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
+                    <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </Grid>
 
