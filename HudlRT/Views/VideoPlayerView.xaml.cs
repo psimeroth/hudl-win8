@@ -652,7 +652,7 @@ namespace HudlRT.Views
 
         private void AppBarClosed(object sender, object e)
         {
-            timelineContainer.Margin = new Thickness(0);
+            timelineContainer.Margin = new Thickness(0,0,0,40);
         }
 
         private void CloseOptionsPopup(object sender, RoutedEventArgs e)
