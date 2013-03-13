@@ -128,6 +128,7 @@
                                    MediaOpened="videoElement_MediaOpened"
                                    MediaEnded="videoMediaElement_MediaEnded"
                                    MediaFailed="videoMediaElement_MediaFailed"
+                                   MediaStarted="videoMediaElement_MediaStarted"
                                    IsFullScreen="True"
                                    AutoHide="False" 
                                    Tapped="videoMediaElement_Tapped"
@@ -238,7 +239,7 @@
         </AppBar>
     </common:LayoutAwarePage.TopAppBar>
     <common:LayoutAwarePage.BottomAppBar>
-        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" Closed="AppBarClosed" IsSticky="True">
+        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" Closed="AppBarClosed" Opened="AppBarOpened" IsSticky="True">
             <Grid x:Name="dataPanel" Grid.Row="2" Height="200">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />

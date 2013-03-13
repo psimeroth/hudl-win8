@@ -524,6 +524,11 @@ namespace HudlRT.Views
             string hr = GetHresultFromErrorMessage(e);
         }
 
+        private void videoMediaElement_MediaStarted(object sender, RoutedEventArgs e)
+        {
+            var x = videoMediaElement.ControlPanel.GetDescendants();
+        }
+
         private string GetHresultFromErrorMessage(ExceptionRoutedEventArgs e)
         {
             String hr = String.Empty;
@@ -541,35 +546,20 @@ namespace HudlRT.Views
 
         private void videoMediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (timelineContainer == null)
+            ApplicationViewState currentViewState = ApplicationView.Value;
+
+            if (currentViewState != ApplicationViewState.Snapped)
             {
-                timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
-            }
-            if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
-            {
-                TopAppBar.IsOpen = true;
-                BottomAppBar.IsOpen = true;
-
-                Storyboard sb = new Storyboard();
-
-                RepositionThemeAnimation animation = new RepositionThemeAnimation();
-                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
-
-                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
-                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
-                animation.FromVerticalOffset = 204;
-
-                sb.Children.Add(animation);
-                sb.Children.Add(fadeOutAnimation);
-
-                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
-
-                sb.Begin();
-            }
-            else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
-            {
-                TopAppBar.IsOpen = false;
-                BottomAppBar.IsOpen = false;
+                if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
+                {
+                    TopAppBar.IsOpen = true;
+                    BottomAppBar.IsOpen = true;
+                }
+                else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
+                {
+                    TopAppBar.IsOpen = false;
+                    BottomAppBar.IsOpen = false;
+                }
             }
         }
 
@@ -645,18 +635,28 @@ namespace HudlRT.Views
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             SortFilterPopup.IsOpen = false;
+            PlaybackOptionsPopup.IsOpen = false;
             TopAppBar.IsOpen = false;
             BottomAppBar.IsOpen = false;
-            var currentViewState = ApplicationView.Value;
+            ApplicationViewState currentViewState = ApplicationView.Value;
+
+            videoMediaElement.Width = Window.Current.Bounds.Width;
+
             if (currentViewState == ApplicationViewState.Snapped)
             {
-                mainGrid.Visibility = Visibility.Collapsed;
+                BottomAppBar.Visibility = Visibility.Collapsed;
+                TopAppBar.Visibility = Visibility.Collapsed;
+                VideoControls.Visibility = Visibility.Collapsed;
+                ClipDataGrid.Visibility = Visibility.Collapsed;
                 snapped_mainGrid.Visibility = Visibility.Visible;
             }
             else
             {
+                BottomAppBar.Visibility = Visibility.Visible;
+                TopAppBar.Visibility = Visibility.Visible;
                 snapped_mainGrid.Visibility = Visibility.Collapsed;
-                mainGrid.Visibility = Visibility.Visible;
+                ClipDataGrid.Visibility = Visibility.Visible;
+                VideoControls.Visibility = Visibility.Visible;
             }
         }
 
@@ -677,22 +677,56 @@ namespace HudlRT.Views
 
         private void AppBarClosed(object sender, object e)
         {
-            Storyboard sb = new Storyboard();
+            ApplicationViewState currentViewState = ApplicationView.Value;
 
-            RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
-            FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
+            if (currentViewState != ApplicationViewState.Snapped)
+            {
+                Storyboard sb = new Storyboard();
 
-            Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
+                RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
+                FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
 
-            Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
-            repositionAnimation.FromVerticalOffset = -204;
+                Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
 
-            sb.Children.Add(repositionAnimation);
-            sb.Children.Add(fadeInAnimation);
+                Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
+                repositionAnimation.FromVerticalOffset = -204;
 
-            timelineContainer.Margin = new Thickness(0);
+                sb.Children.Add(repositionAnimation);
+                sb.Children.Add(fadeInAnimation);
 
-            sb.Begin();
+                timelineContainer.Margin = new Thickness(0);
+
+                sb.Begin();
+            }
+        }
+
+        private void AppBarOpened(object sender, object e)
+        {
+            ApplicationViewState currentViewState = ApplicationView.Value;
+
+            if (currentViewState != ApplicationViewState.Snapped)
+            {
+                if (timelineContainer == null)
+                {
+                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                }
+
+                Storyboard sb = new Storyboard();
+
+                RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
+
+                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
+                animation.FromVerticalOffset = 204;
+
+                sb.Children.Add(animation);
+                sb.Children.Add(fadeOutAnimation);
+
+                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
+
+                sb.Begin();
+            }
         }
 
         private void CloseOptionsPopup(object sender, RoutedEventArgs e)
