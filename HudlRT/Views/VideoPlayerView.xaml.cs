@@ -552,11 +552,14 @@ namespace HudlRT.Views
                 Storyboard sb = new Storyboard();
 
                 RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
 
                 Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
                 animation.FromVerticalOffset = 204;
 
                 sb.Children.Add(animation);
+                sb.Children.Add(fadeOutAnimation);
 
                 timelineContainer.Margin = new Thickness(0, 0, 0, 204);
 
@@ -567,21 +570,6 @@ namespace HudlRT.Views
                 TopAppBar.IsOpen = false;
                 BottomAppBar.IsOpen = false;
             }
-        }
-
-        private ObjectAnimationUsingKeyFrames initilizeSlideUpKeyFrames()
-        {
-            ObjectAnimationUsingKeyFrames slideUpAnimation = new ObjectAnimationUsingKeyFrames();
-            for (int i = 1; i <= 20; i++)
-            {
-                DiscreteObjectKeyFrame frame = new DiscreteObjectKeyFrame();
-                frame.KeyTime = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(4.55 * i));
-                frame.Value = new Thickness(0, 0, 0, Math.Pow(5, 0.16460148371 * i));
-
-                slideUpAnimation.KeyFrames.Add(frame);
-            }
-
-            return slideUpAnimation;
         }
 
         private void setPauseVisible()
@@ -675,12 +663,16 @@ namespace HudlRT.Views
         {
             Storyboard sb = new Storyboard();
 
-            RepositionThemeAnimation animation = new RepositionThemeAnimation();
+            RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
+            FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
 
-            Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
-            animation.FromVerticalOffset = -204;
+            Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
 
-            sb.Children.Add(animation);
+            Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
+            repositionAnimation.FromVerticalOffset = -204;
+
+            sb.Children.Add(repositionAnimation);
+            sb.Children.Add(fadeInAnimation);
 
             timelineContainer.Margin = new Thickness(0);
 

@@ -62,7 +62,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#55000000" Margin="0,0,0,40">
+                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#55000000">
                                     <Grid Margin="30,6,30,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
