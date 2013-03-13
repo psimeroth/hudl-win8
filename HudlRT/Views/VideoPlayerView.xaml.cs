@@ -94,6 +94,7 @@ namespace HudlRT.Views
             vm.GridHeadersTextSorted = new List<string>();
             vm.GridHeadersTextUnsorted = new List<string>();
             initializeGrid(vm);
+            initializeClipDataBar(vm);
 
             vm.listView = FilteredClips;
             vm.SortFilterPopupControl = SortFilterPopup;
@@ -177,6 +178,20 @@ namespace HudlRT.Views
             }
             
             return headerText;
+        }
+
+        private void initializeClipDataBar(VideoPlayerViewModel vm)
+        {
+            int i = 0;
+            foreach (var header in vm.GridHeaders)
+            {
+                TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""White"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
+                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""White"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
+                ClipDataText.Children.Add(textBlock_title);
+                ClipDataText.Children.Add(textBlock_data);
+
+                i++;
+            }
         }
 
         private void filteredClips_Loaded(object sender, RoutedEventArgs e)
@@ -488,6 +503,8 @@ namespace HudlRT.Views
             videoMediaElement.PlaybackRate = 1.0;
             setPauseVisible();
             setStopVisibile();
+
+            ClipDataScrollViewer.ScrollToHorizontalOffset(0);
         }
 
         void videoMediaElement_MediaEnded(object sender, RoutedEventArgs e)
@@ -652,7 +669,7 @@ namespace HudlRT.Views
 
         private void AppBarClosed(object sender, object e)
         {
-            timelineContainer.Margin = new Thickness(0,0,0,40);
+            timelineContainer.Margin = new Thickness(0);
         }
 
         private void CloseOptionsPopup(object sender, RoutedEventArgs e)

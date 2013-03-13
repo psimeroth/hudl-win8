@@ -179,18 +179,10 @@
 
             </Grid>
             <Grid x:Name="ClipDataGrid" Background="#99000000" Height="40" VerticalAlignment="Top">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[0]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[0]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[1]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[1]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[2]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[2]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[3]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[3]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[4]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[4]}" />
-                </StackPanel>
+                <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
+                    <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </Grid>
 
