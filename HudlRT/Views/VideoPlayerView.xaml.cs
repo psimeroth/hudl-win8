@@ -549,22 +549,6 @@ namespace HudlRT.Views
             {
                 TopAppBar.IsOpen = true;
                 BottomAppBar.IsOpen = true;
-
-                Storyboard sb = new Storyboard();
-
-                RepositionThemeAnimation animation = new RepositionThemeAnimation();
-                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
-
-                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
-                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
-                animation.FromVerticalOffset = 204;
-
-                sb.Children.Add(animation);
-                sb.Children.Add(fadeOutAnimation);
-
-                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
-
-                sb.Begin();
             }
             else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
             {
@@ -677,6 +661,8 @@ namespace HudlRT.Views
 
         private void AppBarClosed(object sender, object e)
         {
+            ClipDataGrid.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
             Storyboard sb = new Storyboard();
 
             RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
@@ -699,6 +685,31 @@ namespace HudlRT.Views
         {
             PlaybackOptionsPopup.IsOpen = false;
             OptionsMenu.Focus(FocusState.Pointer);
+        }
+
+        private void AppBarOpened(object sender, object e)
+        {
+            try
+            {
+                ClipDataGrid.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                
+                Storyboard sb = new Storyboard();
+
+                RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
+
+                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
+                animation.FromVerticalOffset = 204;
+
+                sb.Children.Add(animation);
+                sb.Children.Add(fadeOutAnimation);
+
+                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
+
+                sb.Begin();
+            }
+            catch { }
         }
     }
 
