@@ -120,7 +120,7 @@ namespace HudlRT.Views
                     rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                     Border b = new Border();
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
-                    b.BorderThickness = new Thickness(0, 0, 1, 0);
+                    b.BorderThickness = new Thickness(0, 0, 2, 0);
                     TextBlock t = new TextBlock();
                     Run text = new Run();
                     vm.GridHeadersTextSorted.Add(trimHeaderText(displayColumns[i], true));

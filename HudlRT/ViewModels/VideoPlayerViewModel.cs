@@ -329,11 +329,7 @@ namespace HudlRT.ViewModels
         {
             if (FilteredClips.Any())
             {
-                PreloadClips(preloadCT, FilteredClips[0].angles.Where(angle => angle.angleType.IsChecked));
-            }
-            if (FilteredClips.Count > 1)
-            {
-                PreloadClips(preloadCT, FilteredClips[1].angles.Where(angle => angle.angleType.IsChecked));
+                PreloadClips(preloadCT, FilteredClips[0].angles.Where(angle => angle.angleType.IsChecked).Take(2));
             }
         }
 
@@ -430,8 +426,7 @@ namespace HudlRT.ViewModels
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
                 
                 int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked));
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
+                PreloadClips(preloadCT, SelectedClip.angles.Where(angle => angle.angleType.IsChecked).Take(2));
             }
             else
             {
@@ -457,6 +452,18 @@ namespace HudlRT.ViewModels
                     {
                         Angle nextAngle = filteredAngles[angleIndex + 1];
                         SelectedAngle = nextAngle.isPreloaded ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
+                        if (angleIndex + 2 < filteredAngles.Count)
+                        {
+                            List<Angle> angles = new List<Angle>();
+                            angles.Add(filteredAngles[angleIndex + 2]);
+                            PreloadClips(preloadCT, angles);
+                        }
+                        else if (FilteredClips.Count > 1 && FilteredClips[(SelectedClipIndex + 1) % FilteredClips.Count].angles.Where(a => a.angleType.IsChecked).Any())
+                        {
+                            List<Angle> angles = new List<Angle>();
+                            angles.Add(FilteredClips[(SelectedClipIndex + 1) % FilteredClips.Count].angles.Where(a => a.angleType.IsChecked).First());
+                            PreloadClips(preloadCT, angles);
+                        }
                     }
                     else
                     {
@@ -491,9 +498,10 @@ namespace HudlRT.ViewModels
                 listView.SelectedItem = SelectedClip;
                 Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
-
-                int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-                PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
+                if (FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Any())
+                {
+                    PreloadClips(preloadCT, FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Take(2));
+                }
             }
         }
 
@@ -534,6 +542,10 @@ namespace HudlRT.ViewModels
                 listView.SelectedItem = SelectedClip;
                 Angle nextAngle = SelectedClip.angles.FirstOrDefault(angle => angle.angleType.IsChecked);
                 SelectedAngle = (nextAngle != null && nextAngle.isPreloaded) ? new Angle(nextAngle.clipAngleId, nextAngle.preloadFile) : nextAngle;
+                if (FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Any())
+                {
+                    PreloadClips(preloadCT, FilteredClips[SelectedClipIndex].angles.Where(angle => angle.angleType.IsChecked).Take(2));
+                }
             }
         }
 
@@ -555,8 +567,7 @@ namespace HudlRT.ViewModels
             List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
 
             int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
-            PreloadClips(preloadCT, filteredAngles.Where(angle => angle.isPreloaded == false));
-            PreloadClips(preloadCT, FilteredClips[nextClipIndex].angles.Where(angle => angle.angleType.IsChecked));
+            PreloadClips(preloadCT, filteredAngles.Take(2));
 
             //If the current angle has been filtered out, reset the clip to the first unfiltered angle, or null
             if (SelectedAngle != null)
@@ -793,6 +804,7 @@ namespace HudlRT.ViewModels
             {
                 filter.setSortType(filter.sortType);
                 filter.RemoveButtonVisibility = "Visible";
+                filter.CloseButtonVisibility = "Collapsed";
             }
 
             SelectedFilter = filter;
