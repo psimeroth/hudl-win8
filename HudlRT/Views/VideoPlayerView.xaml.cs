@@ -123,7 +123,7 @@ namespace HudlRT.Views
                     rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                     Border b = new Border();
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
-                    b.BorderThickness = new Thickness(0, 0, 1, 0);
+                    b.BorderThickness = new Thickness(0, 0, 2, 0);
                     TextBlock t = new TextBlock();
                     Run text = new Run();
                     vm.GridHeadersTextSorted.Add(trimHeaderText(displayColumns[i], true));
@@ -187,7 +187,7 @@ namespace HudlRT.Views
             int i = 0;
             foreach (var header in vm.GridHeaders)
             {
-                TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""White"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
+                TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
                 TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""White"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
                 ClipDataText.Children.Add(textBlock_title);
                 ClipDataText.Children.Add(textBlock_data);

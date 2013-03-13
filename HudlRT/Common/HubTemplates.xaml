@@ -11,9 +11,9 @@
             </Grid.RowDefinitions>
             <Image Source="{Binding Thumbnail}" MinWidth="{Binding ImageWidth}" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Visibility="{Binding PlayButtonVisibility}">
-                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="105" FontFamily="Segoe UI Symbol" Text="&#x2B24;" Foreground="Black"></Run></TextBlock>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,12,0,0"><Run FontSize="60" FontFamily="Segoe UI Symbol" Text="&#xE102;" Foreground="{StaticResource HudlMediumDarkGray}"></Run></TextBlock>
-                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="120" FontFamily="Segoe UI Symbol" Text="&#x2B58;" Foreground="{StaticResource HudlDarkGrayAccent}"></Run></TextBlock>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="105" FontFamily="Segoe UI Symbol" Text="&#x2B24;" Foreground="{StaticResource HudlPartialBlack}"></Run></TextBlock>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,12,0,0"><Run FontSize="60" FontFamily="Segoe UI Symbol" Text="&#xE102;" Foreground="{StaticResource HudlMediumDarkGray}"></Run></TextBlock>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="120" FontFamily="Segoe UI Symbol" Text="&#x2B58;" Foreground="{StaticResource HudlPartialGray}"></Run></TextBlock>
                 
             </Grid>
             <Grid Background="{StaticResource HudlOrange}" IsRightTapEnabled="False" Grid.Row="1">

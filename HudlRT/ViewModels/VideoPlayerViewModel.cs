@@ -821,6 +821,7 @@ namespace HudlRT.ViewModels
             {
                 filter.setSortType(filter.sortType);
                 filter.RemoveButtonVisibility = "Visible";
+                filter.CloseButtonVisibility = "Collapsed";
             }
 
             SelectedFilter = filter;

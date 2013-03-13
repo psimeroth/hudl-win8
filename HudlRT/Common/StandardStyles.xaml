@@ -886,7 +886,7 @@
                         <Grid Margin="-1,-1,0,0">
                             <TextBlock x:Name="BackgroundGlyph" Text="&#xE0D4;" Foreground="{StaticResource HudlDarkGray}"/>
                             <TextBlock x:Name="NormalGlyph" Text="{StaticResource BackButtonSnappedGlyph}" Foreground="{StaticResource HudlMediumDarkGray}"/>
-                            <TextBlock x:Name="ArrowGlyph" Text="&#xE0C4;" Foreground="{StaticResource HudlLightGray}" Opacity="0"/>
+                            <TextBlock x:Name="ArrowGlyph" Text="&#xE0C4;" Foreground="{StaticResource HudlMediumGray}" Opacity="0"/>
                         </Grid>
                         <Rectangle
                             x:Name="FocusVisualWhite"
