@@ -178,6 +178,8 @@
                 </StackPanel>
 
             </Grid>
+            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="40" VerticalAlignment="Bottom">
+            </Grid>
         </Grid>
 
         <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
