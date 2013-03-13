@@ -4,17 +4,16 @@
     xmlns:local="using:HudlRT.Common">
 
     <DataTemplate x:Key="HubPageLargeGamesTemplate">
-        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="518" Width="350" IsRightTapEnabled="False">
+        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="510" Width="325" IsRightTapEnabled="False">
             <Grid.RowDefinitions>
-                <RowDefinition Height="9*"/>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="75"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding Thumbnail}" MinWidth="{Binding ImageWidth}" HorizontalAlignment="Center" Grid.Row="0"/>
+            <Image Source="{Binding Thumbnail}" Stretch="{ Binding Stretch }" HorizontalAlignment="Center" Grid.Row="0"/>
             <Grid Visibility="{Binding PlayButtonVisibility}">
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="105" FontFamily="Segoe UI Symbol" Text="&#x2B24;" Foreground="{StaticResource HudlPartialBlack}"></Run></TextBlock>
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,12,0,0"><Run FontSize="60" FontFamily="Segoe UI Symbol" Text="&#xE102;" Foreground="{StaticResource HudlMediumDarkGray}"></Run></TextBlock>
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="120" FontFamily="Segoe UI Symbol" Text="&#x2B58;" Foreground="{StaticResource HudlPartialGray}"></Run></TextBlock>
-                
             </Grid>
             <Grid Background="{StaticResource HudlOrange}" IsRightTapEnabled="False" Grid.Row="1">
                 <Grid.RowDefinitions>
@@ -29,12 +28,12 @@
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
-        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="240" Width="325" IsRightTapEnabled="False">
+        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="243" Width="325" IsRightTapEnabled="False">
             <Grid.RowDefinitions>
-                <RowDefinition Height="9*"/>
-                <RowDefinition Height="4*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="75"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding Thumbnail}" MinHeight="263" HorizontalAlignment="Center" Grid.Row="0" IsRightTapEnabled="False"/>
+            <Image Source="{Binding Thumbnail}" Stretch="{Binding Stretch}" HorizontalAlignment="Center" Grid.Row="0" IsRightTapEnabled="False"/>
             <Grid Background="{StaticResource HudlOrange}" Grid.Row="1" IsRightTapEnabled="False">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -54,7 +53,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Border Background="Transparent" Width="60" Height="60" IsRightTapEnabled="False">
-                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" IsRightTapEnabled="False"/>
+                <Image Source="{Binding Thumbnail}" Stretch="{Binding Stretch}" IsRightTapEnabled="False"/>
             </Border>
             <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch" IsRightTapEnabled="False">
                 <TextBlock Text="{Binding Opponent}" Style="{StaticResource ItemTextStyle}" TextTrimming="WordEllipsis" TextWrapping="NoWrap" MaxHeight="40" IsRightTapEnabled="False"/>

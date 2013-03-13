@@ -74,7 +74,7 @@
                                     <RowDefinition Height="9*"/>
                                     <RowDefinition Height="4*"/>
                                 </Grid.RowDefinitions>
-                                <Image Grid.Row="0" Source="{Binding ThumbnailPath}" MinHeight="263" HorizontalAlignment="Center" />
+                                <Image Grid.Row="0" Source="{Binding ThumbnailPath}" Stretch="{Binding Stretch}" HorizontalAlignment="Center" />
                                 <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />

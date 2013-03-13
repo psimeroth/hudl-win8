@@ -543,7 +543,15 @@ namespace HudlRT.Views
         {
             if (timelineContainer == null)
             {
-                timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                try
+                {
+                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                }
+                catch (ArgumentOutOfRangeException exceptional)
+                {
+                    //this just happens if it's only tag data. The timeline won't be used anywyas so it's fine.
+                    timelineContainer = new Grid();
+                }
             }
             if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
             {
@@ -669,7 +677,6 @@ namespace HudlRT.Views
             FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
 
             Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
-
             Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
             repositionAnimation.FromVerticalOffset = -204;
 
