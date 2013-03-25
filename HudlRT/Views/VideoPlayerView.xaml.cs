@@ -673,10 +673,17 @@ namespace HudlRT.Views
         private void SortFilterPopup_Opened_1(object sender, object e)
         {
             PlaybackOptionsPopup.IsOpen = false;
+            try
+            {
+                FiltersList.ScrollIntoView(FiltersList.Items[0]);
+            }
+            catch { }
         }
 
         private void AppBarClosed(object sender, object e)
         {
+            ClipDataGrid.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
             ApplicationViewState currentViewState = ApplicationView.Value;
 
             if (timelineContainer == null)
@@ -685,21 +692,17 @@ namespace HudlRT.Views
                 {
                     timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
                 }
-                catch (ArgumentOutOfRangeException exceptional)
-                {
-                    //this just happens if it's only tag data. The timeline won't be used anywyas so it's fine.
-                    timelineContainer = new Grid();
-                }
+                catch { }
             }
 
-            if (currentViewState != ApplicationViewState.Snapped)
+            try
             {
                 Storyboard sb = new Storyboard();
 
                 RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
                 FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
                 Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
-                
+
                 Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
                 repositionAnimation.FromVerticalOffset = -204;
 
@@ -710,6 +713,7 @@ namespace HudlRT.Views
 
                 sb.Begin();
             }
+            catch { }
         }
 
         private void AppBarOpened(object sender, object e)
@@ -718,34 +722,36 @@ namespace HudlRT.Views
 
             if (currentViewState != ApplicationViewState.Snapped)
             {
-            if (timelineContainer == null)
-            {
+                if (timelineContainer == null)
+                {
+                    try
+                    {
+                        timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                    }
+                    catch { }
+                }
+
                 try
                 {
-                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                    ClipDataGrid.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+                    Storyboard sb = new Storyboard();
+
+                    RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                    FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
+
+                    Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+                    Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
+                    animation.FromVerticalOffset = 204;
+
+                    sb.Children.Add(animation);
+                    sb.Children.Add(fadeOutAnimation);
+
+                    timelineContainer.Margin = new Thickness(0, 0, 0, 204);
+
+                    sb.Begin();
                 }
-                catch (ArgumentOutOfRangeException exceptional)
-                {
-                    //this just happens if it's only tag data. The timeline won't be used anywyas so it's fine.
-                    timelineContainer = new Grid();
-                }
-            }
-
-                Storyboard sb = new Storyboard();
-
-                RepositionThemeAnimation animation = new RepositionThemeAnimation();
-                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
-
-                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
-                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
-                animation.FromVerticalOffset = 204;
-
-                sb.Children.Add(animation);
-                sb.Children.Add(fadeOutAnimation);
-
-                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
-
-                sb.Begin();
+                catch { }
             }
         }
 
