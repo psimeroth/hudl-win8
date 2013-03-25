@@ -99,7 +99,7 @@
                             <Border BorderThickness="0,0.5" BorderBrush="Black" >
                             </Border>
                         </Grid>
-                        <StackPanel Orientation="Vertical" Margin="22,0">
+                        <StackPanel Orientation="Vertical" Margin="22,0" IsHoldingEnabled="False" ScrollViewer.ZoomMode="Disabled">
                             <TextBlock x:Name="Year" Text="{Binding name}" HorizontalAlignment="Right" FontSize="40" FontWeight="Light" Foreground="{StaticResource HudlMediumGray}" />
                             <StackPanel Orientation="Horizontal" Margin="0,-10,0,0" HorizontalAlignment="Right" >
                                 <TextBlock x:Name="SchoolName" Text="{Binding SchoolName}" FontSize="22" Foreground="{StaticResource HudlMediumDarkGray}" FontWeight="Light"/>
@@ -238,9 +238,9 @@
                             </Grid>
                         </Border>
                         <Popup x:Name="Popup">
-                            <Border x:Name="PopupBorder" Background="Transparent" BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Stretch">
+                            <Border x:Name="PopupBorder" Background="Black" BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Stretch">
                                 <Grid>
-                                    <ScrollViewer x:Name="ScrollViewer" Padding="0" Background="Transparent" VerticalScrollBarVisibility="Hidden">
+                                    <ScrollViewer x:Name="ScrollViewer" Padding="0" Background="Transparent" VerticalScrollBarVisibility="Hidden" ZoomMode="Disabled">
                                         <ItemsPresenter/>
                                     </ScrollViewer>
                                 </Grid>

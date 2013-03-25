@@ -181,7 +181,14 @@ namespace HudlRT.ViewModels
         public void UpdateDiskInformation()
         {
             DownloadAccessor.DiskSpaceResponse curentDownloadsSpaceReponse = DownloadAccessor.Instance.DiskSpaceFromDownloads;
-            DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;// +" of " + freeSpaceResponse.formattedSize;
+            if (curentDownloadsSpaceReponse.formattedSize == "0 MB")
+            {
+                DiskSpaceInformation = "No playlists downloaded";
+            }
+            else
+            {
+                DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;// +" of " + freeSpaceResponse.formattedSize;
+            }
         }
 
         protected override void OnActivate()
@@ -261,7 +268,7 @@ namespace HudlRT.ViewModels
 
             if (Categories.Count == 0)
             {
-                NoPlaylistText = "There are no playlists for this schedule entry";
+                NoPlaylistText = "There are no playlists for this entry";
             }
             else
             {
