@@ -314,6 +314,13 @@ namespace HudlRT.ViewModels
             }
         }
 
+        protected override void OnViewReady(object view)
+        {
+            base.OnViewReady(view);
+            TopAppBar.IsOpen = true;
+            BottomAppBar.IsOpen = true;
+        }
+
         private async Task LoadActiveDownloadsAsync()
         {
             if (DownloadAccessor.Instance.Downloading)
@@ -806,6 +813,14 @@ namespace HudlRT.ViewModels
                 foreach (string criteria in breakdownData)
                 {
                     filterCriteria.Add(new FilterCriteriaViewModel(id, criteria));
+                }
+                try
+                {
+                    filterCriteria = new BindableCollection<FilterCriteriaViewModel>(filterCriteria.OrderBy(x => Convert.ToInt32(x.Name)));
+                }
+                catch
+                {
+                    filterCriteria = new BindableCollection<FilterCriteriaViewModel>(filterCriteria.OrderBy(x => x.Name));
                 }
 
                 filter = new FilterViewModel(id, Parameter.playlist.displayColumns[id], SortType.None, filterCriteria, this);
