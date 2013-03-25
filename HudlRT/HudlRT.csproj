@@ -170,7 +170,6 @@
     <Content Include="Assets\dark_BG_Tiled.png" />
     <Content Include="Assets\hudl-hi-res-white-medium.png" />
     <Content Include="Assets\hudl-hi-res-white-small.png" />
-    <Content Include="Assets\hudl-logo-big-tile.png" />
     <Content Include="Assets\hudl-mark-gray.png" />
     <Content Include="Assets\hudl-metro-orange.png" />
     <Content Include="Assets\hudl-metro-orange-large.png" />
@@ -181,15 +180,8 @@
     <Content Include="Assets\Hudl_Partial150.png" />
     <Content Include="Assets\scale-100\Hudl_Metro_Logo.png" />
     <Content Include="Assets\scale-100\Hudl_Small_Logo.png" />
+    <Content Include="Assets\hudl-logo-big-tile.png" />
     <Content Include="Assets\scale-100\StoreLogo.png" />
-    <Content Include="Assets\scale-140\Hudl_Metro_Logo.Scale-140.png" />
-    <Content Include="Assets\scale-140\Hudl_Small_Logo.Scale-140.png" />
-    <Content Include="Assets\scale-140\StoreLogo.Scale-140.png" />
-    <Content Include="Assets\scale-180\Hudl_Metro_Logo.Scale-180.png" />
-    <Content Include="Assets\scale-180\Hudl_Small_Logo.Scale-180.png" />
-    <Content Include="Assets\scale-180\StoreLogo.Scale-180.png" />
-    <Content Include="Assets\scale-80\Hudl_Metro_Logo.png" />
-    <Content Include="Assets\scale-80\Hudl_Small_Logo.png" />
     <None Include="Package.StoreAssociation.xml">
       <SubType>Designer</SubType>
     </None>
@@ -290,7 +282,11 @@
       <HintPath>packages\winrtxamltoolkit.1.3.5.3\lib\netcore45\WinRTXamlToolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Assets\scale-140\" />
+    <Folder Include="Assets\scale-180\" />
+    <Folder Include="Assets\scale-80\" />
+  </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
