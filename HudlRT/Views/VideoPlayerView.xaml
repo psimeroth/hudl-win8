@@ -50,7 +50,7 @@
                             <ListView x:Name="FiltersList" Height="305" Width="340" Margin="15,0,0,0" ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Checked] = [Action ApplyFilter()];[Event Unchecked] = [Action ApplyFilter()]" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
+                                        <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ListView>
