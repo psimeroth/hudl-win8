@@ -115,7 +115,7 @@ namespace HudlRT.Common
         public const string URL_SERVICE_GET_SEASONS_BY_TEAM = "teams/{0}/categories";//returns Seasons for a team, complete with games and categories
         public const string URL_SERVICE_GET_SCHEDULE_BY_SEASON = "teams/{0}/schedule?season={1}";//returns games
         public const string URL_SERVICE_GET_CATEGORIES_FOR_GAME = "games/{0}/categories";//returns categories
-        public const string URL_SERVICE_GET_CUTUPS_BY_CATEGORY = "categories/{0}/playlists";//returns playlists
+        public const string URL_SERVICE_GET_PLAYLISTS_BY_CATEGORY = "categories/{0}/playlists";//returns playlists
         public const string URL_SERVICE_GET_CLIPS = "playlists/{0}/clips?startIndex={1}";//returns clips
         public const string URL_SERVICE_GET_OTHER_ITEMS = "teams/{0}/categories?seasonId={1}&type=7"; //note the seven at the end is hard coded so that this returns "Other Items"
         public const string NO_CONNECTION = "NoConnection";
@@ -227,29 +227,42 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<PlaylistResponse> GetCategoryPlaylists(string categoryId)
+        public static async Task<PlaylistResponse> GetCategoryPlaylists(List<string> categoryIds)
         {
-            var playlists = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_CUTUPS_BY_CATEGORY, categoryId), true);
-            if (!string.IsNullOrEmpty(playlists) && playlists != NO_CONNECTION)
+            if (categoryIds != null && categoryIds.Count > 0)
             {
-                try
+                string categoryId = categoryIds[0];
+                for (int i = 1; i < categoryIds.Count; i++)
                 {
-                    var obj = JsonConvert.DeserializeObject<List<PlaylistDTO>>(playlists);
-                    BindableCollection<Playlist> playlistCollection = new BindableCollection<Playlist>();
-                    foreach (PlaylistDTO playlistDTO in obj)
+                    categoryId += "," + categoryIds[i];
+                }
+
+                var playlists = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_PLAYLISTS_BY_CATEGORY, categoryId), true);
+                if (!string.IsNullOrEmpty(playlists) && playlists != NO_CONNECTION)
+                {
+                    try
                     {
-                        playlistCollection.Add(Playlist.FromDTO(playlistDTO));
+                        var obj = JsonConvert.DeserializeObject<List<PlaylistDTO>>(playlists);
+                        BindableCollection<Playlist> playlistCollection = new BindableCollection<Playlist>();
+                        foreach (PlaylistDTO playlistDTO in obj)
+                        {
+                            playlistCollection.Add(Playlist.FromDTO(playlistDTO));
+                        }
+                        return new PlaylistResponse { status = SERVICE_RESPONSE.SUCCESS, playlists = playlistCollection };
                     }
-                    return new PlaylistResponse { status = SERVICE_RESPONSE.SUCCESS, playlists = playlistCollection };
+                    catch (Exception)
+                    {
+                        return new PlaylistResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
+                    }
                 }
-                catch (Exception)
+                else if (playlists == NO_CONNECTION)
                 {
-                    return new PlaylistResponse { status = SERVICE_RESPONSE.DESERIALIZATION };
+                    return new PlaylistResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
                 }
-            }
-            else if (playlists == NO_CONNECTION)
-            {
-                return new PlaylistResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+                else
+                {
+                    return new PlaylistResponse { status = SERVICE_RESPONSE.NULL_RESPONSE };
+                }
             }
             else
             {
