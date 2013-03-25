@@ -82,6 +82,16 @@ namespace HudlRT.ViewModels
                 NotifyOfPropertyChange(() => RemoveButtonVisibility);
             }
         }
+        private string closeButtonVisibility;
+        public string CloseButtonVisibility
+        {
+            get { return closeButtonVisibility; }
+            set
+            {
+                closeButtonVisibility = value;
+                NotifyOfPropertyChange(() => CloseButtonVisibility);
+            }
+        }
 
         public FilterViewModel(int columnId, string columnName, SortType sortType, BindableCollection<FilterCriteriaViewModel> filterCriteria, VideoPlayerViewModel viewModel)
         {
@@ -95,6 +105,7 @@ namespace HudlRT.ViewModels
             IsNoneChecked = true;
             ApplyButtonVisibility = "Visible";
             RemoveButtonVisibility = "Collapsed";
+            CloseButtonVisibility = "Visible";
         }
 
         public void ApplyFilter()

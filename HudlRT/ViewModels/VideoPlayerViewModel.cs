@@ -314,13 +314,6 @@ namespace HudlRT.ViewModels
             }
         }
 
-        protected override void OnViewReady(object view)
-        {
-            base.OnViewReady(view);
-            TopAppBar.IsOpen = true;
-            BottomAppBar.IsOpen = true;
-        }
-
         private async Task LoadActiveDownloadsAsync()
         {
             if (DownloadAccessor.Instance.Downloading)
@@ -821,6 +814,7 @@ namespace HudlRT.ViewModels
             {
                 filter.setSortType(filter.sortType);
                 filter.RemoveButtonVisibility = "Visible";
+                filter.CloseButtonVisibility = "Collapsed";
             }
 
             SelectedFilter = filter;

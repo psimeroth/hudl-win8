@@ -74,18 +74,17 @@
                                     <RowDefinition Height="9*"/>
                                     <RowDefinition Height="4*"/>
                                 </Grid.RowDefinitions>
-                                <Image Grid.Row="0" Source="{Binding ThumbnailPath}" MinHeight="263" HorizontalAlignment="Center" />
+                                <Image Grid.Row="0" Source="{Binding ThumbnailPath}" Stretch="{Binding Stretch}" HorizontalAlignment="Center" />
                                 <Grid Background="{StaticResource HudlOrange}" Grid.Row="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
+                                    <TextBlock Text ="{Binding Name}" VerticalAlignment="Bottom" Style="{StaticResource Hub_TextBlockStyle_WeekHeader}" Grid.Row="0" TextTrimming="WordEllipsis"/>
                                     <TextBlock Text ="{Binding NumClips}" VerticalAlignment="Top" Style="{StaticResource Hub_TextBlockStyle_WeekHeaderDate}" Grid.Row="1"/>
-                                    <Grid Grid.Row="1" Margin="0,0,-3,3" HorizontalAlignment="Right" Visibility="{Binding DownloadedIcon_Visibility}">
-                                        <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlDarkGrayAccent}" FontFamily="Segoe UI Symbol" FontSize="45" Text="&#xE188;"/>
-                                        <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="35" Text="&#xE188;"/>
-                                        <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlOrange}" FontFamily="Segoe UI Symbol" FontSize="25" Text="&#xE0E7;"/>
+                                    <Grid Grid.Row="1" Margin="20,-5"  HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="{Binding DownloadedIcon_Visibility}">
+                                        <TextBlock Grid.Column="0" Margin="0,-5,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="27" Text="&#xE188;"/>
+                                        <TextBlock Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="{StaticResource HudlOrange}" FontFamily="Segoe UI Symbol" FontSize="18" Text="&#xE0E7;"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -117,7 +116,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
+                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
                                     <Image Source="{Binding ThumbnailPath}" Stretch="UniformToFill"/>
                                 </Border>
                                 <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Stretch">
@@ -168,14 +167,17 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CategoriesGridView" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GoBack" Storyboard.TargetProperty="Style">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}" />
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="40" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="FontSize">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="25" />
                         </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Margin">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="-30,0,0,30" />
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="VerticalAlignment">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="TextWrapping">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Wrap" />
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

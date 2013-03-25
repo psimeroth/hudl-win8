@@ -171,6 +171,7 @@ namespace HudlRT.ViewModels
                 Game LastViewedGame = new Game { gameId = response.ID, opponent = response.name, date = DateTime.Parse(response.timeStamp) };//this is actually a playlist - not a game
                 GameViewModel lastViewed = new GameViewModel(LastViewedGame, true, isLastviewed:true);
                 lastViewed.Thumbnail = response.thumbnail;
+                lastViewed.Stretch = "UniformToFill";
                 LastViewedVM = new HubGroupViewModel() { Name = "Last Viewed", Games = new BindableCollection<GameViewModel>() };
                 LastViewedVM.Games.Add(lastViewed);
 

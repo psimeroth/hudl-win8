@@ -224,6 +224,8 @@ namespace HudlRT.ViewModels
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Collapsed;
 
+            
+
             LoadActiveDownloadsAsync();
             UpdateDiskInformation();
             if (DownloadAccessor.Instance.Downloading)
@@ -332,6 +334,7 @@ namespace HudlRT.ViewModels
 
         public void CancelButtonClick()
         {
+            DownloadProgressText = "Canceling Download";
             if (DownloadAccessor.Instance.Downloading)
             {
                 DownloadAccessor.Instance.cts.Cancel();
@@ -341,6 +344,8 @@ namespace HudlRT.ViewModels
                 categoriesGrid.SelectedItem = null;
             }
             AppBarOpen = false;
+            UpdateDiskInformation();
+            Downloading_Visibility = Visibility.Collapsed;
         }
             
         public async void DownloadButtonClick()

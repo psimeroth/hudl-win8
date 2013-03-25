@@ -32,6 +32,7 @@ namespace HudlRT.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            CategoriesGridView.SelectedIndex = -1;
             LoadingRing.IsActive = false;
         }
     }

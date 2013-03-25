@@ -62,7 +62,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#55000000" Margin="0,0,0,202">
+                                <Grid x:Name="TimelineContainer" Grid.Row="1" Background="#55000000">
                                     <Grid Margin="30,6,30,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -75,11 +75,11 @@
                                             <local:Timeline.SliderStyle>
                                                 <Style TargetType="local:SeekableSlider">
                                                     <Setter Property="Background" Value="#99FFFFFF" />
-                                                    <Setter Property="Foreground" Value="{StaticResource HudlDarkGrayAccent}"/>
-                                                    <Setter Property="SliderTrackDecreasePressedBackground" Value="{StaticResource HudlOrange}" />
-                                                    <Setter Property="SliderTrackDecreasePointerOverBackground" Value="{StaticResource HudlOrange}" />
-                                                    <Setter Property="SliderTrackPointerOverBackground" Value="#99FFFFFF" />
-                                                    <Setter Property="SliderTrackPressedBackground" Value="#99FFFFFF" />
+                                                    <Setter Property="Foreground" Value="{StaticResource HudlPartialOrange}"/>
+                                                    <Setter Property="SliderTrackDecreasePressedBackground" Value="{StaticResource HudlPartialOrange}" />
+                                                    <Setter Property="SliderTrackDecreasePointerOverBackground" Value="{StaticResource HudlPartialOrange}" />
+                                                    <Setter Property="SliderTrackPointerOverBackground" Value="#55FFFFFF" />
+                                                    <Setter Property="SliderTrackPressedBackground" Value="#55FFFFFF" />
                                                     <Setter Property="SliderThumbStyle">
                                                         <Setter.Value>
                                                             <Style TargetType="Thumb">
@@ -88,7 +88,7 @@
                                                                         <ControlTemplate TargetType="Thumb">
                                                                             <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-35,-5,0,0">
                                                                                 <Grid>
-                                                                                    <Ellipse Stroke="Black" Fill="{StaticResource ButtonPressedForegroundThemeBrush}" StrokeThickness="2" Width="35" Height="35"/>
+                                                                                    <Ellipse Stroke="Black" Fill="{StaticResource HudlDarkGray}" StrokeThickness="2" Width="35" Height="35"/>
                                                                                 </Grid>
                                                                             </Canvas>
                                                                         </ControlTemplate>

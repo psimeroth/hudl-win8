@@ -124,7 +124,7 @@ namespace HudlRT.Views
                     rowText = rowText + @"<TextBlock Grid.Column=""X"" HorizontalAlignment = ""Center"" TextWrapping=""NoWrap"" VerticalAlignment=""Center"" Text =""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString());
                     Border b = new Border();
                     b.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0, 0));
-                    b.BorderThickness = new Thickness(0, 0, 1, 0);
+                    b.BorderThickness = new Thickness(0, 0, 2, 0);
                     TextBlock t = new TextBlock();
                     Run text = new Run();
                     vm.GridHeadersTextSorted.Add(trimHeaderText(displayColumns[i], true));
@@ -188,7 +188,7 @@ namespace HudlRT.Views
             int i = 0;
             foreach (var header in vm.GridHeaders)
             {
-                TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""White"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
+                TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
                 TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""White"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
                 ClipDataText.Children.Add(textBlock_title);
                 ClipDataText.Children.Add(textBlock_data);
@@ -601,6 +601,11 @@ namespace HudlRT.Views
             string hr = GetHresultFromErrorMessage(e);
         }
 
+        private void videoMediaElement_MediaStarted(object sender, RoutedEventArgs e)
+        {
+            var x = videoMediaElement.ControlPanel.GetDescendants();
+        }
+
         private string GetHresultFromErrorMessage(ExceptionRoutedEventArgs e)
         {
             String hr = String.Empty;
@@ -618,35 +623,20 @@ namespace HudlRT.Views
 
         private void videoMediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (timelineContainer == null)
+            ApplicationViewState currentViewState = ApplicationView.Value;
+
+            if (currentViewState != ApplicationViewState.Snapped)
             {
-                timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
-            }
-            if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
-            {
-                TopAppBar.IsOpen = true;
-                BottomAppBar.IsOpen = true;
-
-                Storyboard sb = new Storyboard();
-
-                RepositionThemeAnimation animation = new RepositionThemeAnimation();
-                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
-
-                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
-                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
-                animation.FromVerticalOffset = 204;
-
-                sb.Children.Add(animation);
-                sb.Children.Add(fadeOutAnimation);
-
-                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
-
-                sb.Begin();
-            }
-            else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
-            {
-                TopAppBar.IsOpen = false;
-                BottomAppBar.IsOpen = false;
+                if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
+                {
+                    TopAppBar.IsOpen = true;
+                    BottomAppBar.IsOpen = true;
+                }
+                else if (TopAppBar.IsOpen == true || BottomAppBar.IsOpen == true)
+                {
+                    TopAppBar.IsOpen = false;
+                    BottomAppBar.IsOpen = false;
+                }
             }
         }
 
@@ -722,18 +712,28 @@ namespace HudlRT.Views
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             SortFilterPopup.IsOpen = false;
+            PlaybackOptionsPopup.IsOpen = false;
             TopAppBar.IsOpen = false;
             BottomAppBar.IsOpen = false;
-            var currentViewState = ApplicationView.Value;
+            ApplicationViewState currentViewState = ApplicationView.Value;
+
+            videoMediaElement.Width = Window.Current.Bounds.Width;
+
             if (currentViewState == ApplicationViewState.Snapped)
             {
-                mainGrid.Visibility = Visibility.Collapsed;
+                BottomAppBar.Visibility = Visibility.Collapsed;
+                TopAppBar.Visibility = Visibility.Collapsed;
+                VideoControls.Visibility = Visibility.Collapsed;
+                ClipDataGrid.Visibility = Visibility.Collapsed;
                 snapped_mainGrid.Visibility = Visibility.Visible;
             }
             else
             {
+                BottomAppBar.Visibility = Visibility.Visible;
+                TopAppBar.Visibility = Visibility.Visible;
                 snapped_mainGrid.Visibility = Visibility.Collapsed;
-                mainGrid.Visibility = Visibility.Visible;
+                ClipDataGrid.Visibility = Visibility.Visible;
+                VideoControls.Visibility = Visibility.Visible;
             }
         }
 
@@ -754,22 +754,76 @@ namespace HudlRT.Views
 
         private void AppBarClosed(object sender, object e)
         {
-            Storyboard sb = new Storyboard();
+            ApplicationViewState currentViewState = ApplicationView.Value;
 
-            RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
-            FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
+            if (timelineContainer == null)
+            {
+                try
+                {
+                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                }
+                catch (ArgumentOutOfRangeException exceptional)
+                {
+                    //this just happens if it's only tag data. The timeline won't be used anywyas so it's fine.
+                    timelineContainer = new Grid();
+                }
+            }
 
-            Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
+            if (currentViewState != ApplicationViewState.Snapped)
+            {
+                Storyboard sb = new Storyboard();
 
-            Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
-            repositionAnimation.FromVerticalOffset = -204;
+                RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
+                FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
+                Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
+                
+                Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
+                repositionAnimation.FromVerticalOffset = -204;
 
-            sb.Children.Add(repositionAnimation);
-            sb.Children.Add(fadeInAnimation);
+                sb.Children.Add(repositionAnimation);
+                sb.Children.Add(fadeInAnimation);
 
-            timelineContainer.Margin = new Thickness(0);
+                timelineContainer.Margin = new Thickness(0);
 
-            sb.Begin();
+                sb.Begin();
+            }
+        }
+
+        private void AppBarOpened(object sender, object e)
+        {
+            ApplicationViewState currentViewState = ApplicationView.Value;
+
+            if (currentViewState != ApplicationViewState.Snapped)
+            {
+            if (timelineContainer == null)
+            {
+                try
+                {
+                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                }
+                catch (ArgumentOutOfRangeException exceptional)
+                {
+                    //this just happens if it's only tag data. The timeline won't be used anywyas so it's fine.
+                    timelineContainer = new Grid();
+                }
+            }
+
+                Storyboard sb = new Storyboard();
+
+                RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
+
+                Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
+                Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
+                animation.FromVerticalOffset = 204;
+
+                sb.Children.Add(animation);
+                sb.Children.Add(fadeOutAnimation);
+
+                timelineContainer.Margin = new Thickness(0, 0, 0, 204);
+
+                sb.Begin();
+            }
         }
 
         private void CloseOptionsPopup(object sender, RoutedEventArgs e)
