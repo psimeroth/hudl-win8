@@ -814,6 +814,14 @@ namespace HudlRT.ViewModels
                 {
                     filterCriteria.Add(new FilterCriteriaViewModel(id, criteria));
                 }
+                try
+                {
+                    filterCriteria = new BindableCollection<FilterCriteriaViewModel>(filterCriteria.OrderBy(x => Convert.ToInt32(x.Name)));
+                }
+                catch
+                {
+                    filterCriteria = new BindableCollection<FilterCriteriaViewModel>(filterCriteria.OrderBy(x => x.Name));
+                }
 
                 filter = new FilterViewModel(id, Parameter.playlist.displayColumns[id], SortType.None, filterCriteria, this);
             }

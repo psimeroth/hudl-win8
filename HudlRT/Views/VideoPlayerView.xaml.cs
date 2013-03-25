@@ -673,6 +673,11 @@ namespace HudlRT.Views
         private void SortFilterPopup_Opened_1(object sender, object e)
         {
             PlaybackOptionsPopup.IsOpen = false;
+            try
+            {
+                FiltersList.ScrollIntoView(FiltersList.Items[0]);
+            }
+            catch { }
         }
 
         private void AppBarClosed(object sender, object e)
