@@ -49,11 +49,11 @@ namespace HudlRT.ViewModels
             {
                 if (IsLastViewed)
                 {
-                    return "Viewed: " + GameModel.DisplayDate;
+                    return "Viewed: " + GameModel.DisplayDateTime;
                 }
                 if (GameModel.Classification != 1)
                 {
-                    return "-";
+                    return "";
                 }
                 else
                 {
