@@ -32,6 +32,17 @@ namespace HudlRT.ViewModels
         private PlaybackType playbackType;
         private List<Clip> Clips { get; set; }
 
+        private string noAnglesText;
+        public string NoAnglesText
+        {
+            get { return noAnglesText; }
+            set
+            {
+                noAnglesText = value;
+                NotifyOfPropertyChange(() => NoAnglesText);
+            }
+        }
+
         private double downloadProgress;
         public double DownloadProgress
         {
@@ -312,6 +323,17 @@ namespace HudlRT.ViewModels
                     DownloadedVisibility = Visibility.Visible;
                 }
             }
+
+            List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+
+            if (filteredAngles.Count == 1)
+            {
+                filteredAngles.First().angleType.CheckBoxEnabled = false;
+            }
+            else if (filteredAngles.Count == 0)
+            {
+                NoAnglesText = "No angles are selected. Please select an angle to view this clip.";
+            }
         }
 
         protected override void OnViewReady(object view)
@@ -582,6 +604,29 @@ namespace HudlRT.ViewModels
         public void AngleFilter()
         {
             List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+
+            foreach (Angle angle in filteredAngles)
+            {
+                angle.angleType.CheckBoxEnabled = true;
+            }
+
+            if (filteredAngles.Count == 1)
+            {
+                filteredAngles.First().angleType.CheckBoxEnabled = false;
+                NoAnglesText = "";
+            }
+            else if (filteredAngles.Count == 0)
+            {
+                NoAnglesText = "No angles are selected. Please select an angle to view this clip.";
+            }
+            else
+            {
+                NoAnglesText = "";
+                foreach (Angle angle in filteredAngles)
+                {
+                    angle.angleType.CheckBoxEnabled = true;
+                }
+            }
 
             int nextClipIndex = (SelectedClipIndex + 1) % FilteredClips.Count;
             PreloadClips(preloadCT, filteredAngles.Take(2));

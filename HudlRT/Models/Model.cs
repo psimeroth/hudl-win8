@@ -434,6 +434,16 @@ namespace HudlRT.Models
     {
         public VideoPlayerViewModel viewModel { get; set; }
         public string Name { get; set; }
+        private bool _checkBoxEnabled;
+        public bool CheckBoxEnabled
+        {
+            get { return _checkBoxEnabled; }
+            set
+            {
+                _checkBoxEnabled = value;
+                NotifyOfPropertyChange(() => CheckBoxEnabled);
+            }
+        }
         private bool isChecked;
         public bool IsChecked
         {
@@ -449,6 +459,7 @@ namespace HudlRT.Models
         {
             Name = name;
             IsChecked = true;
+            CheckBoxEnabled = true;
             viewModel = vm;
         }
 
