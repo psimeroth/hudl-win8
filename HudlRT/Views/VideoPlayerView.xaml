@@ -95,7 +95,7 @@
                         <TextBlock Text="Angles" FontSize="28" Grid.Row="0" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="Playback" FontSize="28" Grid.Row="0" Grid.Column="1" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                        <ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Row="1" Margin="15,15,0,0">
+                        <ItemsControl x:Name="Angles" ItemsSource="{Binding AngleTypes}" Grid.Row="1" Margin="15,15,0,0">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Vertical" />
@@ -104,7 +104,9 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Vertical">
-                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Foreground="{StaticResource HudlMediumGray}"/>
+                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" IsEnabled="{Binding CheckBoxEnabled}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"
+                                                  caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];"
+                                                  Foreground="{StaticResource HudlMediumGray}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -118,6 +120,7 @@
                 </ContentControl>
             </Border>
         </Popup>
+        
         <Grid x:Name="mainGrid" Background="Black" Tapped="videoMediaElement_Tapped">      
             <ContentControl x:Name="videoContainer"
                             HorizontalContentAlignment="Center"
@@ -139,6 +142,7 @@
                                    [Event ManipulationInertiaStarting] = [Action videoMediaElement_ManipulationInertiaStarting($this,$eventArgs)];"
                                    />
             </ContentControl>
+            <TextBlock HorizontalAlignment="Center" Width="800" VerticalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoAnglesText}" TextWrapping="Wrap" />
             
         </Grid>
         <Grid x:Name="VideoControls">

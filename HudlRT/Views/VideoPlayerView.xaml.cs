@@ -749,43 +749,6 @@ namespace HudlRT.Views
             }
         }
 
-        private void AppBarOpened(object sender, object e)
-        {
-            ApplicationViewState currentViewState = ApplicationView.Value;
-
-            if (currentViewState != ApplicationViewState.Snapped)
-            {
-                if (timelineContainer == null)
-                {
-                    try
-                    {
-                        timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
-                    }
-                    catch (ArgumentOutOfRangeException exceptional)
-                    {
-                        //this just happens if it's only tag data. The timeline won't be used anywyas so it's fine.
-                        timelineContainer = new Grid();
-                    }
-                }
-
-                    Storyboard sb = new Storyboard();
-
-                    RepositionThemeAnimation animation = new RepositionThemeAnimation();
-                    FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
-
-                    Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
-                    Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
-                    animation.FromVerticalOffset = 204;
-
-                    sb.Children.Add(animation);
-                    sb.Children.Add(fadeOutAnimation);
-
-                    timelineContainer.Margin = new Thickness(0, 0, 0, 204);
-
-                    sb.Begin();
-                }
-        }
-
         private void CloseOptionsPopup(object sender, RoutedEventArgs e)
         {
             PlaybackOptionsPopup.IsOpen = false;
