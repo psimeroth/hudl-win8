@@ -108,19 +108,11 @@ namespace HudlRT.ViewModels
             CloseButtonVisibility = "Visible";
         }
 
-        public void ApplyFilter()
-        {
-            viewModel.ApplySelectedFilter();
-        }
-
-        public void RemoveFilter()
-        {
-            viewModel.RemoveSelectedFilter();
-        }
-
         public void Click(FilterViewModel filter, SortType sortType)
         {
             filter.sortType = sortType;
+
+            viewModel.ApplySelectedFilter();
         }
 
         public void setSortType(SortType newSortType)

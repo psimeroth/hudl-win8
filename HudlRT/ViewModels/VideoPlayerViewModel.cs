@@ -789,13 +789,6 @@ namespace HudlRT.ViewModels
             SelectedClip = null;
             SelectedAngle = null;
             FilteredClips = new ObservableCollection<Clip>(clips);
-
-            if (FilteredClips.Any())
-            {
-                SetClip(FilteredClips.First());
-            }
-
-            SortFilterPopupControl.IsOpen = false;
         }
 
         private void sortClips(ref List<Clip> clips, FilterViewModel filter)
@@ -857,7 +850,7 @@ namespace HudlRT.ViewModels
                 BindableCollection<FilterCriteriaViewModel> filterCriteria = new BindableCollection<FilterCriteriaViewModel>();
                 foreach (string criteria in breakdownData)
                 {
-                    filterCriteria.Add(new FilterCriteriaViewModel(id, criteria));
+                    filterCriteria.Add(new FilterCriteriaViewModel(id, criteria, this));
                 }
                 try
                 {
