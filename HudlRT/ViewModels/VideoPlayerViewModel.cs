@@ -314,6 +314,13 @@ namespace HudlRT.ViewModels
             }
         }
 
+        protected override void OnViewReady(object view)
+        {
+            base.OnViewReady(view);
+            TopAppBar.IsOpen = true;
+            BottomAppBar.IsOpen = true;
+        }
+
         private async Task LoadActiveDownloadsAsync()
         {
             if (DownloadAccessor.Instance.Downloading)
