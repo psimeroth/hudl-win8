@@ -192,10 +192,18 @@ namespace HudlRT.Models
                 int year;
                 int month;
                 int day;
-                int.TryParse(date[2], out year);
-                int.TryParse(date[1], out day);
-                int.TryParse(date[0], out month);
-                game.date = new DateTime(year, month, day);
+                try
+                {
+                    int.TryParse(date[2], out year);
+                    int.TryParse(date[1], out day);
+                    int.TryParse(date[0], out month);
+                    game.date = new DateTime(year, month, day);
+                }
+                catch (Exception e)
+                {
+                    game.date = new DateTime();
+                }
+                
             }
             else
             {
