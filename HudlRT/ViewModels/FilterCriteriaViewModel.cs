@@ -11,6 +11,7 @@ namespace HudlRT.ViewModels
     {
         public string Name { get; set; }
         private int id { get; set; }
+        public VideoPlayerViewModel viewModel { get; set; }
         private bool isChecked;
         public bool IsChecked
         {
@@ -22,11 +23,17 @@ namespace HudlRT.ViewModels
             }
         }
 
-        public FilterCriteriaViewModel(int id, string name)
+        public FilterCriteriaViewModel(int id, string name, VideoPlayerViewModel viewModel)
         {
             this.id = id;
             Name = name;
             IsChecked = false;
+            this.viewModel = viewModel;
+        }
+
+        public void ApplyFilter()
+        {
+            viewModel.ApplySelectedFilter();
         }
     }
 }
