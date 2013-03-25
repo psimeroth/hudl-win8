@@ -54,7 +54,6 @@ namespace HudlRT.Views
         private VideoPlayerState playerState { get; set; }
         private DispatcherTimer rewindKeyPressTimer { get; set; }
         private Windows.UI.Core.KeyEventArgs rewindKey { get; set; }
-        private bool isShiftDown { get; set; }
         private bool isControlDown { get; set; }
 
         public VideoPlayerView()
@@ -400,12 +399,7 @@ namespace HudlRT.Views
 
         private void VideoPage_KeyUp(object sender, Windows.UI.Core.KeyEventArgs e)
         {
-            if (e.VirtualKey == Windows.System.VirtualKey.Shift)
-            {
-                isShiftDown = false;
-                e.Handled = true;
-            }
-            else if (e.VirtualKey == Windows.System.VirtualKey.Control)
+            if (e.VirtualKey == Windows.System.VirtualKey.Control)
             {
                 isControlDown = false;
                 e.Handled = true;
@@ -415,8 +409,9 @@ namespace HudlRT.Views
                 btn_release(null, null);
                 e.Handled = true;
             }
-            else if (e.VirtualKey == (Windows.System.VirtualKey)179 || e.VirtualKey == (Windows.System.VirtualKey)178)
+            else if ((e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.Right) && isControlDown)
             {
+                btn_release(null, null);
                 e.Handled = true;
             }
             else
@@ -487,64 +482,64 @@ namespace HudlRT.Views
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
                 {
-                    btnFastForward_Click(null, null);
-                    keyPressTimer.Start();
+                    if (isControlDown) //Remote Fast Forward
+                    {
+                        btnFastForward_Click(null, null);
+                    }
+                    else
+                    {
+                        btnFastForward_Click(null, null);
+                        keyPressTimer.Start();
+                    }
                     e.Handled = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
                 {
-                    rewindKey = e;
-                    keyPressTimer.Start();
-                    rewindKeyPressTimer.Start();
+                    if (isControlDown) //Remote Fast Reverse
+                    {
+                        btnFastReverse_Click(null, null);
+                    }
+                    else
+                    {
+                        rewindKey = e;
+                        keyPressTimer.Start();
+                        rewindKeyPressTimer.Start();
+                    }
                     e.Handled = true;
-                }
-                else if (e.VirtualKey == Windows.System.VirtualKey.Shift)
-                {
-                    isShiftDown = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Control)
                 {
                     isControlDown = true;
                 }
-                else if (e.VirtualKey == (Windows.System.VirtualKey)177)
+                else if (e.VirtualKey == (Windows.System.VirtualKey)177) //Previous Media Key
                 {
-                    if (isShiftDown) //Slow Reverse
+                    if (isControlDown) //Remote Slow Reverse
                     {
                         btnSlowReverse_Click(null, null);
                         e.Handled = true;
                     }
-                    else if (isControlDown) //Fast Reverse
-                    {
-                        btnFastReverse_Click(null, null);
-                        e.Handled = true;
-                    }
-                    else //Previous
+                    else //Remote Previous
                     {
                         VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
                         vm.GoToPreviousClip();
                         e.Handled = true;
                     }
                 }
-                else if (e.VirtualKey == (Windows.System.VirtualKey)176)
+                else if (e.VirtualKey == (Windows.System.VirtualKey)176) //Next Media Key
                 {
-                    if (isShiftDown) //Slow Forward
+                    if (isControlDown) //Remote Slow Forward
                     {
                         btnSlowForward_Click(null, null);
                         e.Handled = true;
                     }
-                    else if (isControlDown) //Fast Forward
-                    {
-                        btnFastForward_Click(null, null);
-                        e.Handled = true;
-                    }
-                    else //Next
+                    else //Remote Next
                     {
                         VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
                         vm.GoToNextClip();
                         e.Handled = true;
                     }
                 }
-                else if (e.VirtualKey == (Windows.System.VirtualKey)179)
+                else if (e.VirtualKey == (Windows.System.VirtualKey)179) //Play/Pause Media Key
                 {
                     if (playerState == VideoPlayerState.Paused)
                     {
@@ -555,17 +550,6 @@ namespace HudlRT.Views
                         btnPause_Click(null, null);
                     }
                     e.Handled = true;
-                }
-                else if (e.VirtualKey == (Windows.System.VirtualKey)178)
-                {
-                    if (isShiftDown) //Full Screen
-                    {
-                        e.Handled = true;
-                    }
-                    else if (isControlDown) //Tag
-                    {
-                        e.Handled = true;
-                    }
                 }
             }
         }
