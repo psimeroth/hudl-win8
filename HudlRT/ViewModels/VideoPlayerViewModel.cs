@@ -744,13 +744,6 @@ namespace HudlRT.ViewModels
             SelectedClip = null;
             SelectedAngle = null;
             FilteredClips = new ObservableCollection<Clip>(clips);
-
-            if (FilteredClips.Any())
-            {
-                //SetClip(FilteredClips.First());
-            }
-
-            //SortFilterPopupControl.IsOpen = false;
         }
 
         private void sortClips(ref List<Clip> clips, FilterViewModel filter)
