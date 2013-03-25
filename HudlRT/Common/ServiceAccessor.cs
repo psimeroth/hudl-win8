@@ -21,7 +21,7 @@ namespace HudlRT.Common
         public SERVICE_RESPONSE status { get; set; }
     }
 
-    public enum SERVICE_RESPONSE { SUCCESS, NO_CONNECTION, NULL_RESPONSE, DESERIALIZATION, CREDENTIALS, PRIVILEGE };
+    public enum SERVICE_RESPONSE { SUCCESS, NO_CONNECTION, NULL_RESPONSE, DESERIALIZATION, CREDENTIALS};
 
     struct LoginSender
     {
@@ -87,7 +87,7 @@ namespace HudlRT.Common
         {
             InitResponse response = new InitResponse();
             response.status = SERVICE_RESPONSE.NO_CONNECTION;
-    try
+            try
             {
                 var fileName = "debug.config";
                 var folder = ApplicationData.Current.LocalFolder;
@@ -128,8 +128,6 @@ namespace HudlRT.Common
 
         public static async Task<LoginResponse> Login(string loginArgs)
         {
-            //var loginResponse = await ServiceAccessor.MakeApiCallGet("athlete");
-
             if (!ConnectedToInternet())
             {
                 return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
@@ -139,26 +137,6 @@ namespace HudlRT.Common
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
                 AppDataAccessor.SetAuthToken(obj.Token);
-                string urlExtension = "users/" + obj.UserId.ToString() + "/privileges/";
-#if DEBUG
-#else
-                var privilegesResponse = await ServiceAccessor.MakeApiCallGet(urlExtension, false);
-                if (!string.IsNullOrEmpty(privilegesResponse))
-                {
-                    if (privilegesResponse.Contains("Win8App"))
-                    {
-                        return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
-                    }
-                    else
-                    {
-                        return new LoginResponse { status = SERVICE_RESPONSE.PRIVILEGE };
-                    }
-                }
-                else
-                {
-                    return new LoginResponse { status = SERVICE_RESPONSE.PRIVILEGE };
-                }
-#endif
                 return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
             }
             else

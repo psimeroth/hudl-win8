@@ -20,7 +20,7 @@
     </Page.Resources>
 
     <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkGray}">
-        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="True" Opened="SortFilterPopup_Opened_1" VerticalAlignment="Bottom" Height="425" Margin="0,0,0,250">
+        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="True" Opened="SortFilterPopup_Opened_1" Closed="SortFilterPopup_Closed_1" VerticalAlignment="Bottom" Height="425" Margin="0,0,0,250">
             <Popup.ChildTransitions>
                 <TransitionCollection>
                     <PaneThemeTransition Edge="Bottom"/>
@@ -32,8 +32,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50" />
                             <RowDefinition Height="70" />
-                            <RowDefinition x:Name="FiltersListRow" Height="225" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition x:Name="FiltersListRow" Height="305" />
                         </Grid.RowDefinitions>
                         <Border BorderBrush="Black" Background="{StaticResource HudlPartialOrange}" BorderThickness="0" Grid.Row="0" />
                         <TextBlock Text="{Binding ColumnHeaderName}" FontSize="28" Grid.Row="0" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"/>
@@ -48,24 +47,14 @@
                         <Border BorderBrush="Black" BorderThickness="0,2" Grid.Row="1" />
                         <StackPanel Orientation="Vertical" Grid.Row="2">
                             <TextBlock Text="Filter" FontSize="24" Margin="10,5,0,0" Foreground="{StaticResource HudlMediumDarkGray}"/>
-                            <ListView x:Name="FiltersList" Height="200" Width="340" Margin="15,0,0,0" ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
+                            <ListView x:Name="FiltersList" Height="305" Width="340" Margin="15,0,0,0" ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
+                                        <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ListView>
                         </StackPanel>
-                        <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="2" />
-                        <Grid x:Name="FilterButtonsGrid" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Width="346" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Button Content="Apply" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" FontSize="20" Grid.Column="0" Style="{StaticResource ButtonStyle_Standard}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5"/>
-                            <Button x:Name="RemoveFilterBtn" Content="Remove" HorizontalAlignment="Stretch" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Grid.Column="1" VerticalAlignment="Stretch" Margin="0,5,5,5"/>
-                            <Button x:Name="CloseBtn"  Content="Close" Click="closeSettingsPopupClicked"  Visibility="{Binding CloseButtonVisibility}" FontSize="20" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonStyle_Standard}" Margin="0,5,5,5"/>
-                        </Grid>
                     </Grid>
                 </ContentControl>
             </Border>
@@ -95,7 +84,7 @@
                         <TextBlock Text="Angles" FontSize="28" Grid.Row="0" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="Playback" FontSize="28" Grid.Row="0" Grid.Column="1" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                        <ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Row="1" Margin="15,15,0,0">
+                        <ItemsControl x:Name="Angles" ItemsSource="{Binding AngleTypes}" Grid.Row="1" Margin="15,15,0,0">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Vertical" />
@@ -104,7 +93,9 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Vertical">
-                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Foreground="{StaticResource HudlMediumGray}"/>
+                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" IsEnabled="{Binding CheckBoxEnabled}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"
+                                                  caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];"
+                                                  Foreground="{StaticResource HudlMediumGray}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -118,6 +109,7 @@
                 </ContentControl>
             </Border>
         </Popup>
+        
         <Grid x:Name="mainGrid" Background="Black" Tapped="videoMediaElement_Tapped">      
             <ContentControl x:Name="videoContainer"
                             HorizontalContentAlignment="Center"
@@ -139,6 +131,7 @@
                                    [Event ManipulationInertiaStarting] = [Action videoMediaElement_ManipulationInertiaStarting($this,$eventArgs)];"
                                    />
             </ContentControl>
+            <TextBlock HorizontalAlignment="Center" Width="800" VerticalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoAnglesText}" TextWrapping="Wrap" />
             
         </Grid>
         <Grid x:Name="VideoControls">

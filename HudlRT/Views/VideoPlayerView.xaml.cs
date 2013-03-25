@@ -233,25 +233,6 @@ namespace HudlRT.Views
                     SortFilterPopup.IsOpen = true;
                 }
             }
-            
-            /* 
-             * RemoveFilterBtn visibility is set to visible by default, so we do not want to display it the first time a grid header is clicked.
-             * So, we use a variable count to ensure we don't display the RemoveFilterBtn the first time a header is clicked.
-             */
-            if (RemoveFilterBtn.Visibility == Visibility.Visible && count > 0 && FilterButtonsGrid.ColumnDefinitions.Count < 3)
-            {
-                FilterButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
-                Grid.SetColumn(CloseBtn, 2);
-
-            }
-            else
-            {
-                if (FilterButtonsGrid.ColumnDefinitions.Count > 2 && RemoveFilterBtn.Visibility == Visibility.Collapsed)
-                {
-                    FilterButtonsGrid.ColumnDefinitions.RemoveAt(2);
-                    Grid.SetColumn(CloseBtn, 1);
-                }
-            }
 
             //Only increment count when a header other than Play # is clicked
             if (id != 0)
@@ -759,6 +740,15 @@ namespace HudlRT.Views
         {
             PlaybackOptionsPopup.IsOpen = false;
             OptionsMenu.Focus(FocusState.Pointer);
+        }
+
+        private void SortFilterPopup_Closed_1(object sender, object e)
+        {
+            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
+            if (vm.FilteredClips.Any())
+            {
+                vm.SetClip(vm.FilteredClips[0]);
+            }
         }
     }
 
