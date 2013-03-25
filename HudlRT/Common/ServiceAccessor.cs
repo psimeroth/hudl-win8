@@ -56,7 +56,7 @@ namespace HudlRT.Common
 
     class PlaylistResponse: Response
     {
-        public BindableCollection<Playlist> playlists { get; set; }
+        public Dictionary<string, BindableCollection<Playlist>> playlists { get; set; }
     }
 
     class ClipResponse: Response
@@ -227,14 +227,14 @@ namespace HudlRT.Common
             }
         }
 
-        public static async Task<PlaylistResponse> GetCategoryPlaylists(List<string> categoryIds)
+        public static async Task<PlaylistResponse> GetCategoryPlaylists(List<Category> categories)
         {
-            if (categoryIds != null && categoryIds.Count > 0)
+            if (categories != null && categories.Count > 0)
             {
-                string categoryId = categoryIds[0];
-                for (int i = 1; i < categoryIds.Count; i++)
+                string categoryId = categories[0].categoryId;
+                for (int i = 1; i < categories.Count; i++)
                 {
-                    categoryId += "," + categoryIds[i];
+                    categoryId += "," + categories[i].categoryId;
                 }
 
                 var playlists = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_PLAYLISTS_BY_CATEGORY, categoryId), true);
@@ -243,10 +243,14 @@ namespace HudlRT.Common
                     try
                     {
                         var obj = JsonConvert.DeserializeObject<List<PlaylistDTO>>(playlists);
-                        BindableCollection<Playlist> playlistCollection = new BindableCollection<Playlist>();
+                        Dictionary<string, BindableCollection<Playlist>> playlistCollection = new Dictionary<string, BindableCollection<Playlist>>();
                         foreach (PlaylistDTO playlistDTO in obj)
                         {
-                            playlistCollection.Add(Playlist.FromDTO(playlistDTO));
+                            if (!playlistCollection.Keys.Contains(playlistDTO.CategoryID))
+                            {
+                                playlistCollection.Add(playlistDTO.CategoryID, new BindableCollection<Playlist>());
+                            }
+                            playlistCollection[playlistDTO.CategoryID].Add(Playlist.FromDTO(playlistDTO));
                         }
                         return new PlaylistResponse { status = SERVICE_RESPONSE.SUCCESS, playlists = playlistCollection };
                     }

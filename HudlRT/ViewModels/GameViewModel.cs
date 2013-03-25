@@ -114,7 +114,14 @@ namespace HudlRT.ViewModels
             int numLists = 0;
             if (ServiceAccessor.ConnectedToInternet())
             {
+                PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(GameModel.categories.ToList());
                 foreach (Category cat in GameModel.categories)
+                {
+                    cat.playlists = playResponse.playlists[cat.categoryId];
+                }
+
+
+                /*foreach (Category cat in GameModel.categories)
                 {
                     PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
                     if (playResponse.status == SERVICE_RESPONSE.SUCCESS)
@@ -134,7 +141,7 @@ namespace HudlRT.ViewModels
                             }
                         }
                     }
-                }
+                }*/
             }
             else
             {
