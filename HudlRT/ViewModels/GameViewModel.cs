@@ -114,12 +114,30 @@ namespace HudlRT.ViewModels
             int numLists = 0;
             if (ServiceAccessor.ConnectedToInternet())
             {
+                // Get the playlists for the game
                 PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(GameModel.categories.ToList());
                 foreach (Category cat in GameModel.categories)
                 {
                     cat.playlists = playResponse.playlists[cat.categoryId];
                 }
 
+                // Count the playlists and get a thumbnail
+                foreach (KeyValuePair<string, BindableCollection<Playlist>> entry in playResponse.playlists)
+                {
+                    numLists += entry.Value.Count;
+
+                    if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
+                    {
+                        foreach (Playlist playlist in entry.Value)
+                        {
+                            if (playlist.thumbnailLocation != null)
+                            {
+                                Thumbnail = playlist.thumbnailLocation;
+                                Stretch = "UniformToFill";
+                            }
+                        }
+                    }
+                }
 
                 /*foreach (Category cat in GameModel.categories)
                 {

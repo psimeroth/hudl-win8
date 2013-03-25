@@ -231,25 +231,32 @@ namespace HudlRT.Common
         {
             if (categories != null && categories.Count > 0)
             {
+                // Form the category id paramter
                 string categoryId = categories[0].categoryId;
                 for (int i = 1; i < categories.Count; i++)
                 {
                     categoryId += "," + categories[i].categoryId;
                 }
 
-                var playlists = await MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_PLAYLISTS_BY_CATEGORY, categoryId), true);
+                // Start the call to the accessor
+                Task<string> getPlaylistsCall = MakeApiCallGet(String.Format(ServiceAccessor.URL_SERVICE_GET_PLAYLISTS_BY_CATEGORY, categoryId), true);
+
+                // Create dictionary entries for each category
+                Dictionary<string, BindableCollection<Playlist>> playlistCollection = new Dictionary<string, BindableCollection<Playlist>>();
+                foreach (Category cat in categories)
+                {
+                    playlistCollection.Add(cat.categoryId, new BindableCollection<Playlist>());
+                }
+
+                // Wait for the call to complete and process the result
+                var playlists = await getPlaylistsCall;
                 if (!string.IsNullOrEmpty(playlists) && playlists != NO_CONNECTION)
                 {
                     try
                     {
                         var obj = JsonConvert.DeserializeObject<List<PlaylistDTO>>(playlists);
-                        Dictionary<string, BindableCollection<Playlist>> playlistCollection = new Dictionary<string, BindableCollection<Playlist>>();
                         foreach (PlaylistDTO playlistDTO in obj)
                         {
-                            if (!playlistCollection.Keys.Contains(playlistDTO.CategoryID))
-                            {
-                                playlistCollection.Add(playlistDTO.CategoryID, new BindableCollection<Playlist>());
-                            }
                             playlistCollection[playlistDTO.CategoryID].Add(Playlist.FromDTO(playlistDTO));
                         }
                         return new PlaylistResponse { status = SERVICE_RESPONSE.SUCCESS, playlists = playlistCollection };
