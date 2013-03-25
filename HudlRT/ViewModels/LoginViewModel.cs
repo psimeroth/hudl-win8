@@ -159,10 +159,6 @@ namespace HudlRT.ViewModels
                 }
                 navigationService.NavigateToViewModel<HubViewModel>();
             }
-            else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
-            {
-                navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
-            }
             else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
             {
                 LoginFeedback = "Connection with server failed, please try again";
