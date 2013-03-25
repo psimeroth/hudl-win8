@@ -160,6 +160,13 @@ namespace HudlRT.Models
         {
             get
             {
+                return date.ToString("d");
+            }
+        }
+        public string DisplayDateTime
+        {
+            get
+            {
                 return date.ToString("g");
             }
         }
