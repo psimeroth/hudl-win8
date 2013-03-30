@@ -274,8 +274,8 @@ namespace HudlRT.ViewModels
             int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
             if (playbackTypeResult == null)
             {
-                AppDataAccessor.SetPlaybackType((int)PlaybackType.once);
-                playbackType = PlaybackType.once;
+                AppDataAccessor.SetPlaybackType((int)PlaybackType.next);
+                playbackType = PlaybackType.next;
             }
             else
             {
