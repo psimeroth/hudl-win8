@@ -47,7 +47,7 @@
                         <Border BorderBrush="Black" BorderThickness="0,2" Grid.Row="1" />
                         <StackPanel Orientation="Vertical" Grid.Row="2">
                             <TextBlock Text="Filter" FontSize="24" Margin="10,5,0,0" Foreground="{StaticResource HudlMediumDarkGray}"/>
-                            <ListView x:Name="FiltersList" Height="305" Width="340" Margin="15,0,0,0" ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
+                            <ListView x:Name="FiltersList" Height="285" Width="340" Margin="15,0,0,0" ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
