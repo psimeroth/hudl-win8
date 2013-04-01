@@ -413,6 +413,14 @@ namespace HudlRT.Views
             {
                 btn_release(null, null);
                 e.Handled = true;
+            } 
+            else if(e.VirtualKey == Windows.System.VirtualKey.Up && isControlDown)
+            {
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == Windows.System.VirtualKey.Down && isControlDown) 
+            {
+                e.Handled = true;
             }
             else
             {
@@ -469,15 +477,38 @@ namespace HudlRT.Views
                 rewindKeyPressTimer.Stop();
                 if (e.VirtualKey == Windows.System.VirtualKey.Down)
                 {
-                    btnSlowForward_Click(null, null);
-                    keyPressTimer.Start();
+                    if (isControlDown) //Tag
+                    {
+                        
+                    }
+                    else 
+                    {
+                        btnSlowForward_Click(null, null);
+                        keyPressTimer.Start();
+                    }
                     e.Handled = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Up)
                 {
-                    rewindKey = e;
-                    keyPressTimer.Start();
-                    rewindKeyPressTimer.Start();
+                    if (isControlDown) //Full Screen
+                    {
+                        if (TopAppBar.IsOpen || BottomAppBar.IsOpen)
+                        {
+                            TopAppBar.IsOpen = false;
+                            BottomAppBar.IsOpen = false;
+                        }
+                        else
+                        {
+                            TopAppBar.IsOpen = true;
+                            BottomAppBar.IsOpen = true;
+                        }
+                    }
+                    else
+                    {
+                        rewindKey = e;
+                        keyPressTimer.Start();
+                        rewindKeyPressTimer.Start();
+                    }
                     e.Handled = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
