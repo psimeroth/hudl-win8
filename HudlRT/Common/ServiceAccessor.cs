@@ -1,18 +1,12 @@
+using Caliburn.Micro;
+using HudlRT.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using System.IO;
-using Newtonsoft.Json;
 using System.Net.Http;
-using Windows.Storage;
-using HudlRT.Models;
-using Caliburn.Micro;
+using System.Threading.Tasks;
 using Windows.Networking.Connectivity;
-using HudlRT.ViewModels;
-using HudlRT.Parameters;
+using Windows.Storage;
 
 namespace HudlRT.Common
 {

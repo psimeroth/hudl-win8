@@ -1,13 +1,10 @@
 ﻿using Caliburn.Micro;
-using HudlRT.Models;
 using HudlRT.Common;
-using System;
+using HudlRT.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.ViewModels
 {
