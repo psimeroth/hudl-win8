@@ -322,7 +322,11 @@ namespace HudlRT.ViewModels
                 _previousGame = null;
             }
 
-            UpdateTiles();
+            try
+            {
+                UpdateTiles();
+            }
+            catch { }
         }
 
         private async void UpdateTiles()

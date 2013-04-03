@@ -162,7 +162,11 @@ namespace HudlRT.ViewModels
                 }
                 navigationService.NavigateToViewModel<HubViewModel>();
 
-                SetupTile();
+                try
+                {
+                    SetupTile();
+                }
+                catch { }
             }
             else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
             {
