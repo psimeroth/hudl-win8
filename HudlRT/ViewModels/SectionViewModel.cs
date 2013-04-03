@@ -231,8 +231,8 @@ namespace HudlRT.ViewModels
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Collapsed;
 
-            
 
+            MarkDownloadedPlaylists();
             LoadActiveDownloadsAsync();
             UpdateDiskInformation();
             if (DownloadAccessor.Instance.Downloading)
