@@ -116,6 +116,7 @@
     <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
     <Compile Include="Common\APIExceptionDialog.cs" />
+    <Compile Include="Common\VirtualKeyHelper.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Parameters\CachedParameter.cs" />
