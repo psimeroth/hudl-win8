@@ -190,7 +190,7 @@ namespace HudlRT.Views
             foreach (var header in vm.GridHeaders)
             {
                 TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
-                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""White"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
+                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
                 ClipDataText.Children.Add(textBlock_title);
                 ClipDataText.Children.Add(textBlock_data);
 
@@ -635,12 +635,11 @@ namespace HudlRT.Views
                 MoreBtn.Visibility = Visibility.Collapsed;
                 snapped_mainGrid.Visibility = Visibility.Visible;
 
-                try
+                if (timelineContainer != null)
                 {
                     Grid grid = (Grid)timelineContainer.Children[0];
                     grid.Margin = new Thickness(5, 6, 5, 6);
                 }
-                catch { }
             }
             else
             {
@@ -658,13 +657,11 @@ namespace HudlRT.Views
                     LessBtn.Visibility = Visibility.Visible;
                 }
 
-                try
+                if (timelineContainer != null)
                 {
                     Grid grid = (Grid)timelineContainer.Children[0];
                     grid.Margin = new Thickness(30, 6, 50, 6);
                 }
-
-                catch { }
             }
         }
 
