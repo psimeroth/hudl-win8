@@ -377,20 +377,27 @@ namespace HudlRT.ViewModels
                         }
                     }
                 }*/
-                await gameViewModel.FetchPlaylists;
-                navigationService.NavigateToViewModel<SectionViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = new Playlist() });
+                try
+                {
+                    await gameViewModel.FetchPlaylists;
+                    navigationService.NavigateToViewModel<SectionViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = new Playlist() });
 
-                if (gameViewModel.IsNextGame)
-                {
-                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_NEXT);
+                    if (gameViewModel.IsNextGame)
+                    {
+                        Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_NEXT);
+                    }
+                    else if (gameViewModel.IsPreviousGame)
+                    {
+                        Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_PREVIOUS);
+                    }
+                    else
+                    {
+                        Logger.Instance.LogGameSelected(gameViewModel.GameModel);
+                    }
                 }
-                else if (gameViewModel.IsPreviousGame)
+                catch
                 {
-                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_PREVIOUS);
-                }
-                else
-                {
-                    Logger.Instance.LogGameSelected(gameViewModel.GameModel);
+                    navigationService.NavigateToViewModel<ErrorViewModel>();
                 }
             }
             else

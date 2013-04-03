@@ -31,6 +31,7 @@ namespace HudlRT.Views
 
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
+        private bool controlsFaded;
         private string _rootNamespace;
         public string RootNamespace
         {
@@ -91,6 +92,7 @@ namespace HudlRT.Views
             videoPlayerViewModel.GridHeadersTextUnsorted = new List<string>();
             initializeGrid(videoPlayerViewModel);
             initializeClipDataBar(videoPlayerViewModel);
+            controlsFaded = false;
 
             videoPlayerViewModel.listView = FilteredClips;
             videoPlayerViewModel.SortFilterPopupControl = SortFilterPopup;
@@ -184,7 +186,7 @@ namespace HudlRT.Views
             foreach (var header in vm.GridHeaders)
             {
                 TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
-                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""White"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
+                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
                 ClipDataText.Children.Add(textBlock_title);
                 ClipDataText.Children.Add(textBlock_data);
 
@@ -666,7 +668,7 @@ namespace HudlRT.Views
         {
             ApplicationViewState currentViewState = ApplicationView.Value;
 
-            if (currentViewState != ApplicationViewState.Snapped)
+            if (currentViewState != ApplicationViewState.Snapped  && !controlsFaded)
             {
                 if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
                 {
@@ -766,7 +768,15 @@ namespace HudlRT.Views
                 TopAppBar.Visibility = Visibility.Collapsed;
                 VideoControls.Visibility = Visibility.Collapsed;
                 ClipDataGrid.Visibility = Visibility.Collapsed;
+                LessBtn.Visibility = Visibility.Collapsed;
+                MoreBtn.Visibility = Visibility.Collapsed;
                 snapped_mainGrid.Visibility = Visibility.Visible;
+
+                if (timelineContainer != null)
+                {
+                    Grid grid = (Grid)timelineContainer.Children[0];
+                    grid.Margin = new Thickness(5, 6, 5, 6);
+                }
             }
             else
             {
@@ -775,6 +785,20 @@ namespace HudlRT.Views
                 snapped_mainGrid.Visibility = Visibility.Collapsed;
                 ClipDataGrid.Visibility = Visibility.Visible;
                 VideoControls.Visibility = Visibility.Visible;
+                if (controlsFaded)
+                {
+                    MoreBtn.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LessBtn.Visibility = Visibility.Visible;
+                }
+
+                if (timelineContainer != null)
+                {
+                    Grid grid = (Grid)timelineContainer.Children[0];
+                    grid.Margin = new Thickness(30, 6, 50, 6);
+                }
             }
         }
 
@@ -817,17 +841,27 @@ namespace HudlRT.Views
             {
                 Storyboard sb = new Storyboard();
 
-                RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
+                RepositionThemeAnimation repositionTimelineAnimation = new RepositionThemeAnimation();
+                RepositionThemeAnimation repositionBtnAnimation = new RepositionThemeAnimation();
                 FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
+                FadeInThemeAnimation fadeInBtn = new FadeInThemeAnimation();
+
                 Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
+                Storyboard.SetTarget(fadeInBtn, LessBtn as DependencyObject);
 
-                Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
-                repositionAnimation.FromVerticalOffset = -204;
+                Storyboard.SetTarget(repositionTimelineAnimation, timelineContainer as DependencyObject);
+                repositionTimelineAnimation.FromVerticalOffset = -204;
 
-                sb.Children.Add(repositionAnimation);
+                Storyboard.SetTarget(repositionBtnAnimation, LessBtn as DependencyObject);
+                repositionBtnAnimation.FromVerticalOffset = -204;
+
+                sb.Children.Add(repositionTimelineAnimation);
+                sb.Children.Add(repositionBtnAnimation);
                 sb.Children.Add(fadeInAnimation);
+                sb.Children.Add(fadeInBtn);
 
                 timelineContainer.Margin = new Thickness(0);
+                LessBtn.Margin = new Thickness(0);
 
                 sb.Begin();
             }
@@ -855,15 +889,24 @@ namespace HudlRT.Views
 
                     Storyboard sb = new Storyboard();
 
-                    RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                    RepositionThemeAnimation repositionTimelineAnimation = new RepositionThemeAnimation();
+                    RepositionThemeAnimation repositionBtnAnimation = new RepositionThemeAnimation();
                     FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
+                    FadeOutThemeAnimation fadeOutBtn = new FadeOutThemeAnimation();
 
-                    Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
                     Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
-                    animation.FromVerticalOffset = 204;
+                    Storyboard.SetTarget(fadeOutBtn, LessBtn as DependencyObject);
 
-                    sb.Children.Add(animation);
+                    Storyboard.SetTarget(repositionTimelineAnimation, timelineContainer as DependencyObject);
+                    repositionTimelineAnimation.FromVerticalOffset = 204;
+
+                    Storyboard.SetTarget(repositionBtnAnimation, LessBtn as DependencyObject);
+                    repositionBtnAnimation.FromVerticalOffset = 204;
+
+                    sb.Children.Add(repositionTimelineAnimation);
+                    sb.Children.Add(repositionBtnAnimation);
                     sb.Children.Add(fadeOutAnimation);
+                    sb.Children.Add(fadeOutBtn);
 
                     timelineContainer.Margin = new Thickness(0, 0, 0, 204);
 
@@ -886,6 +929,55 @@ namespace HudlRT.Views
             {
                 vm.SetClip(vm.FilteredClips[0]);
             }
+        }
+
+        private void LessBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+
+            FadeOutThemeAnimation fadeOutTimeline = new FadeOutThemeAnimation();
+            FadeOutThemeAnimation fadeOutClipData = new FadeOutThemeAnimation();
+            FadeOutThemeAnimation fadeOutVideoControls = new FadeOutThemeAnimation();
+
+            Storyboard.SetTarget(fadeOutTimeline, timelineContainer as DependencyObject);
+            Storyboard.SetTarget(fadeOutClipData, ClipDataGrid as DependencyObject);
+            Storyboard.SetTarget(fadeOutVideoControls, VideoControls as DependencyObject);
+
+            sb.Children.Add(fadeOutTimeline);
+            sb.Children.Add(fadeOutClipData);
+            sb.Children.Add(fadeOutVideoControls);
+
+            sb.Begin();
+
+            LessBtn.Visibility = Visibility.Collapsed;
+            MoreBtn.Visibility = Visibility.Visible;
+
+            controlsFaded = true;
+
+        }
+
+        private void MoreBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+
+            FadeInThemeAnimation fadeInTimeline = new FadeInThemeAnimation();
+            FadeInThemeAnimation fadeInClipData = new FadeInThemeAnimation();
+            FadeInThemeAnimation fadeInVideoControls = new FadeInThemeAnimation();
+
+            Storyboard.SetTarget(fadeInTimeline, timelineContainer as DependencyObject);
+            Storyboard.SetTarget(fadeInClipData, ClipDataGrid as DependencyObject);
+            Storyboard.SetTarget(fadeInVideoControls, VideoControls as DependencyObject);
+
+            sb.Children.Add(fadeInTimeline);
+            sb.Children.Add(fadeInClipData);
+            sb.Children.Add(fadeInVideoControls);
+
+            sb.Begin();
+
+            MoreBtn.Visibility = Visibility.Collapsed;
+            LessBtn.Visibility = Visibility.Visible;
+
+            controlsFaded = false;
         }
     }
 
