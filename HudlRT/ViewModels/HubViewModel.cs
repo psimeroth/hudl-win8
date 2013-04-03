@@ -11,6 +11,9 @@ using Windows.UI.ApplicationSettings;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using System.Net.Http;
+using Windows.UI.Notifications;
+using NotificationsExtensions.TileContent;
 
 namespace HudlRT.ViewModels
 {
@@ -318,6 +321,129 @@ namespace HudlRT.ViewModels
                 _nextGame = null;
                 _previousGame = null;
             }
+
+            UpdateTiles();
+        }
+
+        private async void UpdateTiles()
+        {
+            TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
+            updater.EnableNotificationQueue(true);
+            updater.Clear();
+
+
+
+
+
+            string lastTweet = await GetLastTweet();
+
+            // create the wide template
+            ITileWideText04 tileContent = TileContentFactory.CreateTileWideText04();
+            tileContent.TextBodyWrap.Text = lastTweet;
+
+            // create the square template and attach it to the wide template
+            ITileSquareText04 squareContent = TileContentFactory.CreateTileSquareText04();
+            squareContent.TextBodyWrap.Text = lastTweet;
+            tileContent.SquareContent = squareContent;
+
+            // send the notification
+            TileNotification tn = tileContent.CreateNotification();
+            tn.Tag = "HudlLTTwitter";
+            tn.ExpirationTime = DateTime.Now.AddMonths(1);
+            updater.Update(tn);
+
+
+
+            // Create notification content based on a visual template.
+            ITileWideImageAndText01 tileContent2 = TileContentFactory.CreateTileWideImageAndText01();
+
+            List<string> urls = new List<string>();
+            urls.Add("ms-appx:///Assets/dominate1.jpg");
+            urls.Add("ms-appx:///Assets/dominate2.jpg");
+            urls.Add("ms-appx:///Assets/dominate3.jpg");
+
+            tileContent2.TextCaptionWrap.Text = "Dominate the Competition";
+            tileContent2.Image.Src = urls[new Random().Next(0, 3)];
+            tileContent2.Image.Alt = "Dominate";
+
+            // create the square template and attach it to the wide template
+            ITileSquareImage squareContent2 = TileContentFactory.CreateTileSquareImage();
+            squareContent2.Image.Src = urls[new Random().Next(0, 3)];
+            squareContent2.Image.Alt = "Dominate";
+            tileContent2.SquareContent = squareContent2;
+
+            // Send the notification to the app's application tile.
+            TileNotification tn2 = tileContent2.CreateNotification();
+            tn2.Tag = "HudlLTDominate";
+            tn2.ExpirationTime = DateTime.Now.AddMonths(1);
+            updater.Update(tn2);
+
+
+            // Last Week
+            if (LastGameVM != null && LastGameVM.Games != null && LastGameVM.Games.Count > 0)
+            {
+                // Create notification content based on a visual template.
+                ITileWideImageAndText01 tileContent3 = TileContentFactory.CreateTileWideImageAndText01();
+
+                tileContent3.TextCaptionWrap.Text = "Last Week: " + LastGameVM.Games[0].Opponent;
+                tileContent3.Image.Src = LastGameVM.Games[0].Thumbnail;
+                tileContent3.Image.Alt = "Last Week";
+
+                // create the square template and attach it to the wide template
+                ITileSquareImage squareContent3 = TileContentFactory.CreateTileSquareImage();
+                squareContent3.Image.Src = LastGameVM.Games[0].Thumbnail;
+                squareContent3.Image.Alt = "Last Week";
+                tileContent3.SquareContent = squareContent3;
+
+                // Send the notification to the app's application tile.
+                TileNotification tn3 = tileContent3.CreateNotification();
+                tn3.Tag = "HudlLTLastWeek";
+                tn3.ExpirationTime = DateTime.Now.AddMonths(1);
+                updater.Update(tn3);
+            }
+
+            // Next Week
+            if (NextGameVM != null && NextGameVM.Games != null && NextGameVM.Games.Count > 0)
+            {
+                // Create notification content based on a visual template.
+                ITileWideImageAndText01 tileContent4 = TileContentFactory.CreateTileWideImageAndText01();
+
+                tileContent4.TextCaptionWrap.Text = "Next Week: " + NextGameVM.Games[0].Opponent;
+                tileContent4.Image.Src = NextGameVM.Games[0].Thumbnail;
+                tileContent4.Image.Alt = "Next Week";
+
+                // create the square template and attach it to the wide template
+                ITileSquareImage squareContent4 = TileContentFactory.CreateTileSquareImage();
+                squareContent4.Image.Src = NextGameVM.Games[0].Thumbnail;
+                squareContent4.Image.Alt = "Next Week";
+                tileContent4.SquareContent = squareContent4;
+
+                // Send the notification to the app's application tile.
+                TileNotification tn4 = tileContent4.CreateNotification();
+                tn4.Tag = "HudlLTNextWeek";
+                tn4.ExpirationTime = DateTime.Now.AddMonths(1);
+                updater.Update(tn4);
+            }
+        }
+
+        class TweetDTO
+        {
+            public string text { get; set; }
+        }
+        private async Task<string> GetLastTweet()
+        {
+
+            // query twitter
+            string url = "https://api.twitter.com/1/statuses/user_timeline.json?screen_name=Hudl&count=2";
+
+            var httpClient = new HttpClient();
+            Uri uri = new Uri(url);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+            var response = await httpClient.SendAsync(httpRequestMessage);
+            string result = await response.Content.ReadAsStringAsync();
+
+            List<TweetDTO> obj = JsonConvert.DeserializeObject<List<TweetDTO>>(result);
+            return obj[0].text;
         }
 
         //this returns seasons populated down to the category level.

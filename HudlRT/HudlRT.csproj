@@ -168,6 +168,9 @@
     <Content Include="Assets\agile-hudl-logo-light.png" />
     <Content Include="Assets\Beta.png" />
     <Content Include="Assets\dark_BG_Tiled.png" />
+    <Content Include="Assets\dominate1.jpg" />
+    <Content Include="Assets\dominate2.jpg" />
+    <Content Include="Assets\dominate3.jpg" />
     <Content Include="Assets\hudl-hi-res-white-medium.png" />
     <Content Include="Assets\hudl-hi-res-white-small.png" />
     <Content Include="Assets\hudl-mark-gray.png" />
@@ -294,6 +297,12 @@
     <SDKReference Include="Microsoft.PlayerFramework.Xaml, Version=1.8.0.5">
       <Name>Microsoft Player Framework</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="NotificationsExtensions\NotificationsExtensions.csproj">
+      <Project>{6e87464b-b064-40ca-8161-7c18c337adff}</Project>
+      <Name>NotificationsExtensions</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

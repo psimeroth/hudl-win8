@@ -11,6 +11,9 @@ using Windows.UI.ApplicationSettings;
 using Windows.Security.Credentials;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Windows.UI.Notifications;
+using NotificationsExtensions.TileContent;
+using System.Net.Http;
 
 namespace HudlRT.ViewModels
 {
@@ -158,6 +161,8 @@ namespace HudlRT.ViewModels
                     AppDataAccessor.SetLoginDate(DateTime.Now.ToString());
                 }
                 navigationService.NavigateToViewModel<HubViewModel>();
+
+                SetupTile();
             }
             else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
             {
@@ -194,6 +199,81 @@ namespace HudlRT.ViewModels
             ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
+        }
+
+        private async void SetupTile()
+        {
+            TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
+            updater.EnableNotificationQueue(true);
+            updater.Clear();
+
+
+
+
+
+            string lastTweet = await GetLastTweet();
+
+            // create the wide template
+            ITileWideText04 tileContent = TileContentFactory.CreateTileWideText04();
+            tileContent.TextBodyWrap.Text = lastTweet;
+
+            // create the square template and attach it to the wide template
+            ITileSquareText04 squareContent = TileContentFactory.CreateTileSquareText04();
+            squareContent.TextBodyWrap.Text = lastTweet;
+            tileContent.SquareContent = squareContent;
+
+            // send the notification
+            TileNotification tn = tileContent.CreateNotification();
+            tn.Tag = "HudlLTTwitter";
+            tn.ExpirationTime = DateTime.Now.AddMonths(1);
+            updater.Update(tn);
+
+
+
+            // Create notification content based on a visual template.
+            ITileWideImageAndText01 tileContent2 = TileContentFactory.CreateTileWideImageAndText01();
+
+            List<string> urls = new List<string>();
+            urls.Add("ms-appx:///Assets/dominate1.jpg");
+            urls.Add("ms-appx:///Assets/dominate2.jpg");
+            urls.Add("ms-appx:///Assets/dominate3.jpg");
+
+            tileContent2.TextCaptionWrap.Text = "Dominate the Competition";
+            tileContent2.Image.Src = urls[new Random().Next(0, 3)];
+            tileContent2.Image.Alt = "Dominate";
+
+            // create the square template and attach it to the wide template
+            ITileSquareImage squareContent2 = TileContentFactory.CreateTileSquareImage();
+            squareContent2.Image.Src = urls[new Random().Next(0, 3)];
+            squareContent2.Image.Alt = "Dominate";
+            tileContent2.SquareContent = squareContent2;
+
+            // Send the notification to the app's application tile.
+            TileNotification tn2 = tileContent2.CreateNotification();
+            tn2.Tag = "HudlLTDominate";
+            tn2.ExpirationTime = DateTime.Now.AddMonths(1);
+            updater.Update(tn2);
+        }
+
+
+        class TweetDTO
+        {
+            public string text { get; set; }
+        }
+        private async Task<string> GetLastTweet()
+        {
+
+            // query twitter
+            string url = "https://api.twitter.com/1/statuses/user_timeline.json?screen_name=Hudl&count=2";
+
+            var httpClient = new HttpClient();
+            Uri uri = new Uri(url);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+            var response = await httpClient.SendAsync(httpRequestMessage);
+            string result = await response.Content.ReadAsStringAsync();
+
+            List<TweetDTO> obj = JsonConvert.DeserializeObject<List<TweetDTO>>(result);
+            return obj[0].text;
         }
 
 
