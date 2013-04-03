@@ -1,22 +1,16 @@
 using Caliburn.Micro;
 using HudlRT.Common;
 using HudlRT.Models;
-using HudlRT.Parameters;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.UI.ApplicationSettings;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.ViewManagement;
-using Windows.Networking.BackgroundTransfer;
 using System.Threading;
-using HudlRT.Common;
+using System.Threading.Tasks;
+using Windows.Networking.BackgroundTransfer;
+using Windows.UI.ApplicationSettings;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+
 namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase

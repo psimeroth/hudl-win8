@@ -1,14 +1,8 @@
 ﻿using Caliburn.Micro;
-using HudlRT.Parameters;
 using HudlRT.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Popups;
-
 
 namespace HudlRT.Common
 {
