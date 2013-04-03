@@ -77,7 +77,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        
+
                         <Border Background="{StaticResource HudlPartialOrange}" Grid.Row="0" Grid.ColumnSpan="2" />
                         <Border BorderThickness="0,0,0,2" Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" />
                         <Border BorderThickness="0,0,2,0" BorderBrush="Black" Grid.RowSpan="2" />
@@ -109,8 +109,8 @@
                 </ContentControl>
             </Border>
         </Popup>
-        
-        <Grid x:Name="mainGrid" Background="Black" Tapped="videoMediaElement_Tapped">      
+
+        <Grid x:Name="mainGrid" Background="Black" Tapped="videoMediaElement_Tapped">
             <ContentControl x:Name="videoContainer"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Bottom">
@@ -132,7 +132,7 @@
                                    />
             </ContentControl>
             <TextBlock HorizontalAlignment="Center" Width="800" VerticalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoAnglesText}" TextWrapping="Wrap" />
-            
+
         </Grid>
         <Button x:Name="MoreBtn" Style="{StaticResource MoreButtonStyle}" Visibility="Collapsed" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="&#xE10C;" Click="MoreBtn_Click"/>
         <Button x:Name="LessBtn" Style="{StaticResource MoreButtonStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="&#xE108;" Click="LessBtn_Click"/>
@@ -172,13 +172,13 @@
                                     Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="40"/>
             </StackPanel>
 
-       </Grid>
-            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="60" VerticalAlignment="Top">
-                <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
-                    <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    </StackPanel>
-                </ScrollViewer>
-            </Grid>
+        </Grid>
+        <Grid x:Name="ClipDataGrid" Background="#99000000" Height="60" VerticalAlignment="Top">
+            <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
+                <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
         <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
             <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource BackButtonStyle}" Margin="20,-369,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
