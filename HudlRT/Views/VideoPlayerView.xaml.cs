@@ -445,7 +445,7 @@ namespace HudlRT.Views
                 isControlDown = false;
                 e.Handled = true;
             }
-            else if (e.VirtualKey == (Windows.System.VirtualKey)176 || e.VirtualKey == (Windows.System.VirtualKey)177)
+            else if (e.VirtualKey == VirtualKeyHelper.NextTrack || e.VirtualKey == VirtualKeyHelper.PreviousTrack)
             {
                 videoPlayer_Resume();
                 e.Handled = true;
