@@ -9,8 +9,7 @@
     xmlns:common="using:HudlRT.Common"
     xmlns:ic="using:HudlRT.Views"
     xmlns:mmppf="using:Microsoft.PlayerFramework"
-    mc:Ignorable="d"
-    NavigationCacheMode="Required">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -21,90 +20,25 @@
     </Page.Resources>
 
     <Grid x:Name="RootGrid" SizeChanged="OnWindowSizeChanged" Background="{StaticResource HudlDarkGray}">
-        <Grid.Resources>
-            <Storyboard x:Name="CollapseGridAnimation">
-                <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True"/>
-                <DoubleAnimation Storyboard.TargetName="videoMediaElement" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="500" EnableDependentAnimation="True" />
-                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid_Row2" Storyboard.TargetProperty="Height" >
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="390" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="405" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="420" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="435" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="465" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="480" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="495" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="510" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="525" />
-                </ObjectAnimationUsingKeyFrames>
-                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Container1_Row1" Storyboard.TargetProperty="Height" >
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="390" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="405" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="420" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="435" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="465" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="480" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="495" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="510" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="525" />
-                </ObjectAnimationUsingKeyFrames>
-            </Storyboard>
-            <Storyboard x:Name="ExpandGridAnimation">
-                <DoubleAnimation Storyboard.TargetName="videoContainer" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="350" EnableDependentAnimation="True"/>
-                <DoubleAnimation Storyboard.TargetName="videoMediaElement" Storyboard.TargetProperty="Height" Duration="0:0:0.25" To="350" EnableDependentAnimation="True" />
-                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="mainGrid_Row2" Storyboard.TargetProperty="Height" >
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="510" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="495" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="480" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="465" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="435" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="420" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="405" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="390" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="375" />
-                </ObjectAnimationUsingKeyFrames>
-                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Container1_Row1" Storyboard.TargetProperty="Height" >
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.025" Value="510" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.05" Value="495" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.075" Value="480" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="465" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.125" Value="450" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="435" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.175" Value="420" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="405" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.225" Value="390" />
-                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="375" />
-                </ObjectAnimationUsingKeyFrames>
-            </Storyboard>
-        </Grid.Resources>
-        <!--For snapped view-->
-        <StackPanel x:Name="SnappedImage" Grid.RowSpan="3" VerticalAlignment="Center"  Visibility="Collapsed" Background="{StaticResource HudlOrange}">
-            <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
-            <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
-        </StackPanel>
-
-        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="False">
+        <Popup x:Name="SortFilterPopup" IsLightDismissEnabled="True" Opened="SortFilterPopup_Opened_1" Closed="SortFilterPopup_Closed_1" VerticalAlignment="Bottom" Height="425" Margin="0,0,0,250">
             <Popup.ChildTransitions>
                 <TransitionCollection>
-                    <PaneThemeTransition />
+                    <PaneThemeTransition Edge="Bottom"/>
                 </TransitionCollection>
             </Popup.ChildTransitions>
-            <Border BorderBrush="Black" BorderThickness="2,0" Background="{StaticResource HudlDarkGray}" x:Name="RootPopupBorder" Height="423">
+            <Border BorderBrush="Black" BorderThickness="2" Background="{StaticResource HudlPartialBlack}" x:Name="RootPopupBorder" Height="425">
                 <ContentControl DataContext="{Binding SelectedFilter}">
-                    <Grid x:Name="FilterGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="346" Height="425">
+                    <Grid x:Name="FilterGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="345" Height="425">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50" />
                             <RowDefinition Height="70" />
-                            <RowDefinition x:Name="FiltersListRow" Height="220" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition x:Name="FiltersListRow" Height="305" />
                         </Grid.RowDefinitions>
-                        <Border BorderBrush="Black" Background="{StaticResource HudlOrange}" BorderThickness="0" Grid.Row="0" />
-                        <TextBlock Text="{Binding ColumnHeaderName}" FontSize="28" Grid.Row="0" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <Border BorderBrush="Black" Background="{StaticResource HudlPartialOrange}" BorderThickness="0" Grid.Row="0" />
+                        <TextBlock Text="{Binding ColumnHeaderName}" FontSize="28" Grid.Row="0" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"/>
                         <StackPanel Orientation="Vertical" Grid.Row="1">
                             <TextBlock Text="Sort" Foreground="{StaticResource HudlMediumDarkGray}" FontSize="24" Margin="10,5,0,0"/>
-                            <StackPanel Orientation="Horizontal" Margin="30,0,0,0">
+                            <StackPanel Orientation="Horizontal" Margin="15,0,0,0">
                                 <RadioButton x:Name="AscBtn" Content="Asc" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsAscendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 0)]" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
                                 <RadioButton x:Name="DscBtn" Content="Dsc" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsDescendingChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 1)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
                                 <RadioButton x:Name="NoneBtn" Content="None" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsNoneChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action Click($datacontext, 2)]" Margin="15,0,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
@@ -113,105 +47,190 @@
                         <Border BorderBrush="Black" BorderThickness="0,2" Grid.Row="1" />
                         <StackPanel Orientation="Vertical" Grid.Row="2">
                             <TextBlock Text="Filter" FontSize="24" Margin="10,5,0,0" Foreground="{StaticResource HudlMediumDarkGray}"/>
-                            <ListView x:Name="FiltersList" Height="200" Width="340"  ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
+                            <ListView x:Name="FiltersList" Height="285" Width="340" Margin="15,0,0,0" ItemsSource="{Binding FilterCriteria}" ItemContainerStyle="{StaticResource VideoPlayer_ListViewItemStyle_Popout}" HorizontalAlignment="Left">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
+                                        <CheckBox Content="{Binding Name}" Foreground="{StaticResource HudlMediumGray}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ListView>
                         </StackPanel>
-                        <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.Row="2" />
-                        <Grid x:Name="FilterButtonsGrid" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="346" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Button Content="Apply" Visibility="{Binding ApplyButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action ApplyFilter()]" FontSize="20" Grid.Column="0" Style="{StaticResource ButtonStyle_Standard}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5"/>
-                            <Button x:Name="RemoveFilterBtn" Content="Remove" HorizontalAlignment="Stretch" Visibility="{Binding RemoveButtonVisibility}" caliburn:Message.Attach="[Event Click] = [Action RemoveFilter()]" Style="{StaticResource ButtonStyle_Standard}" FontSize="20" Grid.Column="1" VerticalAlignment="Stretch" Margin="0,5,5,5"/>
-                            <Button x:Name="CloseBtn"  Content="Close" Click="closeSettingsPopupClicked" FontSize="20" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonStyle_Standard}" Margin="0,5,5,5"/>
-                        </Grid>
                     </Grid>
                 </ContentControl>
             </Border>
         </Popup>
 
-        <Grid x:Name="mainGrid" Background="{StaticResource HudlDarkGray}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
-                <RowDefinition x:Name="mainGrid_Row2" Height="375" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <Popup x:Name="PlaybackOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Right" Margin="0,72,560,0" Opened="PlaybackOptionsPopup_Opened_1">
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PaneThemeTransition Edge="Top" />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+            <Border BorderBrush="Black" BorderThickness="2" Background="{StaticResource HudlPartialBlack}" x:Name="PlaybackPopupBorder" Height="200">
+                <ContentControl>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="450" Height="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <Border Background="{StaticResource HudlPartialOrange}" Grid.Row="0" Grid.ColumnSpan="2" />
+                        <Border BorderThickness="0,0,0,2" Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" />
+                        <Border BorderThickness="0,0,2,0" BorderBrush="Black" Grid.RowSpan="2" />
+                        <TextBlock Text="Angles" FontSize="28" Grid.Row="0" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="Playback" FontSize="28" Grid.Row="0" Grid.Column="1" Foreground="{StaticResource HudlMediumGray}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <ItemsControl x:Name="Angles" ItemsSource="{Binding AngleTypes}" Grid.Row="1" Margin="15,15,0,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical">
+                                        <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" IsEnabled="{Binding CheckBoxEnabled}" Style="{StaticResource VideoPlayer_CheckBoxStyle_Standard}"
+                                                  caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];"
+                                                  Foreground="{StaticResource HudlMediumGray}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="15,0,0,0">
+                            <RadioButton Content="Once" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsOnceChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(0)]" Click="CloseOptionsPopup" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            <RadioButton Content="Loop" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsLoopChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(1)]" Click="CloseOptionsPopup" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                            <RadioButton Content="Next" Foreground="{StaticResource HudlMediumGray}" IsChecked="{Binding IsNextChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Click] = [Action PlaybackButton_Click(2)]" Click="CloseOptionsPopup" Margin="2,15,0,0" Style="{StaticResource VideoPlayer_RadioButtonStyle_Standard}"/>
+                        </StackPanel>
+                    </Grid>
+                </ContentControl>
+            </Border>
+        </Popup>
+        
+        <Grid x:Name="mainGrid" Background="Black" Tapped="videoMediaElement_Tapped">      
+            <ContentControl x:Name="videoContainer"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Bottom">
+                <mmppf:MediaPlayer x:Name="videoMediaElement" IsPlayPauseVisible="False"
+                                   AutoPlay="True"
+                                   MediaOpened="videoElement_MediaOpened"
+                                   MediaEnded="videoMediaElement_MediaEnded"
+                                   MediaFailed="videoMediaElement_MediaFailed"
+                                   MediaStarted="videoMediaElement_MediaStarted"
+                                   IsFullScreen="True"
+                                   AutoHide="False" 
+                                   IsSkipAheadEnabled="False"
+                                   IsSkipBackEnabled="False"
+                                   IsVolumeVisible="False"
+                                   ManipulationMode="All"
+                                   caliburn:Message.Attach="[Event ManipulationStarted] = [Action videoMediaElement_ManipulationStarted($this,$eventArgs)];
+                                   [Event ManipulationDelta] = [Action videoMediaElement_ManipulationDelta($this,$eventArgs)];
+                                   [Event ManipulationInertiaStarting] = [Action videoMediaElement_ManipulationInertiaStarting($this,$eventArgs)];"
+                                   />
+            </ContentControl>
+            <TextBlock HorizontalAlignment="Center" Width="800" VerticalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoAnglesText}" TextWrapping="Wrap" />
+            
+        </Grid>
+        <Grid x:Name="VideoControls">
+            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,-250,0,0" Height="290" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
+            <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Left" Margin="0,-250,0,0" VerticalAlignment="Center">
+                <Button x:Name="btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
+                                    Content="&#xE102;&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="14"
+                                    PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
+                    <Button.Projection>
+                        <PlaneProjection RotationY="180"/>
+                    </Button.Projection>
+                </Button>
+                <Button x:Name="btnSlowReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" 
+                                    Content="&#xE102;&#xE102;" FontSize="14" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
+                    <Button.Projection>
+                        <PlaneProjection RotationY="180"/>
+                    </Button.Projection>
+                </Button>
+                <Button x:Name="btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
+                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
+                <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center"
+                                    Visibility="Collapsed"/>
+            </StackPanel>
+
+            <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="385" Margin="0,-150,-30,0" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
+
+            <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" HorizontalAlignment="Right" Margin="0,-150,0,0" VerticalAlignment="Center">
+                <Button x:Name="btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
+                                    Content="&#xE102;&#xE102;&#xE102;" FontSize="14" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
+                <Button x:Name="btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
+                                    Content="&#xE102;&#xE102;" FontSize="14" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
+                <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30"
+                                    caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
+                <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="40"/>
+                <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
+                                    Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="40"/>
+            </StackPanel>
+
+       </Grid>
+            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="40" VerticalAlignment="Top">
+                <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
+                    <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
+            <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource BackButtonStyle}" Margin="20,-369,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                <Button x:Name="snapped_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
+                        caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" />
+                <Button x:Name="snapped_btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center"
+                                    Visibility="Collapsed" AutomationProperties.Name=""/>
+                <Button x:Name="snapped_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
+                                    Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="snapped_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
+                <Button x:Name="snapped_btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name=""
+                        caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+    <common:LayoutAwarePage.TopAppBar>
+        <AppBar x:Name="TitleBar" Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,2" IsSticky="True">
             <Grid Name="header" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="85"/>
-                    <ColumnDefinition Width="165"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="160"/>
                     <ColumnDefinition Width="250"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="17,0,0,0" />
-                <Button x:Name="btnTogglePlayback" Style="{StaticResource ButtonStyle_Standard}" Grid.Column="1" Width="165" Height="40" FontSize="20" Content="{Binding ToggleButtonContent}" HorizontalAlignment="Center"
-                         caliburn:Message.Attach="[Event Click] = [Action playbackToggle()]"/>
-                <TextBlock x:Name="PlaylistName" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="{StaticResource HudlMediumGray}"/>
-                <Grid Grid.Column="3">
-                    <Button x:Name="btnDownload" Visibility="Collapsed" Width="230" Height="40" FontSize="20" Content="Download Playlist"  HorizontalAlignment="Left"
+                <Button x:Name="GoBack" VerticalAlignment="Center" Width="50" Grid.Column="0" Style="{StaticResource BackButtonStyle}" Margin="0" />
+                <TextBlock x:Name="PlaylistName" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="30" FontWeight="Light" Foreground="{StaticResource HudlMediumGray}"/>
+                <Button x:Name="OptionsMenu" Grid.Column="2" Width="150" Height="45" Style="{StaticResource ButtonStyle_Standard}" Click="openOptionsMenu">Options &#xE099;</Button>
+                <Button x:Name="btnDownload" Grid.Column="3" Visibility="{Binding DownloadButtonVisibility}" Width="250" Height="45" Content="Download Playlist"  HorizontalAlignment="Center" Style="{StaticResource ButtonStyle_Standard}"
                          caliburn:Message.Attach="[Event Click] = [Action DownloadButtonClick()]"/>
-                    <Grid Grid.Column="2" Visibility="Collapsed" Margin="0,5,0,5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="165" ></TextBlock>
-                        <ProgressBar Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="30" Width="165" Foreground="{StaticResource HudlBlue}"/>
+                <Grid Grid.Column="3" Visibility="{Binding ProgressGridVisibility}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="0,0,60,0" Grid.Row="0" HorizontalAlignment="Left" Foreground="{StaticResource HudlMediumGray}" VerticalAlignment="Bottom" FontSize="18" Text="{Binding DownloadProgressText}" Width="190"/>
+                    <ProgressBar Margin="0,0,60,0" Grid.Row="1" x:Name="Download_ProgressBar" HorizontalAlignment="Left"  IsIndeterminate="False" Maximum="100" Value="{Binding DownloadProgress, Mode=TwoWay}" Height="20" Width="190" Foreground="{StaticResource HudlMediumDarkGray}"/>
+                    <Button x:Name="btnCancel" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,0,0"
+                        caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
+                </Grid>
+                <Grid Grid.Column="3" Visibility="{Binding DownloadedVisibility}" Margin="0,0,45,0">
+                    <Grid >
+                        <TextBlock Margin="0,7,0,0" Text="Downloaded" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22" Foreground="{StaticResource HudlMediumGray}" FontWeight="Light"/>
+                        <Grid Grid.Row="1" Margin="0,0,-5,3" HorizontalAlignment="Right" >
+                            <TextBlock Grid.Column="0" Margin="0,2,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource HudlMediumGray}" FontFamily="Segoe UI Symbol" FontSize="27" Text="&#xE188;"/>
+                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontFamily="Segoe UI Symbol" FontSize="18" Text="&#xE0E7;"/>
+                        </Grid>
                     </Grid>
                 </Grid>
-                <Button x:Name="btnCancel" Visibility="Collapsed" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Style="{StaticResource CancelButtonStyle}" Margin="0,0,17,0"
-                         caliburn:Message.Attach="[Event Click] = [Action CancelButtonClick()]"/>
             </Grid>
-            <Grid Background="Black" Grid.Row="1" x:Name="Container1">
-                <Grid.RowDefinitions>
-                    <RowDefinition x:Name="Container1_Row1" Height="375" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid x:Name="Container2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="150" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,18,45,0">
-                        <Button x:Name="btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE102;&#xE102;" VerticalAlignment="Center" FontSize="20"
-                                    PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
-                            <Button.Projection>
-                                <PlaneProjection RotationY="180"/>
-                            </Button.Projection>
-                        </Button>
-                        <Button x:Name="btnSlowReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" 
-                                    Content="&#xE016;" FontSize="30" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
-                        <Button x:Name="btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
-                                    caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]"/>
-                        <Button x:Name="btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center"
-                                    Visibility="Collapsed"/>
-                        <Button x:Name="btnFullScreenToggle" Click="btnFullScreenToggle_Click"
-                                    Style="{StaticResource AppBarButtonStyle}" AutomationProperties.Name="Full Screen" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE1D9;" FontSize="30"/>
-                    </StackPanel>
-                    <StackPanel x:Name="TransportControlsPanel_Right" Orientation="Vertical" Margin="45,18,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
-                        <Button x:Name="btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE102;&#xE102;" FontSize="20" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
-                        <Button x:Name="btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE017;" FontSize="30" PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
-                        <Button x:Name="btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30"
-                                    caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
-                        <Button x:Name="btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30"/>
-                        <Button x:Name="btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
-                                    Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="30"/>
-                    </StackPanel>
-                </Grid>
-            </Grid>
-
-            <Grid x:Name="dataPanel" Grid.Row="2">
+        </AppBar>
+    </common:LayoutAwarePage.TopAppBar>
+    <common:LayoutAwarePage.BottomAppBar>
+        <AppBar Background="{StaticResource HudlPartialBlack}" BorderBrush="Black" BorderThickness="0,0,0,3" Closed="AppBarClosed" Opened="AppBarOpened" IsSticky="True">
+            <Grid x:Name="dataPanel" Grid.Row="2" Height="200" Margin="-10,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />
@@ -228,162 +247,6 @@
                 </common:VideoPlayerListView>
 
             </Grid>
-
-        </Grid>
-
-
-        <Grid x:Name="VideoGrid" VerticalAlignment="Top" Margin="0,70,0,0">
-            <ContentControl x:Name="videoContainer"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Bottom"
-                            Height="350">
-                <mmppf:MediaPlayer x:Name="videoMediaElement" IsPlayPauseVisible="False"
-                                   AutoPlay="True"
-                                   MediaOpened="videoElement_MediaOpened"
-                                   MediaEnded="videoMediaElement_MediaEnded"
-                                   MediaFailed="videoMediaElement_MediaFailed"
-                                   IsFullScreen="True"
-                                   AutoHide="False" 
-                                   Tapped="videoMediaElement_Tapped"
-                                   IsSkipAheadEnabled="False"
-                                   IsSkipBackEnabled="False"
-                                   IsVolumeVisible="False"
-                                   ManipulationMode="All"
-                                   caliburn:Message.Attach="[Event ManipulationStarted] = [Action videoMediaElement_ManipulationStarted($this,$eventArgs)];
-                                   [Event ManipulationDelta] = [Action videoMediaElement_ManipulationDelta($this,$eventArgs)];
-                                   [Event ManipulationInertiaStarting] = [Action videoMediaElement_ManipulationInertiaStarting($this,$eventArgs)];"
-                                   />
-            </ContentControl>
-        </Grid>
-
-        <Grid x:Name="full_mainGrid" Visibility="Collapsed">
-            <Grid Background="#AA333333" Height="50" Width="Auto" VerticalAlignment="Top">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[0]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[0]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[1]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[1]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[2]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[2]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[3]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[3]}" />
-                    <TextBlock Margin="20,0,5,0" Foreground="White" FontSize="25" Text = "{Binding GridHeaders[4]}"/>
-                    <TextBlock DataContext="{Binding SelectedClip}" Margin="5,0,10,0" Foreground="White" FontSize="25" Text="{Binding Path=breakDownData[4]}" />
-                </StackPanel>
-            </Grid>
-
-            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,0,0,0" Height="400" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
-
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-25,0,0,-7" Orientation="Vertical" Width="150" Background="Transparent">
-                <Button x:Name="full_btnFastReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                        Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"
-                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release">
-                    <Button.Projection>
-                        <PlaneProjection RotationY="180"/>
-                    </Button.Projection>
-                </Button>
-                <Button x:Name="full_btnSlowReverse" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" 
-                        Content="&#xE016;" FontSize="30" HorizontalAlignment="Center"
-                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
-                <Button x:Name="full_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
-                        caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" />
-                <Button x:Name="full_btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center"
-                                    Visibility="Collapsed" AutomationProperties.Name=""/>
-                <Button x:Name="btnExitFullScreen" Click="btnFullScreenToggle_Click"
-                                    Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                                    Content="&#xE1D8;" FontSize="30" HorizontalAlignment="Center"/>
-            </StackPanel>
-
-            <Rectangle HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Height="400" Margin="0,0,-30,0" Fill="#AA333333" RadiusX="20" RadiusY="20"/>
-
-            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-25,-7" Orientation="Vertical" Width="150">
-                <Button x:Name="full_btnFastForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                        Content="&#xE102;&#xE102;" FontSize="20" HorizontalAlignment="Center"
-                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
-                <Button x:Name="full_btnSlowForward" Style="{StaticResource AppBarButtonStyle}" Foreground="{StaticResource HudlBlue}"
-                        Content="&#xE017;" FontSize="30" HorizontalAlignment="Center"
-                        PointerReleased="btn_release" PointerCanceled="btn_release" PointerCaptureLost="btn_release"/>
-                <Button x:Name="full_btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name=""
-                        caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
-                <Button x:Name="full_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
-                <Button x:Name="full_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
-                                    Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
-            </StackPanel>
-
-        </Grid>
-
-        <Grid x:Name="snapped_mainGrid" Visibility="Collapsed" Margin="0, 400, 0, 0">
-
-            <Button x:Name="snapped_GoBack" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource SnappedBackButtonStyle}" Margin="20,-369,0,0" caliburn:Message.Attach="[Event Click] = [GoBack()]"/>
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <Button x:Name="snapped_btnReverse" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" 
-                        caliburn:Message.Attach="[Event Click] = [PreviousClip($eventArgs)]" />
-                <Button x:Name="snapped_btnStop" Click="btnStop_Click" Style="{StaticResource SkipBackAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center"
-                                    Visibility="Collapsed" AutomationProperties.Name=""/>
-                <Button x:Name="snapped_btnPause" Click="btnPause_Click" Style="{StaticResource PauseAppBarButtonStyle}"
-                                    Visibility="Collapsed" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
-                <Button x:Name="snapped_btnPlay" Click="btnPlay_Click" Style="{StaticResource PlayAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name="" />
-                <Button x:Name="snapped_btnForward" Style="{StaticResource SkipAheadAppBarButtonStyle}" Foreground="{StaticResource HudlBlue}" FontSize="30" HorizontalAlignment="Center" AutomationProperties.Name=""
-                        caliburn:Message.Attach="[Event Click] = [NextClip(0)]"/>
-            </StackPanel>
-        </Grid>
-
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="FullScreenLandscape">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Filled">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SortFilterPopup" Storyboard.TargetProperty="Width" >
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="346" />
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="FullScreenPortrait">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-    </Grid>
-    <common:LayoutAwarePage.TopAppBar>
-        <AppBar Background="{StaticResource HudlDarkGray}" BorderBrush="{StaticResource HudlDarkGrayAccent}" BorderThickness="0,0,0,3">
-            <Grid VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Foreground="{StaticResource HudlMediumDarkGray}" FontSize="24" Padding="10,0,5,0" Grid.Column="0">
-                    Angles:
-                </TextBlock>
-                <ItemsControl ItemsSource="{Binding AngleTypes}" Grid.Column="1">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <CheckBox Content="{Binding Name}" IsChecked ="{Binding IsChecked, Mode=TwoWay}" caliburn:Message.Attach="[Event Checked] = [Action checkBox($this,$eventArgs)]; [Event Unchecked] = [Action checkBox($this,$eventArgs)];" Margin="0,0,10,0" FontSize="16" Foreground="{StaticResource HudlMediumGray}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
         </AppBar>
-    </common:LayoutAwarePage.TopAppBar>
+    </common:LayoutAwarePage.BottomAppBar>
 </common:LayoutAwarePage>

@@ -28,6 +28,13 @@ namespace HudlRT.Models
         }
     }
 
+    public class PageParameter
+    {
+        public Season season { get; set; }
+        public Playlist playlist { get; set; }
+        public BindableCollection<HubGroupViewModel> hubGroups { get; set; }
+    }
+
     public class Team
     {
         public string school { get; set; }
@@ -73,7 +80,7 @@ namespace HudlRT.Models
             }
         }
 
-        public string seasonID { get; set; }
+        public string seasonId { get; set; }
         public int year { get; set; }
         public BindableCollection<Game> games { get; set; }
         public Team owningTeam { get; set; }
@@ -92,22 +99,41 @@ namespace HudlRT.Models
             games = new BindableCollection<Game>();
         }
 
+        public Season(CategoryDTO cat, Team team)
+        {
+            seasonId = cat.CategoryId;
+            owningTeam = team;
+
+            //this method of making a season doesn't have a year, so we just choose the first year listed in the name
+            int yearInt;
+            int.TryParse(cat.Name.Substring(0, 4), out yearInt);
+            year = yearInt;
+            
+            name = cat.Name;
+            games = new BindableCollection<Game>();
+            foreach (CategoryDTO subCat in cat.SubCategories)
+            {
+                games.Add(Game.FromDTO(subCat));
+            }
+
+        }
+
         public static Season FromDTO(SeasonDTO seasonDTO, Team team)
         {
             Season s = new Season();
             s.owningTeam = team;
             s.name = seasonDTO.Name;
-            s.seasonID = seasonDTO.SeasonId;
+            s.seasonId = seasonDTO.SeasonId;
             s.year = seasonDTO.Year;
             return s;
         }
 
         internal static Season DeepCopy(Season seasonAndGame)
         {
-            Season returnSeason = new Season {name = seasonAndGame.name, seasonID = seasonAndGame.seasonID, owningTeam = seasonAndGame.owningTeam, year = seasonAndGame.year };
+            Season returnSeason = new Season {name = seasonAndGame.name, seasonId = seasonAndGame.seasonId, owningTeam = seasonAndGame.owningTeam, year = seasonAndGame.year };
             foreach (Game g in seasonAndGame.games)
             {
-                Game newGame = new Game { date = g.date, gameId = g.gameId, isHome = g.isHome, opponent = g.opponent };
+                Game newGame = new Game { date = g.date, gameId = g.gameId, opponent = g.opponent };
                 foreach (Category c in g.categories)
                 {
                     Category newCategory = new Category { categoryId = c.categoryId, name = c.name };
@@ -127,10 +153,17 @@ namespace HudlRT.Models
     {
         public string opponent { get; set; }
         public DateTime date { get; set; }
-        public bool isHome { get; set; }
         public BindableCollection<Category> categories { get; set; }
         public string gameId { get; set; }
+        public int Classification { get; set; }
         public string DisplayDate
+        {
+            get
+            {
+                return date.ToString("d");
+            }
+        }
+        public string DisplayDateTime
         {
             get
             {
@@ -143,13 +176,50 @@ namespace HudlRT.Models
             categories = new BindableCollection<Category>();
         }
         
-        public static Game FromDTO(GameDTO gameDTO)
+        public static Game FromDTO(CategoryDTO gameDTO)
         {
             Game game = new Game();
-            game.gameId = gameDTO.GameId;
-            game.isHome = gameDTO.Ishome;
-            game.opponent = gameDTO.Opponent;
-            game.date = gameDTO.Date;
+            int c;
+            int.TryParse(gameDTO.Classification, out c);
+            game.Classification = c;
+            string[] oppAndDate = gameDTO.Name.Split('-'); //in the call we're using to return this information, opponent and date are concatenated.
+            game.gameId = gameDTO.CategoryId;
+
+            //get the game's name
+            if (gameDTO.Classification == "1")
+            {
+                game.opponent = "";
+
+                for (int i = 0; i < oppAndDate.Length - 1; i++)
+                {
+                    game.opponent += oppAndDate[i];
+                }
+
+                string[] date = oppAndDate.Last().Split('/');
+                int year;
+                int month;
+                int day;
+                try
+                {
+                    int.TryParse(date[2], out year);
+                    int.TryParse(date[1], out day);
+                    int.TryParse(date[0], out month);
+                    game.date = new DateTime(year, month, day);
+                }
+                catch (Exception e)
+                {
+                    game.date = new DateTime();
+                }
+                
+            }
+            else
+            {
+                game.opponent = gameDTO.Name;
+            }
+            foreach(CategoryDTO cat in gameDTO.SubCategories)
+            {
+                game.categories.Add(Category.FromDTO(cat));
+            }
             return game;
         }
     }
@@ -233,7 +303,7 @@ namespace HudlRT.Models
                 BindableCollection<Angle> angles = new BindableCollection<Angle>();
                 foreach (Angle a in c.angles)
                 {
-                    Angle angle = new Angle { angleName = a.angleName, angleType = null, clipAngleId = a.clipAngleId, duration = a.duration, fileLocation = a.fileLocation, isPreloaded = a.isPreloaded, preloadFile = a.preloadFile, thumbnailLocation = a.thumbnailLocation };
+                    Angle angle = new Angle { angleName = a.angleName, angleType = null, clipAngleId = a.clipAngleId, duration = a.duration, fileLocation = a.fileLocation, isPreloaded = a.isPreloaded, preloadFile = a.preloadFile, thumbnailLocation = a.thumbnailLocation, fileSize =a.fileSize };
                     angles.Add(angle);
                 }
                 clip.angles = angles;
@@ -364,6 +434,16 @@ namespace HudlRT.Models
     {
         public VideoPlayerViewModel viewModel { get; set; }
         public string Name { get; set; }
+        private bool _checkBoxEnabled;
+        public bool CheckBoxEnabled
+        {
+            get { return _checkBoxEnabled; }
+            set
+            {
+                _checkBoxEnabled = value;
+                NotifyOfPropertyChange(() => CheckBoxEnabled);
+            }
+        }
         private bool isChecked;
         public bool IsChecked
         {
@@ -379,6 +459,7 @@ namespace HudlRT.Models
         {
             Name = name;
             IsChecked = true;
+            CheckBoxEnabled = true;
             viewModel = vm;
         }
 

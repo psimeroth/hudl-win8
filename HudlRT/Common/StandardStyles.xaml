@@ -295,6 +295,7 @@
         <Setter Property="FontFamily" Value="Segoe UI Symbol"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Margin" Value="0,10" />
         <Setter Property="AutomationProperties.ItemType" Value="App Bar Button"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -303,20 +304,9 @@
                         <StackPanel VerticalAlignment="Top" Margin="0">
                             <Grid Width="80" Height="80" Margin="0,0,0,-4" HorizontalAlignment="Center">
                                 <TextBlock x:Name="BackgroundGlyph" Text="&#xE0A8;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource AppBarItemBackgroundThemeBrush}"/>
-                                <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource HudlDarkGrayAccent}"/>
-                                <ContentPresenter x:Name="Content" HorizontalAlignment="Center" Margin="-1,-1,0,0" VerticalAlignment="Center" Foreground="{StaticResource HudlMediumGray}"/>
+                                <TextBlock x:Name="OutlineGlyph" Text="&#xE0A7;" FontFamily="Segoe UI Symbol" FontSize="90" Margin="0,-26,0,0" Foreground="{StaticResource HudlMediumDarkGray}"/>
+                                <ContentPresenter x:Name="Content" HorizontalAlignment="Center" Margin="-1,-1,0,0" VerticalAlignment="Center" Foreground="{StaticResource HudlMediumDarkGray}"/>
                             </Grid>
-                            <TextBlock
-                                x:Name="TextLabel"
-                                Text="{TemplateBinding AutomationProperties.Name}"
-                                Foreground="{StaticResource AppBarItemForegroundThemeBrush}"
-                                Margin="0,0,2,0"
-                                FontSize="12"
-                                TextAlignment="Center"
-                                Width="88"
-                                MaxHeight="32"
-                                TextTrimming="WordEllipsis"
-                                Style="{StaticResource BasicTextStyle}"/>
                         </StackPanel>
                         <Rectangle
                                 x:Name="FocusVisualWhite"
@@ -342,9 +332,6 @@
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundGlyph" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlDarkGray}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HudlMediumDarkGray}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -899,7 +886,7 @@
                         <Grid Margin="-1,-1,0,0">
                             <TextBlock x:Name="BackgroundGlyph" Text="&#xE0D4;" Foreground="{StaticResource HudlDarkGray}"/>
                             <TextBlock x:Name="NormalGlyph" Text="{StaticResource BackButtonSnappedGlyph}" Foreground="{StaticResource HudlMediumDarkGray}"/>
-                            <TextBlock x:Name="ArrowGlyph" Text="&#xE0C4;" Foreground="{StaticResource HudlLightGray}" Opacity="0"/>
+                            <TextBlock x:Name="ArrowGlyph" Text="&#xE0C4;" Foreground="{StaticResource HudlMediumGray}" Opacity="0"/>
                         </Grid>
                         <Rectangle
                             x:Name="FocusVisualWhite"

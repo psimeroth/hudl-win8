@@ -49,7 +49,8 @@ namespace HudlRT.ViewModels
                 return PlaylistModel.clipCount + " Clips";
             }
         }
-        public bool IsDownloaded { 
+        public bool IsDownloaded
+        {
             get
             {
                 return false;
@@ -69,6 +70,19 @@ namespace HudlRT.ViewModels
                 }
             }
         }
+
+        public string Stretch
+        {
+            get
+            {
+                if (ThumbnailPath == "ms-appx:///Assets/hudl-mark-gray.png")
+                {
+                    return "None";
+                }
+                return "UniformToFill";
+            }
+        }
+
         private Visibility downloadedIcon_Visibility;
         public Visibility DownloadedIcon_Visibility
         {
@@ -80,22 +94,10 @@ namespace HudlRT.ViewModels
             }
         }
 
-        private bool isSelectable;
-        public bool IsSelectable
-        {
-            get { return isSelectable; }
-            set
-            {
-                isSelectable = value;
-                NotifyOfPropertyChange(() => IsSelectable);
-            }
-        }
-
         public PlaylistViewModel(Playlist playlist)
         {
             PlaylistModel = playlist;
             DownloadedIcon_Visibility = Visibility.Collapsed;
-            IsSelectable = false;
         }
     }
 }

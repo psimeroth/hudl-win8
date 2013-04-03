@@ -95,7 +95,6 @@ namespace HudlRT.ViewModels
 
         protected override void OnInitialize()
         {
-            CachedParameter.resetCache();
             DownloadAccessor.Instance.DeleteTempData();
             base.OnInitialize();
 
@@ -152,7 +151,6 @@ namespace HudlRT.ViewModels
                 if (AppDataAccessor.GetUsername() != userName)
                 {
                     AppDataAccessor.SetUsername(UserName);
-                    CachedParameter.resetCache();
                 }
                 if (RememberMe)
                 {
@@ -160,10 +158,6 @@ namespace HudlRT.ViewModels
                     AppDataAccessor.SetLoginDate(DateTime.Now.ToString());
                 }
                 navigationService.NavigateToViewModel<HubViewModel>();
-            }
-            else if (response.status == SERVICE_RESPONSE.PRIVILEGE)
-            {
-                navigationService.NavigateToViewModel<FeatureDisabledViewModel>();
             }
             else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
             {
@@ -183,7 +177,6 @@ namespace HudlRT.ViewModels
                     TimeSpan ts = DateTime.Now - LastLogin;
                     if (ts.Days <= 14)
                     {
-                        CachedParameter.noConnection = true;
                         navigationService.NavigateToViewModel<HubViewModel>();
                     }
                     else

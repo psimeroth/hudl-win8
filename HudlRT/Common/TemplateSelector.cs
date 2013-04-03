@@ -24,5 +24,6 @@ namespace HudlRT.Common
 
         public DataTemplate LargeTemplate { get; set; }
         public DataTemplate SmallTemplate { get; set; }
+        public DataTemplate OtherCategoryTemplate { get; set; }
     }
 }

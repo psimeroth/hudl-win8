@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.ViewModels
 {
@@ -14,7 +15,7 @@ namespace HudlRT.ViewModels
     {
         private string _thumbNail;
         private string _numPlaylists;
-        private double _imageWidth;
+        private string _stretch;
         public bool IsLargeView { get; set; }
         public bool IsLastViewed { get; set; }
         public Game GameModel { get; set; }
@@ -31,6 +32,8 @@ namespace HudlRT.ViewModels
                 playButtonVisibility = value;
             }
         }
+        public bool IsNextGame { get; set; }
+        public bool IsPreviousGame { get; set; }
 
         public string Opponent
         {
@@ -44,7 +47,18 @@ namespace HudlRT.ViewModels
         {
             get
             {
-                return !IsLastViewed ? GameModel.DisplayDate : "Viewed: " + GameModel.DisplayDate;
+                if (IsLastViewed)
+                {
+                    return "Viewed: " + GameModel.DisplayDateTime;
+                }
+                if (GameModel.Classification != 1)
+                {
+                    return "";
+                }
+                else
+                {
+                    return GameModel.DisplayDate;
+                }
             }
         }
 
@@ -66,81 +80,96 @@ namespace HudlRT.ViewModels
             get { return _thumbNail; }
             set
             {
-                _thumbNail = value ;
+                _thumbNail = value;
                 NotifyOfPropertyChange(() => Thumbnail);
             }
         }
 
-        public double ImageWidth
+        public string Stretch
         {
-            get { return _imageWidth; }
+            get
+            {
+                return _stretch;
+            }
             set
             {
-                _imageWidth = value;
-                NotifyOfPropertyChange(() => ImageWidth);
+                _stretch = value;
+                NotifyOfPropertyChange(() => Stretch);
             }
         }
 
-        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false)
+        public GameViewModel(Game game, bool isLarge = false, bool isLastviewed = false, bool isNextGame = false, bool isPreviousGame = false)
         {
             GameModel = game;
             IsLargeView = isLarge;
             IsLastViewed = isLastviewed;
+            IsNextGame = isNextGame;
+            IsPreviousGame = isPreviousGame;
             Thumbnail = "ms-appx:///Assets/hudl-mark-gray.png";
-            if (IsLastViewed)
-            {
-                ImageWidth = 565;
-            }
-            else
-            {
-                ImageWidth = 350;
-            }
+            Stretch = "None";
         }
 
-        public async Task FetchThumbnailsAndPlaylistCounts() 
+        public async Task FetchThumbnailsAndPlaylistCounts()
         {
+            int numLists = 0;
             if (ServiceAccessor.ConnectedToInternet())
             {
-                CategoryResponse response = await ServiceAccessor.GetGameCategories(GameModel.gameId);
-                if (response.status == SERVICE_RESPONSE.SUCCESS)
+                // Get the playlists for the game
+                PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(GameModel.categories.ToList());
+                foreach (Category cat in GameModel.categories)
                 {
-                    GameModel.categories = response.categories;
-                    int numLists = 0;
-                    foreach (Category cat in GameModel.categories)
+                    cat.playlists = playResponse.playlists[cat.categoryId];
+                }
+
+                // Count the playlists and get a thumbnail
+                foreach (KeyValuePair<string, BindableCollection<Playlist>> entry in playResponse.playlists)
+                {
+                    numLists += entry.Value.Count;
+
+                    if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
                     {
-                        PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
-                        if (response.status == SERVICE_RESPONSE.SUCCESS)
+                        foreach (Playlist playlist in entry.Value)
                         {
-                            cat.playlists = playResponse.playlists;
-                            if (cat.playlists != null && cat.playlists.Count() > 0)
+                            if (playlist.thumbnailLocation != null)
                             {
-                                numLists += cat.playlists.Count();
-                                //Populate the thumbnail on the hub
-                                if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
+                                Thumbnail = playlist.thumbnailLocation;
+                                Stretch = "UniformToFill";
+                            }
+                        }
+                    }
+                }
+
+                /*foreach (Category cat in GameModel.categories)
+                {
+                    PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
+                    if (playResponse.status == SERVICE_RESPONSE.SUCCESS)
+                    {
+                        cat.playlists = playResponse.playlists;
+                        if (cat.playlists != null && cat.playlists.Count() > 0)
+                        {
+                            numLists += cat.playlists.Count();
+                            //Populate the thumbnail on the hub
+                            if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
+                            {
+                                if (cat.playlists[0].thumbnailLocation != null)
                                 {
-                                    if (cat.playlists[0].thumbnailLocation != null)
-                                    {
-                                        Thumbnail = cat.playlists[0].thumbnailLocation;
-                                        ImageWidth = 565;
-                                    }
+                                    Thumbnail = cat.playlists[0].thumbnailLocation;
+                                    Stretch = "UniformToFill";
                                 }
                             }
                         }
                     }
-                    //Populate the numplaylistsfield.
-                    NumPlaylists = numLists.ToString();
-                }
+                }*/
             }
             else
             {
-                int numLists = 0;
                 foreach (Category cat in GameModel.categories)
                 {
                     numLists += cat.playlists.Count;
                 }
-                NumPlaylists = numLists.ToString();
-                ImageWidth = 565;
             }
+            //Populate the NumPlaylists field with the counter
+            NumPlaylists = numLists.ToString();
         }
     }
 }
