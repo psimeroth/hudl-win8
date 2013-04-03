@@ -1,16 +1,11 @@
 ﻿using Caliburn.Micro;
-using System;
-using Windows.UI.Xaml.Controls;
 using HudlRT.Common;
 using Newtonsoft.Json;
-using Windows.Storage;
-using HudlRT.Models;
-using HudlRT.Parameters;
-using Windows.UI.Xaml.Input;
-using Windows.UI.ApplicationSettings;
-using Windows.Security.Credentials;
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
+using Windows.Security.Credentials;
+using Windows.UI.ApplicationSettings;
+using Windows.UI.Xaml.Input;
 
 namespace HudlRT.ViewModels
 {
