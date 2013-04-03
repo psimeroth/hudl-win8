@@ -134,6 +134,8 @@
             <TextBlock HorizontalAlignment="Center" Width="800" VerticalAlignment="Center" TextAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" Text="{Binding NoAnglesText}" TextWrapping="Wrap" />
             
         </Grid>
+        <Button x:Name="MoreBtn" Style="{StaticResource MoreButtonStyle}" Visibility="Collapsed" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="&#xE10C;" Click="MoreBtn_Click"/>
+        <Button x:Name="LessBtn" Style="{StaticResource MoreButtonStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="&#xE108;" Click="LessBtn_Click"/>
         <Grid x:Name="VideoControls">
             <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Margin="-30,-250,0,0" Height="290" Fill="{StaticResource HudlPartialBlack}" RadiusX="20" RadiusY="20"/>
             <StackPanel x:Name="TransportControlsPanel_Left" Orientation="Vertical" HorizontalAlignment="Left" Margin="0,-250,0,0" VerticalAlignment="Center">
@@ -171,7 +173,7 @@
             </StackPanel>
 
        </Grid>
-            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="40" VerticalAlignment="Top">
+            <Grid x:Name="ClipDataGrid" Background="#99000000" Height="60" VerticalAlignment="Top">
                 <ScrollViewer x:Name="ClipDataScrollViewer" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
                     <StackPanel x:Name="ClipDataText" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                     </StackPanel>
