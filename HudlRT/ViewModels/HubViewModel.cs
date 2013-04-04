@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls;
 using System.Net.Http;
 using Windows.UI.Notifications;
 using NotificationsExtensions.TileContent;
+using Newtonsoft.Json;
 
 namespace HudlRT.ViewModels
 {

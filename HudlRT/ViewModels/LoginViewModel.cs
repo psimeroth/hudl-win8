@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Notifications;
 using NotificationsExtensions.TileContent;
 using System.Net.Http;
+using System.Collections.Generic;
 
 namespace HudlRT.ViewModels
 {
