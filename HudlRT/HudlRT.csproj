@@ -158,7 +158,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Caliburn.Micro.WinRT.Sample_TemporaryKey.pfx" />
     <None Include="HudlRT_StoreKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
