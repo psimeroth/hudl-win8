@@ -119,7 +119,6 @@
     <Compile Include="Common\VirtualKeyHelper.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
-    <Compile Include="Parameters\CachedParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
@@ -142,14 +141,8 @@
     <Compile Include="Views\CutupView.xaml.cs">
       <DependentUpon>CutupView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GameView.xaml.cs">
-      <DependentUpon>GameView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\HubView.xaml.cs">
       <DependentUpon>HubView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\LargeGameView.xaml.cs">
-      <DependentUpon>LargeGameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -246,17 +239,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GameView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\HubView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\LargeGameView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LoginView.xaml">
       <SubType>Designer</SubType>

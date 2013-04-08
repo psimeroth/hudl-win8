@@ -367,16 +367,6 @@ namespace HudlRT.ViewModels
 
             if (!gameViewModel.IsLastViewed)
             {
-                /*foreach (HubGroupViewModel hgvm in Groups)
-                {
-                    foreach (GameViewModel gvm in hgvm.Games)
-                    {
-                        if (!gvm.IsLastViewed)
-                        {
-                            gvm.FetchPlaylists.
-                        }
-                    }
-                }*/
                 try
                 {
                     await gameViewModel.FetchPlaylists;

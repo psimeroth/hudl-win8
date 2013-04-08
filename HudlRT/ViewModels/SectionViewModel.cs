@@ -181,7 +181,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;// +" of " + freeSpaceResponse.formattedSize;
+                DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;
             }
         }
 
@@ -386,7 +386,6 @@ namespace HudlRT.ViewModels
             {
                 if (categoriesGrid.SelectedItems.Count >= 1)
                 {
-                    //PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
                     if (playlistAdded != null)
                     {
                         if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
@@ -462,7 +461,6 @@ namespace HudlRT.ViewModels
 
         private void MarkDownloadedPlaylists()
         {
-            //await DownloadAccessor.Instance.GetDownloads();
             if (Categories != null)
             {
                 foreach (CategoryViewModel cat in Categories)
