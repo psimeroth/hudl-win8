@@ -57,7 +57,7 @@ namespace HudlRT.ViewModels
             }
         }
 
-        // Bound to the visibility of the progress ring. Swaps with 
+        // Bound to the visibility of the progress ring
         private string progressRingVisibility;
         public string ProgressRingVisibility
         {
