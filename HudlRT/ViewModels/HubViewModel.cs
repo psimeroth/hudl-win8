@@ -1,16 +1,13 @@
 ﻿using Caliburn.Micro;
-using HudlRT.Models;
-using System.Collections.Generic;
-using System;
-using Windows.UI.Xaml.Controls;
 using HudlRT.Common;
-using HudlRT.Parameters;
-using Newtonsoft.Json;
-using Windows.Storage;
-using Windows.UI.ApplicationSettings;
+using HudlRT.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.ViewModels
 {
@@ -380,20 +377,27 @@ namespace HudlRT.ViewModels
                         }
                     }
                 }*/
-                await gameViewModel.FetchPlaylists;
-                navigationService.NavigateToViewModel<SectionViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = new Playlist() });
+                try
+                {
+                    await gameViewModel.FetchPlaylists;
+                    navigationService.NavigateToViewModel<SectionViewModel>(new PageParameter { season = seasonToPass, hubGroups = Groups, playlist = new Playlist() });
 
-                if (gameViewModel.IsNextGame)
-                {
-                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_NEXT);
+                    if (gameViewModel.IsNextGame)
+                    {
+                        Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_NEXT);
+                    }
+                    else if (gameViewModel.IsPreviousGame)
+                    {
+                        Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_PREVIOUS);
+                    }
+                    else
+                    {
+                        Logger.Instance.LogGameSelected(gameViewModel.GameModel);
+                    }
                 }
-                else if (gameViewModel.IsPreviousGame)
+                catch
                 {
-                    Logger.Instance.LogGameSelected(gameViewModel.GameModel, Logger.LOG_GAME_PREVIOUS);
-                }
-                else
-                {
-                    Logger.Instance.LogGameSelected(gameViewModel.GameModel);
+                    navigationService.NavigateToViewModel<ErrorViewModel>();
                 }
             }
             else

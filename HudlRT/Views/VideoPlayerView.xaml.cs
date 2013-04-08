@@ -1,27 +1,21 @@
 ﻿using HudlRT.Common;
+using HudlRT.Models;
 using HudlRT.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Media;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using HudlRT.Models;
-using HudlRT.Parameters;
-using Windows.UI.Xaml.Markup;
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using System.Diagnostics;
-using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
 using WinRTXamlToolkit.Controls.Extensions;
 
 namespace HudlRT.Views
@@ -37,6 +31,7 @@ namespace HudlRT.Views
 
         private bool rightClicked { get; set; }
         private bool itemClicked { get; set; }
+        private bool controlsFaded;
         private string _rootNamespace;
         public string RootNamespace
         {
@@ -54,6 +49,8 @@ namespace HudlRT.Views
         private VideoPlayerState playerState { get; set; }
         private DispatcherTimer rewindKeyPressTimer { get; set; }
         private Windows.UI.Core.KeyEventArgs rewindKey { get; set; }
+        private bool isControlDown { get; set; }
+        private VideoPlayerViewModel videoPlayerViewModel { get; set; }
 
         public VideoPlayerView()
         {
@@ -90,18 +87,19 @@ namespace HudlRT.Views
         {
             videoMediaElement.Width = Window.Current.Bounds.Width;
             videoMediaElement.Height = Window.Current.Bounds.Height;
-            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.GridHeadersTextSorted = new List<string>();
-            vm.GridHeadersTextUnsorted = new List<string>();
-            initializeGrid(vm);
-            initializeClipDataBar(vm);
+            videoPlayerViewModel = (VideoPlayerViewModel)this.DataContext;
+            videoPlayerViewModel.GridHeadersTextSorted = new List<string>();
+            videoPlayerViewModel.GridHeadersTextUnsorted = new List<string>();
+            initializeGrid(videoPlayerViewModel);
+            initializeClipDataBar(videoPlayerViewModel);
+            controlsFaded = false;
 
-            vm.listView = FilteredClips;
-            vm.SortFilterPopupControl = SortFilterPopup;
-            vm.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
-            vm.setVideoMediaElement(videoMediaElement);
-            vm.TopAppBar = TopAppBar;
-            vm.BottomAppBar = BottomAppBar;
+            videoPlayerViewModel.listView = FilteredClips;
+            videoPlayerViewModel.SortFilterPopupControl = SortFilterPopup;
+            videoPlayerViewModel.ColumnHeaderTextBlocks = gridHeaders.Children.Select(border => (TextBlock)((Border)border).Child).ToList<TextBlock>();
+            videoPlayerViewModel.setVideoMediaElement(videoMediaElement);
+            videoPlayerViewModel.TopAppBar = TopAppBar;
+            videoPlayerViewModel.BottomAppBar = BottomAppBar;
         }
         
         private void initializeGrid(VideoPlayerViewModel vm)
@@ -188,7 +186,7 @@ namespace HudlRT.Views
             foreach (var header in vm.GridHeaders)
             {
                 TextBlock textBlock_title = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" Margin=""20,0,5,0"" FontWeight=""Bold"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding GridHeaders[X]}""/>".Replace("X", i.ToString()));
-                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""White"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
+                TextBlock textBlock_data = (TextBlock)XamlReader.Load(@"<TextBlock xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" DataContext=""{Binding SelectedClip}"" Margin=""5,0,10,0"" Foreground=""{StaticResource HudlMediumGray}"" FontSize=""22"" Text=""{Binding Path=breakDownData[X]}""/>".Replace("X", i.ToString()));
                 ClipDataText.Children.Add(textBlock_title);
                 ClipDataText.Children.Add(textBlock_data);
 
@@ -218,9 +216,8 @@ namespace HudlRT.Views
         private void columnHeaderClick(object sender, PointerRoutedEventArgs e)
         {
             int id = (int)((TextBlock)sender).Tag;
-            
-            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.PrepareSortFilterPopup(id);
+
+            videoPlayerViewModel.PrepareSortFilterPopup(id);
 
             if (!SortFilterPopup.IsOpen)
             {
@@ -259,8 +256,7 @@ namespace HudlRT.Views
             if (rightClicked)
             {
                 ListView listView = (ListView)sender;
-                VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                vm.SetClip((Clip)listView.SelectedItem);
+                videoPlayerViewModel.SetClip((Clip)listView.SelectedItem);
 
                 rightClicked = false;
             }
@@ -278,19 +274,70 @@ namespace HudlRT.Views
             }
         }
 
+        #region XAML Video Player Functions
         private void btn_release(object sender, RoutedEventArgs e)
         {
-            if(playerState == VideoPlayerState.Paused)
-            {
-                btnPause_Click(null, null);
-            }
-            else
-            {
-                btnPlay_Click(null, null);
-            }
+            videoPlayer_Resume();
         }
 
         private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer_Play();
+        }
+
+        private void btnPause_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer_Pause();
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer_Stop();
+        }
+
+        private void btnFastForward_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer_FastForward();
+        }
+
+        private void btnFastReverse_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer_FastReverse();
+        }
+
+        private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer_SlowReverse();
+        }
+
+        private void btnSlowForward_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer_SlowForward();
+        }
+        #endregion
+        
+        private void setPlayVisible()
+        {
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
+
+            snapped_btnPause.Visibility = Visibility.Collapsed;
+            snapped_btnPlay.Visibility = Visibility.Visible;
+        }
+
+        private void videoPlayer_Resume()
+        {
+            if (playerState == VideoPlayerState.Paused)
+            {
+                videoPlayer_Pause();
+            }
+            else
+            {
+                videoPlayer_Play();
+            }
+        }
+
+        private void videoPlayer_Play()
         {
             rewindTimer.Stop();
             if (videoMediaElement.DefaultPlaybackRate != 1)
@@ -307,7 +354,7 @@ namespace HudlRT.Views
             setStopVisibile();
         }
 
-        private void btnPause_Click(object sender, RoutedEventArgs e)
+        private void videoPlayer_Pause()
         {
             rewindStopwatch.Stop();
             rewindTimer.Stop();
@@ -317,7 +364,7 @@ namespace HudlRT.Views
             setPlayVisible();
         }
 
-        private void btnStop_Click(object sender, RoutedEventArgs e)
+        private void videoPlayer_Stop()
         {
             rewindStopwatch.Stop();
             rewindTimer.Stop();
@@ -327,7 +374,7 @@ namespace HudlRT.Views
             setPrevVisible();
         }
 
-        private void btnFastForward_Click(object sender, RoutedEventArgs e)
+        private void videoPlayer_FastForward()
         {
             videoMediaElement.DefaultPlaybackRate = 2.0;
             videoMediaElement.Play();
@@ -336,7 +383,16 @@ namespace HudlRT.Views
             setStopVisibile();
         }
 
-        private void btnFastReverse_Click(object sender, RoutedEventArgs e)
+        private void videoPlayer_SlowForward()
+        {
+            videoMediaElement.DefaultPlaybackRate = 0.5;
+            videoMediaElement.Play();
+
+            setPauseVisible();
+            setStopVisibile();
+        }
+
+        private void videoPlayer_FastReverse()
         {
             rewindPosition = videoMediaElement.Position;
             isFastRewind = true;
@@ -348,7 +404,7 @@ namespace HudlRT.Views
             setStopVisibile();
         }
 
-        private void btnSlowReverse_Click(object sender, RoutedEventArgs e)
+        private void videoPlayer_SlowReverse()
         {
             rewindPosition = videoMediaElement.Position;
             isFastRewind = false;
@@ -359,69 +415,74 @@ namespace HudlRT.Views
             setPauseVisible();
         }
 
-        private void btnSlowForward_Click(object sender, RoutedEventArgs e)
-        {
-            videoMediaElement.DefaultPlaybackRate = 0.5;
-            videoMediaElement.Play();
-
-            setPauseVisible();
-            setStopVisibile();
-        }
-
-        private void setPlayVisible()
-        {
-            btnPause.Visibility = Visibility.Collapsed;
-            btnPlay.Visibility = Visibility.Visible;
-
-            snapped_btnPause.Visibility = Visibility.Collapsed;
-            snapped_btnPlay.Visibility = Visibility.Visible;
-        }
-
         private void VideoPage_KeyUp(object sender, Windows.UI.Core.KeyEventArgs e)
         {
-            keyPressTimer.Stop();
-            if (keyPressTimer.ElapsedMilliseconds < keyPressLength)
+            if (e.VirtualKey == Windows.System.VirtualKey.Control)
             {
-                if (e.VirtualKey == Windows.System.VirtualKey.Down)
-                {
-                    if (playerState == VideoPlayerState.Paused)
-                    {
-                        btnPlay_Click(null, null);
-                    }
-                    else
-                    {
-                        btnPause_Click(null, null);
-                    }
-                    e.Handled = true;
-                }
-                else if (e.VirtualKey == Windows.System.VirtualKey.Up)
-                {
-                    rewindKeyPressTimer.Stop();
-                    btn_release(null, null);
-                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                    vm.ResetClip();
-                    e.Handled = true;
-                }
-                else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
-                {
-                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                    vm.GoToNextClip();
-                    e.Handled = true;
-                }
-                else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
-                {
-                    rewindKeyPressTimer.Stop();
-                    btn_release(null, null);
-                    VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-                    vm.GoToPreviousClip();
-                    e.Handled = true;
-                }
+                isControlDown = false;
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == VirtualKeyHelper.NextTrack || e.VirtualKey == VirtualKeyHelper.PreviousTrack)
+            {
+                videoPlayer_Resume();
+                e.Handled = true;
+            }
+            else if ((e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.Right) && isControlDown)
+            {
+                videoPlayer_Resume();
+                e.Handled = true;
+            } 
+            else if(e.VirtualKey == Windows.System.VirtualKey.Up && isControlDown)
+            {
+                e.Handled = true;
+            }
+            else if (e.VirtualKey == Windows.System.VirtualKey.Down && isControlDown) 
+            {
+                e.Handled = true;
             }
             else
             {
-                btn_release(null, null);
+                keyPressTimer.Stop();
+                if (keyPressTimer.ElapsedMilliseconds < keyPressLength)
+                {
+                    if (e.VirtualKey == Windows.System.VirtualKey.Down)
+                    {
+                        if (playerState == VideoPlayerState.Paused)
+                        {
+                            videoPlayer_Play();
+                        }
+                        else
+                        {
+                            videoPlayer_Pause();
+                        }
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Up)
+                    {
+                        rewindKeyPressTimer.Stop();
+                        videoPlayer_Resume();
+                        videoPlayerViewModel.ResetClip();
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
+                    {
+                        videoPlayerViewModel.GoToNextClip();
+                        e.Handled = true;
+                    }
+                    else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
+                    {
+                        rewindKeyPressTimer.Stop();
+                        videoPlayer_Resume();
+                        videoPlayerViewModel.GoToPreviousClip();
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    videoPlayer_Resume();
+                }
+                keyPressTimer.Reset();
             }
-            keyPressTimer.Reset();
         }
 
         private void VideoPage_KeyDown(object sender, Windows.UI.Core.KeyEventArgs e)
@@ -431,28 +492,107 @@ namespace HudlRT.Views
                 rewindKeyPressTimer.Stop();
                 if (e.VirtualKey == Windows.System.VirtualKey.Down)
                 {
-                    btnSlowForward_Click(null, null);
-                    keyPressTimer.Start();
+                    if (isControlDown) //Tag
+                    {
+                        
+                    }
+                    else 
+                    {
+                        videoPlayer_SlowForward();
+                        keyPressTimer.Start();
+                    }
                     e.Handled = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Up)
                 {
-                    rewindKey = e;
-                    keyPressTimer.Start();
-                    rewindKeyPressTimer.Start();
+                    if (isControlDown) //Full Screen
+                    {
+                        if (TopAppBar.IsOpen || BottomAppBar.IsOpen)
+                        {
+                            TopAppBar.IsOpen = false;
+                            BottomAppBar.IsOpen = false;
+                        }
+                        else
+                        {
+                            TopAppBar.IsOpen = true;
+                            BottomAppBar.IsOpen = true;
+                        }
+                    }
+                    else
+                    {
+                        rewindKey = e;
+                        keyPressTimer.Start();
+                        rewindKeyPressTimer.Start();
+                    }
                     e.Handled = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Right || e.VirtualKey == Windows.System.VirtualKey.PageDown)
                 {
-                    btnFastForward_Click(null, null);
-                    keyPressTimer.Start();
+                    if (isControlDown) //Remote Fast Forward
+                    {
+                        videoPlayer_FastForward();
+                    }
+                    else
+                    {
+                        videoPlayer_FastForward();
+                        keyPressTimer.Start();
+                    }
                     e.Handled = true;
                 }
                 else if (e.VirtualKey == Windows.System.VirtualKey.Left || e.VirtualKey == Windows.System.VirtualKey.PageUp)
                 {
-                    rewindKey = e;
-                    keyPressTimer.Start();
-                    rewindKeyPressTimer.Start();
+                    if (isControlDown) //Remote Fast Reverse
+                    {
+                        videoPlayer_FastReverse();
+                    }
+                    else
+                    {
+                        rewindKey = e;
+                        keyPressTimer.Start();
+                        rewindKeyPressTimer.Start();
+                    }
+                    e.Handled = true;
+                }
+                else if (e.VirtualKey == Windows.System.VirtualKey.Control)
+                {
+                    isControlDown = true;
+                }
+                else if (e.VirtualKey == VirtualKeyHelper.PreviousTrack) //Previous Media Key
+                {
+                    if (isControlDown) //Remote Slow Reverse
+                    {
+                        videoPlayer_SlowReverse();
+                        e.Handled = true;
+                    }
+                    else //Remote Previous
+                    {
+                        videoPlayerViewModel.GoToPreviousClip();
+                        e.Handled = true;
+                    }
+                }
+                else if (e.VirtualKey == VirtualKeyHelper.NextTrack) //Next Media Key
+                {
+                    if (isControlDown) //Remote Slow Forward
+                    {
+                        videoPlayer_SlowForward();
+                        e.Handled = true;
+                    }
+                    else //Remote Next
+                    {
+                        videoPlayerViewModel.GoToNextClip();
+                        e.Handled = true;
+                    }
+                }
+                else if (e.VirtualKey == VirtualKeyHelper.PlayPause) //Play/Pause Media Key
+                {
+                    if (playerState == VideoPlayerState.Paused)
+                    {
+                        videoPlayer_Play();
+                    }
+                    else
+                    {
+                        videoPlayer_Pause();
+                    }
                     e.Handled = true;
                 }
             }
@@ -465,11 +605,11 @@ namespace HudlRT.Views
                 if (rewindKey.VirtualKey == Windows.System.VirtualKey.Up)
                 {
 
-                    btnSlowReverse_Click(null, null);
+                    videoPlayer_SlowReverse();
                 } 
                 else if (rewindKey.VirtualKey == Windows.System.VirtualKey.Left || rewindKey.VirtualKey == Windows.System.VirtualKey.PageUp)
                 {
-                    btnFastReverse_Click(null, null);
+                    videoPlayer_FastReverse();
                 }
                 rewindKeyPressTimer.Stop();
             }
@@ -496,8 +636,7 @@ namespace HudlRT.Views
             setPlayVisible();
             setPrevVisible();
 
-            VideoPlayerViewModel vm = (VideoPlayerViewModel)this.DataContext;
-            vm.NextClip(NextAngleEvent.mediaEnded);
+            videoPlayerViewModel.NextClip(NextAngleEvent.mediaEnded);
         }
 
         private void videoMediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -529,7 +668,7 @@ namespace HudlRT.Views
         {
             ApplicationViewState currentViewState = ApplicationView.Value;
 
-            if (currentViewState != ApplicationViewState.Snapped)
+            if (currentViewState != ApplicationViewState.Snapped  && !controlsFaded)
             {
                 if (TopAppBar.IsOpen == false || BottomAppBar.IsOpen == false)
                 {
@@ -629,7 +768,15 @@ namespace HudlRT.Views
                 TopAppBar.Visibility = Visibility.Collapsed;
                 VideoControls.Visibility = Visibility.Collapsed;
                 ClipDataGrid.Visibility = Visibility.Collapsed;
+                LessBtn.Visibility = Visibility.Collapsed;
+                MoreBtn.Visibility = Visibility.Collapsed;
                 snapped_mainGrid.Visibility = Visibility.Visible;
+
+                if (timelineContainer != null)
+                {
+                    Grid grid = (Grid)timelineContainer.Children[0];
+                    grid.Margin = new Thickness(5, 6, 5, 6);
+                }
             }
             else
             {
@@ -638,6 +785,20 @@ namespace HudlRT.Views
                 snapped_mainGrid.Visibility = Visibility.Collapsed;
                 ClipDataGrid.Visibility = Visibility.Visible;
                 VideoControls.Visibility = Visibility.Visible;
+                if (controlsFaded)
+                {
+                    MoreBtn.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LessBtn.Visibility = Visibility.Visible;
+                }
+
+                if (timelineContainer != null)
+                {
+                    Grid grid = (Grid)timelineContainer.Children[0];
+                    grid.Margin = new Thickness(30, 6, 50, 6);
+                }
             }
         }
 
@@ -680,17 +841,27 @@ namespace HudlRT.Views
             {
                 Storyboard sb = new Storyboard();
 
-                RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation();
+                RepositionThemeAnimation repositionTimelineAnimation = new RepositionThemeAnimation();
+                RepositionThemeAnimation repositionBtnAnimation = new RepositionThemeAnimation();
                 FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
+                FadeInThemeAnimation fadeInBtn = new FadeInThemeAnimation();
+
                 Storyboard.SetTarget(fadeInAnimation, ClipDataGrid as DependencyObject);
+                Storyboard.SetTarget(fadeInBtn, LessBtn as DependencyObject);
 
-                Storyboard.SetTarget(repositionAnimation, timelineContainer as DependencyObject);
-                repositionAnimation.FromVerticalOffset = -204;
+                Storyboard.SetTarget(repositionTimelineAnimation, timelineContainer as DependencyObject);
+                repositionTimelineAnimation.FromVerticalOffset = -204;
 
-                sb.Children.Add(repositionAnimation);
+                Storyboard.SetTarget(repositionBtnAnimation, LessBtn as DependencyObject);
+                repositionBtnAnimation.FromVerticalOffset = -204;
+
+                sb.Children.Add(repositionTimelineAnimation);
+                sb.Children.Add(repositionBtnAnimation);
                 sb.Children.Add(fadeInAnimation);
+                sb.Children.Add(fadeInBtn);
 
                 timelineContainer.Margin = new Thickness(0);
+                LessBtn.Margin = new Thickness(0);
 
                 sb.Begin();
             }
@@ -718,15 +889,24 @@ namespace HudlRT.Views
 
                     Storyboard sb = new Storyboard();
 
-                    RepositionThemeAnimation animation = new RepositionThemeAnimation();
+                    RepositionThemeAnimation repositionTimelineAnimation = new RepositionThemeAnimation();
+                    RepositionThemeAnimation repositionBtnAnimation = new RepositionThemeAnimation();
                     FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
+                    FadeOutThemeAnimation fadeOutBtn = new FadeOutThemeAnimation();
 
-                    Storyboard.SetTarget(animation, timelineContainer as DependencyObject);
                     Storyboard.SetTarget(fadeOutAnimation, ClipDataGrid as DependencyObject);
-                    animation.FromVerticalOffset = 204;
+                    Storyboard.SetTarget(fadeOutBtn, LessBtn as DependencyObject);
 
-                    sb.Children.Add(animation);
+                    Storyboard.SetTarget(repositionTimelineAnimation, timelineContainer as DependencyObject);
+                    repositionTimelineAnimation.FromVerticalOffset = 204;
+
+                    Storyboard.SetTarget(repositionBtnAnimation, LessBtn as DependencyObject);
+                    repositionBtnAnimation.FromVerticalOffset = 204;
+
+                    sb.Children.Add(repositionTimelineAnimation);
+                    sb.Children.Add(repositionBtnAnimation);
                     sb.Children.Add(fadeOutAnimation);
+                    sb.Children.Add(fadeOutBtn);
 
                     timelineContainer.Margin = new Thickness(0, 0, 0, 204);
 
@@ -749,6 +929,55 @@ namespace HudlRT.Views
             {
                 vm.SetClip(vm.FilteredClips[0]);
             }
+        }
+
+        private void LessBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+
+            FadeOutThemeAnimation fadeOutTimeline = new FadeOutThemeAnimation();
+            FadeOutThemeAnimation fadeOutClipData = new FadeOutThemeAnimation();
+            FadeOutThemeAnimation fadeOutVideoControls = new FadeOutThemeAnimation();
+
+            Storyboard.SetTarget(fadeOutTimeline, timelineContainer as DependencyObject);
+            Storyboard.SetTarget(fadeOutClipData, ClipDataGrid as DependencyObject);
+            Storyboard.SetTarget(fadeOutVideoControls, VideoControls as DependencyObject);
+
+            sb.Children.Add(fadeOutTimeline);
+            sb.Children.Add(fadeOutClipData);
+            sb.Children.Add(fadeOutVideoControls);
+
+            sb.Begin();
+
+            LessBtn.Visibility = Visibility.Collapsed;
+            MoreBtn.Visibility = Visibility.Visible;
+
+            controlsFaded = true;
+
+        }
+
+        private void MoreBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+
+            FadeInThemeAnimation fadeInTimeline = new FadeInThemeAnimation();
+            FadeInThemeAnimation fadeInClipData = new FadeInThemeAnimation();
+            FadeInThemeAnimation fadeInVideoControls = new FadeInThemeAnimation();
+
+            Storyboard.SetTarget(fadeInTimeline, timelineContainer as DependencyObject);
+            Storyboard.SetTarget(fadeInClipData, ClipDataGrid as DependencyObject);
+            Storyboard.SetTarget(fadeInVideoControls, VideoControls as DependencyObject);
+
+            sb.Children.Add(fadeInTimeline);
+            sb.Children.Add(fadeInClipData);
+            sb.Children.Add(fadeInVideoControls);
+
+            sb.Begin();
+
+            MoreBtn.Visibility = Visibility.Collapsed;
+            LessBtn.Visibility = Visibility.Visible;
+
+            controlsFaded = false;
         }
     }
 

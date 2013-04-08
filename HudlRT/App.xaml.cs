@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using HudlRT.Views;
+using System;
 using System.Collections.Generic;
-using Caliburn.Micro;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml.Controls;
-using HudlRT.Views;
 
 namespace HudlRT
 {
