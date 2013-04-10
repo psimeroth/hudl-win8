@@ -329,12 +329,8 @@ namespace HudlRT.Models
         public BindableCollection<Angle> angles { get; set; }
         public string[] breakDownData { get; set; }
 
-
-
-
         public Clip()
         {
-            //breakdownData = new Dictionary<string, string>();
             angles = new BindableCollection<Angle>();
         }
 
@@ -358,7 +354,6 @@ namespace HudlRT.Models
                     }
                 }
             }
-            //clip.breakdownData = upperedBDD;
             foreach (AngleDTO angleDTO in clipDTO.ClipAngles)
             {
                 Angle a = Angle.FromDTO(angleDTO);

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System;
 using Windows.UI.Xaml.Controls;
 using HudlRT.Common;
-using HudlRT.Parameters;
 using Newtonsoft.Json;
 using Windows.Storage;
 using Windows.UI.ApplicationSettings;
@@ -18,7 +17,7 @@ namespace HudlRT.ViewModels
     {
         INavigationService navigationService;
 
-        protected override async void OnInitialize()
+        protected override void OnInitialize()
         {
         }
 

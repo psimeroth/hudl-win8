@@ -26,11 +26,6 @@
         <!--Just a grid that spans the page to make the background fade in-->
         <Grid x:Name="BackgroundGrid"  Background="{StaticResource HudlDarkGray}" Opacity="0"/>
         <!--For snapped view-->
-        <StackPanel x:Name="SnappedImage" VerticalAlignment="Center" Visibility="Collapsed" Background="{StaticResource HudlOrange}">
-            <Image Source="ms-appx:///Assets/Hudl_Metro150 Centered.png" Height="150" Width="150" />
-            <Image Source="ms-appx:///Assets/agile-hudl-text-dark.png" Width="250"/>
-        </StackPanel>
-
         <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" Width="Auto">
 
             <Image x:Name="loginImage" Source="ms-appx:///Assets/hudl-splash.png" HorizontalAlignment="Center" Height="300" Width="620" />
@@ -78,25 +73,10 @@
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="FullScreenLandscape">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Filled">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
                 </VisualState>
                 <VisualState x:Name="FullScreenPortrait">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SnappedImage" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Snapped">
                     <Storyboard>
