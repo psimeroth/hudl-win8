@@ -681,6 +681,10 @@ namespace HudlRT.Views
                     BottomAppBar.IsOpen = false;
                 }
             }
+            else if (controlsFaded)
+            {
+                MoreBtn_Click(null, null);
+            }
         }
 
         private ObjectAnimationUsingKeyFrames initilizeSlideUpKeyFrames()
@@ -761,6 +765,9 @@ namespace HudlRT.Views
             ApplicationViewState currentViewState = ApplicationView.Value;
 
             videoMediaElement.Width = Window.Current.Bounds.Width;
+            videoMediaElement.Height = Window.Current.Bounds.Height;
+            videoContainer.Width = Window.Current.Bounds.Width;
+            videoContainer.Height = Window.Current.Bounds.Height;
 
             if (currentViewState == ApplicationViewState.Snapped)
             {
@@ -777,6 +784,7 @@ namespace HudlRT.Views
                     Grid grid = (Grid)timelineContainer.Children[0];
                     grid.Margin = new Thickness(5, 6, 5, 6);
                 }
+                AppBarClosed_Snapped();
             }
             else
             {
@@ -864,6 +872,24 @@ namespace HudlRT.Views
                 LessBtn.Margin = new Thickness(0);
 
                 sb.Begin();
+            }
+            catch { }
+        }
+
+        private void AppBarClosed_Snapped()
+        {
+            if (timelineContainer == null)
+            {
+                try
+                {
+                    timelineContainer = (Grid)videoMediaElement.ControlPanel.GetDescendantsOfType<Grid>().ElementAt(2);
+                }
+                catch { }
+            }
+
+            try
+            {
+                timelineContainer.Margin = new Thickness(0);
             }
             catch { }
         }

@@ -26,10 +26,43 @@
                 <Button x:Name="GoBack" Margin="33,0,0,0" Grid.Column="0" Style="{StaticResource BackButtonStyle}"/>
             </Grid>
         </Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,300">
-            <Image x:Name="loginImage" Source="ms-appx:///Assets/hudl-splash.png" HorizontalAlignment="Center" Height="300" Width="620" />
-            <TextBlock x:Name="ErrorMessage" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="70" FontWeight="Bold" Text="We're Sorry..." FontFamily="Segoe UI Semilight"  TextWrapping="Wrap"/>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" FontFamily="Segoe UI Semilight" TextWrapping="Wrap" Text="Something went wrong. Please go back and make another selection." />
+        <StackPanel x:Name="ItemsContainer" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,300">
+            <Image x:Name="Logo" Source="ms-appx:///Assets/hudl-splash.png" HorizontalAlignment="Center" Height="300" Width="620" />
+            <TextBlock x:Name="Header" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="70" FontWeight="Bold" Text="We're Sorry..." FontFamily="Segoe UI Semilight"  TextWrapping="Wrap" TextAlignment="Center"/>
+            <TextBlock x:Name="Content" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="40" FontWeight="Bold" FontFamily="Segoe UI Semilight" TextWrapping="Wrap" TextAlignment="Center" Text="Something went wrong. Please go back and make another selection." />
         </StackPanel>
+        <VisualStateManager.VisualStateGroups>
+
+            <!-- Visual states reflect the application's view state -->
+            <VisualStateGroup x:Name="ApplicationViewStates">
+                <VisualState x:Name="FullScreenLandscape"/>
+                <VisualState x:Name="Filled"/>
+                <VisualState x:Name="Snapped">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GoBack" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GoBack" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="18,0,0,0" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="200" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Logo" Storyboard.TargetProperty="Width">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="400" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Header" Storyboard.TargetProperty="FontSize">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="35" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="FontSize">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="25" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsContainer" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,200" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </common:LayoutAwarePage>
