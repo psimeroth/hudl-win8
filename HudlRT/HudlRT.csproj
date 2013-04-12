@@ -116,11 +116,12 @@
     <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\ServiceAccessor.cs" />
     <Compile Include="Common\APIExceptionDialog.cs" />
+    <Compile Include="Common\VirtualKeyHelper.cs" />
     <Compile Include="Models\DTOModels.cs" />
     <Compile Include="Models\Model.cs" />
-    <Compile Include="Parameters\CachedParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\PlaylistViewModel.cs" />
     <Compile Include="ViewModels\FilterCriteriaViewModel.cs" />
     <Compile Include="ViewModels\FilterViewModel.cs" />
@@ -131,20 +132,17 @@
     <Compile Include="ViewModels\SectionViewModel.cs" />
     <Compile Include="ViewModels\VideoPlayerViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\ErrorView.xaml.cs">
+      <DependentUpon>ErrorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CategoryView.xaml.cs">
       <DependentUpon>CategoryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CutupView.xaml.cs">
       <DependentUpon>CutupView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GameView.xaml.cs">
-      <DependentUpon>GameView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\HubView.xaml.cs">
       <DependentUpon>HubView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\LargeGameView.xaml.cs">
-      <DependentUpon>LargeGameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -160,24 +158,13 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Caliburn.Micro.WinRT.Sample_TemporaryKey.pfx" />
     <None Include="HudlRT_StoreKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\agile-hudl-logo-light.png" />
-    <Content Include="Assets\Beta.png" />
-    <Content Include="Assets\dark_BG_Tiled.png" />
-    <Content Include="Assets\hudl-hi-res-white-medium.png" />
-    <Content Include="Assets\hudl-hi-res-white-small.png" />
     <Content Include="Assets\hudl-mark-gray.png" />
     <Content Include="Assets\hudl-metro-orange.png" />
-    <Content Include="Assets\hudl-metro-orange-large.png" />
     <Content Include="Assets\hudl-splash.png" />
-    <Content Include="Assets\hudl-hi-res-logo.png" />
-    <Content Include="Assets\Hudl_Metro150 Centered.png" />
-    <Content Include="Assets\Hudl_Metro150 thumbCentered.png" />
-    <Content Include="Assets\Hudl_Partial150.png" />
     <Content Include="Assets\scale-100\Hudl_Metro_Logo.png" />
     <Content Include="Assets\scale-100\Hudl_Small_Logo.png" />
     <Content Include="Assets\hudl-logo-big-tile.png" />
@@ -229,6 +216,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ErrorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CategoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,17 +228,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GameView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\HubView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\LargeGameView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LoginView.xaml">
       <SubType>Designer</SubType>
@@ -282,11 +265,7 @@
       <HintPath>packages\winrtxamltoolkit.1.3.5.3\lib\netcore45\WinRTXamlToolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\scale-140\" />
-    <Folder Include="Assets\scale-180\" />
-    <Folder Include="Assets\scale-80\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

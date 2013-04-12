@@ -1,22 +1,16 @@
 using Caliburn.Micro;
 using HudlRT.Common;
 using HudlRT.Models;
-using HudlRT.Parameters;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.UI.ApplicationSettings;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.ViewManagement;
-using Windows.Networking.BackgroundTransfer;
 using System.Threading;
-using HudlRT.Common;
+using System.Threading.Tasks;
+using Windows.Networking.BackgroundTransfer;
+using Windows.UI.ApplicationSettings;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+
 namespace HudlRT.ViewModels
 {
     public class SectionViewModel : ViewModelBase
@@ -187,7 +181,7 @@ namespace HudlRT.ViewModels
             }
             else
             {
-                DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;// +" of " + freeSpaceResponse.formattedSize;
+                DiskSpaceInformation = "Using " + curentDownloadsSpaceReponse.formattedSize;
             }
         }
 
@@ -231,8 +225,8 @@ namespace HudlRT.ViewModels
             DownloadButton_Visibility = Visibility.Collapsed;
             Downloading_Visibility = Visibility.Collapsed;
 
-            
 
+            MarkDownloadedPlaylists();
             LoadActiveDownloadsAsync();
             UpdateDiskInformation();
             if (DownloadAccessor.Instance.Downloading)
@@ -392,7 +386,6 @@ namespace HudlRT.ViewModels
             {
                 if (categoriesGrid.SelectedItems.Count >= 1)
                 {
-                    //PlaylistViewModel firstPlaylist = (PlaylistViewModel)playlistsSelected.ElementAt(0);
                     if (playlistAdded != null)
                     {
                         if (playlistAdded.DownloadedIcon_Visibility == Visibility.Visible)
@@ -468,7 +461,6 @@ namespace HudlRT.ViewModels
 
         private void MarkDownloadedPlaylists()
         {
-            //await DownloadAccessor.Instance.GetDownloads();
             if (Categories != null)
             {
                 foreach (CategoryViewModel cat in Categories)

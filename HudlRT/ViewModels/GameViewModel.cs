@@ -1,13 +1,10 @@
 ﻿using Caliburn.Micro;
-using HudlRT.Models;
 using HudlRT.Common;
-using System;
+using HudlRT.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace HudlRT.ViewModels
 {
@@ -138,28 +135,6 @@ namespace HudlRT.ViewModels
                         }
                     }
                 }
-
-                /*foreach (Category cat in GameModel.categories)
-                {
-                    PlaylistResponse playResponse = await ServiceAccessor.GetCategoryPlaylists(cat.categoryId);
-                    if (playResponse.status == SERVICE_RESPONSE.SUCCESS)
-                    {
-                        cat.playlists = playResponse.playlists;
-                        if (cat.playlists != null && cat.playlists.Count() > 0)
-                        {
-                            numLists += cat.playlists.Count();
-                            //Populate the thumbnail on the hub
-                            if (Thumbnail == "ms-appx:///Assets/hudl-mark-gray.png")
-                            {
-                                if (cat.playlists[0].thumbnailLocation != null)
-                                {
-                                    Thumbnail = cat.playlists[0].thumbnailLocation;
-                                    Stretch = "UniformToFill";
-                                }
-                            }
-                        }
-                    }
-                }*/
             }
             else
             {

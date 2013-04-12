@@ -1,27 +1,15 @@
 ﻿using Caliburn.Micro;
 using HudlRT.Models;
-using System.Collections.Generic;
-using System;
-using Windows.UI.Xaml.Controls;
-using HudlRT.Common;
-using HudlRT.Parameters;
 using Newtonsoft.Json;
-using Windows.Storage;
-using Windows.UI.ApplicationSettings;
-using System.Linq;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Input;
-using Windows.Networking.BackgroundTransfer;
-using Windows.UI.Xaml;
-using HudlRT.ViewModels;
-using System.Threading;
-using Windows.UI.Notifications;
-using Windows.Data.Xml.Dom;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using Windows.Storage.FileProperties;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Networking.BackgroundTransfer;
+using Windows.Storage;
+using Windows.UI.Notifications;
 
 namespace HudlRT.Common
 {

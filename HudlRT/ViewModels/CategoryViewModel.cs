@@ -1,10 +1,5 @@
 ﻿using Caliburn.Micro;
 using HudlRT.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HudlRT.ViewModels
 {
@@ -14,18 +9,11 @@ namespace HudlRT.ViewModels
     public class CategoryViewModel : PropertyChangedBase
     {
         public Category CategoryModel { get; set; }
-        //private string _name { get; set; }
         private BindableCollection<PlaylistViewModel> _playlists { get; set; }
 
         public string Name
         {
             get { return CategoryModel.name; }
-            /*set
-            {
-                if (value == _name) return;
-                _name = value;
-                NotifyOfPropertyChange(() => Name);
-            }*/
         }
 
         public BindableCollection<PlaylistViewModel> Playlists

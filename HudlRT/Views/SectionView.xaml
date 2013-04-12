@@ -27,7 +27,7 @@
                         <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="GoBack" IsEnabled="{Binding PageIsEnabled}" Margin="33,0,0,0" Grid.Column="0" Style="{StaticResource BackButtonStyle}" />
+                <Button x:Name="GoBack" IsEnabled="{Binding PageIsEnabled}" Margin="15,0,0,0" Grid.Column="0" Style="{StaticResource BackButtonStyle}" />
                 <TextBlock x:Name="ScheduleEntryName" Grid.Column="1" Style="{StaticResource SectionPageTitle}" Text="{Binding ScheduleEntryName}"/>
             </Grid>
 
@@ -178,6 +178,9 @@
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="TextWrapping">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Wrap" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ScheduleEntryName" Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="-18,0,0,0" />
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

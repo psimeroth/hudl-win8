@@ -12,17 +12,18 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
+
 namespace HudlRT.Views
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A basic page that provides characteristics common to most applications.
     /// </summary>
-    public sealed partial class LargeGameView : UserControl
+    public sealed partial class ErrorView : HudlRT.Common.LayoutAwarePage
     {
-        public LargeGameView()
+        public ErrorView()
         {
             this.InitializeComponent();
         }
-
     }
 }
