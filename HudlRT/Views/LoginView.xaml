@@ -24,11 +24,12 @@
         </Grid.Resources>
         
         <!--Just a grid that spans the page to make the background fade in-->
-        <Grid x:Name="BackgroundGrid"  Background="{StaticResource HudlDarkGray}" Opacity="0"/>
+        <Grid x:Name="BackgroundGrid"  Opacity="0" />
+
         <!--For snapped view-->
         <StackPanel x:Name="loginStackPanel" HorizontalAlignment="Center" Height="Auto" Width="Auto">
 
-            <Image x:Name="loginImage" Source="ms-appx:///Assets/hudl-splash.png" HorizontalAlignment="Center" Height="300" Width="620" />
+            <Image x:Name="loginImage" Source="ms-appx:///Assets/splashscreen.png" HorizontalAlignment="Center" Height="300" Width="620" />
 
             <StackPanel x:Name="loginFormStackPanel" Visibility="{Binding FormVisibility}" Margin="0,-70,0,0" Opacity="0">
 
@@ -58,10 +59,11 @@
 
                     <TextBox x:Name="UserName" Background="{StaticResource HudlDarkGrayAccent}" Foreground="{StaticResource HudlMediumGray}" Height="50" FontSize="25" Margin="10,0,0,0" MinWidth="500" Grid.Column="1" Grid.Row="0"/>
                     <PasswordBox x:Name="Password" Background="{StaticResource HudlDarkGrayAccent}" Foreground="{StaticResource HudlMediumGray}" Height="50" FontSize="25" Margin="10,0,0,0" IsPasswordRevealButtonEnabled="True" MinWidth="500" caliburn:Message.Attach="[Event KeyUp] = [Action KeyPress($eventArgs)]" Grid.Column="1" Grid.Row="2" />
-                    <CheckBox Name="RememberMe" Foreground="{StaticResource HudlMediumDarkGray}" Grid.Row="4" Grid.Column="1" Content="Remember Me" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Bottom" FontFamily="Segoe UI" FontWeight="Light" MinWidth="500" Margin="8,0,0,0"/>
-
-                    <Button Style="{StaticResource ButtonStyle_Standard}" Grid.Row="4" Grid.Column="1" Content="New to Hudl?" VerticalAlignment="Top" FontSize="18" HorizontalAlignment="Right" Click="RedirectToSignup" Width="140" Margin="0,0,1,0" />
-
+                    <CheckBox Name="RememberMe" Foreground="{StaticResource HudlMediumDarkGray}" Grid.Row="4" Grid.Column="1" Content="Remember Me" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Bottom" FontFamily="Segoe UI" FontWeight="Light" Margin="8,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right" >
+                        <Button x:Name="DemoLogin" Style="{StaticResource ButtonStyle_Standard}"  Content="Try demo account" VerticalAlignment="Top" FontSize="18" caliburn:Message.Attach="[Event Click] = [Action DemoLoginAttempt()]" Width="170" Margin="0,0,0,0" />
+                        <Button Style="{StaticResource ButtonStyle_Standard}"  Content="New to Hudl?" VerticalAlignment="Top" FontSize="18" Click="RedirectToSignup" Width="140" Margin="5,0,0,0" />
+                    </StackPanel>
                     <Button x:Name="Login" Content="{Binding ButtonText}" Style="{StaticResource ButtonStyle_Standard}" Height="105" Width="120" caliburn:Message.Attach="[Event Click] = [Action LoginAttempt()]" Margin="5,0,0,0" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" />
                 </Grid>
 

@@ -262,7 +262,7 @@ namespace HudlRT.ViewModels
 
             getMoreClips();
 
-            GridHeaders = Parameter.playlist.displayColumns;
+            GridHeaders = Parameter.playlist.displayColumns ?? new string[] {};
             PlaylistName = Parameter.playlist.name;
 
             int? playbackTypeResult = AppDataAccessor.GetPlaybackType();
@@ -318,15 +318,19 @@ namespace HudlRT.ViewModels
                 }
             }
 
-            List<Angle> filteredAngles = SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
+            if (null != SelectedClip)
+            {
+                List<Angle> filteredAngles =
+                    SelectedClip.angles.Where(angle => angle.angleType.IsChecked).ToList<Angle>();
 
-            if (filteredAngles.Count == 1)
-            {
-                filteredAngles.First().angleType.CheckBoxEnabled = false;
-            }
-            else if (filteredAngles.Count == 0)
-            {
-                NoAnglesText = "No angles are selected. Please select an angle to view this clip.";
+                if (filteredAngles.Count == 1)
+                {
+                    filteredAngles.First().angleType.CheckBoxEnabled = false;
+                }
+                else if (filteredAngles.Count == 0)
+                {
+                    NoAnglesText = "No angles are selected. Please select an angle to view this clip.";
+                }
             }
         }
 
@@ -426,9 +430,12 @@ namespace HudlRT.ViewModels
 
         private void saveAnglePreferences()
         {
-            foreach (AngleType angleName in AngleTypes)
+            if (AngleTypes != null)
             {
-                AppDataAccessor.SetAnglePreference(angleName.Name, angleName.IsChecked);
+                foreach (AngleType angleName in AngleTypes)
+                {
+                    AppDataAccessor.SetAnglePreference(angleName.Name, angleName.IsChecked);
+                }
             }
         }
 

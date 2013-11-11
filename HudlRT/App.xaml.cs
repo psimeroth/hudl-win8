@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using HudlRT.ViewModels;
 using HudlRT.Views;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,20 @@ namespace HudlRT
         public App()
         {
             InitializeComponent();
+
         }
 
         protected override void Configure()
         {
             container = new WinRTContainer();
             container.RegisterWinRTServices();
+            container
+                .PerRequest<LoginViewModel>()
+                .PerRequest<ErrorViewModel>()
+                .PerRequest<HubViewModel>()
+                .PerRequest<SectionViewModel>()
+                .PerRequest<VideoPlayerViewModel>()
+                ;
         }
 
         protected override object GetInstance(Type service, string key)

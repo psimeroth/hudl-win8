@@ -45,8 +45,10 @@ namespace HudlRT.Common
         public static string SPLASH_Y = "hudl-app-splash-y";
         public static string SPLASH_HEIGHT = "hudl-app-splash-height";
         public static string SPLASH_WIDTH = "hudl-app-splash-width";
+        public static string DEMO_MODE = "hudl-demo-mode";
 
-        private static T GetUserRoamingSetting<T>(string keyName){
+        private static T GetUserRoamingSetting<T>(string keyName)
+        {
             string username = GetUsername();
             string userKeyName = username + keyName;
             return (T)Windows.Storage.ApplicationData.Current.RoamingSettings.Values[userKeyName];
@@ -57,6 +59,23 @@ namespace HudlRT.Common
             string username = GetUsername();
             string userKeyName = username + keyName;
             Windows.Storage.ApplicationData.Current.RoamingSettings.Values[userKeyName] = value;
+        }
+
+        private static T GetUserLocalSetting<T>(string keyName)
+        {
+            string username = GetUsername();
+            string userKeyName = username + keyName;
+            var values = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+            object tValue=null;
+            values.TryGetValue(userKeyName, out tValue);
+            return (T) tValue;
+        }
+
+        private static void SetUserLocalSetting<T>(string keyName, T value)
+        {
+            string username = GetUsername();
+            string userKeyName = username + keyName;
+            Windows.Storage.ApplicationData.Current.LocalSettings.Values[userKeyName] = value;
         }
 
         private static T GetRoamingSetting<T>(string keyName)
@@ -81,13 +100,18 @@ namespace HudlRT.Common
 
         public static string GetUsername()
         {
-            return GetRoamingSetting<string>(USERNAME);
+            var username = GetRoamingSetting<string>(USERNAME);
+            if (null == username)
+            {
+                username = GetDemoUsername();
+            }
+            return username;
         }
 
         public static string GetLoginDate()
         {
             string username = GetUsername();
-            return GetRoamingSetting<string>(username+LOGINDATE);
+            return GetRoamingSetting<string>(username + LOGINDATE);
         }
 
         public static void SetUsername(string username)
@@ -98,12 +122,13 @@ namespace HudlRT.Common
         public static void SetLoginDate(string loginDate)
         {
             string username = GetUsername();
-            SetRoamingSetting<string>(username+LOGINDATE, loginDate);
+            SetRoamingSetting<string>(username + LOGINDATE, loginDate);
         }
 
-        public static TeamContextResponse GetTeamContext() {
+        public static TeamContextResponse GetTeamContext()
+        {
             TeamContextResponse response = new TeamContextResponse();
-            
+
             //needed for api v2 switch
             try
             {
@@ -245,6 +270,26 @@ namespace HudlRT.Common
             {
                 return null;
             }
+        }
+
+        public static string GetDemoUsername()
+        {
+            return "John.wiese@microsoft.com";
+        }
+
+        public static string GetDemoPassword()
+        {
+            return "Password1$";
+        }
+
+        public static bool GetDemoMode()
+        {
+            return GetUserLocalSetting<bool>(DEMO_MODE);
+        }
+
+        public static void SetDemoMode(bool mode)
+        {
+            SetUserLocalSetting<bool>(DEMO_MODE, mode);
         }
     }
 }

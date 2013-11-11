@@ -114,6 +114,46 @@ namespace HudlRT.ViewModels
             }
         }
 
+        public async void DemoLoginAttempt()
+        {
+            // Attempt to get the debug urls from a config file
+            InitResponse initResponse = await ServiceAccessor.Init();
+
+            // Get the username and password from the view
+            var demoUserName = AppDataAccessor.GetDemoUsername();
+            var demoPassword = AppDataAccessor.GetDemoPassword();
+            string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = demoUserName, Password = demoPassword });
+
+            // Show the user a call is being made in the background
+            FormVisibility = "Collapsed";
+            ProgressRingVisibility = "Visible";
+
+            LoginResponse response = await ServiceAccessor.Login(loginArgs);
+            if (response.status == SERVICE_RESPONSE.SUCCESS)
+            {
+                navigationService.NavigateToViewModel<HubViewModel>();
+            }
+            else if (response.status == SERVICE_RESPONSE.NULL_RESPONSE)
+            {
+                LoginFeedback = "Connection with server failed, please try again";
+            }
+            else if (response.status == SERVICE_RESPONSE.CREDENTIALS)
+            {
+                LoginFeedback = "Invalid Username or Password";
+            }
+            else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
+            {
+                await HandleNoConnection();
+            }
+
+            // Dismiss the loading indicator
+            FormVisibility = "Visible";
+            ProgressRingVisibility = "Collapsed";
+            AppDataAccessor.SetDemoMode(true);
+        }
+
+
+
 
         public async void LoginAttempt()
         {
@@ -164,33 +204,38 @@ namespace HudlRT.ViewModels
             }
             else if (response.status == SERVICE_RESPONSE.NO_CONNECTION)
             {
-                DateTime LastLogin = new DateTime();
-                string loginDate = AppDataAccessor.GetLoginDate();
-                if (loginDate != null)
+                await HandleNoConnection();
+            }
+
+            // Dismiss the loading indicator
+            ButtonText = "Try demo account";
+            FormVisibility = "Visible";
+            ProgressRingVisibility = "Collapsed";
+        }
+
+        private async Task HandleNoConnection()
+        {
+            DateTime LastLogin = new DateTime();
+            string loginDate = AppDataAccessor.GetLoginDate();
+            if (loginDate != null)
+            {
+                await Task.Run(() => LastLogin = DateTime.Parse(AppDataAccessor.GetLoginDate()));
+                    //need an async task in order to the page to navigate
+                TimeSpan ts = DateTime.Now - LastLogin;
+                if (ts.Days <= 14)
                 {
-                    await Task.Run(() => LastLogin = DateTime.Parse(AppDataAccessor.GetLoginDate()));//need an async task in order to the page to navigate
-                    TimeSpan ts = DateTime.Now - LastLogin;
-                    if (ts.Days <= 14)
-                    {
-                        navigationService.NavigateToViewModel<HubViewModel>();
-                    }
-                    else
-                    {
-                        APIExceptionDialog.ShowNoInternetConnectionLoginDialog(null, null);
-                    }
+                    navigationService.NavigateToViewModel<HubViewModel>();
                 }
                 else
                 {
                     APIExceptionDialog.ShowNoInternetConnectionLoginDialog(null, null);
                 }
             }
-
-            // Dismiss the loading indicator
-            ButtonText = "Login";
-            FormVisibility = "Visible";
-            ProgressRingVisibility = "Collapsed";
+            else
+            {
+                APIExceptionDialog.ShowNoInternetConnectionLoginDialog(null, null);
+            }
         }
-
 
         /// <summary>
         /// Key handler for the password field of the login view.

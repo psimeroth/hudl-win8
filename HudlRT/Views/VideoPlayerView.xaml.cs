@@ -1,4 +1,5 @@
-﻿using HudlRT.Common;
+﻿using System.Threading.Tasks;
+using HudlRT.Common;
 using HudlRT.Models;
 using HudlRT.ViewModels;
 using System;
@@ -6,7 +7,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
+using Windows.Media.PlayTo;
 using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,6 +30,10 @@ namespace HudlRT.Views
         private const int VIDEO_CONTROLS_WIDTH = 105;
         private const int COLUMN_WIDTH = 130;
         private const int GRID_HEADER_FONT_SIZE = 22;
+ 
+        // PlayTo variables
+        private PlayToManager playToManager = null;
+        bool streaming = false;
 
         private Grid timelineContainer;
 
@@ -51,12 +59,14 @@ namespace HudlRT.Views
         private Windows.UI.Core.KeyEventArgs rewindKey { get; set; }
         private bool isControlDown { get; set; }
         private VideoPlayerViewModel videoPlayerViewModel { get; set; }
+        
+       
 
         public VideoPlayerView()
         {
             this.InitializeComponent();
 
-            gridHeaderScroll.ViewChanged += gridHeaderScroll_ViewChanged;
+            //gridHeaderScroll.ViewChanged += gridHeaderScroll_ViewChanged;
             FilteredClips.Loaded += filteredClips_Loaded;
 
             btnFastForward.AddHandler(PointerPressedEvent, new PointerEventHandler(btnFastForward_Click), true);
@@ -76,6 +86,9 @@ namespace HudlRT.Views
             rewindKeyPressTimer = new DispatcherTimer();
             rewindKeyPressTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             rewindKeyPressTimer.Tick += rewindKeyPressTimerTick;
+
+
+
         }
 
         /// <summary>
@@ -100,6 +113,55 @@ namespace HudlRT.Views
             videoPlayerViewModel.setVideoMediaElement(videoMediaElement);
             videoPlayerViewModel.TopAppBar = TopAppBar;
             videoPlayerViewModel.BottomAppBar = BottomAppBar;
+
+            // Register for a PlayTo event 
+            playToManager = PlayToManager.GetForCurrentView();
+            playToManager.SourceRequested += playToManager_SourceRequested;
+            
+
+        }
+
+        void Connection_Transferred(PlayToConnection sender, PlayToConnectionTransferredEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Windows.UI.Core.CoreDispatcher dispatcher = Window.Current.CoreWindow.Dispatcher;
+
+        private async void playToManager_SourceRequested(PlayToManager sender, PlayToSourceRequestedEventArgs args)
+        {
+            streaming = true;
+            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                try
+                {
+                    Windows.Media.PlayTo.PlayToSourceRequest sr = args.SourceRequest;
+                    Windows.Media.PlayTo.PlayToSource controller = null;
+                    Windows.Media.PlayTo.PlayToSourceDeferral deferral =
+                        args.SourceRequest.GetDeferral();
+
+                    try
+                    {
+                        
+                            controller = videoMediaElement.PlayToSource;
+                            videoMediaElement.PlayToSource.Connection.Transferred += Connection_Transferred;
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                       new MessageDialog("Exception encountered: " + ex.Message).ShowAsync();
+                    }
+
+                    sr.SetSource(controller);
+                    deferral.Complete();
+                }
+                catch (Exception ex)
+                {
+                    new MessageDialog("Exception encountered: " + ex.Message).ShowAsync();
+                }
+            });
+
+
         }
         
         private void initializeGrid(VideoPlayerViewModel vm)
@@ -197,7 +259,7 @@ namespace HudlRT.Views
         private void filteredClips_Loaded(object sender, RoutedEventArgs e)
         {
             filteredListScrollViewer = FilteredClips.GetFirstDescendantOfType<ScrollViewer>();
-            filteredListScrollViewer.ViewChanged += filteredListScrollViewer_ViewChanged;
+            //filteredListScrollViewer.ViewChanged += filteredListScrollViewer_ViewChanged;
         }
 
         void filteredListScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -249,6 +311,7 @@ namespace HudlRT.Views
 
             gridHeaders.Children.Clear();
             gridHeaders.ColumnDefinitions.Clear();
+            playToManager.SourceRequested -= playToManager_SourceRequested;
         }
 
         private void VideosList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -372,6 +435,7 @@ namespace HudlRT.Views
             videoMediaElement.Stop();
             setPlayVisible();
             setPrevVisible();
+            
         }
 
         private void videoPlayer_FastForward()

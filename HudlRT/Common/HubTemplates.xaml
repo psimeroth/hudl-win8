@@ -28,7 +28,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="HubPageSmallGamesTemplate">
-        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="243" Width="325" IsRightTapEnabled="False">
+        <Grid Background="{StaticResource HudlDarkGrayAccent}" Height="250" Width="325" IsRightTapEnabled="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="75"/>

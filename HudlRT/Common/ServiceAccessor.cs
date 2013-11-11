@@ -117,7 +117,7 @@ namespace HudlRT.Common
         public static bool ConnectedToInternet()
         {
             ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-            return !(InternetConnectionProfile == null || InternetConnectionProfile.GetNetworkConnectivityLevel() == 0);
+            return !(InternetConnectionProfile == null || (InternetConnectionProfile.GetNetworkConnectivityLevel() != NetworkConnectivityLevel.InternetAccess));
         }
 
         public static async Task<LoginResponse> Login(string loginArgs)
@@ -333,7 +333,7 @@ namespace HudlRT.Common
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
         /// <returns>The string response returned from the API call.</returns>
-        public static async Task<string> MakeApiCallGet(string url, bool showDialog)
+        private static async Task<string> MakeApiCallGet(string url, bool showDialog)
         {
             if (!ConnectedToInternet())
             {
@@ -367,7 +367,7 @@ namespace HudlRT.Common
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
         /// <returns>The string response returned from the API call.</returns>
-        public static async Task<string> MakeApiCallPost(string url, string jsonString, bool showDialog)
+        private static async Task<string> MakeApiCallPost(string url, string jsonString, bool showDialog)
         {
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE_SECURE + url);
