@@ -208,7 +208,7 @@ namespace HudlRT.ViewModels
             }
 
             // Dismiss the loading indicator
-            ButtonText = "Try demo account";
+            ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
         }
