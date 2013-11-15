@@ -104,6 +104,7 @@ namespace HudlRT.Common
         private static string URL_BASE_SECURE = "https://www.hudl.com/api/v2/";
 
         public const string URL_SERVICE_LOGIN = "login";
+        public const string URL_SERVICE_DEMOLOGIN = "demologin";
         public const string URL_SERVICE_LOG = "log";
         public const string URL_SERVICE_GET_TEAMS = "teams";
         public const string URL_SERVICE_GET_SEASONS_BY_TEAM = "teams/{0}/categories";//returns Seasons for a team, complete with games and categories
@@ -122,21 +123,28 @@ namespace HudlRT.Common
 
         public static async Task<LoginResponse> Login(string loginArgs)
         {
+            return await LoginHelper(loginArgs, ServiceAccessor.URL_SERVICE_LOGIN);
+        }
+
+        public static async Task<LoginResponse> DemoLogin()
+        {
+            return await LoginHelper(string.Empty, ServiceAccessor.URL_SERVICE_DEMOLOGIN);
+        }
+
+        private static async Task<LoginResponse> LoginHelper(string loginArgs, string url)
+        {
             if (!ConnectedToInternet())
             {
-                return new LoginResponse { status = SERVICE_RESPONSE.NO_CONNECTION };
+                return new LoginResponse {status = SERVICE_RESPONSE.NO_CONNECTION};
             }
-            var loginResponse = await ServiceAccessor.MakeApiCallPost(ServiceAccessor.URL_SERVICE_LOGIN, loginArgs, false);
+            var loginResponse = await ServiceAccessor.MakeApiCallPost(url, loginArgs);
             if (!string.IsNullOrEmpty(loginResponse))
             {
                 var obj = JsonConvert.DeserializeObject<LoginResponseDTO>(loginResponse);
                 AppDataAccessor.SetAuthToken(obj.Token);
-                return new LoginResponse { status = SERVICE_RESPONSE.SUCCESS };
+                return new LoginResponse {status = SERVICE_RESPONSE.SUCCESS};
             }
-            else
-            {
-                return new LoginResponse { status = SERVICE_RESPONSE.CREDENTIALS };
-            }
+            return new LoginResponse {status = SERVICE_RESPONSE.CREDENTIALS};
         }
 
         public static async Task<TeamResponse> GetTeams()
@@ -367,7 +375,7 @@ namespace HudlRT.Common
         /// <param name="url">The API function to hit.</param>
         /// <param name="jsonString">Any necesary data required to make the call.</param>
         /// <returns>The string response returned from the API call.</returns>
-        private static async Task<string> MakeApiCallPost(string url, string jsonString, bool showDialog)
+        private static async Task<string> MakeApiCallPost(string url, string jsonString)
         {
             var httpClient = new HttpClient();
             Uri uri = new Uri(URL_BASE_SECURE + url);
@@ -407,5 +415,6 @@ namespace HudlRT.Common
             }
             else { return null; }
         }
+
     }
 }

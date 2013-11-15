@@ -274,12 +274,7 @@ namespace HudlRT.Common
 
         public static string GetDemoUsername()
         {
-            return "John.wiese@microsoft.com";
-        }
-
-        public static string GetDemoPassword()
-        {
-            return "Password1$";
+            return "HudlDemoUser";
         }
 
         public static bool GetDemoMode()

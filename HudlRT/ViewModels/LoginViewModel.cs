@@ -119,16 +119,11 @@ namespace HudlRT.ViewModels
             // Attempt to get the debug urls from a config file
             InitResponse initResponse = await ServiceAccessor.Init();
 
-            // Get the username and password from the view
-            var demoUserName = AppDataAccessor.GetDemoUsername();
-            var demoPassword = AppDataAccessor.GetDemoPassword();
-            string loginArgs = JsonConvert.SerializeObject(new LoginSender { Username = demoUserName, Password = demoPassword });
-
             // Show the user a call is being made in the background
             FormVisibility = "Collapsed";
             ProgressRingVisibility = "Visible";
 
-            LoginResponse response = await ServiceAccessor.Login(loginArgs);
+            LoginResponse response = await ServiceAccessor.DemoLogin();
             if (response.status == SERVICE_RESPONSE.SUCCESS)
             {
                 navigationService.NavigateToViewModel<HubViewModel>();

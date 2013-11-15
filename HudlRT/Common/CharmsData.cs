@@ -25,7 +25,6 @@ namespace HudlRT.Common
             {
                 eventArgs.Request.ApplicationCommands.Add(new SettingsCommand("newToHudl", "New to hudl", OpenSignup));
             }
-            var currentUserName = AppDataAccessor.GetUsername();
             eventArgs.Request.ApplicationCommands.Add(new SettingsCommand("logout", "Log Out", Logout));
         }
       
