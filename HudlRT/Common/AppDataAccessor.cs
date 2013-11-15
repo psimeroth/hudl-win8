@@ -67,8 +67,11 @@ namespace HudlRT.Common
             string userKeyName = username + keyName;
             var values = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
             object tValue=null;
-            values.TryGetValue(userKeyName, out tValue);
-            return (T) tValue;
+            if (values.TryGetValue(userKeyName, out tValue))
+            {
+                return (T) tValue;
+            }
+            return default (T);
         }
 
         private static void SetUserLocalSetting<T>(string keyName, T value)

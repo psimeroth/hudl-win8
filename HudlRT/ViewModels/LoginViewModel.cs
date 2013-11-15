@@ -147,9 +147,6 @@ namespace HudlRT.ViewModels
             AppDataAccessor.SetDemoMode(true);
         }
 
-
-
-
         public async void LoginAttempt()
         {
             // Attempt to get the debug urls from a config file
@@ -206,6 +203,7 @@ namespace HudlRT.ViewModels
             ButtonText = "Login";
             FormVisibility = "Visible";
             ProgressRingVisibility = "Collapsed";
+            AppDataAccessor.SetDemoMode(false);
         }
 
         private async Task HandleNoConnection()
